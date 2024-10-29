@@ -122,7 +122,7 @@ CREATE TABLE post_attachment (
     id SERIAL,
     post_id INTEGER NOT NULL,
     url TEXT NOT NULL,
-    type attachment_type NOT NULL,
+    TYPE attachment_type NOT NULL,
     PRIMARY KEY (id),
     FOREIGN KEY (post_id) REFERENCES post (id) ON UPDATE CASCADE
 );
@@ -132,7 +132,6 @@ CREATE TABLE tag (
     name TEXT NOT NULL UNIQUE,
     PRIMARY KEY (id)
 );
-
 
 CREATE TABLE post_tag (
     post_id INTEGER NOT NULL,
@@ -285,6 +284,10 @@ CREATE TABLE notification (
     FOREIGN KEY (comment_like_id) REFERENCES comment_like (id) ON UPDATE CASCADE
 );
 
+-- Triggers
+
+--triggers relacionados a notificacao
+
 CREATE OR REPLACE FUNCTION notify_user_on_comment() 
 RETURNS TRIGGER AS $$
 BEGIN
@@ -346,18 +349,86 @@ AFTER INSERT ON follow
 FOR EACH ROW
 EXECUTE FUNCTION notify_user_on_follow();
 
+--triggers de join requests 
+CREATE OR REPLACE FUNCTION handle_group_invitation_acceptance()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF NEW.status = 'accepted' AND OLD.status <> 'accepted' THEN
+        INSERT INTO group_member (user_id, group_id, joined_at) 
+        VALUES (NEW.user_id, NEW.group_id, CURRENT_TIMESTAMP);
+    END IF;
 
---CREATE OR REPLACE FUNCTION notify_user_on_post_mention()
----- RETURNS TRIGGER AS $$
----- BEGIN
---   --  INSERT INTO notification ( receiver_id, timestamp, is_read, notification_type,)
--- Index Creations
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER after_group_invitation_update
+AFTER UPDATE ON group_invitation
+FOR EACH ROW
+EXECUTE FUNCTION handle_group_invitation_acceptance();
+
+CREATE OR REPLACE FUNCTION handle_group_join_request_acceptance()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF NEW.status = 'accepted' AND OLD.status <> 'accepted' THEN
+        INSERT INTO group_member (user_id, group_id, joined_at) 
+        VALUES (NEW.requester_id, NEW.group_id, CURRENT_TIMESTAMP);
+    END IF;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER after_group_join_request_update
+AFTER UPDATE ON group_join_request
+FOR EACH ROW
+EXECUTE FUNCTION handle_group_join_request_acceptance();
+
+--enforcements
+CREATE OR REPLACE FUNCTION enforce_different_post_author()
+RETURNS TRIGGER AS $$
+BEGIN
+    SELECT author_id FROM post WHERE id = NEW.post_id;
+
+    IF NEW.liker_id = author_id  THEN
+        RAISE EXCEPTION 'A user cannot like their own post';
+    END IF;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER before_post_like_insert
+BEFORE INSERT ON post_like
+FOR EACH ROW
+EXECUTE FUNCTION enforce_different_post_author();
+
+CREATE OR REPLACE FUNCTION enforce_different_comment_author()
+RETURNS TRIGGER AS $$
+BEGIN
+    SELECT author_id FROM comment WHERE id = NEW.comment_id;
+
+    IF NEW.liker_id = author_id  THEN
+        RAISE EXCEPTION 'A user cannot like their own comment';
+    END IF;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER before_comment_like_insert
+BEFORE INSERT ON comment_like
+FOR EACH ROW
+EXECUTE FUNCTION enforce_different_comment_author();
+
+-- Indexes
 
 CREATE INDEX notification_receiver_timestamp ON notification USING btree(receiver_id, timestamp DESC);
 
 CREATE INDEX comment_post_index ON comment USING hash(post_id);
 
 CREATE INDEX post_author_creation ON post USING btree(author_id, creation_timestamp DESC);
+
 --CLUSTER post USING idx_post_author_creation;
 -- check if cluster is needed
 -- possibly change user_post to user_follow ??
@@ -398,6 +469,8 @@ BEFORE INSERT OR UPDATE ON post
 FOR EACH ROW
 EXECUTE PROCEDURE post_search_update();
 
+CREATE INDEX post_search_idx ON post USING GiST (tsvectors);
+
 
 ALTER TABLE users
 ADD COLUMN tsvectors TSVECTOR;
@@ -425,6 +498,8 @@ CREATE TRIGGER user_search_update
 BEFORE INSERT OR UPDATE ON users 
 FOR EACH ROW
 EXECUTE PROCEDURE user_search_update();
+
+CREATE INDEX user_search_idx ON users USING GiST (tsvectors);
 
 
 ALTER TABLE groups
@@ -454,6 +529,41 @@ BEFORE INSERT OR UPDATE ON groups
 FOR EACH ROW
 EXECUTE PROCEDURE group_search_update();
 
+CREATE INDEX group_search_idx ON groups USING GIN (tsvectors);
+
+
+-- Transactions
+
+-- Post creation 
+-- BEGIN TRANSACTION;
+-- SET TRANSACTION ISOLATION LEVEL SERIALIZABLE READ WRITE;
+
+-- -- Create post
+-- INSERT INTO post(author_id, title, text, is_announcement, is_public)
+-- VALUES ($author_id, $title, $text, $is_announcement, $is_public);
+
+-- -- Associate tag
+-- INSERT INTO post_tag(post_id, tag_id)
+-- VALUES (curval('post_id_seq'), $tag_id);
+
+-- -- Add attachment
+-- INSERT INTO post_attachment(post_id, url, attachment_type)
+-- VALUES (curval('post_id_seq'), $url, $attachment_type);
+
+-- END TRANSACTION;
+
+
+-- User registration
+-- BEGIN TRANSACTION;
+-- SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
+
+-- INSERT INTO user_stats
+-- VALUES ();
+
+-- INSERT INTO user(user_stats_id, name, email, password, handle, is_public, description, profile_picture_url, banner_image_url)
+-- VALUES (curval('user_stats_id_seq'), $name, $email, $password, $is_public, $description, $profile_picture_url, $banner_image_url);
+
+-- END TRANSACTION;
 
 -- Trigger Definitions
 
