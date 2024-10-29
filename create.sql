@@ -33,6 +33,7 @@ CREATE TABLE user_stats (
     PRIMARY KEY (id)
 );
 
+-- Plural used because "user" is a reserved keyword in PostgreSQL
 CREATE TABLE users (
     id SERIAL,
     user_stats_id INTEGER NOT NULL UNIQUE,
@@ -55,7 +56,7 @@ CREATE TABLE administrator (
     email TEXT NOT NULL UNIQUE,
     password TEXT NOT NULL,
     register_timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (id),
+    PRIMARY KEY (id)
 );
 
 CREATE TABLE language (
@@ -100,7 +101,7 @@ CREATE TABLE post (
     author_id INTEGER NOT NULL,
     title TEXT NOT NULL,
     text TEXT,
-    creation_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    creation_timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     is_announcement BOOLEAN NOT NULL DEFAULT FALSE,
     is_public BOOLEAN NOT NULL,
     PRIMARY KEY (id),
@@ -214,6 +215,7 @@ CREATE TABLE token (
     CONSTRAINT validity_after_creation CHECK (validity_timestamp > creation_timestamp)
 );
 
+-- Plural used because "group" is a reserved keyword in PostgreSQL
 CREATE TABLE groups (
     id SERIAL,
     owner_id INTEGER NOT NULL,
@@ -345,13 +347,17 @@ FOR EACH ROW
 EXECUTE FUNCTION notify_user_on_follow();
 
 
+--CREATE OR REPLACE FUNCTION notify_user_on_post_mention()
+---- RETURNS TRIGGER AS $$
+---- BEGIN
+--   --  INSERT INTO notification ( receiver_id, timestamp, is_read, notification_type,)
 -- Index Creations
 
 CREATE INDEX notification_receiver_timestamp ON notification USING btree(receiver_id, timestamp DESC);
 
-CREATE INDEX comment_post_index ON comment USING btree(post_id, comment_like DESC);
+CREATE INDEX comment_post_index ON comment USING hash(post_id);
 
-CREATE INDEX post_author_creation ON post USING btree(author_id, creation_date DESC);
+CREATE INDEX post_author_creation ON post USING btree(author_id, creation_timestamp DESC);
 --CLUSTER post USING idx_post_author_creation;
 -- check if cluster is needed
 -- possibly change user_post to user_follow ??
@@ -373,27 +379,18 @@ BEGIN
     IF TG_OP = 'INSERT' THEN
         NEW.tsvectors = (
             setweight(to_tsvector('english', NEW.title), 'A') ||
-            -- setweight(to_tsvector('english', (
-            --     SELECT account.name
-            --     FROM account JOIN users ON account.id = users.account_id
-            --     WHERE users.account_id = NEW.author_id
-            -- )), 'A') ||
             setweight(to_tsvector('english', NEW.text), 'B')
             -- TODO: Add tags
         );
     END IF;
-    IF TG_OP = 'UPDATE' AND (NEW.title <> OLD.title OR NEW.text <> OLD.text/*  OR NEW.author_id <> OLD.author_id */) THEN
+    IF TG_OP = 'UPDATE' AND (NEW.title <> OLD.title OR NEW.text <> OLD.text) THEN
         NEW.tsvectors = (
             setweight(to_tsvector('english', NEW.title), 'A') ||
-            -- setweight(to_tsvector('english', (
-            --     SELECT account.name
-            --     FROM account JOIN users ON account.id = users.account_id
-            --     WHERE users.account_id = NEW.author_id
-            -- )), 'A') ||
             setweight(to_tsvector('english', NEW.text), 'B')
         );
     END IF;
-END $$
+END
+$$
 LANGUAGE plpgsql;
 
 CREATE TRIGGER post_search_update
@@ -402,7 +399,7 @@ FOR EACH ROW
 EXECUTE PROCEDURE post_search_update();
 
 
-ALTER TABLE user
+ALTER TABLE users
 ADD COLUMN tsvectors TSVECTOR;
 
 CREATE FUNCTION user_search_update()
@@ -410,24 +407,53 @@ RETURNS TRIGGER AS $$
 BEGIN
     IF TG_OP = 'INSERT' THEN
         NEW.tsvectors = (
-            setweight(to_tsvector('english', (
-                SELECT account.name
-                FROM account
-                WHERE account.id = NEW.account_id
-            )), 'A') ||
+            setweight(to_tsvector('english', NEW.name), 'A') ||
             setweight(to_tsvector('english', NEW.handle), 'A')
         );
     END IF;
-    IF TG_OP = 'UPDATE' AND account.id
-    THEN
+    IF TG_OP = 'UPDATE' AND (NEW.name <> OLD.name OR NEW.handle <> OLD.handle) THEN
         NEW.tsvectors = (
-            setweight(to_tsvector('english', (
-
-            )), 'A');
+            setweight(to_tsvector('english', NEW.name), 'A') ||
+            setweight(to_tsvector('english', NEW.handle), 'A')
         );
     END IF;
-END $$
+END
+$$
 LANGUAGE plpgsql;
+
+CREATE TRIGGER user_search_update
+BEFORE INSERT OR UPDATE ON users 
+FOR EACH ROW
+EXECUTE PROCEDURE user_search_update();
+
+
+ALTER TABLE groups
+ADD COLUMN tsvectors TSVECTOR;
+
+CREATE FUNCTION group_search_update()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF TG_OP = 'INSERT' THEN
+        NEW.tsvectors = (
+            setweight(to_tsvector('english', NEW.name), 'A') ||
+            setweight(to_tsvector('english', NEW.description), 'B')
+        );
+    END IF;
+    IF TG_OP = 'UPDATE' THEN
+        NEW.tsvectors = (
+            setweight(to_tsvector('english', NEW.name), 'A') ||
+            setweight(to_tsvector('english', NEW.description), 'B')            
+        );
+    END IF;
+END
+$$
+LANGUAGE plpgsql;
+
+CREATE TRIGGER group_search_update
+BEFORE INSERT OR UPDATE ON groups
+FOR EACH ROW
+EXECUTE PROCEDURE group_search_update();
+
 
 -- Trigger Definitions
 
