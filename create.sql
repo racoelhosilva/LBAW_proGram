@@ -269,7 +269,7 @@ CREATE TABLE notification (
     receiver_id INTEGER NOT NULL,
     timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     is_read BOOLEAN DEFAULT FALSE,
-    TYPE notification_type NOT NULL,
+    type notification_type NOT NULL,
     follow_id INTEGER,
     post_id INTEGER,
     comment_id INTEGER,
@@ -291,7 +291,7 @@ CREATE TABLE notification (
 CREATE OR REPLACE FUNCTION notify_user_on_comment() 
 RETURNS TRIGGER AS $$
 BEGIN
-    INSERT INTO notification (receiver_id, timestamp, is_read, notification_type, post_id, comment_id) 
+    INSERT INTO notification (receiver_id, timestamp, is_read, type, post_id, comment_id) 
     VALUES (NEW.author_id, CURRENT_TIMESTAMP, FALSE, 'comment', NEW.post_id, NEW.id);
 
     RETURN NEW;
@@ -447,19 +447,94 @@ ADD COLUMN tsvectors TSVECTOR;
 CREATE FUNCTION post_search_update()
 RETURNS TRIGGER AS $$
 BEGIN
-    IF TG_OP = 'INSERT' THEN
+    IF TG_OP = 'INSERT'
+    OR (TG_OP = 'UPDATE' AND (NEW.title <> OLD.title OR NEW.text <> OLD.text))
+    THEN
         NEW.tsvectors = (
-            setweight(to_tsvector('english', NEW.title), 'A') ||
-            setweight(to_tsvector('english', NEW.text), 'B')
-            -- TODO: Add tags
+            setweight(to_tsvector('english', post.title), 'A') ||
+            setweight(to_tsvector('english', (
+                SELECT users.name
+                FROM users
+                WHERE users.id = post.author_id
+            )), 'A') ||
+            setweight(to_tsvector('english', (
+                SELECT users.handle
+                FROM users
+                WHERE users.id = post.author_id
+            )), 'A') ||
+            setweight(to_tsvector('english', coalesce(post.text, '')), 'B') ||
+            setweight(to_tsvector('english', (
+                SELECT coalesce(string_agg(comment.content, ' '), '')
+                FROM comment
+                WHERE comment.post_id = post.id
+            )), 'C')
         );
     END IF;
-    IF TG_OP = 'UPDATE' AND (NEW.title <> OLD.title OR NEW.text <> OLD.text) THEN
-        NEW.tsvectors = (
-            setweight(to_tsvector('english', NEW.title), 'A') ||
-            setweight(to_tsvector('english', NEW.text), 'B')
-        );
+    RETURN NEW;
+END
+$$
+LANGUAGE plpgsql;
+
+CREATE FUNCTION post_comment_search_update()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF TG_OP = 'INSERT'
+    OR (TG_OP = 'UPDATE' AND NEW.content <> OLD.content)
+    OR TG_OP = 'DELETE'
+    THEN
+        UPDATE post
+        SET tsvectors = (
+            setweight(to_tsvector('english', post.title), 'A') ||
+            setweight(to_tsvector('english', (
+                SELECT users.name
+                FROM users
+                WHERE users.id = post.author_id
+            )), 'A') ||
+            setweight(to_tsvector('english', (
+                SELECT users.handle
+                FROM users
+                WHERE users.id = post.author_id
+            )), 'A') ||
+            setweight(to_tsvector('english', coalesce(post.text, '')), 'B') ||
+            setweight(to_tsvector('english', (
+                SELECT coalesce(string_agg(comment.content, ' '), '')
+                FROM comment
+                WHERE comment.post_id = post.id
+            )), 'C'))
+        WHERE post.id = NEW.post_id;
     END IF;
+    RETURN NEW;
+END
+$$
+LANGUAGE plpgsql;
+
+CREATE FUNCTION post_author_search_update()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF TG_OP = 'UPDATE' AND (OLD.name <> NEW.name OR OLD.handle <> NEW.handle)
+    THEN 
+        UPDATE post
+        SET tsvectors = (
+            setweight(to_tsvector('english', post.title), 'A') ||
+            setweight(to_tsvector('english', (
+                SELECT users.name
+                FROM users
+                WHERE users.id = post.author_id
+            )), 'A') ||
+            setweight(to_tsvector('english', (
+                SELECT users.handle
+                FROM users
+                WHERE users.id = post.author_id
+            )), 'A') ||
+            setweight(to_tsvector('english', coalesce(post.text, '')), 'B') ||
+            setweight(to_tsvector('english', (
+                SELECT coalesce(string_agg(comment.content, ' '), '')
+                FROM comment
+                WHERE comment.post_id = post.id
+            )), 'C'))
+        WHERE post.author_id = NEW.id;
+    END IF;
+    RETURN NEW;
 END
 $$
 LANGUAGE plpgsql;
@@ -468,6 +543,16 @@ CREATE TRIGGER post_search_update
 BEFORE INSERT OR UPDATE ON post
 FOR EACH ROW
 EXECUTE PROCEDURE post_search_update();
+
+CREATE TRIGGER post_comment_search_update
+AFTER INSERT OR UPDATE OR DELETE ON comment
+FOR EACH ROW
+EXECUTE PROCEDURE post_comment_search_update();
+
+CREATE TRIGGER post_author_search_update
+AFTER UPDATE ON users
+FOR EACH ROW
+EXECUTE PROCEDURE post_author_search_update();
 
 CREATE INDEX post_search_idx ON post USING GiST (tsvectors);
 
@@ -478,18 +563,15 @@ ADD COLUMN tsvectors TSVECTOR;
 CREATE FUNCTION user_search_update()
 RETURNS TRIGGER AS $$
 BEGIN
-    IF TG_OP = 'INSERT' THEN
+    IF TG_OP = 'INSERT'
+    OR (TG_OP = 'UPDATE' AND (NEW.name <> OLD.name OR NEW.handle <> OLD.handle))
+    THEN
         NEW.tsvectors = (
             setweight(to_tsvector('english', NEW.name), 'A') ||
             setweight(to_tsvector('english', NEW.handle), 'A')
         );
     END IF;
-    IF TG_OP = 'UPDATE' AND (NEW.name <> OLD.name OR NEW.handle <> OLD.handle) THEN
-        NEW.tsvectors = (
-            setweight(to_tsvector('english', NEW.name), 'A') ||
-            setweight(to_tsvector('english', NEW.handle), 'A')
-        );
-    END IF;
+    RETURN NEW;
 END
 $$
 LANGUAGE plpgsql;
@@ -508,18 +590,15 @@ ADD COLUMN tsvectors TSVECTOR;
 CREATE FUNCTION group_search_update()
 RETURNS TRIGGER AS $$
 BEGIN
-    IF TG_OP = 'INSERT' THEN
+    IF TG_OP = 'INSERT'
+    OR (TG_OP = 'UPDATE' AND (NEW.name <> OLD.name OR NEW.description <> OLD.description))
+    THEN
         NEW.tsvectors = (
             setweight(to_tsvector('english', NEW.name), 'A') ||
-            setweight(to_tsvector('english', NEW.description), 'B')
+            setweight(to_tsvector('english', coalesce(NEW.description, '')), 'B')            
         );
     END IF;
-    IF TG_OP = 'UPDATE' THEN
-        NEW.tsvectors = (
-            setweight(to_tsvector('english', NEW.name), 'A') ||
-            setweight(to_tsvector('english', NEW.description), 'B')            
-        );
-    END IF;
+    RETURN NEW;
 END
 $$
 LANGUAGE plpgsql;
@@ -544,11 +623,11 @@ CREATE INDEX group_search_idx ON groups USING GIN (tsvectors);
 
 -- -- Associate tag
 -- INSERT INTO post_tag(post_id, tag_id)
--- VALUES (curval('post_id_seq'), $tag_id);
+-- VALUES (currval('post_id_seq'), $tag_id);
 
 -- -- Add attachment
 -- INSERT INTO post_attachment(post_id, url, attachment_type)
--- VALUES (curval('post_id_seq'), $url, $attachment_type);
+-- VALUES (currval('post_id_seq'), $url, $attachment_type);
 
 -- END TRANSACTION;
 
@@ -557,11 +636,10 @@ CREATE INDEX group_search_idx ON groups USING GIN (tsvectors);
 -- BEGIN TRANSACTION;
 -- SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
 
--- INSERT INTO user_stats
--- VALUES ();
+-- INSERT INTO user_stats DEFAULT VALUES;
 
 -- INSERT INTO user(user_stats_id, name, email, password, handle, is_public, description, profile_picture_url, banner_image_url)
--- VALUES (curval('user_stats_id_seq'), $name, $email, $password, $is_public, $description, $profile_picture_url, $banner_image_url);
+-- VALUES (currval('user_stats_id_seq'), $name, $email, $password, $is_public, $description, $profile_picture_url, $banner_image_url);
 
 -- END TRANSACTION;
 
@@ -591,3 +669,12 @@ CREATE INDEX group_search_idx ON groups USING GIN (tsvectors);
 -- CREATE TRIGGER limit_top_projects BEFORE
 -- INSERT
 --     ON top_project FOR EACH ROW EXECUTE FUNCTION check_top_projects_count();
+
+-- INSERT INTO user_stats DEFAULT VALUES;
+-- INSERT INTO users(user_stats_id, name, email, password, handle, is_public) VALUES (currval('user_stats_id_seq'), 'bruno', 'bruno@gmail.com', 'abc123', 'bruno', TRUE);
+
+-- INSERT INTO post(author_id, title, text, is_public) VALUES (currval('users_id_seq'), 'wow', 'olhem isto', TRUE);
+
+-- INSERT INTO comment(post_id, author_id, content) VALUES (1, currval('users_id_seq'), 'yay');
+
+-- INSERT INTO groups(owner_id, name) VALUES (1, 'group1');
