@@ -1,10 +1,15 @@
--- Initial schema/path setup
+-- * ====================================================
+-- * Schema creation and search path setup
+-- * ====================================================
 
 DROP SCHEMA IF EXISTS lbaw2411 CASCADE;
 CREATE SCHEMA lbaw2411;
 SET search_path TO lbaw2411;
 
--- Type Creations
+
+-- * ====================================================
+-- * Enum and type creation
+-- * ====================================================
 
 CREATE TYPE attachment_type AS ENUM (
     'image',
@@ -26,7 +31,10 @@ CREATE TYPE notification_type AS ENUM (
     'comment_mention'
 );
 
--- Table Creations
+
+-- * ====================================================
+-- * Table creation
+-- * ====================================================
 
 CREATE TABLE user_stats (
     id SERIAL,
@@ -46,6 +54,8 @@ CREATE TABLE users (
     description TEXT,
     profile_picture_url TEXT,
     banner_image_url TEXT,
+    num_followers INTEGER NOT NULL DEFAULT 0,
+    num_following INTEGER NOT NULL DEFAULT 0,
     PRIMARY KEY (id),
     FOREIGN KEY (user_stats_id) REFERENCES user_stats (id) ON UPDATE CASCADE
 );
@@ -104,6 +114,8 @@ CREATE TABLE post (
     creation_timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     is_announcement BOOLEAN NOT NULL DEFAULT FALSE,
     is_public BOOLEAN NOT NULL,
+    likes INTEGER NOT NULL DEFAULT 0,
+    comments INTEGER NOT NULL DEFAULT 0,
     PRIMARY KEY (id),
     FOREIGN KEY (author_id) REFERENCES users (id) ON UPDATE CASCADE
 );
@@ -146,6 +158,7 @@ CREATE TABLE comment (
     post_id INTEGER NOT NULL,
     author_id INTEGER NOT NULL,
     content TEXT NOT NULL,
+    likes INTEGER NOT NULL DEFAULT 0,
     timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id),
     FOREIGN KEY (post_id) REFERENCES post (id) ON UPDATE CASCADE,
@@ -220,6 +233,7 @@ CREATE TABLE groups (
     owner_id INTEGER NOT NULL,
     name TEXT NOT NULL UNIQUE,
     description TEXT,
+    member_count INTEGER NOT NULL DEFAULT 1,
     creation_timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id),
     FOREIGN KEY (owner_id) REFERENCES users (id)
@@ -284,9 +298,14 @@ CREATE TABLE notification (
     FOREIGN KEY (comment_like_id) REFERENCES comment_like (id) ON UPDATE CASCADE
 );
 
--- Triggers
 
---triggers relacionados a notificacao
+-- * ====================================================
+-- * Trigger creation
+-- * ====================================================
+
+-- * ====================================================
+-- * Trigger creation: Notifications
+-- * ====================================================
 
 CREATE OR REPLACE FUNCTION notify_user_on_comment() 
 RETURNS TRIGGER AS $$
@@ -298,11 +317,11 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-
 CREATE TRIGGER after_comment_insert
 AFTER INSERT ON comment
 FOR EACH ROW
 EXECUTE FUNCTION notify_user_on_comment();
+
 
 CREATE OR REPLACE FUNCTION notify_user_on_post_like()
 RETURNS TRIGGER AS $$
@@ -319,6 +338,7 @@ AFTER INSERT ON post_like
 FOR EACH ROW
 EXECUTE FUNCTION notify_user_on_post_like();
 
+
 CREATE OR REPLACE FUNCTION notify_user_on_comment_like()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -333,6 +353,7 @@ CREATE TRIGGER after_comment_like_insert
 AFTER INSERT ON comment_like
 FOR EACH ROW
 EXECUTE FUNCTION notify_user_on_comment_like();
+
 
 CREATE OR REPLACE FUNCTION notify_user_on_follow()
 RETURNS TRIGGER AS $$
@@ -349,7 +370,11 @@ AFTER INSERT ON follow
 FOR EACH ROW
 EXECUTE FUNCTION notify_user_on_follow();
 
---triggers de join requests 
+
+-- * ====================================================
+-- * Trigger creation: Join Requests
+-- * ====================================================
+
 CREATE OR REPLACE FUNCTION handle_group_invitation_acceptance()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -366,6 +391,7 @@ CREATE TRIGGER after_group_invitation_update
 AFTER UPDATE ON group_invitation
 FOR EACH ROW
 EXECUTE FUNCTION handle_group_invitation_acceptance();
+
 
 CREATE OR REPLACE FUNCTION handle_group_join_request_acceptance()
 RETURNS TRIGGER AS $$
@@ -384,7 +410,11 @@ AFTER UPDATE ON group_join_request
 FOR EACH ROW
 EXECUTE FUNCTION handle_group_join_request_acceptance();
 
---enforcements
+
+-- * ====================================================
+-- * Trigger creation: Enforcements
+-- * ====================================================
+
 CREATE OR REPLACE FUNCTION enforce_different_post_author()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -402,6 +432,7 @@ CREATE TRIGGER before_post_like_insert
 BEFORE INSERT ON post_like
 FOR EACH ROW
 EXECUTE FUNCTION enforce_different_post_author();
+
 
 CREATE OR REPLACE FUNCTION enforce_different_comment_author()
 RETURNS TRIGGER AS $$
@@ -421,7 +452,135 @@ BEFORE INSERT ON comment_like
 FOR EACH ROW
 EXECUTE FUNCTION enforce_different_comment_author();
 
--- Indexes
+
+-- * ====================================================
+-- * Trigger creation: Derived Attributes
+-- * ====================================================
+
+CREATE OR REPLACE FUNCTION update_post_likes()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF TG_OP = "INSERT" THEN
+        UPDATE post
+        SET likes = (SELECT count(*) FROM post_like WHERE post_id = NEW.post_id)
+        WHERE id = NEW.post_id;
+    ELSIF TG_OP = "DELETE" THEN
+        UPDATE post
+        SET likes = (SELECT count(*) FROM post_like WHERE post_id = OLD.post_id)
+        WHERE id = OLD.post_id;
+    END IF;
+    
+    RETURN NULL; 
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER update_post_likes
+AFTER INSERT OR DELETE ON post_like
+FOR EACH ROW
+EXECUTE FUNCTION update_post_likes();
+
+CREATE OR REPLACE FUNCTION update_comment_likes()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF TG_OP = "INSERT" THEN
+        UPDATE comment
+        SET likes = (SELECT count(*) FROM comment_like where comment_id = NEW.comment_id)
+        WHERE id = NEW.comment_id;
+    ELSIF TG_OP = "DELETE" THEN
+        UPDATE comment
+        SET likes = (SELECT count(*) FROM comment_like where comment_id = OLD.comment_id)
+        WHERE id = OLD.comment_id;
+    END IF;    
+    
+    RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER update_comment_likes
+AFTER INSERT OR DELETE ON comment_like
+FOR EACH ROW
+EXECUTE FUNCTION update_comment_likes();
+
+CREATE OR REPLACE function update_follow_counts()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF TG_OP = "INSERT" THEN    
+        UPDATE users
+        SET num_followers = (SELECT count(*) FROM follow WHERE followed_id = id)
+        WHERE id = NEW.followed_id;
+
+        UPDATE users
+        SET num_following = (SELECT count(*) FROM follow WHERE follower_id = id)
+        WHERE id = NEW.follower_id;
+
+    ELSIF TG_OP = "DELETE" THEN
+        UPDATE users
+        SET num_followers = (SELECT count(*) FROM follow WHERE followed_id = id)
+        WHERE id = OLD.followed_id;
+
+        UPDATE users
+        SET num_following = (SELECT count(*) FROM follow WHERE follower_id = id)
+        WHERE id = OLD.follower_id;
+    END IF;    
+
+    RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER update_follow_counts
+BEFORE INSERT OR DELETE ON follow
+FOR EACH ROW
+EXECUTE FUNCTION update_follow_counts();
+
+
+CREATE OR REPLACE FUNCTION update_comment_count()
+RETURNS TRIGGER AS $$ 
+BEGIN 
+    IF TG_OP = 'INSERT' THEN 
+        UPDATE posts
+        SET comments = (SELECT COUNT(*) FROM comment WHERE post_id = id)
+        WHERE id = NEW.post_id;
+    ELSIF TG_OP = 'DELETE' THEN 
+        UPDATE posts
+        SET comments = (SELECT COUNT(*) FROM comment WHERE post_id = id)
+        WHERE id = OLD.post_id;
+    END IF;
+    
+    RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER update_comment_count
+AFTER INSERT OR DELETE ON comment
+FOR EACH ROW
+EXECUTE FUNCTION update_comment_count();
+
+CREATE OR REPLACE FUNCTION update_member_count()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF TG_OP = 'INSERT' THEN
+        UPDATE groups 
+        SET member_count = ( SELECT COUNT (*) from group_member where group_id = id) + 1
+        WHERE id = NEW.group_id;
+    ELSIF TG_OP = 'DELETE' THEN 
+        UPDATE groups 
+        SET member_count = ( SELECT COUNT (*) from group_member where group_id = id) + 1
+        WHERE id = OLD.group_id;
+    END IF;
+    
+    RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER update_member_count
+AFTER INSERT OR DELETE ON comment
+FOR EACH ROW
+EXECUTE FUNCTION update_member_count();
+
+
+-- * ====================================================
+-- * Index Creation
+-- * ====================================================
 
 CREATE INDEX notification_receiver_timestamp ON notification USING btree(receiver_id, timestamp DESC);
 
@@ -439,7 +598,9 @@ CREATE INDEX idx_post_like_post ON post_like(post_id);
 CREATE INDEX idx_follow_followed_timestamp ON follow(followed_id, timestamp DESC);
 */
 
--- Search Indexes
+-- * ====================================================
+-- * Search Indexes
+-- * ====================================================
 
 ALTER TABLE post
 ADD COLUMN tsvectors TSVECTOR;
@@ -475,6 +636,12 @@ END
 $$
 LANGUAGE plpgsql;
 
+CREATE TRIGGER post_search_update
+BEFORE INSERT OR UPDATE ON post
+FOR EACH ROW
+EXECUTE PROCEDURE post_search_update();
+
+
 CREATE FUNCTION post_comment_search_update()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -508,6 +675,12 @@ END
 $$
 LANGUAGE plpgsql;
 
+CREATE TRIGGER post_comment_search_update
+AFTER INSERT OR UPDATE OR DELETE ON comment
+FOR EACH ROW
+EXECUTE PROCEDURE post_comment_search_update();
+
+
 CREATE FUNCTION post_author_search_update()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -539,16 +712,6 @@ END
 $$
 LANGUAGE plpgsql;
 
-CREATE TRIGGER post_search_update
-BEFORE INSERT OR UPDATE ON post
-FOR EACH ROW
-EXECUTE PROCEDURE post_search_update();
-
-CREATE TRIGGER post_comment_search_update
-AFTER INSERT OR UPDATE OR DELETE ON comment
-FOR EACH ROW
-EXECUTE PROCEDURE post_comment_search_update();
-
 CREATE TRIGGER post_author_search_update
 AFTER UPDATE ON users
 FOR EACH ROW
@@ -564,11 +727,12 @@ CREATE FUNCTION user_search_update()
 RETURNS TRIGGER AS $$
 BEGIN
     IF TG_OP = 'INSERT'
-    OR (TG_OP = 'UPDATE' AND (NEW.name <> OLD.name OR NEW.handle <> OLD.handle))
+    OR (TG_OP = 'UPDATE' AND (NEW.name <> OLD.name OR NEW.handle <> OLD.handle OR NEW.description <> OLD.description))
     THEN
         NEW.tsvectors = (
             setweight(to_tsvector('english', NEW.name), 'A') ||
-            setweight(to_tsvector('english', NEW.handle), 'A')
+            setweight(to_tsvector('english', NEW.handle), 'A') ||
+            setweight(to_tsvector('english', coalesce(NEW.description, '')), 'B')
         );
     END IF;
     RETURN NEW;
@@ -595,7 +759,7 @@ BEGIN
     THEN
         NEW.tsvectors = (
             setweight(to_tsvector('english', NEW.name), 'A') ||
-            setweight(to_tsvector('english', coalesce(NEW.description, '')), 'B')            
+            setweight(to_tsvector('english', coalesce(NEW.description, 'batata')), 'B')            
         );
     END IF;
     RETURN NEW;
@@ -611,7 +775,9 @@ EXECUTE PROCEDURE group_search_update();
 CREATE INDEX group_search_idx ON groups USING GIN (tsvectors);
 
 
--- Transactions
+-- * ====================================================
+-- * Transactions
+-- * ====================================================
 
 -- Post creation 
 -- BEGIN TRANSACTION;
