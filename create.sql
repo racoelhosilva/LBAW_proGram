@@ -251,7 +251,6 @@ CREATE TABLE group_member (
     FOREIGN KEY (user_id) REFERENCES users (id),
     FOREIGN KEY (group_id) REFERENCES groups (id)
 );
--- TODO: Add a trigger to prevent 
 
 CREATE TABLE group_post (
     post_id INTEGER,
@@ -377,6 +376,25 @@ EXECUTE FUNCTION notify_user_on_follow();
 
 
 -- * ====================================================
+-- * Trigger creation: Group Owner
+-- * ====================================================
+
+CREATE OR REPLACE FUNCTION set_group_owner_as_member()
+RETURNS TRIGGER AS $$
+BEGIN
+    INSERT INTO group_member (user_id, group_id) 
+    VALUES (NEW.owner_id, NEW.id);
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER set_group_owner_as_member
+AFTER INSERT ON groups
+FOR EACH ROW
+EXECUTE FUNCTION set_group_owner_as_member();
+
+-- * ====================================================
 -- * Trigger creation: Join Requests
 -- * ====================================================
 
@@ -454,11 +472,27 @@ FOR EACH ROW
 EXECUTE FUNCTION enforce_different_comment_author();
 
 
+CREATE OR REPLACE FUNCTION enforce_group_owner_is_member()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF NEW.owner_id NOT IN (SELECT user_id FROM group_member WHERE group_id = NEW.id) THEN
+        RAISE EXCEPTION 'Group owner must be a member of the group';
+    END IF;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER enforce_group_owner_is_member
+BEFORE UPDATE ON groups
+FOR EACH ROW
+EXECUTE FUNCTION enforce_group_owner_is_member();
+
 -- * ====================================================
 -- * Trigger creation: Derived Attributes
 -- * ====================================================
 
-CREATE OR REPLACE FUNCTION update_post_likes()
+CREATE FUNCTION update_post_likes()
 RETURNS TRIGGER AS $$
 BEGIN
     IF TG_OP = 'INSERT' THEN
@@ -483,7 +517,7 @@ AFTER INSERT OR DELETE ON post_like
 FOR EACH ROW
 EXECUTE FUNCTION update_post_likes();
 
-CREATE OR REPLACE FUNCTION update_comment_likes()
+CREATE FUNCTION update_comment_likes()
 RETURNS TRIGGER AS $$
 BEGIN
     IF TG_OP = 'INSERT' THEN
@@ -508,7 +542,7 @@ AFTER INSERT OR DELETE ON comment_like
 FOR EACH ROW
 EXECUTE FUNCTION update_comment_likes();
 
-CREATE OR REPLACE function update_follow_counts()
+CREATE function update_follow_counts()
 RETURNS TRIGGER AS $$
 BEGIN
     IF TG_OP = 'INSERT' THEN    
@@ -542,7 +576,7 @@ FOR EACH ROW
 EXECUTE FUNCTION update_follow_counts();
 
 
-CREATE OR REPLACE FUNCTION update_comment_count()
+CREATE FUNCTION update_comment_count()
 RETURNS TRIGGER AS $$ 
 BEGIN 
     IF TG_OP = 'INSERT' THEN 
@@ -567,19 +601,19 @@ AFTER INSERT OR DELETE ON comment
 FOR EACH ROW
 EXECUTE FUNCTION update_comment_count();
 
-CREATE OR REPLACE FUNCTION update_member_count()
+CREATE FUNCTION update_member_count()
 RETURNS TRIGGER AS $$
 BEGIN
     IF TG_OP = 'INSERT' THEN
         UPDATE groups 
-        SET member_count = ( SELECT COUNT (*) from group_member where group_id = id) + 1
+        SET member_count = ( SELECT COUNT (*) from group_member where group_id = id)
         WHERE id = NEW.group_id;
 
         RETURN NEW;
 
     ELSIF TG_OP = 'DELETE' THEN 
         UPDATE groups 
-        SET member_count = ( SELECT COUNT (*) from group_member where group_id = id) + 1
+        SET member_count = ( SELECT COUNT (*) from group_member where group_id = id)
         WHERE id = OLD.group_id;
 
         RETURN OLD;
