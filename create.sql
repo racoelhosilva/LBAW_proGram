@@ -16,7 +16,7 @@ CREATE TYPE attachment_type AS ENUM (
     'video'
 );
 
-CREATE TYPE status AS ENUM (
+CREATE TYPE status_values AS ENUM (
     'pending',
     'accepted',
     'rejected'
@@ -38,6 +38,9 @@ CREATE TYPE notification_type AS ENUM (
 
 CREATE TABLE user_stats (
     id SERIAL,
+    github_url TEXT,
+    gitlab_url TEXT,
+    linkedin_url TEXT,
     PRIMARY KEY (id)
 );
 
@@ -99,9 +102,9 @@ CREATE TABLE user_stats_technology (
 
 CREATE TABLE top_project (
     id SERIAL,
+    user_stats_id INTEGER NOT NULL,
     name TEXT NOT NULL,
     url TEXT NOT NULL,
-    user_stats_id INTEGER NOT NULL,
     PRIMARY KEY (id),
     FOREIGN KEY (user_stats_id) REFERENCES user_stats (id) ON UPDATE CASCADE
 );
@@ -124,7 +127,7 @@ CREATE TABLE post_like (
     id SERIAL,
     liker_id INTEGER NOT NULL,
     post_id INTEGER NOT NULL,
-    timestamp TIMESTAMP NOT NULL,
+    timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id),
     FOREIGN KEY (liker_id) REFERENCES users (id) ON UPDATE CASCADE,
     FOREIGN KEY (post_id) REFERENCES post (id) ON UPDATE CASCADE
@@ -134,7 +137,7 @@ CREATE TABLE post_attachment (
     id SERIAL,
     post_id INTEGER NOT NULL,
     url TEXT NOT NULL,
-    TYPE attachment_type NOT NULL,
+    type attachment_type NOT NULL,
     PRIMARY KEY (id),
     FOREIGN KEY (post_id) REFERENCES post (id) ON UPDATE CASCADE
 );
@@ -181,22 +184,22 @@ CREATE TABLE follow (
     followed_id INTEGER NOT NULL,
     timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id),
-    UNIQUE (followed_id, follower_id),
+    UNIQUE (follower_id, followed_id),
     FOREIGN KEY (follower_id) REFERENCES users (id) ON UPDATE CASCADE,
     FOREIGN KEY (followed_id) REFERENCES users (id) ON UPDATE CASCADE,
-    CONSTRAINT not_self_follow CHECK (followed_id <> followed_id)
+    CONSTRAINT not_self_follow CHECK (follower_id <> followed_id)
 );
 
 CREATE TABLE follow_request (
     id SERIAL,
     follower_id INTEGER NOT NULL,
     followed_id INTEGER NOT NULL,
-    creation_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    TYPE status NOT NULL DEFAULT 'pending',
+    creation_timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    status status_values NOT NULL DEFAULT 'pending',
     PRIMARY KEY (id),
     FOREIGN KEY (follower_id) REFERENCES users (id) ON UPDATE CASCADE,
     FOREIGN KEY (followed_id) REFERENCES users (id) ON UPDATE CASCADE,
-    CONSTRAINT not_self_follow CHECK (followed_id <> followed_id)
+    CONSTRAINT not_self_follow CHECK (follower_id <> followed_id)
 );
 
 CREATE TABLE ban (
@@ -205,15 +208,15 @@ CREATE TABLE ban (
     administrator_id INTEGER NOT NULL,
     start TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     reason TEXT NOT NULL,
-    duration INTEGER NOT NULL,
+    duration INTERVAL NOT NULL,
     PRIMARY KEY (id),
     FOREIGN KEY (user_id) REFERENCES users (id) ON UPDATE CASCADE,
-    FOREIGN KEY (administrator_id) REFERENCES administrator (id) ON UPDATE CASCADE,
-    CONSTRAINT non_negative_duration CHECK (duration >= 0)
+    FOREIGN KEY (administrator_id) REFERENCES administrator (id) ON UPDATE CASCADE
 );
 
 CREATE TABLE token (
     id SERIAL,
+    value TEXT NOT NULL,
     user_id INTEGER,
     administrator_id INTEGER,
     creation_timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -221,8 +224,8 @@ CREATE TABLE token (
     PRIMARY KEY (id),
     UNIQUE (user_id),
     UNIQUE (administrator_id),
-    FOREIGN KEY (id) REFERENCES users (id) ON UPDATE CASCADE,
-    FOREIGN KEY (id) REFERENCES administrator (id) ON UPDATE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users (id) ON UPDATE CASCADE,
+    FOREIGN KEY (administrator_id) REFERENCES administrator (id) ON UPDATE CASCADE,
     CONSTRAINT account_fk_not_null CHECK ((user_id IS NULL) <> (administrator_id IS NULL)),
     CONSTRAINT validity_after_creation CHECK (validity_timestamp > creation_timestamp)
 );
@@ -233,8 +236,9 @@ CREATE TABLE groups (
     owner_id INTEGER NOT NULL,
     name TEXT NOT NULL UNIQUE,
     description TEXT,
-    member_count INTEGER NOT NULL DEFAULT 1,
     creation_timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    is_public BOOLEAN NOT NULL,
+    member_count INTEGER NOT NULL DEFAULT 1,
     PRIMARY KEY (id),
     FOREIGN KEY (owner_id) REFERENCES users (id)
 );
@@ -247,6 +251,7 @@ CREATE TABLE group_member (
     FOREIGN KEY (user_id) REFERENCES users (id),
     FOREIGN KEY (group_id) REFERENCES groups (id)
 );
+-- TODO: Add a trigger to prevent 
 
 CREATE TABLE group_post (
     post_id INTEGER,
@@ -261,7 +266,7 @@ CREATE TABLE group_join_request (
     group_id INTEGER NOT NULL,
     requester_id INTEGER NOT NULL,
     creation_timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    TYPE status NOT NULL DEFAULT 'pending',
+    status status_values NOT NULL DEFAULT 'pending',
     PRIMARY KEY (id),
     FOREIGN KEY (group_id) REFERENCES groups (id) ON UPDATE CASCADE,
     FOREIGN KEY (requester_id) REFERENCES users (id) ON UPDATE CASCADE
@@ -272,7 +277,7 @@ CREATE TABLE group_invitation (
     group_id INTEGER NOT NULL,
     invitee_id INTEGER NOT NULL,
     creation_timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    TYPE status NOT NULL DEFAULT 'pending',
+    status status_values NOT NULL DEFAULT 'pending',
     PRIMARY KEY (id),
     FOREIGN KEY (group_id) REFERENCES groups (id) ON UPDATE CASCADE,
     FOREIGN KEY (invitee_id) REFERENCES users (id) ON UPDATE CASCADE
@@ -326,7 +331,7 @@ EXECUTE FUNCTION notify_user_on_comment();
 CREATE OR REPLACE FUNCTION notify_user_on_post_like()
 RETURNS TRIGGER AS $$
 BEGIN
-    INSERT INTO notification (receiver_id, timestamp, is_read, notification_type, post_id, post_like_id) 
+    INSERT INTO notification (receiver_id, timestamp, is_read, type, post_id, post_like_id) 
     VALUES ((SELECT author_id FROM post WHERE id = NEW.post_id), CURRENT_TIMESTAMP, FALSE, 'post_like', NEW.post_id, NEW.id);
 
     RETURN NEW;
@@ -342,7 +347,7 @@ EXECUTE FUNCTION notify_user_on_post_like();
 CREATE OR REPLACE FUNCTION notify_user_on_comment_like()
 RETURNS TRIGGER AS $$
 BEGIN
-    INSERT INTO notification (receiver_id, timestamp, is_read, notification_type, comment_id, comment_like_id) 
+    INSERT INTO notification (receiver_id, timestamp, is_read, type, comment_id, comment_like_id) 
     VALUES ((SELECT author_id FROM comment WHERE id = NEW.comment_id), CURRENT_TIMESTAMP, FALSE, 'comment_like', NEW.comment_id, NEW.id);
 
     RETURN NEW;
@@ -358,7 +363,7 @@ EXECUTE FUNCTION notify_user_on_comment_like();
 CREATE OR REPLACE FUNCTION notify_user_on_follow()
 RETURNS TRIGGER AS $$
 BEGIN
-    INSERT INTO notification (receiver_id, timestamp, is_read, notification_type, follow_id) 
+    INSERT INTO notification (receiver_id, timestamp, is_read, type, follow_id) 
     VALUES (NEW.followed_id, CURRENT_TIMESTAMP, FALSE, 'follow', NEW.id);
 
     RETURN NEW;
@@ -418,9 +423,7 @@ EXECUTE FUNCTION handle_group_join_request_acceptance();
 CREATE OR REPLACE FUNCTION enforce_different_post_author()
 RETURNS TRIGGER AS $$
 BEGIN
-    SELECT author_id FROM post WHERE id = NEW.post_id;
-
-    IF NEW.liker_id = author_id  THEN
+    IF NEW.liker_id = (SELECT author_id FROM post WHERE id = NEW.post_id)  THEN
         RAISE EXCEPTION 'A user cannot like their own post';
     END IF;
 
@@ -437,9 +440,7 @@ EXECUTE FUNCTION enforce_different_post_author();
 CREATE OR REPLACE FUNCTION enforce_different_comment_author()
 RETURNS TRIGGER AS $$
 BEGIN
-    SELECT author_id FROM comment WHERE id = NEW.comment_id;
-
-    IF NEW.liker_id = author_id  THEN
+    IF NEW.liker_id = (SELECT author_id FROM comment WHERE id = NEW.comment_id) THEN
         RAISE EXCEPTION 'A user cannot like their own comment';
     END IF;
 
@@ -460,17 +461,20 @@ EXECUTE FUNCTION enforce_different_comment_author();
 CREATE OR REPLACE FUNCTION update_post_likes()
 RETURNS TRIGGER AS $$
 BEGIN
-    IF TG_OP = "INSERT" THEN
+    IF TG_OP = 'INSERT' THEN
         UPDATE post
         SET likes = (SELECT count(*) FROM post_like WHERE post_id = NEW.post_id)
         WHERE id = NEW.post_id;
-    ELSIF TG_OP = "DELETE" THEN
+
+        RETURN NEW;
+
+    ELSIF TG_OP = 'DELETE' THEN
         UPDATE post
         SET likes = (SELECT count(*) FROM post_like WHERE post_id = OLD.post_id)
         WHERE id = OLD.post_id;
+
+        RETURN OLD;
     END IF;
-    
-    RETURN NULL; 
 END;
 $$ LANGUAGE plpgsql;
 
@@ -482,17 +486,20 @@ EXECUTE FUNCTION update_post_likes();
 CREATE OR REPLACE FUNCTION update_comment_likes()
 RETURNS TRIGGER AS $$
 BEGIN
-    IF TG_OP = "INSERT" THEN
+    IF TG_OP = 'INSERT' THEN
         UPDATE comment
         SET likes = (SELECT count(*) FROM comment_like where comment_id = NEW.comment_id)
         WHERE id = NEW.comment_id;
-    ELSIF TG_OP = "DELETE" THEN
+
+        RETURN NEW;
+
+    ELSIF TG_OP = 'DELETE' THEN
         UPDATE comment
         SET likes = (SELECT count(*) FROM comment_like where comment_id = OLD.comment_id)
         WHERE id = OLD.comment_id;
-    END IF;    
-    
-    RETURN NULL;
+
+        RETURN OLD;
+    END IF;
 END;
 $$ LANGUAGE plpgsql;
 
@@ -504,26 +511,28 @@ EXECUTE FUNCTION update_comment_likes();
 CREATE OR REPLACE function update_follow_counts()
 RETURNS TRIGGER AS $$
 BEGIN
-    IF TG_OP = "INSERT" THEN    
+    IF TG_OP = 'INSERT' THEN    
         UPDATE users
-        SET num_followers = (SELECT count(*) FROM follow WHERE followed_id = id)
-        WHERE id = NEW.followed_id;
+        SET num_followers = (SELECT count(*) FROM follow WHERE followed_id = users.id)
+        WHERE users.id = NEW.followed_id;
 
         UPDATE users
-        SET num_following = (SELECT count(*) FROM follow WHERE follower_id = id)
-        WHERE id = NEW.follower_id;
+        SET num_following = (SELECT count(*) FROM follow WHERE follower_id = users.id)
+        WHERE users.id = NEW.follower_id;
 
-    ELSIF TG_OP = "DELETE" THEN
+        RETURN NEW;
+
+    ELSIF TG_OP = 'DELETE' THEN
         UPDATE users
-        SET num_followers = (SELECT count(*) FROM follow WHERE followed_id = id)
-        WHERE id = OLD.followed_id;
+        SET num_followers = (SELECT count(*) FROM follow WHERE followed_id = users.id)
+        WHERE users.id = OLD.followed_id;
 
         UPDATE users
-        SET num_following = (SELECT count(*) FROM follow WHERE follower_id = id)
-        WHERE id = OLD.follower_id;
+        SET num_following = (SELECT count(*) FROM follow WHERE follower_id = users.id)
+        WHERE users.id = OLD.follower_id;
+
+        RETURN OLD;
     END IF;    
-
-    RETURN NULL;
 END;
 $$ LANGUAGE plpgsql;
 
@@ -537,16 +546,19 @@ CREATE OR REPLACE FUNCTION update_comment_count()
 RETURNS TRIGGER AS $$ 
 BEGIN 
     IF TG_OP = 'INSERT' THEN 
-        UPDATE posts
+        UPDATE post
         SET comments = (SELECT COUNT(*) FROM comment WHERE post_id = id)
         WHERE id = NEW.post_id;
+
+        RETURN NEW;
+
     ELSIF TG_OP = 'DELETE' THEN 
-        UPDATE posts
+        UPDATE post
         SET comments = (SELECT COUNT(*) FROM comment WHERE post_id = id)
         WHERE id = OLD.post_id;
+
+        RETURN OLD;
     END IF;
-    
-    RETURN NULL;
 END;
 $$ LANGUAGE plpgsql;
 
@@ -562,10 +574,15 @@ BEGIN
         UPDATE groups 
         SET member_count = ( SELECT COUNT (*) from group_member where group_id = id) + 1
         WHERE id = NEW.group_id;
+
+        RETURN NEW;
+
     ELSIF TG_OP = 'DELETE' THEN 
         UPDATE groups 
         SET member_count = ( SELECT COUNT (*) from group_member where group_id = id) + 1
         WHERE id = OLD.group_id;
+
+        RETURN OLD;
     END IF;
     
     RETURN NULL;
@@ -573,7 +590,7 @@ END;
 $$ LANGUAGE plpgsql;
 
 CREATE TRIGGER update_member_count
-AFTER INSERT OR DELETE ON comment
+AFTER INSERT OR DELETE ON group_member
 FOR EACH ROW
 EXECUTE FUNCTION update_member_count();
 
@@ -612,22 +629,22 @@ BEGIN
     OR (TG_OP = 'UPDATE' AND (NEW.title <> OLD.title OR NEW.text <> OLD.text))
     THEN
         NEW.tsvectors = (
-            setweight(to_tsvector('english', post.title), 'A') ||
+            setweight(to_tsvector('english', NEW.title), 'A') ||
             setweight(to_tsvector('english', (
                 SELECT users.name
                 FROM users
-                WHERE users.id = post.author_id
+                WHERE users.id = NEW.author_id
             )), 'A') ||
             setweight(to_tsvector('english', (
                 SELECT users.handle
                 FROM users
-                WHERE users.id = post.author_id
+                WHERE users.id = NEW.author_id
             )), 'A') ||
-            setweight(to_tsvector('english', coalesce(post.text, '')), 'B') ||
+            setweight(to_tsvector('english', coalesce(NEW.text, '')), 'B') ||
             setweight(to_tsvector('english', (
                 SELECT coalesce(string_agg(comment.content, ' '), '')
                 FROM comment
-                WHERE comment.post_id = post.id
+                WHERE comment.post_id = NEW.id
             )), 'C')
         );
     END IF;
@@ -645,10 +662,33 @@ EXECUTE PROCEDURE post_search_update();
 CREATE FUNCTION post_comment_search_update()
 RETURNS TRIGGER AS $$
 BEGIN
-    IF TG_OP = 'INSERT'
-    OR (TG_OP = 'UPDATE' AND NEW.content <> OLD.content)
-    OR TG_OP = 'DELETE'
-    THEN
+    IF TG_OP = 'INSERT' OR TG_OP = 'UPDATE' THEN
+        IF TG_OP = 'UPDATE' AND NEW.content <> OLD.content THEN
+            UPDATE post
+            SET tsvectors = (
+                setweight(to_tsvector('english', post.title), 'A') ||
+                setweight(to_tsvector('english', (
+                    SELECT users.name
+                    FROM users
+                    WHERE users.id = post.author_id
+                )), 'A') ||
+                setweight(to_tsvector('english', (
+                    SELECT users.handle
+                    FROM users
+                    WHERE users.id = post.author_id
+                )), 'A') ||
+                setweight(to_tsvector('english', coalesce(post.text, '')), 'B') ||
+                setweight(to_tsvector('english', (
+                    SELECT coalesce(string_agg(comment.content, ' '), '')
+                    FROM comment
+                    WHERE comment.post_id = post.id
+                )), 'C'))
+            WHERE post.id = NEW.post_id;
+        END IF;
+
+        RETURN NEW;
+
+    ELSIF TG_OP = 'DELETE' THEN
         UPDATE post
         SET tsvectors = (
             setweight(to_tsvector('english', post.title), 'A') ||
@@ -668,9 +708,10 @@ BEGIN
                 FROM comment
                 WHERE comment.post_id = post.id
             )), 'C'))
-        WHERE post.id = NEW.post_id;
+        WHERE post.id = OLD.post_id;
+
+        RETURN OLD;
     END IF;
-    RETURN NEW;
 END
 $$
 LANGUAGE plpgsql;
