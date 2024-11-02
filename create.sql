@@ -851,23 +851,27 @@ EXECUTE FUNCTION update_member_count();
 -- SET TRANSACTION ISOLATION LEVEL SERIALIZABLE READ WRITE;
 
 -- -- Create post
--- INSERT INTO post(author_id, title, text, is_announcement, is_public)
+-- INSERT INTO post (author_id, title, text, is_announcement, is_public)
 -- VALUES ($author_id, $title, $text, $is_announcement, $is_public);
 
 -- -- Associate tag
--- INSERT INTO post_tag(post_id, tag_id)
+-- INSERT INTO post_tag (post_id, tag_id)
 -- VALUES (currval('post_id_seq'), $tag_id);
 
 -- -- Add attachment
--- INSERT INTO post_attachment(post_id, url, attachment_type)
--- VALUES (currval('post_id_seq'), $url, $attachment_type);
+-- INSERT INTO post_attachment (post_id, url, type)
+-- VALUES (currval('post_id_seq'), $attachment_url, $attachment_type);
 
 -- END TRANSACTION;
 
 -- User registration
 -- BEGIN TRANSACTION;
 -- SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
---     INSERT INTO user_stats DEFAULT VALUES;
---     INSERT INTO user(user_stats_id, name, email, password, handle, is_public, description, profile_picture_url, banner_image_url)
---     VALUES (currval('user_stats_id_seq'), $name, $email, $password, $is_public, $description, $profile_picture_url, $banner_image_url);
+
+-- INSERT INTO user_stats (github_url, gitlab_url, linkedin_url)
+-- VALUES ($github_url, $gitlab_url, $linkedin_url);
+
+-- INSERT INTO users (user_stats_id, name, email, password, handle, is_public, description, profile_picture_url, banner_image_url)
+-- VALUES (currval('user_stats_id_seq'), $name, $email, $password, $is_public, $description, $profile_picture_url, $banner_image_url);
+
 -- END TRANSACTION;
