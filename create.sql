@@ -209,6 +209,7 @@ CREATE TABLE ban (
     start TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     reason TEXT NOT NULL,
     duration INTERVAL NOT NULL,
+    is_active BOOLEAN NOT NULL DEFAULT TRUE,
     PRIMARY KEY (id),
     FOREIGN KEY (user_id) REFERENCES users (id) ON UPDATE CASCADE,
     FOREIGN KEY (administrator_id) REFERENCES administrator (id) ON UPDATE CASCADE
@@ -259,6 +260,7 @@ CREATE TABLE group_post (
     FOREIGN KEY (post_id) REFERENCES post (id) ON UPDATE CASCADE,
     FOREIGN KEY (group_id) REFERENCES groups (id) ON UPDATE CASCADE
 );
+-- TODO: Check if post author is a member of the group
 
 CREATE TABLE group_join_request (
     id SERIAL,
