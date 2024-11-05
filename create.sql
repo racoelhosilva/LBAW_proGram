@@ -715,6 +715,23 @@ BEFORE INSERT OR UPDATE ON group_post
 FOR EACH ROW
 EXECUTE FUNCTION enforce_group_post_author_is_member();
 
+
+CREATE FUNCTION enforce_max_top_projects()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF (SELECT COUNT(*) FROM top_project WHERE user_stats_id = NEW.user_stats_id) >= 10 THEN
+        RAISE EXCEPTION 'User cannot have more than 10 top projects';
+    END IF;
+
+    RETURN NEW;
+END;
+
+CREATE TRIGGER enforce_max_top_projects
+BEFORE INSERT ON top_project
+FOR EACH ROW
+EXECUTE FUNCTION enforce_max_top_projects();
+
+
 -- * ====================================================
 -- * Trigger creation: Derived Attributes
 -- * ====================================================
