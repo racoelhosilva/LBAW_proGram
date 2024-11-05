@@ -301,7 +301,15 @@ CREATE TABLE notification (
     FOREIGN KEY (post_id) REFERENCES post (id) ON UPDATE CASCADE,
     FOREIGN KEY (comment_id) REFERENCES comment (id) ON UPDATE CASCADE,
     FOREIGN KEY (post_like_id) REFERENCES post_like (id) ON UPDATE CASCADE,
-    FOREIGN KEY (comment_like_id) REFERENCES comment_like (id) ON UPDATE CASCADE
+    FOREIGN KEY (comment_like_id) REFERENCES comment_like (id) ON UPDATE CASCADE,
+    CONSTRAINT notification_type_fk CHECK (
+        (type = 'follow' AND follow_id IS NOT NULL AND post_id IS NULL AND comment_id IS NULL AND post_like_id IS NULL AND comment_like_id IS NULL)
+        OR (type = 'comment' AND follow_id IS NULL AND post_id IS NOT NULL AND comment_id IS NOT NULL AND post_like_id IS NULL AND comment_like_id IS NULL)
+        OR (type = 'post_like' AND follow_id IS NULL AND post_id IS NULL AND comment_id IS NULL AND post_like_id IS NOT NULL AND comment_like_id IS NULL)
+        OR (type = 'comment_like' AND follow_id IS NULL AND post_id IS NULL AND comment_id IS NULL AND post_like_id IS NULL AND comment_like_id IS NOT NULL)
+        OR (type = 'post_mention' AND follow_id IS NULL AND post_id IS NOT NULL AND comment_id IS NULL AND post_like_id IS NULL AND comment_like_id IS NULL)
+        OR (type = 'comment_mention' AND follow_id IS NULL AND post_id IS NULL AND comment_id IS NOT NULL AND post_like_id IS NULL AND comment_like_id IS NULL)
+    )
 );
 
 
