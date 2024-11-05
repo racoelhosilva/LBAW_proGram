@@ -303,12 +303,10 @@ CREATE TABLE notification (
     FOREIGN KEY (post_like_id) REFERENCES post_like (id) ON UPDATE CASCADE,
     FOREIGN KEY (comment_like_id) REFERENCES comment_like (id) ON UPDATE CASCADE,
     CONSTRAINT notification_type_fk CHECK (
-        (type = 'follow' AND follow_id IS NOT NULL AND post_id IS NULL AND comment_id IS NULL AND post_like_id IS NULL AND comment_like_id IS NULL)
-        OR (type = 'comment' AND follow_id IS NULL AND post_id IS NOT NULL AND comment_id IS NOT NULL AND post_like_id IS NULL AND comment_like_id IS NULL)
+        ((type = 'follow' OR type = 'post_mention') AND follow_id IS NOT NULL AND post_id IS NULL AND comment_id IS NULL AND post_like_id IS NULL AND comment_like_id IS NULL)
+        OR ((type = 'comment' OR type = 'comment_mention') AND follow_id IS NULL AND post_id IS NULL AND comment_id IS NOT NULL AND post_like_id IS NULL AND comment_like_id IS NULL)
         OR (type = 'post_like' AND follow_id IS NULL AND post_id IS NULL AND comment_id IS NULL AND post_like_id IS NOT NULL AND comment_like_id IS NULL)
         OR (type = 'comment_like' AND follow_id IS NULL AND post_id IS NULL AND comment_id IS NULL AND post_like_id IS NULL AND comment_like_id IS NOT NULL)
-        OR (type = 'post_mention' AND follow_id IS NULL AND post_id IS NOT NULL AND comment_id IS NULL AND post_like_id IS NULL AND comment_like_id IS NULL)
-        OR (type = 'comment_mention' AND follow_id IS NULL AND post_id IS NULL AND comment_id IS NOT NULL AND post_like_id IS NULL AND comment_like_id IS NULL)
     )
 );
 
@@ -531,8 +529,8 @@ CREATE INDEX group_search_idx ON groups USING GIN (tsvectors);
 CREATE FUNCTION notify_user_on_comment() 
 RETURNS TRIGGER AS $$
 BEGIN
-    INSERT INTO notification (receiver_id, timestamp, is_read, type, post_id, comment_id) 
-    VALUES (NEW.author_id, CURRENT_TIMESTAMP, FALSE, 'comment', NEW.post_id, NEW.id);
+    INSERT INTO notification (receiver_id, timestamp, is_read, type, comment_id) 
+    VALUES (NEW.author_id, CURRENT_TIMESTAMP, FALSE, 'comment', NEW.id);
 
     RETURN NEW;
 END;
@@ -547,8 +545,8 @@ EXECUTE FUNCTION notify_user_on_comment();
 CREATE FUNCTION notify_user_on_post_like()
 RETURNS TRIGGER AS $$
 BEGIN
-    INSERT INTO notification (receiver_id, timestamp, is_read, type, post_id, post_like_id) 
-    VALUES ((SELECT author_id FROM post WHERE id = NEW.post_id), CURRENT_TIMESTAMP, FALSE, 'post_like', NEW.post_id, NEW.id);
+    INSERT INTO notification (receiver_id, timestamp, is_read, type, post_like_id) 
+    VALUES ((SELECT author_id FROM post WHERE id = NEW.post_id), CURRENT_TIMESTAMP, FALSE, 'post_like', NEW.id);
 
     RETURN NEW;
 END;
@@ -563,8 +561,8 @@ EXECUTE FUNCTION notify_user_on_post_like();
 CREATE FUNCTION notify_user_on_comment_like()
 RETURNS TRIGGER AS $$
 BEGIN
-    INSERT INTO notification (receiver_id, timestamp, is_read, type, comment_id, comment_like_id) 
-    VALUES ((SELECT author_id FROM comment WHERE id = NEW.comment_id), CURRENT_TIMESTAMP, FALSE, 'comment_like', NEW.comment_id, NEW.id);
+    INSERT INTO notification (receiver_id, timestamp, is_read, type, comment_like_id) 
+    VALUES ((SELECT author_id FROM comment WHERE id = NEW.comment_id), CURRENT_TIMESTAMP, FALSE, 'comment_like', NEW.id);
 
     RETURN NEW;
 END;
