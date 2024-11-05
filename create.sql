@@ -350,9 +350,8 @@ BEGIN
         );
     END IF;
     RETURN NEW;
-END
-$$
-LANGUAGE plpgsql;
+END;
+$$ LANGUAGE plpgsql;
 
 CREATE TRIGGER post_search_update
 BEFORE INSERT OR UPDATE ON post
@@ -413,9 +412,8 @@ BEGIN
 
         RETURN OLD;
     END IF;
-END
-$$
-LANGUAGE plpgsql;
+END;
+$$ LANGUAGE plpgsql;
 
 CREATE TRIGGER post_comment_search_update
 AFTER INSERT OR UPDATE OR DELETE ON comment
@@ -450,9 +448,8 @@ BEGIN
         WHERE post.author_id = NEW.id;
     END IF;
     RETURN NEW;
-END
-$$
-LANGUAGE plpgsql;
+END;
+$$ LANGUAGE plpgsql;
 
 CREATE TRIGGER post_author_search_update
 AFTER UPDATE ON users
@@ -478,9 +475,8 @@ BEGIN
         );
     END IF;
     RETURN NEW;
-END
-$$
-LANGUAGE plpgsql;
+END;
+$$ LANGUAGE plpgsql;
 
 CREATE TRIGGER user_search_update
 BEFORE INSERT OR UPDATE ON users 
@@ -505,9 +501,8 @@ BEGIN
         );
     END IF;
     RETURN NEW;
-END
-$$
-LANGUAGE plpgsql;
+END;
+$$ LANGUAGE plpgsql;
 
 CREATE TRIGGER group_search_update
 BEFORE INSERT OR UPDATE ON groups
