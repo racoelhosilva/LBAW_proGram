@@ -525,7 +525,7 @@ CREATE INDEX group_search_idx ON groups USING GIN (tsvectors);
 -- * Trigger creation: Notifications
 -- * ====================================================
 
-CREATE OR REPLACE FUNCTION notify_user_on_comment() 
+CREATE FUNCTION notify_user_on_comment() 
 RETURNS TRIGGER AS $$
 BEGIN
     INSERT INTO notification (receiver_id, timestamp, is_read, type, post_id, comment_id) 
@@ -541,7 +541,7 @@ FOR EACH ROW
 EXECUTE FUNCTION notify_user_on_comment();
 
 
-CREATE OR REPLACE FUNCTION notify_user_on_post_like()
+CREATE FUNCTION notify_user_on_post_like()
 RETURNS TRIGGER AS $$
 BEGIN
     INSERT INTO notification (receiver_id, timestamp, is_read, type, post_id, post_like_id) 
@@ -557,7 +557,7 @@ FOR EACH ROW
 EXECUTE FUNCTION notify_user_on_post_like();
 
 
-CREATE OR REPLACE FUNCTION notify_user_on_comment_like()
+CREATE FUNCTION notify_user_on_comment_like()
 RETURNS TRIGGER AS $$
 BEGIN
     INSERT INTO notification (receiver_id, timestamp, is_read, type, comment_id, comment_like_id) 
@@ -573,7 +573,7 @@ FOR EACH ROW
 EXECUTE FUNCTION notify_user_on_comment_like();
 
 
-CREATE OR REPLACE FUNCTION notify_user_on_follow()
+CREATE FUNCTION notify_user_on_follow()
 RETURNS TRIGGER AS $$
 BEGIN
     INSERT INTO notification (receiver_id, timestamp, is_read, type, follow_id) 
@@ -593,7 +593,7 @@ EXECUTE FUNCTION notify_user_on_follow();
 -- * Trigger creation: Group Owner
 -- * ====================================================
 
-CREATE OR REPLACE FUNCTION set_group_owner_as_member()
+CREATE FUNCTION set_group_owner_as_member()
 RETURNS TRIGGER AS $$
 BEGIN
     INSERT INTO group_member (user_id, group_id) 
@@ -609,10 +609,10 @@ FOR EACH ROW
 EXECUTE FUNCTION set_group_owner_as_member();
 
 -- * ====================================================
--- * Trigger creation: Join Requests
+-- * Trigger creation: Requests
 -- * ====================================================
 
-CREATE OR REPLACE FUNCTION handle_group_invitation_acceptance()
+CREATE FUNCTION handle_group_invitation_acceptance()
 RETURNS TRIGGER AS $$
 BEGIN
     IF NEW.status = 'accepted' AND OLD.status <> 'accepted' THEN
@@ -624,13 +624,13 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER after_group_invitation_update
+CREATE TRIGGER handle_group_invitation_acceptance
 AFTER UPDATE ON group_invitation
 FOR EACH ROW
 EXECUTE FUNCTION handle_group_invitation_acceptance();
 
 
-CREATE OR REPLACE FUNCTION handle_group_join_request_acceptance()
+CREATE FUNCTION handle_group_join_request_acceptance()
 RETURNS TRIGGER AS $$
 BEGIN
     IF NEW.status = 'accepted' AND OLD.status <> 'accepted' THEN
@@ -642,17 +642,35 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER after_group_join_request_update
+CREATE TRIGGER handle_group_join_request_acceptance
 AFTER UPDATE ON group_join_request
 FOR EACH ROW
 EXECUTE FUNCTION handle_group_join_request_acceptance();
+
+
+CREATE FUNCTION handle_follow_request_acceptance()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF NEW.status = 'accepted' AND OLD.status <> 'accepted' THEN
+        INSERT INTO follow (follower_id, followed_id, timestamp) 
+        VALUES (NEW.follower_id, NEW.followed_id, CURRENT_TIMESTAMP);
+    END IF;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER handle_follow_request_acceptance
+AFTER UPDATE ON follow_request
+FOR EACH ROW
+EXECUTE FUNCTION handle_follow_request_acceptance();
 
 
 -- * ====================================================
 -- * Trigger creation: Enforcements
 -- * ====================================================
 
-CREATE OR REPLACE FUNCTION enforce_different_post_author()
+CREATE FUNCTION enforce_different_post_liker()
 RETURNS TRIGGER AS $$
 BEGIN
     IF NEW.liker_id = (SELECT author_id FROM post WHERE id = NEW.post_id)  THEN
@@ -663,13 +681,13 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER before_post_like_insert
+CREATE TRIGGER enforce_different_post_liker
 BEFORE INSERT ON post_like
 FOR EACH ROW
-EXECUTE FUNCTION enforce_different_post_author();
+EXECUTE FUNCTION enforce_different_post_liker();
 
 
-CREATE OR REPLACE FUNCTION enforce_different_comment_author()
+CREATE FUNCTION enforce_different_comment_liker()
 RETURNS TRIGGER AS $$
 BEGIN
     IF NEW.liker_id = (SELECT author_id FROM comment WHERE id = NEW.comment_id) THEN
@@ -680,28 +698,27 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER before_comment_like_insert
+CREATE TRIGGER enforce_different_comment_liker
 BEFORE INSERT ON comment_like
 FOR EACH ROW
-EXECUTE FUNCTION enforce_different_comment_author();
+EXECUTE FUNCTION enforce_different_comment_liker();
 
 
--- TODO: Remove this
--- CREATE OR REPLACE FUNCTION enforce_group_owner_is_member()
--- RETURNS TRIGGER AS $$
--- BEGIN
---     IF NEW.owner_id NOT IN (SELECT user_id FROM group_member WHERE group_id = NEW.id) THEN
---         RAISE EXCEPTION 'Group owner must be a member of the group';
---     END IF;
+CREATE FUNCTION enforce_group_post_author_is_member()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF (SELECT author_id FROM post WHERE id = NEW.post_id) NOT IN (SELECT user_id FROM group_member WHERE group_id = NEW.group_id) THEN
+        RAISE EXCEPTION 'Post author must be a member of the group';
+    END IF;
 
---     RETURN NEW;
--- END;
--- $$ LANGUAGE plpgsql;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
 
--- CREATE TRIGGER enforce_group_owner_is_member
--- BEFORE UPDATE ON groups
--- FOR EACH ROW
--- EXECUTE FUNCTION enforce_group_owner_is_member();
+CREATE TRIGGER enforce_group_post_author_is_member
+BEFORE INSERT OR UPDATE ON group_post
+FOR EACH ROW
+EXECUTE FUNCTION enforce_group_post_author_is_member();
 
 -- * ====================================================
 -- * Trigger creation: Derived Attributes
