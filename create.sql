@@ -686,21 +686,22 @@ FOR EACH ROW
 EXECUTE FUNCTION enforce_different_comment_author();
 
 
-CREATE OR REPLACE FUNCTION enforce_group_owner_is_member()
-RETURNS TRIGGER AS $$
-BEGIN
-    IF NEW.owner_id NOT IN (SELECT user_id FROM group_member WHERE group_id = NEW.id) THEN
-        RAISE EXCEPTION 'Group owner must be a member of the group';
-    END IF;
+-- TODO: Remove this
+-- CREATE OR REPLACE FUNCTION enforce_group_owner_is_member()
+-- RETURNS TRIGGER AS $$
+-- BEGIN
+--     IF NEW.owner_id NOT IN (SELECT user_id FROM group_member WHERE group_id = NEW.id) THEN
+--         RAISE EXCEPTION 'Group owner must be a member of the group';
+--     END IF;
 
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
+--     RETURN NEW;
+-- END;
+-- $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER enforce_group_owner_is_member
-BEFORE UPDATE ON groups
-FOR EACH ROW
-EXECUTE FUNCTION enforce_group_owner_is_member();
+-- CREATE TRIGGER enforce_group_owner_is_member
+-- BEFORE UPDATE ON groups
+-- FOR EACH ROW
+-- EXECUTE FUNCTION enforce_group_owner_is_member();
 
 -- * ====================================================
 -- * Trigger creation: Derived Attributes
@@ -850,7 +851,7 @@ EXECUTE FUNCTION update_member_count();
 
 -- Post creation 
 -- BEGIN TRANSACTION;
--- SET TRANSACTION ISOLATION LEVEL SERIALIZABLE READ WRITE;
+-- SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
 
 -- -- Create post
 -- INSERT INTO post (author_id, title, text, is_announcement, is_public)
@@ -877,3 +878,112 @@ EXECUTE FUNCTION update_member_count();
 -- VALUES (currval('user_stats_id_seq'), $name, $email, $password, $is_public, $description, $profile_picture_url, $banner_image_url);
 
 -- END TRANSACTION;
+
+-- Delete post
+-- BEGIN TRANSACTION;
+-- SET TRANSACTION ISOLATION LEVEL SERIALIZABLE READ WRITE;
+
+-- -- Delete associated notifications
+-- DELETE FROM notification
+-- WHERE post_id = $post_id
+-- OR comment_id IN (SELECT id FROM comment WHERE post_id = $post_id)
+-- OR post_like_id IN (SELECT id FROM post_like WHERE post_id = $post_id)
+-- OR comment_like_id IN (SELECT comment_like.id FROM comment_like JOIN comment ON comment_like.comment_id = comment.id WHERE comment.post_id = $post_id);
+
+-- -- Delete associated comment likes
+-- DELETE FROM comment_like
+-- WHERE comment_id IN (SELECT id FROM comment WHERE post_id = $post_id);
+
+-- -- Delete associated comments
+-- DELETE FROM comment
+-- WHERE post_id = $post_id;
+
+-- -- Delete post likes
+-- DELETE FROM post_like
+-- WHERE post_id = $post_id;
+
+-- -- Delete post tags
+-- DELETE FROM post_tag
+-- WHERE post_id = $post_id;
+
+-- -- Delete post attachments
+-- DELETE FROM post_attachment
+-- WHERE post_id = $post_id;
+
+-- Delete group association
+-- DELETE FROM group_post
+-- WHERE post_id = $post_id;
+
+-- -- Delete post
+-- DELETE FROM post
+-- WHERE id = $post_id;
+
+-- END TRANSACTION;
+
+-- -- Delete group
+-- BEGIN TRANSACTION;
+-- SET TRANSACTION ISOLATION LEVEL SERIALIZABLE READ WRITE;
+
+-- CREATE VIEW group_posts_ids AS
+-- SELECT post_id AS id
+-- FROM group_post
+-- WHERE group_id = 1;
+
+-- CREATE VIEW group_comments_ids AS
+-- SELECT id
+-- FROM comment
+-- WHERE post_id IN (SELECT id FROM group_posts_ids);
+
+-- -- Delete associated notifications
+-- DELETE FROM notification
+-- WHERE post_id IN (SELECT id FROM group_posts_ids)
+-- OR comment_id IN (SELECT id FROM group_comments_ids)
+-- OR post_like_id IN (SELECT id FROM post_like WHERE post_id IN (SELECT id FROM group_posts_ids))
+-- OR comment_like_id IN (SELECT comment_like.id FROM comment_like JOIN comment ON comment_like.comment_id = comment.id WHERE comment.post_id IN (SELECT id FROM group_posts_ids));
+
+-- -- Delete associated comment likes
+-- DELETE FROM comment_like
+-- WHERE comment_id IN (SELECT id FROM group_comments_ids);
+
+-- -- Delete associated comments
+-- DELETE FROM comment
+-- WHERE id IN (SELECT id FROM group_comments_ids);
+
+-- -- Delete associated post likes
+-- DELETE FROM post_like
+-- WHERE post_id IN (SELECT id FROM group_posts_ids);
+
+-- -- Delete post tags
+-- DELETE FROM post_tag
+-- WHERE post_id IN (SELECT id FROM group_posts_ids);
+
+-- -- Delete post attachments
+-- DELETE FROM post_attachment
+-- WHERE post_id IN (SELECT id FROM group_posts_ids);
+
+-- -- Delete post group associations
+-- DELETE FROM group_post
+-- WHERE post_id IN (SELECT id FROM group_posts_ids);
+
+-- -- Delete posts
+-- DELETE FROM post
+-- WHERE id IN (SELECT id FROM group_posts_ids);
+
+-- -- Delete group invitations
+-- DELETE FROM group_invitation
+-- WHERE group_id = 1;
+
+-- -- Delete group join requests
+-- DELETE FROM group_join_request
+-- WHERE group_id = 1;
+
+-- -- Delete group members
+-- DELETE FROM group_member
+-- WHERE group_id = 1;
+
+-- -- Delete group
+-- DELETE FROM groups
+-- WHERE id = 1;
+
+-- END TRANSACTION;
+
