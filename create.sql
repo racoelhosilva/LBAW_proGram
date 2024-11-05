@@ -931,3 +931,23 @@ EXECUTE FUNCTION update_member_count();
 -- WHERE id = $post_id;
 
 -- END TRANSACTION;
+
+-- Delete comment
+-- BEGIN TRANSACTION;
+-- SET TRANSACTION ISOLATION LEVEL SERIALIZABLE READ WRITE;
+
+-- -- Delete associated notifications
+-- DELETE FROM notification
+-- WHERE comment_id = $comment_id
+-- OR comment_like_id IN (SELECT id FROM comment_like WHERE comment_id = $comment_id);
+
+-- -- Delete associated comment likes
+-- DELETE FROM comment_like
+-- WHERE comment_id = $comment_id;
+
+-- -- Delete comment
+-- DELETE FROM comment
+-- WHERE id = $comment_id;
+
+-- END TRANSACTION;
+
