@@ -567,7 +567,7 @@ AFTER INSERT ON post_like
 FOR EACH ROW
 EXECUTE FUNCTION notify_user_on_post_like();
 
---TRIGGER03  
+--TRIGGER03
 CREATE FUNCTION notify_user_on_comment_like()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -642,7 +642,7 @@ AFTER UPDATE ON group_invitation
 FOR EACH ROW
 EXECUTE FUNCTION handle_group_invitation_acceptance();
 
---TRIGGER07 
+--TRIGGER07
 CREATE FUNCTION handle_group_join_request_acceptance()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -660,7 +660,7 @@ AFTER UPDATE ON group_join_request
 FOR EACH ROW
 EXECUTE FUNCTION handle_group_join_request_acceptance();
 
-
+--TRIGGER08
 CREATE FUNCTION handle_follow_request_acceptance()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -683,7 +683,7 @@ EXECUTE FUNCTION handle_follow_request_acceptance();
 -- * Trigger creation: Enforcements
 -- * ====================================================
 
---TRIGGER08 
+--TRIGGER09
 CREATE FUNCTION enforce_different_post_liker()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -700,7 +700,7 @@ BEFORE INSERT ON post_like
 FOR EACH ROW
 EXECUTE FUNCTION enforce_different_post_liker();
 
---TRIGGER09     
+--TRIGGER10     
 CREATE FUNCTION enforce_different_comment_liker()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -717,7 +717,7 @@ BEFORE INSERT ON comment_like
 FOR EACH ROW
 EXECUTE FUNCTION enforce_different_comment_liker();
 
---TRIGGER10  
+--TRIGGER11 
 CREATE FUNCTION enforce_group_post_author_is_member()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -734,7 +734,7 @@ BEFORE INSERT OR UPDATE ON group_post
 FOR EACH ROW
 EXECUTE FUNCTION enforce_group_post_author_is_member();
 
---
+--TRIGGER12
 CREATE FUNCTION enforce_max_top_projects()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -755,7 +755,7 @@ EXECUTE FUNCTION enforce_max_top_projects();
 -- * ====================================================
 -- * Trigger creation: Derived Attributes
 -- * ====================================================
---TRIGGER11
+--TRIGGER13
 CREATE FUNCTION update_post_likes()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -781,7 +781,7 @@ AFTER INSERT OR DELETE ON post_like
 FOR EACH ROW
 EXECUTE FUNCTION update_post_likes();
 
---TRIGGER12
+--TRIGGER14
 CREATE FUNCTION update_comment_likes()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -807,7 +807,7 @@ AFTER INSERT OR DELETE ON comment_like
 FOR EACH ROW
 EXECUTE FUNCTION update_comment_likes();
 
---TRIGGER13
+--TRIGGER15
 CREATE function update_follow_counts()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -841,7 +841,7 @@ BEFORE INSERT OR DELETE ON follow
 FOR EACH ROW
 EXECUTE FUNCTION update_follow_counts();
 
---TRIGGER14
+--TRIGGER16
 CREATE FUNCTION update_comment_count()
 RETURNS TRIGGER AS $$ 
 BEGIN 
@@ -867,7 +867,7 @@ AFTER INSERT OR DELETE ON comment
 FOR EACH ROW
 EXECUTE FUNCTION update_comment_count();
 
---TRIGGER15
+--TRIGGER17
 CREATE FUNCTION update_member_count()
 RETURNS TRIGGER AS $$
 BEGIN
