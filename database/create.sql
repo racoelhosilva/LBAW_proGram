@@ -744,7 +744,7 @@ CREATE FUNCTION post_comment_search_update()
 RETURNS TRIGGER AS $$
 BEGIN
     IF TG_OP = 'INSERT' OR TG_OP = 'UPDATE' THEN
-        IF TG_OP = 'UPDATE' AND NEW.content <> OLD.content THEN
+        IF TG_OP = 'INSERT' OR NEW.content <> OLD.content THEN
             UPDATE post
             SET tsvectors = (
                 setweight(to_tsvector('english', post.title), 'A') ||
@@ -823,7 +823,7 @@ BEGIN
             setweight(to_tsvector('english', (
                 SELECT coalesce(string_agg(comment.content, ' '), '')
                 FROM comment
-                WHERE comment.post_id = post.id
+                WHERE comment.post_id = NEW.id
             )), 'C'))
         WHERE post.author_id = NEW.id;
     END IF;
