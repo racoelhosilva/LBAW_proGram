@@ -132,6 +132,7 @@ CREATE TABLE post_like (
     post_id INTEGER NOT NULL,
     timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id),
+    UNIQUE (liker_id, post_id),
     FOREIGN KEY (liker_id) REFERENCES users (id) ON UPDATE CASCADE,
     FOREIGN KEY (post_id) REFERENCES post (id) ON UPDATE CASCADE
 );
@@ -173,10 +174,11 @@ CREATE TABLE comment (
 
 CREATE TABLE comment_like (
     id SERIAL,
-    comment_id INTEGER NOT NULL,
     liker_id INTEGER NOT NULL,
+    comment_id INTEGER NOT NULL,
     timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id),
+    UNIQUE (liker_id, comment_id),
     FOREIGN KEY (comment_id) REFERENCES comment (id) ON UPDATE CASCADE,
     FOREIGN KEY (liker_id) REFERENCES users (id) ON UPDATE CASCADE
 );
