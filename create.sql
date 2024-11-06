@@ -111,7 +111,7 @@ CREATE TABLE top_project (
 
 CREATE TABLE post (
     id SERIAL,
-    author_id INTEGER NOT NULL,
+    author_id INTEGER,
     title TEXT NOT NULL,
     text TEXT,
     creation_timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -125,7 +125,7 @@ CREATE TABLE post (
 
 CREATE TABLE post_like (
     id SERIAL,
-    liker_id INTEGER NOT NULL,
+    liker_id INTEGER,
     post_id INTEGER NOT NULL,
     timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id),
@@ -159,7 +159,7 @@ CREATE TABLE post_tag (
 CREATE TABLE comment (
     id SERIAL,
     post_id INTEGER NOT NULL,
-    author_id INTEGER NOT NULL,
+    author_id INTEGER,
     content TEXT NOT NULL,
     likes INTEGER NOT NULL DEFAULT 0,
     timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -170,8 +170,8 @@ CREATE TABLE comment (
 
 CREATE TABLE comment_like (
     id SERIAL,
-    comment_id INT NOT NULL,
-    liker_id INT NOT NULL,
+    comment_id INTEGER NOT NULL,
+    liker_id INTEGER,
     timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id),
     FOREIGN KEY (comment_id) REFERENCES comment (id) ON UPDATE CASCADE,
@@ -180,8 +180,8 @@ CREATE TABLE comment_like (
 
 CREATE TABLE follow (
     id SERIAL,
-    follower_id INTEGER NOT NULL,
-    followed_id INTEGER NOT NULL,
+    follower_id INTEGER,
+    followed_id INTEGER,
     timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id),
     UNIQUE (follower_id, followed_id),
@@ -326,6 +326,8 @@ CREATE INDEX post_author_creation ON post USING btree(author_id, creation_timest
 -- * Search Indexes
 -- * ====================================================
 
+-- IDX11
+
 ALTER TABLE post
 ADD COLUMN tsvectors TSVECTOR;
 
@@ -363,7 +365,6 @@ CREATE TRIGGER post_search_update
 BEFORE INSERT OR UPDATE ON post
 FOR EACH ROW
 EXECUTE PROCEDURE post_search_update();
-
 
 CREATE FUNCTION post_comment_search_update()
 RETURNS TRIGGER AS $$
@@ -426,7 +427,6 @@ AFTER INSERT OR UPDATE OR DELETE ON comment
 FOR EACH ROW
 EXECUTE PROCEDURE post_comment_search_update();
 
-
 CREATE FUNCTION post_author_search_update()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -465,6 +465,8 @@ EXECUTE PROCEDURE post_author_search_update();
 CREATE INDEX post_search_idx ON post USING GiST (tsvectors);
 
 
+-- IDX12
+
 ALTER TABLE users
 ADD COLUMN tsvectors TSVECTOR;
 
@@ -491,6 +493,8 @@ EXECUTE PROCEDURE user_search_update();
 
 CREATE INDEX user_search_idx ON users USING GiST (tsvectors);
 
+
+-- IDX13
 
 ALTER TABLE groups
 ADD COLUMN tsvectors TSVECTOR;
@@ -525,7 +529,7 @@ CREATE INDEX group_search_idx ON groups USING GIN (tsvectors);
 -- * ====================================================
 -- * Trigger creation: Notifications
 -- * ====================================================
-
+-- TRIGGER01 
 CREATE FUNCTION notify_user_on_comment() 
 RETURNS TRIGGER AS $$
 BEGIN
@@ -536,12 +540,12 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER after_comment_insert
+CREATE TRIGGER notify_user_on_comment
 AFTER INSERT ON comment
 FOR EACH ROW
 EXECUTE FUNCTION notify_user_on_comment();
 
-
+--TRIGGER02
 CREATE FUNCTION notify_user_on_post_like()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -552,12 +556,12 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER after_post_like_insert
+CREATE TRIGGER notify_user_on_post_like
 AFTER INSERT ON post_like
 FOR EACH ROW
 EXECUTE FUNCTION notify_user_on_post_like();
 
-
+--TRIGGER03  
 CREATE FUNCTION notify_user_on_comment_like()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -568,12 +572,12 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER after_comment_like_insert
+CREATE TRIGGER notify_user_on_comment_like
 AFTER INSERT ON comment_like
 FOR EACH ROW
 EXECUTE FUNCTION notify_user_on_comment_like();
 
-
+--TRIGGER04 
 CREATE FUNCTION notify_user_on_follow()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -584,7 +588,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER after_follow_insert
+CREATE TRIGGER notify_user_on_follow
 AFTER INSERT ON follow
 FOR EACH ROW
 EXECUTE FUNCTION notify_user_on_follow();
@@ -593,7 +597,7 @@ EXECUTE FUNCTION notify_user_on_follow();
 -- * ====================================================
 -- * Trigger creation: Group Owner
 -- * ====================================================
-
+--TRIGGER05 
 CREATE FUNCTION set_group_owner_as_member()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -613,6 +617,7 @@ EXECUTE FUNCTION set_group_owner_as_member();
 -- * Trigger creation: Requests
 -- * ====================================================
 
+--TRIGGER06
 CREATE FUNCTION handle_group_invitation_acceptance()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -630,7 +635,7 @@ AFTER UPDATE ON group_invitation
 FOR EACH ROW
 EXECUTE FUNCTION handle_group_invitation_acceptance();
 
-
+--TRIGGER07 
 CREATE FUNCTION handle_group_join_request_acceptance()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -671,10 +676,11 @@ EXECUTE FUNCTION handle_follow_request_acceptance();
 -- * Trigger creation: Enforcements
 -- * ====================================================
 
+--TRIGGER08 
 CREATE FUNCTION enforce_different_post_liker()
 RETURNS TRIGGER AS $$
 BEGIN
-    IF NEW.liker_id = (SELECT author_id FROM post WHERE id = NEW.post_id)  THEN
+    IF NEW.liker_id IS NOT NULL AND NEW.liker_id = (SELECT author_id FROM post WHERE id = NEW.post_id) THEN
         RAISE EXCEPTION 'A user cannot like their own post';
     END IF;
 
@@ -687,11 +693,11 @@ BEFORE INSERT ON post_like
 FOR EACH ROW
 EXECUTE FUNCTION enforce_different_post_liker();
 
-
+--TRIGGER09     
 CREATE FUNCTION enforce_different_comment_liker()
 RETURNS TRIGGER AS $$
 BEGIN
-    IF NEW.liker_id = (SELECT author_id FROM comment WHERE id = NEW.comment_id) THEN
+    IF NEW.liker_id IS NOT NULL AND NEW.liker_id = (SELECT author_id FROM comment WHERE id = NEW.comment_id) THEN
         RAISE EXCEPTION 'A user cannot like their own comment';
     END IF;
 
@@ -704,7 +710,7 @@ BEFORE INSERT ON comment_like
 FOR EACH ROW
 EXECUTE FUNCTION enforce_different_comment_liker();
 
-
+--TRIGGER10  
 CREATE FUNCTION enforce_group_post_author_is_member()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -721,7 +727,7 @@ BEFORE INSERT OR UPDATE ON group_post
 FOR EACH ROW
 EXECUTE FUNCTION enforce_group_post_author_is_member();
 
-
+--
 CREATE FUNCTION enforce_max_top_projects()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -731,17 +737,102 @@ BEGIN
 
     RETURN NEW;
 END;
+$$ LANGUAGE plpgsql;
 
 CREATE TRIGGER enforce_max_top_projects
 BEFORE INSERT ON top_project
 FOR EACH ROW
 EXECUTE FUNCTION enforce_max_top_projects();
 
+--Trigger 16
+CREATE FUNCTION verify_post_author_not_null()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF NEW.author_id IS NULL THEN
+        RAISE EXCEPTION 'author_id cannot be null';
+    END IF;
+    
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER verify_post_author_not_null
+BEFORE INSERT ON post
+FOR EACH ROW
+EXECUTE FUNCTION verify_post_author_not_null();
+
+CREATE FUNCTION verify_comment_author_not_null()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF NEW.author_id IS NULL THEN
+        RAISE EXCEPTION 'author_id cannot be null';
+    END IF;
+    
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER verify_comment_author_not_null
+BEFORE INSERT ON comment
+FOR EACH ROW
+EXECUTE FUNCTION verify_comment_author_not_null();
+
+CREATE FUNCTION verify_liker_id_not_null_in_post_like()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF NEW.liker_id IS NULL THEN
+        RAISE EXCEPTION 'liker_id cannot be null';
+    END IF;
+    
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER verify_liker_id_not_null_in_post_like
+BEFORE INSERT ON post_like
+FOR EACH ROW
+EXECUTE FUNCTION verify_liker_id_not_null_in_post_like();
+
+CREATE FUNCTION verify_liker_id_not_null_in_comment_like()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF NEW.liker_id IS NULL THEN
+        RAISE EXCEPTION 'liker_id cannot be null';
+    END IF;
+    
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER verify_liker_id_not_null_in_comment_like
+BEFORE INSERT ON comment_like
+FOR EACH ROW
+EXECUTE FUNCTION verify_liker_id_not_null_in_comment_like();
+
+CREATE FUNCTION verify_follow_users_fk_not_null()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF NEW.follower_id IS NULL THEN
+        RAISE EXCEPTION 'follower_id cannot be null';
+    END IF;
+    
+    IF NEW.followed_id IS NULL THEN
+        RAISE EXCEPTION 'followed_id cannot be null';
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER verify_follow_users_fk_not_null
+BEFORE INSERT ON follow
+FOR EACH ROW
+EXECUTE FUNCTION verify_follow_users_fk_not_null();
+
 
 -- * ====================================================
 -- * Trigger creation: Derived Attributes
 -- * ====================================================
-
+--TRIGGER11
 CREATE FUNCTION update_post_likes()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -767,6 +858,7 @@ AFTER INSERT OR DELETE ON post_like
 FOR EACH ROW
 EXECUTE FUNCTION update_post_likes();
 
+--TRIGGER12
 CREATE FUNCTION update_comment_likes()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -792,6 +884,7 @@ AFTER INSERT OR DELETE ON comment_like
 FOR EACH ROW
 EXECUTE FUNCTION update_comment_likes();
 
+--TRIGGER13
 CREATE function update_follow_counts()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -825,7 +918,7 @@ BEFORE INSERT OR DELETE ON follow
 FOR EACH ROW
 EXECUTE FUNCTION update_follow_counts();
 
-
+--TRIGGER14
 CREATE FUNCTION update_comment_count()
 RETURNS TRIGGER AS $$ 
 BEGIN 
@@ -851,7 +944,7 @@ AFTER INSERT OR DELETE ON comment
 FOR EACH ROW
 EXECUTE FUNCTION update_comment_count();
 
-
+--TRIGGER15
 CREATE FUNCTION update_member_count()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -878,6 +971,7 @@ CREATE TRIGGER update_member_count
 AFTER INSERT OR DELETE ON group_member
 FOR EACH ROW
 EXECUTE FUNCTION update_member_count();
+
 
 
 -- * ====================================================
