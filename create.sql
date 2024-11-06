@@ -328,7 +328,396 @@ CREATE INDEX post_author_creation ON post USING btree(author_id, creation_timest
 
 
 -- * ====================================================
--- * Search Indexes
+-- * Trigger Creation
+-- * Trigger Creation
+-- * ====================================================
+
+-- * ====================================================
+-- *     Trigger Creation: Notifications
+-- *     Trigger Creation: Notifications
+-- * ====================================================
+
+-- TRIGGER01 
+CREATE FUNCTION notify_user_on_comment() 
+RETURNS TRIGGER AS $$
+BEGIN
+    INSERT INTO notification (receiver_id, timestamp, is_read, type, comment_id) 
+    VALUES (NEW.author_id, CURRENT_TIMESTAMP, FALSE, 'comment', NEW.id);
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER notify_user_on_comment
+AFTER INSERT ON comment
+FOR EACH ROW
+EXECUTE FUNCTION notify_user_on_comment();
+
+-- TRIGGER02
+-- TRIGGER02
+CREATE FUNCTION notify_user_on_post_like()
+RETURNS TRIGGER AS $$
+BEGIN
+    INSERT INTO notification (receiver_id, timestamp, is_read, type, post_like_id) 
+    VALUES ((SELECT author_id FROM post WHERE id = NEW.post_id), CURRENT_TIMESTAMP, FALSE, 'post_like', NEW.id);
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER notify_user_on_post_like
+AFTER INSERT ON post_like
+FOR EACH ROW
+EXECUTE FUNCTION notify_user_on_post_like();
+
+-- TRIGGER03  
+-- TRIGGER03  
+CREATE FUNCTION notify_user_on_comment_like()
+RETURNS TRIGGER AS $$
+BEGIN
+    INSERT INTO notification (receiver_id, timestamp, is_read, type, comment_like_id) 
+    VALUES ((SELECT author_id FROM comment WHERE id = NEW.comment_id), CURRENT_TIMESTAMP, FALSE, 'comment_like', NEW.id);
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER notify_user_on_comment_like
+AFTER INSERT ON comment_like
+FOR EACH ROW
+EXECUTE FUNCTION notify_user_on_comment_like();
+
+-- TRIGGER04 
+CREATE FUNCTION notify_user_on_follow()
+RETURNS TRIGGER AS $$
+BEGIN
+    INSERT INTO notification (receiver_id, timestamp, is_read, type, follow_id) 
+    VALUES (NEW.followed_id, CURRENT_TIMESTAMP, FALSE, 'follow', NEW.id);
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER notify_user_on_follow
+AFTER INSERT ON follow
+FOR EACH ROW
+EXECUTE FUNCTION notify_user_on_follow();
+
+
+-- * ====================================================
+-- *     Trigger Creation: Group Owner
+-- *     Trigger Creation: Group Owner
+-- * ====================================================
+
+-- TRIGGER05
+CREATE FUNCTION set_group_owner_as_member()
+RETURNS TRIGGER AS $$
+BEGIN
+    INSERT INTO group_member (user_id, group_id) 
+    VALUES (NEW.owner_id, NEW.id);
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER set_group_owner_as_member
+AFTER INSERT ON groups
+FOR EACH ROW
+EXECUTE FUNCTION set_group_owner_as_member();
+
+-- * ====================================================
+-- *     Trigger Creation: Requests
+-- *     Trigger Creation: Requests
+-- * ====================================================
+
+-- TRIGGER06
+-- TRIGGER06
+CREATE FUNCTION handle_group_invitation_acceptance()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF NEW.status = 'accepted' AND OLD.status <> 'accepted' THEN
+        INSERT INTO group_member (user_id, group_id, joined_at) 
+        VALUES (NEW.user_id, NEW.group_id, CURRENT_TIMESTAMP);
+    END IF;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER handle_group_invitation_acceptance
+AFTER UPDATE ON group_invitation
+FOR EACH ROW
+EXECUTE FUNCTION handle_group_invitation_acceptance();
+
+-- TRIGGER07
+CREATE FUNCTION handle_group_join_request_acceptance()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF NEW.status = 'accepted' AND OLD.status <> 'accepted' THEN
+        INSERT INTO group_member (user_id, group_id, joined_at) 
+        VALUES (NEW.requester_id, NEW.group_id, CURRENT_TIMESTAMP);
+    END IF;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER handle_group_join_request_acceptance
+AFTER UPDATE ON group_join_request
+FOR EACH ROW
+EXECUTE FUNCTION handle_group_join_request_acceptance();
+
+-- TRIGGER08
+-- TRIGGER08
+CREATE FUNCTION handle_follow_request_acceptance()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF NEW.status = 'accepted' AND OLD.status <> 'accepted' THEN
+        INSERT INTO follow (follower_id, followed_id, timestamp) 
+        VALUES (NEW.follower_id, NEW.followed_id, CURRENT_TIMESTAMP);
+    END IF;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER handle_follow_request_acceptance
+AFTER UPDATE ON follow_request
+FOR EACH ROW
+EXECUTE FUNCTION handle_follow_request_acceptance();
+
+
+-- * ====================================================
+-- *     Trigger creation: Enforcements
+-- *     Trigger creation: Enforcements
+-- * ====================================================
+
+-- TRIGGER09 
+-- TRIGGER09 
+CREATE FUNCTION enforce_different_post_liker()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF NEW.liker_id = (SELECT author_id FROM post WHERE id = NEW.post_id) THEN
+        RAISE EXCEPTION 'A user cannot like their own post';
+    END IF;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER enforce_different_post_liker
+BEFORE INSERT ON post_like
+FOR EACH ROW
+EXECUTE FUNCTION enforce_different_post_liker();
+
+-- TRIGGER010
+CREATE FUNCTION enforce_different_comment_liker()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF NEW.liker_id = (SELECT author_id FROM comment WHERE id = NEW.comment_id) THEN
+        RAISE EXCEPTION 'A user cannot like their own comment';
+    END IF;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER enforce_different_comment_liker
+BEFORE INSERT ON comment_like
+FOR EACH ROW
+EXECUTE FUNCTION enforce_different_comment_liker();
+
+-- TRIGGER011  
+-- TRIGGER011  
+CREATE FUNCTION enforce_group_post_author_is_member()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF (SELECT author_id FROM post WHERE id = NEW.post_id) NOT IN (SELECT user_id FROM group_member WHERE group_id = NEW.group_id) THEN
+        RAISE EXCEPTION 'Post author must be a member of the group';
+    END IF;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER enforce_group_post_author_is_member
+BEFORE INSERT OR UPDATE ON group_post
+FOR EACH ROW
+EXECUTE FUNCTION enforce_group_post_author_is_member();
+
+-- TRIGGER012
+-- TRIGGER012
+CREATE FUNCTION enforce_max_top_projects()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF (SELECT COUNT(*) FROM top_project WHERE user_stats_id = NEW.user_stats_id) >= 10 THEN
+        RAISE EXCEPTION 'User cannot have more than 10 top projects';
+    END IF;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER enforce_max_top_projects
+BEFORE INSERT ON top_project
+FOR EACH ROW
+EXECUTE FUNCTION enforce_max_top_projects();
+
+
+-- * ====================================================
+-- *     Trigger creation: Derived Attributes
+-- *     Trigger creation: Derived Attributes
+-- * ====================================================
+
+-- TRIGGER013
+
+-- TRIGGER013
+CREATE FUNCTION update_post_likes()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF TG_OP = 'INSERT' THEN
+        UPDATE post
+        SET likes = (SELECT count(*) FROM post_like WHERE post_id = NEW.post_id)
+        WHERE id = NEW.post_id;
+
+        RETURN NEW;
+
+    ELSIF TG_OP = 'DELETE' THEN
+        UPDATE post
+        SET likes = (SELECT count(*) FROM post_like WHERE post_id = OLD.post_id)
+        WHERE id = OLD.post_id;
+
+        RETURN OLD;
+    END IF;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER update_post_likes
+AFTER INSERT OR DELETE ON post_like
+FOR EACH ROW
+EXECUTE FUNCTION update_post_likes();
+
+-- TRIGGER014
+-- TRIGGER014
+CREATE FUNCTION update_comment_likes()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF TG_OP = 'INSERT' THEN
+        UPDATE comment
+        SET likes = (SELECT count(*) FROM comment_like where comment_id = NEW.comment_id)
+        WHERE id = NEW.comment_id;
+
+        RETURN NEW;
+
+    ELSIF TG_OP = 'DELETE' THEN
+        UPDATE comment
+        SET likes = (SELECT count(*) FROM comment_like where comment_id = OLD.comment_id)
+        WHERE id = OLD.comment_id;
+
+        RETURN OLD;
+    END IF;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER update_comment_likes
+AFTER INSERT OR DELETE ON comment_like
+FOR EACH ROW
+EXECUTE FUNCTION update_comment_likes();
+
+-- TRIGGER015
+-- TRIGGER015
+CREATE function update_follow_counts()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF TG_OP = 'INSERT' THEN    
+        UPDATE users
+        SET num_followers = (SELECT count(*) FROM follow WHERE followed_id = users.id)
+        WHERE users.id = NEW.followed_id;
+
+        UPDATE users
+        SET num_following = (SELECT count(*) FROM follow WHERE follower_id = users.id)
+        WHERE users.id = NEW.follower_id;
+
+        RETURN NEW;
+
+    ELSIF TG_OP = 'DELETE' THEN
+        UPDATE users
+        SET num_followers = (SELECT count(*) FROM follow WHERE followed_id = users.id)
+        WHERE users.id = OLD.followed_id;
+
+        UPDATE users
+        SET num_following = (SELECT count(*) FROM follow WHERE follower_id = users.id)
+        WHERE users.id = OLD.follower_id;
+
+        RETURN OLD;
+    END IF;    
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER update_follow_counts
+BEFORE INSERT OR DELETE ON follow
+FOR EACH ROW
+EXECUTE FUNCTION update_follow_counts();
+
+-- TRIGGER016
+-- TRIGGER016
+CREATE FUNCTION update_comment_count()
+RETURNS TRIGGER AS $$ 
+BEGIN 
+    IF TG_OP = 'INSERT' THEN 
+        UPDATE post
+        SET comments = (SELECT COUNT(*) FROM comment WHERE post_id = id)
+        WHERE id = NEW.post_id;
+
+        RETURN NEW;
+
+    ELSIF TG_OP = 'DELETE' THEN 
+        UPDATE post
+        SET comments = (SELECT COUNT(*) FROM comment WHERE post_id = id)
+        WHERE id = OLD.post_id;
+
+        RETURN OLD;
+    END IF;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER update_comment_count
+AFTER INSERT OR DELETE ON comment
+FOR EACH ROW
+EXECUTE FUNCTION update_comment_count();
+
+-- TRIGGER017
+-- TRIGGER017
+CREATE FUNCTION update_member_count()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF TG_OP = 'INSERT' THEN
+        UPDATE groups 
+        SET member_count = (SELECT COUNT (*) from group_member where group_id = id)
+        WHERE id = NEW.group_id;
+
+        RETURN NEW;
+
+    ELSIF TG_OP = 'DELETE' THEN 
+        UPDATE groups 
+        SET member_count = (SELECT COUNT (*) from group_member where group_id = id)
+        WHERE id = OLD.group_id;
+
+        RETURN OLD;
+    END IF;
+    
+    RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER update_member_count
+AFTER INSERT OR DELETE ON group_member
+FOR EACH ROW
+EXECUTE FUNCTION update_member_count();
+
+
+-- * ====================================================
+-- *     Trigger Creation: Search Indexes
 -- * ====================================================
 
 -- IDX11
@@ -528,369 +917,200 @@ CREATE INDEX group_search_idx ON groups USING GIN (tsvectors);
 
 
 -- * ====================================================
--- * Trigger creation
+-- *     Trigger Creation: Search Indexes
 -- * ====================================================
 
--- * ====================================================
--- * Trigger creation: Notifications
--- * ====================================================
+-- IDX11
 
--- TRIGGER01 
-CREATE FUNCTION notify_user_on_comment() 
+ALTER TABLE post
+ADD COLUMN tsvectors TSVECTOR;
+
+CREATE FUNCTION post_search_update()
 RETURNS TRIGGER AS $$
 BEGIN
-    INSERT INTO notification (receiver_id, timestamp, is_read, type, comment_id) 
-    VALUES (NEW.author_id, CURRENT_TIMESTAMP, FALSE, 'comment', NEW.id);
-
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER notify_user_on_comment
-AFTER INSERT ON comment
-FOR EACH ROW
-EXECUTE FUNCTION notify_user_on_comment();
-
---TRIGGER02
-CREATE FUNCTION notify_user_on_post_like()
-RETURNS TRIGGER AS $$
-BEGIN
-    INSERT INTO notification (receiver_id, timestamp, is_read, type, post_like_id) 
-    VALUES ((SELECT author_id FROM post WHERE id = NEW.post_id), CURRENT_TIMESTAMP, FALSE, 'post_like', NEW.id);
-
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER notify_user_on_post_like
-AFTER INSERT ON post_like
-FOR EACH ROW
-EXECUTE FUNCTION notify_user_on_post_like();
-
---TRIGGER03
-CREATE FUNCTION notify_user_on_comment_like()
-RETURNS TRIGGER AS $$
-BEGIN
-    INSERT INTO notification (receiver_id, timestamp, is_read, type, comment_like_id) 
-    VALUES ((SELECT author_id FROM comment WHERE id = NEW.comment_id), CURRENT_TIMESTAMP, FALSE, 'comment_like', NEW.id);
-
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER notify_user_on_comment_like
-AFTER INSERT ON comment_like
-FOR EACH ROW
-EXECUTE FUNCTION notify_user_on_comment_like();
-
--- TRIGGER04 
-CREATE FUNCTION notify_user_on_follow()
-RETURNS TRIGGER AS $$
-BEGIN
-    INSERT INTO notification (receiver_id, timestamp, is_read, type, follow_id) 
-    VALUES (NEW.followed_id, CURRENT_TIMESTAMP, FALSE, 'follow', NEW.id);
-
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER notify_user_on_follow
-AFTER INSERT ON follow
-FOR EACH ROW
-EXECUTE FUNCTION notify_user_on_follow();
-
-
--- * ====================================================
--- * Trigger creation: Group Owner
--- * ====================================================
-
--- TRIGGER05
-CREATE FUNCTION set_group_owner_as_member()
-RETURNS TRIGGER AS $$
-BEGIN
-    INSERT INTO group_member (user_id, group_id) 
-    VALUES (NEW.owner_id, NEW.id);
-
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER set_group_owner_as_member
-AFTER INSERT ON groups
-FOR EACH ROW
-EXECUTE FUNCTION set_group_owner_as_member();
-
--- * ====================================================
--- * Trigger creation: Requests
--- * ====================================================
-
---TRIGGER06
-CREATE FUNCTION handle_group_invitation_acceptance()
-RETURNS TRIGGER AS $$
-BEGIN
-    IF NEW.status = 'accepted' AND OLD.status <> 'accepted' THEN
-        INSERT INTO group_member (user_id, group_id, joined_at) 
-        VALUES (NEW.user_id, NEW.group_id, CURRENT_TIMESTAMP);
+    IF TG_OP = 'INSERT'
+    OR (TG_OP = 'UPDATE' AND (NEW.title <> OLD.title OR NEW.text <> OLD.text))
+    THEN
+        NEW.tsvectors = (
+            setweight(to_tsvector('english', NEW.title), 'A') ||
+            setweight(to_tsvector('english', (
+                SELECT users.name
+                FROM users
+                WHERE users.id = NEW.author_id
+            )), 'A') ||
+            setweight(to_tsvector('english', (
+                SELECT users.handle
+                FROM users
+                WHERE users.id = NEW.author_id
+            )), 'A') ||
+            setweight(to_tsvector('english', coalesce(NEW.text, '')), 'B') ||
+            setweight(to_tsvector('english', (
+                SELECT coalesce(string_agg(comment.content, ' '), '')
+                FROM comment
+                WHERE comment.post_id = NEW.id
+            )), 'C')
+        );
     END IF;
-
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER handle_group_invitation_acceptance
-AFTER UPDATE ON group_invitation
+CREATE TRIGGER post_search_update
+BEFORE INSERT OR UPDATE ON post
 FOR EACH ROW
-EXECUTE FUNCTION handle_group_invitation_acceptance();
+EXECUTE PROCEDURE post_search_update();
 
---TRIGGER07
-CREATE FUNCTION handle_group_join_request_acceptance()
+CREATE FUNCTION post_comment_search_update()
 RETURNS TRIGGER AS $$
 BEGIN
-    IF NEW.status = 'accepted' AND OLD.status <> 'accepted' THEN
-        INSERT INTO group_member (user_id, group_id, joined_at) 
-        VALUES (NEW.requester_id, NEW.group_id, CURRENT_TIMESTAMP);
-    END IF;
-
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER handle_group_join_request_acceptance
-AFTER UPDATE ON group_join_request
-FOR EACH ROW
-EXECUTE FUNCTION handle_group_join_request_acceptance();
-
---TRIGGER08
-CREATE FUNCTION handle_follow_request_acceptance()
-RETURNS TRIGGER AS $$
-BEGIN
-    IF NEW.status = 'accepted' AND OLD.status <> 'accepted' THEN
-        INSERT INTO follow (follower_id, followed_id, timestamp) 
-        VALUES (NEW.follower_id, NEW.followed_id, CURRENT_TIMESTAMP);
-    END IF;
-
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER handle_follow_request_acceptance
-AFTER UPDATE ON follow_request
-FOR EACH ROW
-EXECUTE FUNCTION handle_follow_request_acceptance();
-
-
--- * ====================================================
--- * Trigger creation: Enforcements
--- * ====================================================
-
---TRIGGER09
-CREATE FUNCTION enforce_different_post_liker()
-RETURNS TRIGGER AS $$
-BEGIN
-    IF NEW.liker_id = (SELECT author_id FROM post WHERE id = NEW.post_id) THEN
-        RAISE EXCEPTION 'A user cannot like their own post';
-    END IF;
-
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER enforce_different_post_liker
-BEFORE INSERT ON post_like
-FOR EACH ROW
-EXECUTE FUNCTION enforce_different_post_liker();
-
---TRIGGER10     
-CREATE FUNCTION enforce_different_comment_liker()
-RETURNS TRIGGER AS $$
-BEGIN
-    IF NEW.liker_id = (SELECT author_id FROM comment WHERE id = NEW.comment_id) THEN
-        RAISE EXCEPTION 'A user cannot like their own comment';
-    END IF;
-
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER enforce_different_comment_liker
-BEFORE INSERT ON comment_like
-FOR EACH ROW
-EXECUTE FUNCTION enforce_different_comment_liker();
-
---TRIGGER11 
-CREATE FUNCTION enforce_group_post_author_is_member()
-RETURNS TRIGGER AS $$
-BEGIN
-    IF (SELECT author_id FROM post WHERE id = NEW.post_id) NOT IN (SELECT user_id FROM group_member WHERE group_id = NEW.group_id) THEN
-        RAISE EXCEPTION 'Post author must be a member of the group';
-    END IF;
-
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER enforce_group_post_author_is_member
-BEFORE INSERT OR UPDATE ON group_post
-FOR EACH ROW
-EXECUTE FUNCTION enforce_group_post_author_is_member();
-
---TRIGGER12
-CREATE FUNCTION enforce_max_top_projects()
-RETURNS TRIGGER AS $$
-BEGIN
-    IF (SELECT COUNT(*) FROM top_project WHERE user_stats_id = NEW.user_stats_id) >= 10 THEN
-        RAISE EXCEPTION 'User cannot have more than 10 top projects';
-    END IF;
-
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER enforce_max_top_projects
-BEFORE INSERT ON top_project
-FOR EACH ROW
-EXECUTE FUNCTION enforce_max_top_projects();
-
-
--- * ====================================================
--- * Trigger creation: Derived Attributes
--- * ====================================================
---TRIGGER13
-CREATE FUNCTION update_post_likes()
-RETURNS TRIGGER AS $$
-BEGIN
-    IF TG_OP = 'INSERT' THEN
-        UPDATE post
-        SET likes = (SELECT count(*) FROM post_like WHERE post_id = NEW.post_id)
-        WHERE id = NEW.post_id;
+    IF TG_OP = 'INSERT' OR TG_OP = 'UPDATE' THEN
+        IF TG_OP = 'UPDATE' AND NEW.content <> OLD.content THEN
+            UPDATE post
+            SET tsvectors = (
+                setweight(to_tsvector('english', post.title), 'A') ||
+                setweight(to_tsvector('english', coalesce((
+                    SELECT users.name
+                    FROM users
+                    WHERE users.id = post.author_id
+                ), '')), 'A') ||
+                setweight(to_tsvector('english', coalesce((
+                    SELECT users.handle
+                    FROM users
+                    WHERE users.id = post.author_id
+                ), '')), 'A') ||
+                setweight(to_tsvector('english', coalesce(post.text, '')), 'B') ||
+                setweight(to_tsvector('english', (
+                    SELECT coalesce(string_agg(comment.content, ' '), '')
+                    FROM comment
+                    WHERE comment.post_id = post.id
+                )), 'C'))
+            WHERE post.id = NEW.post_id;
+        END IF;
 
         RETURN NEW;
 
     ELSIF TG_OP = 'DELETE' THEN
         UPDATE post
-        SET likes = (SELECT count(*) FROM post_like WHERE post_id = OLD.post_id)
-        WHERE id = OLD.post_id;
+        SET tsvectors = (
+            setweight(to_tsvector('english', post.title), 'A') ||
+            setweight(to_tsvector('english', coalesce((
+                SELECT users.name
+                FROM users
+                WHERE users.id = post.author_id
+            ), '')), 'A') ||
+            setweight(to_tsvector('english', coalesce((
+                SELECT users.handle
+                FROM users
+                WHERE users.id = post.author_id
+            ), '')), 'A') ||
+            setweight(to_tsvector('english', coalesce(post.text, '')), 'B') ||
+            setweight(to_tsvector('english', (
+                SELECT coalesce(string_agg(comment.content, ' '), '')
+                FROM comment
+                WHERE comment.post_id = post.id
+            )), 'C'))
+        WHERE post.id = OLD.post_id;
 
         RETURN OLD;
     END IF;
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER update_post_likes
-AFTER INSERT OR DELETE ON post_like
+CREATE TRIGGER post_comment_search_update
+AFTER INSERT OR UPDATE OR DELETE ON comment
 FOR EACH ROW
-EXECUTE FUNCTION update_post_likes();
+EXECUTE PROCEDURE post_comment_search_update();
 
---TRIGGER14
-CREATE FUNCTION update_comment_likes()
+CREATE FUNCTION post_author_search_update()
 RETURNS TRIGGER AS $$
 BEGIN
-    IF TG_OP = 'INSERT' THEN
-        UPDATE comment
-        SET likes = (SELECT count(*) FROM comment_like where comment_id = NEW.comment_id)
-        WHERE id = NEW.comment_id;
-
-        RETURN NEW;
-
-    ELSIF TG_OP = 'DELETE' THEN
-        UPDATE comment
-        SET likes = (SELECT count(*) FROM comment_like where comment_id = OLD.comment_id)
-        WHERE id = OLD.comment_id;
-
-        RETURN OLD;
-    END IF;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER update_comment_likes
-AFTER INSERT OR DELETE ON comment_like
-FOR EACH ROW
-EXECUTE FUNCTION update_comment_likes();
-
---TRIGGER15
-CREATE function update_follow_counts()
-RETURNS TRIGGER AS $$
-BEGIN
-    IF TG_OP = 'INSERT' THEN    
-        UPDATE users
-        SET num_followers = (SELECT count(*) FROM follow WHERE followed_id = users.id)
-        WHERE users.id = NEW.followed_id;
-
-        UPDATE users
-        SET num_following = (SELECT count(*) FROM follow WHERE follower_id = users.id)
-        WHERE users.id = NEW.follower_id;
-
-        RETURN NEW;
-
-    ELSIF TG_OP = 'DELETE' THEN
-        UPDATE users
-        SET num_followers = (SELECT count(*) FROM follow WHERE followed_id = users.id)
-        WHERE users.id = OLD.followed_id;
-
-        UPDATE users
-        SET num_following = (SELECT count(*) FROM follow WHERE follower_id = users.id)
-        WHERE users.id = OLD.follower_id;
-
-        RETURN OLD;
-    END IF;    
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER update_follow_counts
-BEFORE INSERT OR DELETE ON follow
-FOR EACH ROW
-EXECUTE FUNCTION update_follow_counts();
-
---TRIGGER16
-CREATE FUNCTION update_comment_count()
-RETURNS TRIGGER AS $$ 
-BEGIN 
-    IF TG_OP = 'INSERT' THEN 
+    IF TG_OP = 'UPDATE' AND (OLD.name <> NEW.name OR OLD.handle <> NEW.handle)
+    THEN 
         UPDATE post
-        SET comments = (SELECT COUNT(*) FROM comment WHERE post_id = id)
-        WHERE id = NEW.post_id;
-
-        RETURN NEW;
-
-    ELSIF TG_OP = 'DELETE' THEN 
-        UPDATE post
-        SET comments = (SELECT COUNT(*) FROM comment WHERE post_id = id)
-        WHERE id = OLD.post_id;
-
-        RETURN OLD;
+        SET tsvectors = (
+            setweight(to_tsvector('english', post.title), 'A') ||
+            setweight(to_tsvector('english', coalesce((
+                SELECT users.name
+                FROM users
+                WHERE users.id = post.author_id
+            ), '')), 'A') ||
+            setweight(to_tsvector('english', coalesce((
+                SELECT users.handle
+                FROM users
+                WHERE users.id = post.author_id
+            ), '')), 'A') ||
+            setweight(to_tsvector('english', coalesce(post.text, '')), 'B') ||
+            setweight(to_tsvector('english', (
+                SELECT coalesce(string_agg(comment.content, ' '), '')
+                FROM comment
+                WHERE comment.post_id = post.id
+            )), 'C'))
+        WHERE post.author_id = NEW.id;
     END IF;
+    RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER update_comment_count
-AFTER INSERT OR DELETE ON comment
+CREATE TRIGGER post_author_search_update
+AFTER UPDATE ON users
 FOR EACH ROW
-EXECUTE FUNCTION update_comment_count();
+EXECUTE PROCEDURE post_author_search_update();
 
---TRIGGER17
-CREATE FUNCTION update_member_count()
+CREATE INDEX post_search_idx ON post USING GiST (tsvectors);
+
+
+-- IDX12
+
+ALTER TABLE users
+ADD COLUMN tsvectors TSVECTOR;
+
+CREATE FUNCTION user_search_update()
 RETURNS TRIGGER AS $$
 BEGIN
-    IF TG_OP = 'INSERT' THEN
-        UPDATE groups 
-        SET member_count = (SELECT COUNT (*) from group_member where group_id = id)
-        WHERE id = NEW.group_id;
-
-        RETURN NEW;
-
-    ELSIF TG_OP = 'DELETE' THEN 
-        UPDATE groups 
-        SET member_count = (SELECT COUNT (*) from group_member where group_id = id)
-        WHERE id = OLD.group_id;
-
-        RETURN OLD;
+    IF TG_OP = 'INSERT'
+    OR (TG_OP = 'UPDATE' AND (NEW.name <> OLD.name OR NEW.handle <> OLD.handle OR NEW.description <> OLD.description))
+    THEN
+        NEW.tsvectors = (
+            setweight(to_tsvector('english', coalesce(NEW.name, '')), 'A') ||
+            setweight(to_tsvector('english', coalesce(NEW.handle, '')), 'A') ||
+            setweight(to_tsvector('english', coalesce(NEW.description, '')), 'B')
+        );
     END IF;
-    
-    RETURN NULL;
+    RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER update_member_count
-AFTER INSERT OR DELETE ON group_member
+CREATE TRIGGER user_search_update
+BEFORE INSERT OR UPDATE ON users 
 FOR EACH ROW
-EXECUTE FUNCTION update_member_count();
+EXECUTE PROCEDURE user_search_update();
+
+CREATE INDEX user_search_idx ON users USING GiST (tsvectors);
+
+
+-- IDX13
+
+ALTER TABLE groups
+ADD COLUMN tsvectors TSVECTOR;
+
+CREATE FUNCTION group_search_update()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF TG_OP = 'INSERT'
+    OR (TG_OP = 'UPDATE' AND (NEW.name <> OLD.name OR NEW.description <> OLD.description))
+    THEN
+        NEW.tsvectors = (
+            setweight(to_tsvector('english', NEW.name), 'A') ||
+            setweight(to_tsvector('english', coalesce(NEW.description, '')), 'B')            
+        );
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER group_search_update
+BEFORE INSERT OR UPDATE ON groups
+FOR EACH ROW
+EXECUTE PROCEDURE group_search_update();
+
+CREATE INDEX group_search_idx ON groups USING GIN (tsvectors);
