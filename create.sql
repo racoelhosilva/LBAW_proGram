@@ -329,11 +329,9 @@ CREATE INDEX post_author_creation ON post USING btree(author_id, creation_timest
 
 -- * ====================================================
 -- * Trigger Creation
--- * Trigger Creation
 -- * ====================================================
 
 -- * ====================================================
--- *     Trigger Creation: Notifications
 -- *     Trigger Creation: Notifications
 -- * ====================================================
 
@@ -354,7 +352,6 @@ FOR EACH ROW
 EXECUTE FUNCTION notify_user_on_comment();
 
 -- TRIGGER02
--- TRIGGER02
 CREATE FUNCTION notify_user_on_post_like()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -370,7 +367,6 @@ AFTER INSERT ON post_like
 FOR EACH ROW
 EXECUTE FUNCTION notify_user_on_post_like();
 
--- TRIGGER03  
 -- TRIGGER03  
 CREATE FUNCTION notify_user_on_comment_like()
 RETURNS TRIGGER AS $$
@@ -406,7 +402,6 @@ EXECUTE FUNCTION notify_user_on_follow();
 
 -- * ====================================================
 -- *     Trigger Creation: Group Owner
--- *     Trigger Creation: Group Owner
 -- * ====================================================
 
 -- TRIGGER05
@@ -427,10 +422,8 @@ EXECUTE FUNCTION set_group_owner_as_member();
 
 -- * ====================================================
 -- *     Trigger Creation: Requests
--- *     Trigger Creation: Requests
 -- * ====================================================
 
--- TRIGGER06
 -- TRIGGER06
 CREATE FUNCTION handle_group_invitation_acceptance()
 RETURNS TRIGGER AS $$
@@ -468,7 +461,6 @@ FOR EACH ROW
 EXECUTE FUNCTION handle_group_join_request_acceptance();
 
 -- TRIGGER08
--- TRIGGER08
 CREATE FUNCTION handle_follow_request_acceptance()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -489,10 +481,8 @@ EXECUTE FUNCTION handle_follow_request_acceptance();
 
 -- * ====================================================
 -- *     Trigger creation: Enforcements
--- *     Trigger creation: Enforcements
 -- * ====================================================
 
--- TRIGGER09 
 -- TRIGGER09 
 CREATE FUNCTION enforce_different_post_liker()
 RETURNS TRIGGER AS $$
@@ -528,7 +518,6 @@ FOR EACH ROW
 EXECUTE FUNCTION enforce_different_comment_liker();
 
 -- TRIGGER011  
--- TRIGGER011  
 CREATE FUNCTION enforce_group_post_author_is_member()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -545,7 +534,6 @@ BEFORE INSERT OR UPDATE ON group_post
 FOR EACH ROW
 EXECUTE FUNCTION enforce_group_post_author_is_member();
 
--- TRIGGER012
 -- TRIGGER012
 CREATE FUNCTION enforce_max_top_projects()
 RETURNS TRIGGER AS $$
@@ -566,10 +554,7 @@ EXECUTE FUNCTION enforce_max_top_projects();
 
 -- * ====================================================
 -- *     Trigger creation: Derived Attributes
--- *     Trigger creation: Derived Attributes
 -- * ====================================================
-
--- TRIGGER013
 
 -- TRIGGER013
 CREATE FUNCTION update_post_likes()
@@ -598,7 +583,6 @@ FOR EACH ROW
 EXECUTE FUNCTION update_post_likes();
 
 -- TRIGGER014
--- TRIGGER014
 CREATE FUNCTION update_comment_likes()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -624,7 +608,6 @@ AFTER INSERT OR DELETE ON comment_like
 FOR EACH ROW
 EXECUTE FUNCTION update_comment_likes();
 
--- TRIGGER015
 -- TRIGGER015
 CREATE function update_follow_counts()
 RETURNS TRIGGER AS $$
@@ -660,7 +643,6 @@ FOR EACH ROW
 EXECUTE FUNCTION update_follow_counts();
 
 -- TRIGGER016
--- TRIGGER016
 CREATE FUNCTION update_comment_count()
 RETURNS TRIGGER AS $$ 
 BEGIN 
@@ -686,7 +668,6 @@ AFTER INSERT OR DELETE ON comment
 FOR EACH ROW
 EXECUTE FUNCTION update_comment_count();
 
--- TRIGGER017
 -- TRIGGER017
 CREATE FUNCTION update_member_count()
 RETURNS TRIGGER AS $$
@@ -714,206 +695,6 @@ CREATE TRIGGER update_member_count
 AFTER INSERT OR DELETE ON group_member
 FOR EACH ROW
 EXECUTE FUNCTION update_member_count();
-
-
--- * ====================================================
--- *     Trigger Creation: Search Indexes
--- * ====================================================
-
--- IDX11
-
-ALTER TABLE post
-ADD COLUMN tsvectors TSVECTOR;
-
-CREATE FUNCTION post_search_update()
-RETURNS TRIGGER AS $$
-BEGIN
-    IF TG_OP = 'INSERT'
-    OR (TG_OP = 'UPDATE' AND (NEW.title <> OLD.title OR NEW.text <> OLD.text))
-    THEN
-        NEW.tsvectors = (
-            setweight(to_tsvector('english', NEW.title), 'A') ||
-            setweight(to_tsvector('english', (
-                SELECT users.name
-                FROM users
-                WHERE users.id = NEW.author_id
-            )), 'A') ||
-            setweight(to_tsvector('english', (
-                SELECT users.handle
-                FROM users
-                WHERE users.id = NEW.author_id
-            )), 'A') ||
-            setweight(to_tsvector('english', coalesce(NEW.text, '')), 'B') ||
-            setweight(to_tsvector('english', (
-                SELECT coalesce(string_agg(comment.content, ' '), '')
-                FROM comment
-                WHERE comment.post_id = NEW.id
-            )), 'C')
-        );
-    END IF;
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER post_search_update
-BEFORE INSERT OR UPDATE ON post
-FOR EACH ROW
-EXECUTE PROCEDURE post_search_update();
-
-CREATE FUNCTION post_comment_search_update()
-RETURNS TRIGGER AS $$
-BEGIN
-    IF TG_OP = 'INSERT' OR TG_OP = 'UPDATE' THEN
-        IF TG_OP = 'UPDATE' AND NEW.content <> OLD.content THEN
-            UPDATE post
-            SET tsvectors = (
-                setweight(to_tsvector('english', post.title), 'A') ||
-                setweight(to_tsvector('english', coalesce((
-                    SELECT users.name
-                    FROM users
-                    WHERE users.id = post.author_id
-                ), '')), 'A') ||
-                setweight(to_tsvector('english', coalesce((
-                    SELECT users.handle
-                    FROM users
-                    WHERE users.id = post.author_id
-                ), '')), 'A') ||
-                setweight(to_tsvector('english', coalesce(post.text, '')), 'B') ||
-                setweight(to_tsvector('english', (
-                    SELECT coalesce(string_agg(comment.content, ' '), '')
-                    FROM comment
-                    WHERE comment.post_id = post.id
-                )), 'C'))
-            WHERE post.id = NEW.post_id;
-        END IF;
-
-        RETURN NEW;
-
-    ELSIF TG_OP = 'DELETE' THEN
-        UPDATE post
-        SET tsvectors = (
-            setweight(to_tsvector('english', post.title), 'A') ||
-            setweight(to_tsvector('english', coalesce((
-                SELECT users.name
-                FROM users
-                WHERE users.id = post.author_id
-            ), '')), 'A') ||
-            setweight(to_tsvector('english', coalesce((
-                SELECT users.handle
-                FROM users
-                WHERE users.id = post.author_id
-            ), '')), 'A') ||
-            setweight(to_tsvector('english', coalesce(post.text, '')), 'B') ||
-            setweight(to_tsvector('english', (
-                SELECT coalesce(string_agg(comment.content, ' '), '')
-                FROM comment
-                WHERE comment.post_id = post.id
-            )), 'C'))
-        WHERE post.id = OLD.post_id;
-
-        RETURN OLD;
-    END IF;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER post_comment_search_update
-AFTER INSERT OR UPDATE OR DELETE ON comment
-FOR EACH ROW
-EXECUTE PROCEDURE post_comment_search_update();
-
-CREATE FUNCTION post_author_search_update()
-RETURNS TRIGGER AS $$
-BEGIN
-    IF TG_OP = 'UPDATE' AND (OLD.name <> NEW.name OR OLD.handle <> NEW.handle)
-    THEN 
-        UPDATE post
-        SET tsvectors = (
-            setweight(to_tsvector('english', post.title), 'A') ||
-            setweight(to_tsvector('english', coalesce((
-                SELECT users.name
-                FROM users
-                WHERE users.id = post.author_id
-            ), '')), 'A') ||
-            setweight(to_tsvector('english', coalesce((
-                SELECT users.handle
-                FROM users
-                WHERE users.id = post.author_id
-            ), '')), 'A') ||
-            setweight(to_tsvector('english', coalesce(post.text, '')), 'B') ||
-            setweight(to_tsvector('english', (
-                SELECT coalesce(string_agg(comment.content, ' '), '')
-                FROM comment
-                WHERE comment.post_id = post.id
-            )), 'C'))
-        WHERE post.author_id = NEW.id;
-    END IF;
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER post_author_search_update
-AFTER UPDATE ON users
-FOR EACH ROW
-EXECUTE PROCEDURE post_author_search_update();
-
-CREATE INDEX post_search_idx ON post USING GiST (tsvectors);
-
-
--- IDX12
-
-ALTER TABLE users
-ADD COLUMN tsvectors TSVECTOR;
-
-CREATE FUNCTION user_search_update()
-RETURNS TRIGGER AS $$
-BEGIN
-    IF TG_OP = 'INSERT'
-    OR (TG_OP = 'UPDATE' AND (NEW.name <> OLD.name OR NEW.handle <> OLD.handle OR NEW.description <> OLD.description))
-    THEN
-        NEW.tsvectors = (
-            setweight(to_tsvector('english', coalesce(NEW.name, '')), 'A') ||
-            setweight(to_tsvector('english', coalesce(NEW.handle, '')), 'A') ||
-            setweight(to_tsvector('english', coalesce(NEW.description, '')), 'B')
-        );
-    END IF;
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER user_search_update
-BEFORE INSERT OR UPDATE ON users 
-FOR EACH ROW
-EXECUTE PROCEDURE user_search_update();
-
-CREATE INDEX user_search_idx ON users USING GiST (tsvectors);
-
-
--- IDX13
-
-ALTER TABLE groups
-ADD COLUMN tsvectors TSVECTOR;
-
-CREATE FUNCTION group_search_update()
-RETURNS TRIGGER AS $$
-BEGIN
-    IF TG_OP = 'INSERT'
-    OR (TG_OP = 'UPDATE' AND (NEW.name <> OLD.name OR NEW.description <> OLD.description))
-    THEN
-        NEW.tsvectors = (
-            setweight(to_tsvector('english', NEW.name), 'A') ||
-            setweight(to_tsvector('english', coalesce(NEW.description, '')), 'B')            
-        );
-    END IF;
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER group_search_update
-BEFORE INSERT OR UPDATE ON groups
-FOR EACH ROW
-EXECUTE PROCEDURE group_search_update();
-
-CREATE INDEX group_search_idx ON groups USING GIN (tsvectors);
 
 
 -- * ====================================================
