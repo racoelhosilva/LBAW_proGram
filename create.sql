@@ -265,7 +265,6 @@ CREATE TABLE group_post (
     FOREIGN KEY (post_id) REFERENCES post (id) ON UPDATE CASCADE,
     FOREIGN KEY (group_id) REFERENCES groups (id) ON UPDATE CASCADE
 );
--- TODO: Check if post author is a member of the group
 
 CREATE TABLE group_join_request (
     id SERIAL,
