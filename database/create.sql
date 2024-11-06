@@ -647,14 +647,14 @@ RETURNS TRIGGER AS $$
 BEGIN 
     IF TG_OP = 'INSERT' THEN 
         UPDATE post
-        SET comments = (SELECT COUNT(*) FROM comment WHERE post_id = id)
+        SET comments = (SELECT COUNT(*) FROM comment WHERE comment.post_id = post.id)
         WHERE id = NEW.post_id;
 
         RETURN NEW;
 
     ELSIF TG_OP = 'DELETE' THEN 
         UPDATE post
-        SET comments = (SELECT COUNT(*) FROM comment WHERE post_id = id)
+        SET comments = (SELECT COUNT(*) FROM comment WHERE comment.post_id = post.id)
         WHERE id = OLD.post_id;
 
         RETURN OLD;
