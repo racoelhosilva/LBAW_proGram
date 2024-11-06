@@ -104,7 +104,7 @@ INSERT INTO user_stats (user_id, github_url, gitlab_url, linkedin_url) VALUES
     (48, 'http://www.ortega.com/', 'NULL', 'NULL'),
     (49, 'https://www.watson.net/', 'http://www.brooks.biz/', 'https://www.savage-johnson.net/'),
     (50, 'NULL', 'NULL', 'NULL'),
-    (51, 'NULL', 'NULL', 'NULL');
+    (51, 'https://github.com/HenriqueSFernandes', 'NULL', 'https://www.linkedin.com/in/-henriquesfernandes/');
 INSERT INTO administrator (name, email, password, register_timestamp) VALUES
     ('Katherine Herrera', 'kherrera@program.com', 'admin-password789', '2023-11-05 20:37:46'),
     ('John Watson', 'johnwatson@program.com', 'admin-password1011', '2023-11-05 20:37:46');
@@ -9304,11 +9304,11 @@ INSERT INTO token (user_id, administrator_id, value, creation_timestamp, validit
     (46, NULL, '267fceb6-cac9-4a98-9062-aa7784b40b10', '2024-07-25 03:53:02', '2025-05-06 20:20:46');
 
 INSERT INTO groups (owner_id, name, description, creation_timestamp, is_public) VALUES
-    (1, 'Full Stack Developers', 'Book huge kid for each expect detail. Political receive above film participant help.\nWeight hour audience simple relationship nice. Save hope physical someone.', '2024-02-27 10:02:34', TRUE),
-    (5, 'DevOps Enthusiasts', 'Source price present direction. Prevent cultural fine economic make among yeah.\nPoint significant despite child commercial more. Story physical recent huge chair. Enter a some.', '2024-01-11 16:09:13', TRUE),
-    (26, 'Game Dev Community', 'Writer challenge blue memory girl meeting herself everyone. Reveal require late company beat last.', '2023-12-02 12:31:53', TRUE),
-    (20, 'Open Source Gurus', 'Capital believe prevent economic. Increase police exactly author. Guy station us her power. Expert form letter line.\nPart six meeting.', '2023-12-21 06:27:13', TRUE),
-    (36, 'AI & Machine Learning Innovators', 'Finish onto pull arrive employee here. Prove focus become improve. Southern politics until young. Development southern step tree.', '2024-01-30 10:43:56', TRUE);
+    (1, 'Full Stack Developers', 'Welcome to the Full Stack Developers group! This community is dedicated to developers who work on both the front-end and back-end of applications. Whether you''re a seasoned full stack developer or just starting out, this is the place to share knowledge, ask questions, and collaborate on projects. Join us to discuss best practices, new technologies, frameworks, and tools that help in building comprehensive and efficient applications. Let''s build amazing things together!', '2024-02-27 10:02:34', TRUE),
+    (5, 'DevOps Enthusiasts', 'Welcome to the DevOps Enthusiasts group! This community is for professionals and enthusiasts who are passionate about DevOps practices and culture. Share your experiences, tools, and techniques for continuous integration, continuous delivery, automation, and infrastructure as code. Let''s work together to improve our workflows and deliver software more efficiently and reliably.', '2024-01-11 16:09:13', TRUE),
+    (26, 'Game Dev Community', 'Welcome to the Game Dev Community! This group is for game developers, designers, and enthusiasts who are passionate about creating games. Share your projects, get feedback, and collaborate with others in the industry. Discuss game design, programming, art, sound, and the latest tools and technologies in game development. Let''s create amazing games together!', '2023-12-02 12:31:53', TRUE),
+    (20, 'Open Source Gurus', 'Welcome to the Open Source Gurus group! This community is for developers and enthusiasts who are passionate about open source software. Share your projects, collaborate on open source initiatives, and discuss the latest trends and tools in the open source world. Let''s contribute to and support the open source community together!', '2023-12-21 06:27:13', TRUE),
+    (36, 'AI & Machine Learning Innovators', 'Welcome to the AI & Machine Learning Innovators group! This community is for professionals and enthusiasts who are passionate about artificial intelligence and machine learning. Share your knowledge, ask questions, and collaborate on AI and ML projects. Discuss the latest trends, tools, and techniques in the field. Let''s innovate and push the boundaries of AI and ML together!', '2024-01-30 10:43:56', TRUE);
 
 INSERT INTO group_member (user_id, group_id, join_timestamp) VALUES
     (2, 3, '2024-07-05 16:53:59'),
