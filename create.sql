@@ -36,31 +36,24 @@ CREATE TYPE notification_type AS ENUM (
 -- * Table creation
 -- * ====================================================
 
-CREATE TABLE user_stats (
-    id SERIAL,
-    github_url TEXT,
-    gitlab_url TEXT,
-    linkedin_url TEXT,
-    PRIMARY KEY (id)
-);
-
 -- Plural used because "user" is a reserved keyword in PostgreSQL
 CREATE TABLE users (
     id SERIAL,
-    user_stats_id INTEGER NOT NULL UNIQUE,
-    name TEXT NOT NULL,
-    email TEXT NOT NULL UNIQUE,
-    password TEXT NOT NULL,
+    name TEXT,
+    email TEXT UNIQUE,
+    password TEXT,
     register_timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    handle TEXT NOT NULL UNIQUE,
-    is_public BOOLEAN NOT NULL,
+    handle TEXT UNIQUE,
+    is_public BOOLEAN,
+    is_deleted BOOLEAN NOT NULL DEFAULT FALSE,
     description TEXT,
     profile_picture_url TEXT,
     banner_image_url TEXT,
-    num_followers INTEGER NOT NULL DEFAULT 0,
-    num_following INTEGER NOT NULL DEFAULT 0,
+    num_followers INTEGER DEFAULT 0,
+    num_following INTEGER DEFAULT 0,
     PRIMARY KEY (id),
-    FOREIGN KEY (user_stats_id) REFERENCES user_stats (id) ON UPDATE CASCADE
+    CONSTRAINT user_info_not_null CHECK (is_deleted OR (user_stats_id IS NOT NULL AND name IS NOT NULL AND email IS NOT NULL AND password IS NOT NULL AND handle IS NOT NULL AND is_public IS NOT NULL)),
+    CONSTRAINT user_info_null_if_deleted CHECK (NOT is_deleted OR (user_stats_id IS NULL AND name IS NULL AND email IS NULL AND password IS NULL AND handle IS NULL AND is_public IS NULL))
 );
 
 CREATE TABLE administrator (
@@ -70,6 +63,16 @@ CREATE TABLE administrator (
     password TEXT NOT NULL,
     register_timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id)
+);
+
+CREATE TABLE user_stats (
+    id SERIAL,
+    user_id INTEGER UNIQUE,
+    github_url TEXT,
+    gitlab_url TEXT,
+    linkedin_url TEXT,
+    PRIMARY KEY (id),
+    FOREIGN KEY (user_id) REFERENCES users (id) ON UPDATE CASCADE
 );
 
 CREATE TABLE language (
@@ -111,7 +114,7 @@ CREATE TABLE top_project (
 
 CREATE TABLE post (
     id SERIAL,
-    author_id INTEGER,
+    author_id INTEGER NOT NULL,
     title TEXT NOT NULL,
     text TEXT,
     creation_timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -125,7 +128,7 @@ CREATE TABLE post (
 
 CREATE TABLE post_like (
     id SERIAL,
-    liker_id INTEGER,
+    liker_id INTEGER NOT NULL,
     post_id INTEGER NOT NULL,
     timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id),
@@ -159,7 +162,7 @@ CREATE TABLE post_tag (
 CREATE TABLE comment (
     id SERIAL,
     post_id INTEGER NOT NULL,
-    author_id INTEGER,
+    author_id INTEGER NOT NULL,
     content TEXT NOT NULL,
     likes INTEGER NOT NULL DEFAULT 0,
     timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -171,7 +174,7 @@ CREATE TABLE comment (
 CREATE TABLE comment_like (
     id SERIAL,
     comment_id INTEGER NOT NULL,
-    liker_id INTEGER,
+    liker_id INTEGER NOT NULL,
     timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id),
     FOREIGN KEY (comment_id) REFERENCES comment (id) ON UPDATE CASCADE,
@@ -180,8 +183,8 @@ CREATE TABLE comment_like (
 
 CREATE TABLE follow (
     id SERIAL,
-    follower_id INTEGER,
-    followed_id INTEGER,
+    follower_id INTEGER NOT NULL,
+    followed_id INTEGER NOT NULL,
     timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id),
     UNIQUE (follower_id, followed_id),
@@ -374,16 +377,16 @@ BEGIN
             UPDATE post
             SET tsvectors = (
                 setweight(to_tsvector('english', post.title), 'A') ||
-                setweight(to_tsvector('english', (
+                setweight(to_tsvector('english', coalesce((
                     SELECT users.name
                     FROM users
                     WHERE users.id = post.author_id
-                )), 'A') ||
-                setweight(to_tsvector('english', (
+                ), '')), 'A') ||
+                setweight(to_tsvector('english', coalesce((
                     SELECT users.handle
                     FROM users
                     WHERE users.id = post.author_id
-                )), 'A') ||
+                ), '')), 'A') ||
                 setweight(to_tsvector('english', coalesce(post.text, '')), 'B') ||
                 setweight(to_tsvector('english', (
                     SELECT coalesce(string_agg(comment.content, ' '), '')
@@ -399,16 +402,16 @@ BEGIN
         UPDATE post
         SET tsvectors = (
             setweight(to_tsvector('english', post.title), 'A') ||
-            setweight(to_tsvector('english', (
+            setweight(to_tsvector('english', coalesce((
                 SELECT users.name
                 FROM users
                 WHERE users.id = post.author_id
-            )), 'A') ||
-            setweight(to_tsvector('english', (
+            ), '')), 'A') ||
+            setweight(to_tsvector('english', coalesce((
                 SELECT users.handle
                 FROM users
                 WHERE users.id = post.author_id
-            )), 'A') ||
+            ), '')), 'A') ||
             setweight(to_tsvector('english', coalesce(post.text, '')), 'B') ||
             setweight(to_tsvector('english', (
                 SELECT coalesce(string_agg(comment.content, ' '), '')
@@ -435,16 +438,16 @@ BEGIN
         UPDATE post
         SET tsvectors = (
             setweight(to_tsvector('english', post.title), 'A') ||
-            setweight(to_tsvector('english', (
+            setweight(to_tsvector('english', coalesce((
                 SELECT users.name
                 FROM users
                 WHERE users.id = post.author_id
-            )), 'A') ||
-            setweight(to_tsvector('english', (
+            ), '')), 'A') ||
+            setweight(to_tsvector('english', coalesce((
                 SELECT users.handle
                 FROM users
                 WHERE users.id = post.author_id
-            )), 'A') ||
+            ), '')), 'A') ||
             setweight(to_tsvector('english', coalesce(post.text, '')), 'B') ||
             setweight(to_tsvector('english', (
                 SELECT coalesce(string_agg(comment.content, ' '), '')
@@ -477,8 +480,8 @@ BEGIN
     OR (TG_OP = 'UPDATE' AND (NEW.name <> OLD.name OR NEW.handle <> OLD.handle OR NEW.description <> OLD.description))
     THEN
         NEW.tsvectors = (
-            setweight(to_tsvector('english', NEW.name), 'A') ||
-            setweight(to_tsvector('english', NEW.handle), 'A') ||
+            setweight(to_tsvector('english', coalesce(NEW.name, '')), 'A') ||
+            setweight(to_tsvector('english', coalesce(NEW.handle, '')), 'A') ||
             setweight(to_tsvector('english', coalesce(NEW.description, '')), 'B')
         );
     END IF;
@@ -507,7 +510,7 @@ BEGIN
     THEN
         NEW.tsvectors = (
             setweight(to_tsvector('english', NEW.name), 'A') ||
-            setweight(to_tsvector('english', coalesce(NEW.description, 'batata')), 'B')            
+            setweight(to_tsvector('english', coalesce(NEW.description, '')), 'B')            
         );
     END IF;
     RETURN NEW;
@@ -529,6 +532,7 @@ CREATE INDEX group_search_idx ON groups USING GIN (tsvectors);
 -- * ====================================================
 -- * Trigger creation: Notifications
 -- * ====================================================
+
 -- TRIGGER01 
 CREATE FUNCTION notify_user_on_comment() 
 RETURNS TRIGGER AS $$
@@ -577,7 +581,7 @@ AFTER INSERT ON comment_like
 FOR EACH ROW
 EXECUTE FUNCTION notify_user_on_comment_like();
 
---TRIGGER04 
+-- TRIGGER04 
 CREATE FUNCTION notify_user_on_follow()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -597,7 +601,8 @@ EXECUTE FUNCTION notify_user_on_follow();
 -- * ====================================================
 -- * Trigger creation: Group Owner
 -- * ====================================================
---TRIGGER05 
+
+-- TRIGGER05
 CREATE FUNCTION set_group_owner_as_member()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -680,7 +685,7 @@ EXECUTE FUNCTION handle_follow_request_acceptance();
 CREATE FUNCTION enforce_different_post_liker()
 RETURNS TRIGGER AS $$
 BEGIN
-    IF NEW.liker_id IS NOT NULL AND NEW.liker_id = (SELECT author_id FROM post WHERE id = NEW.post_id) THEN
+    IF NEW.liker_id = (SELECT author_id FROM post WHERE id = NEW.post_id) THEN
         RAISE EXCEPTION 'A user cannot like their own post';
     END IF;
 
@@ -697,7 +702,7 @@ EXECUTE FUNCTION enforce_different_post_liker();
 CREATE FUNCTION enforce_different_comment_liker()
 RETURNS TRIGGER AS $$
 BEGIN
-    IF NEW.liker_id IS NOT NULL AND NEW.liker_id = (SELECT author_id FROM comment WHERE id = NEW.comment_id) THEN
+    IF NEW.liker_id = (SELECT author_id FROM comment WHERE id = NEW.comment_id) THEN
         RAISE EXCEPTION 'A user cannot like their own comment';
     END IF;
 
@@ -743,90 +748,6 @@ CREATE TRIGGER enforce_max_top_projects
 BEFORE INSERT ON top_project
 FOR EACH ROW
 EXECUTE FUNCTION enforce_max_top_projects();
-
---Trigger 16
-CREATE FUNCTION verify_post_author_not_null()
-RETURNS TRIGGER AS $$
-BEGIN
-    IF NEW.author_id IS NULL THEN
-        RAISE EXCEPTION 'author_id cannot be null';
-    END IF;
-    
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER verify_post_author_not_null
-BEFORE INSERT ON post
-FOR EACH ROW
-EXECUTE FUNCTION verify_post_author_not_null();
-
-CREATE FUNCTION verify_comment_author_not_null()
-RETURNS TRIGGER AS $$
-BEGIN
-    IF NEW.author_id IS NULL THEN
-        RAISE EXCEPTION 'author_id cannot be null';
-    END IF;
-    
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER verify_comment_author_not_null
-BEFORE INSERT ON comment
-FOR EACH ROW
-EXECUTE FUNCTION verify_comment_author_not_null();
-
-CREATE FUNCTION verify_liker_id_not_null_in_post_like()
-RETURNS TRIGGER AS $$
-BEGIN
-    IF NEW.liker_id IS NULL THEN
-        RAISE EXCEPTION 'liker_id cannot be null';
-    END IF;
-    
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER verify_liker_id_not_null_in_post_like
-BEFORE INSERT ON post_like
-FOR EACH ROW
-EXECUTE FUNCTION verify_liker_id_not_null_in_post_like();
-
-CREATE FUNCTION verify_liker_id_not_null_in_comment_like()
-RETURNS TRIGGER AS $$
-BEGIN
-    IF NEW.liker_id IS NULL THEN
-        RAISE EXCEPTION 'liker_id cannot be null';
-    END IF;
-    
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER verify_liker_id_not_null_in_comment_like
-BEFORE INSERT ON comment_like
-FOR EACH ROW
-EXECUTE FUNCTION verify_liker_id_not_null_in_comment_like();
-
-CREATE FUNCTION verify_follow_users_fk_not_null()
-RETURNS TRIGGER AS $$
-BEGIN
-    IF NEW.follower_id IS NULL THEN
-        RAISE EXCEPTION 'follower_id cannot be null';
-    END IF;
-    
-    IF NEW.followed_id IS NULL THEN
-        RAISE EXCEPTION 'followed_id cannot be null';
-    END IF;
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER verify_follow_users_fk_not_null
-BEFORE INSERT ON follow
-FOR EACH ROW
-EXECUTE FUNCTION verify_follow_users_fk_not_null();
 
 
 -- * ====================================================
@@ -950,14 +871,14 @@ RETURNS TRIGGER AS $$
 BEGIN
     IF TG_OP = 'INSERT' THEN
         UPDATE groups 
-        SET member_count = ( SELECT COUNT (*) from group_member where group_id = id)
+        SET member_count = (SELECT COUNT (*) from group_member where group_id = id)
         WHERE id = NEW.group_id;
 
         RETURN NEW;
 
     ELSIF TG_OP = 'DELETE' THEN 
         UPDATE groups 
-        SET member_count = ( SELECT COUNT (*) from group_member where group_id = id)
+        SET member_count = (SELECT COUNT (*) from group_member where group_id = id)
         WHERE id = OLD.group_id;
 
         RETURN OLD;
@@ -971,80 +892,3 @@ CREATE TRIGGER update_member_count
 AFTER INSERT OR DELETE ON group_member
 FOR EACH ROW
 EXECUTE FUNCTION update_member_count();
-
-
-
--- * ====================================================
--- * Transactions
--- * ====================================================
-
--- Post creation 
--- BEGIN TRANSACTION;
--- SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
-
--- -- Create post
--- INSERT INTO post (author_id, title, text, is_announcement, is_public)
--- VALUES ($author_id, $title, $text, $is_announcement, $is_public);
-
--- -- Associate tag
--- INSERT INTO post_tag (post_id, tag_id)
--- VALUES (currval('post_id_seq'), $tag_id);
-
--- -- Add attachment
--- INSERT INTO post_attachment (post_id, url, type)
--- VALUES (currval('post_id_seq'), $attachment_url, $attachment_type);
-
--- END TRANSACTION;
-
--- User registration
--- BEGIN TRANSACTION;
--- SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
-
--- INSERT INTO user_stats (github_url, gitlab_url, linkedin_url)
--- VALUES ($github_url, $gitlab_url, $linkedin_url);
-
--- INSERT INTO users (user_stats_id, name, email, password, handle, is_public, description, profile_picture_url, banner_image_url)
--- VALUES (currval('user_stats_id_seq'), $name, $email, $password, $is_public, $description, $profile_picture_url, $banner_image_url);
-
--- END TRANSACTION;
-
--- Delete post
--- BEGIN TRANSACTION;
--- SET TRANSACTION ISOLATION LEVEL SERIALIZABLE READ WRITE;
-
--- -- Delete associated notifications
--- DELETE FROM notification
--- WHERE post_id = $post_id
--- OR comment_id IN (SELECT id FROM comment WHERE post_id = $post_id)
--- OR post_like_id IN (SELECT id FROM post_like WHERE post_id = $post_id)
--- OR comment_like_id IN (SELECT comment_like.id FROM comment_like JOIN comment ON comment_like.comment_id = comment.id WHERE comment.post_id = $post_id);
-
--- -- Delete associated comment likes
--- DELETE FROM comment_like
--- WHERE comment_id IN (SELECT id FROM comment WHERE post_id = $post_id);
-
--- -- Delete associated comments
--- DELETE FROM comment
--- WHERE post_id = $post_id;
-
--- -- Delete post likes
--- DELETE FROM post_like
--- WHERE post_id = $post_id;
-
--- -- Delete post tags
--- DELETE FROM post_tag
--- WHERE post_id = $post_id;
-
--- -- Delete post attachments
--- DELETE FROM post_attachment
--- WHERE post_id = $post_id;
-
--- Delete group association
--- DELETE FROM group_post
--- WHERE post_id = $post_id;
-
--- -- Delete post
--- DELETE FROM post
--- WHERE id = $post_id;
-
--- END TRANSACTION;
