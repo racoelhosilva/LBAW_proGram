@@ -1,0 +1,24 @@
+services:
+
+  postgres:
+    image: postgres:16.4
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: pg!password
+    ports:
+      - "5432:5432"
+
+  pgadmin:
+    image: dpage/pgadmin4:8
+    environment:
+      PGADMIN_DEFAULT_EMAIL: postgres@lbaw.com
+      PGADMIN_DEFAULT_PASSWORD: pg!password
+
+      # Disable user passwords. Only to be used in local single-user model.
+      PGADMIN_CONFIG_SERVER_MODE: "False"
+      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: "False"
+    ports:
+      - "4321:80"
+    depends_on:
+      - postgres
