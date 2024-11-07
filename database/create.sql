@@ -343,16 +343,16 @@ BEGIN
     THEN
         NEW.tsvectors = (
             setweight(to_tsvector('english', NEW.title), 'A') ||
-            setweight(to_tsvector('english', (
+            setweight(to_tsvector('english', coalesce((
                 SELECT users.name
                 FROM users
                 WHERE users.id = NEW.author_id
-            )), 'A') ||
-            setweight(to_tsvector('english', (
+            ), '')), 'A') ||
+            setweight(to_tsvector('english', coalesce((
                 SELECT users.handle
                 FROM users
                 WHERE users.id = NEW.author_id
-            )), 'A') ||
+            ), '')), 'A') ||
             setweight(to_tsvector('english', coalesce(NEW.text, '')), 'B') ||
             setweight(to_tsvector('english', (
                 SELECT coalesce(string_agg(comment.content, ' '), '')
