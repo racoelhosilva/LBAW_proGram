@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-
 use App\Models\Item;
+use Illuminate\Http\Request;
 
 class ItemController extends Controller
 {
@@ -28,6 +27,7 @@ class ItemController extends Controller
 
         // Save the item and return it as JSON.
         $item->save();
+
         return response()->json($item);
     }
 
@@ -47,6 +47,7 @@ class ItemController extends Controller
 
         // Save the item and return it as JSON.
         $item->save();
+
         return response()->json($item);
     }
 
@@ -63,6 +64,7 @@ class ItemController extends Controller
 
         // Delete the item and return it as JSON.
         $item->delete();
+
         return response()->json($item);
     }
 }

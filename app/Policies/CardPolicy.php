@@ -2,9 +2,8 @@
 
 namespace App\Policies;
 
-use App\Models\User;
 use App\Models\Card;
-
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
 class CardPolicy
@@ -49,7 +48,7 @@ class CardPolicy
      */
     public function delete(User $user, Card $card): bool
     {
-      // Only a card owner can delete it.
-      return $user->id === $card->user_id;
+        // Only a card owner can delete it.
+        return $user->id === $card->user_id;
     }
 }

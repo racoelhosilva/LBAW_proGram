@@ -2,12 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-
-use Illuminate\View\View;
-use Illuminate\Support\Facades\Auth;
-
 use App\Models\Card;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\View\View;
 
 class CardController extends Controller
 {
@@ -20,11 +18,11 @@ class CardController extends Controller
         $card = Card::findOrFail($id);
 
         // Check if the current user can see (show) the card.
-        $this->authorize('show', $card);  
+        $this->authorize('show', $card);
 
         // Use the pages.card template to display the card.
         return view('pages.card', [
-            'card' => $card
+            'card' => $card,
         ]);
     }
 
@@ -34,7 +32,7 @@ class CardController extends Controller
     public function list()
     {
         // Check if the user is logged in.
-        if (!Auth::check()) {
+        if (! Auth::check()) {
             // Not logged in, redirect to login.
             return redirect('/login');
 
@@ -51,7 +49,7 @@ class CardController extends Controller
 
             // Use the pages.cards template to display all cards.
             return view('pages.cards', [
-                'cards' => $cards
+                'cards' => $cards,
             ]);
         }
     }
@@ -73,6 +71,7 @@ class CardController extends Controller
 
         // Save the card and return it as JSON.
         $card->save();
+
         return response()->json($card);
     }
 
@@ -89,6 +88,7 @@ class CardController extends Controller
 
         // Delete the card and return it as JSON.
         $card->delete();
+
         return response()->json($card);
     }
 }
