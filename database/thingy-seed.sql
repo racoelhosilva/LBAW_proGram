@@ -36,6 +36,19 @@ CREATE TABLE items (
   done BOOLEAN NOT NULL DEFAULT FALSE
 );
 
+CREATE TABLE ban (
+    id SERIAL,
+    user_id INTEGER NOT NULL,
+    administrator_id INTEGER NOT NULL,
+    start TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    reason TEXT NOT NULL,
+    duration INTERVAL NOT NULL,
+    is_active BOOLEAN NOT NULL DEFAULT TRUE,
+    PRIMARY KEY (id),
+    FOREIGN KEY (user_id) REFERENCES users (id) ON UPDATE CASCADE,
+    FOREIGN KEY (administrator_id) REFERENCES administrator (id) ON UPDATE CASCADE
+);
+
 --
 -- Insert value.
 --

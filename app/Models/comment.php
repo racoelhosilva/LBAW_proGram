@@ -1,0 +1,45 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class Comment extends Model
+{
+    use HasFactory;
+
+      /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
+    protected $fillable = [
+        'post_id',
+        'author_id',
+        'content',
+        'likes',
+        'timestamp',
+    ];
+
+    // The attributes that should be cast
+    protected $casts = [
+        'timestamp' => 'datetime',
+    ];
+
+    /**
+     * Get the post that the comment belongs to.
+     */
+    public function post()
+    {
+        return $this->belongsTo(Post::class, 'post_id');
+    }
+
+    /**
+     * Get the user (author) who made the comment.
+     */
+    public function author()
+    {
+        return $this->belongsTo(User::class, 'author_id');
+    }
+}
