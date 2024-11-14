@@ -2,7 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Relations\Model;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class FollowRequest extends Model
 {
@@ -18,8 +19,6 @@ class FollowRequest extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'follower_id',
-        'followed_id',
         'creation_timestamp',
         'status',
     ];
@@ -36,7 +35,7 @@ class FollowRequest extends Model
     /**
      * Get the follower user who requested to follow another user.
      */
-    public function follower()
+    public function follower(): BelongsTo
     {
         return $this->belongsTo(User::class, 'follower_id');
     }
@@ -44,7 +43,7 @@ class FollowRequest extends Model
     /**
      * Get the followed user who received the follow request.
      */
-    public function followed()
+    public function followed(): BelongsTo
     {
         return $this->belongsTo(User::class, 'followed_id');
     }

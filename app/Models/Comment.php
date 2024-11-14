@@ -3,22 +3,21 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Model;
 
 class Comment extends Model
 {
     use HasFactory;
-    
+
     protected $table = 'comment';
 
-      /**
+    /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
      */
     protected $fillable = [
-        'post_id',
-        'author_id',
         'content',
         'likes',
         'timestamp',
@@ -32,7 +31,7 @@ class Comment extends Model
     /**
      * Get the post that the comment belongs to.
      */
-    public function post()
+    public function post(): BelongsTo
     {
         return $this->belongsTo(Post::class, 'post_id');
     }
@@ -40,7 +39,7 @@ class Comment extends Model
     /**
      * Get the user (author) who made the comment.
      */
-    public function author()
+    public function author(): BelongsTo
     {
         return $this->belongsTo(User::class, 'author_id');
     }

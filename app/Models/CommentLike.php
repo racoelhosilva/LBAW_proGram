@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class CommentLike extends Model
 {
@@ -17,18 +18,16 @@ class CommentLike extends Model
 
 
     protected $fillable = [
-        'liker_id',
-        'comment_id',
         'timestamp',
     ];
 
 
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'liker_id');
     }
 
-    public function comment()
+    public function comment(): BelongsTo
     {
         return $this->belongsTo(Comment::class, 'comment_id');
     }

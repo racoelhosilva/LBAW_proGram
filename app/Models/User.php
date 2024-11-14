@@ -58,11 +58,8 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-    /**
-     * Get the cards for a user.
-     */
-    public function cards(): HasMany
-    {
-        return $this->hasMany(Card::class);
-    }
+	public function groups(){
+		return $this->belongsToMany(Group::class, "group_member")->withPivot("join_timestamp");
+	}
+
 }
