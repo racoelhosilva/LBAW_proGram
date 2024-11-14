@@ -26,6 +26,16 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'register_timestamp',
+        'handle',
+        'is_public',
+        'is_deleted',
+        'description',
+        'profile_picture_url',
+        'banner_image_url',
+        'num_followers',
+        'num_following',
+        'tsvectors',
     ];
 
     /**
