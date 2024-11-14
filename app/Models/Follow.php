@@ -7,7 +7,11 @@ use Illuminate\Database\Eloquent\Relations\Model;
 class Follow extends Model
 {
 
+    protected $table = 'follow';
+
     public $timestamps = false;
+
+    
 
     /**
      * Get the user who is following (follower).
