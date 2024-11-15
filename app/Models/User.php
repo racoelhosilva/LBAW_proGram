@@ -75,4 +75,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Post::class, 'author_id');
     }
+
+    public function groupInvitations(): HasMany
+    {
+        return $this->hasMany(GroupInvitation::class, 'invitee_id');
+    }
 }
