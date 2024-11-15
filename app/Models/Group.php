@@ -36,4 +36,14 @@ class Group extends Model
     {
         return $this->belongsToMany(User::class, 'group_member')->withPivot('join_timestamp');
     }
+
+    public function joinRequests(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'group_join_request', 'group_id', 'requester_id')->withPivot('creation_timestamp', 'status');
+    }
+
+    public function posts(): BelongsToMany
+    {
+        return $this->belongsToMany(Post::class, 'group_post', 'group_id', 'post_id');
+    }
 }
