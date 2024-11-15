@@ -80,4 +80,14 @@ class User extends Authenticatable
     {
         return $this->hasMany(GroupInvitation::class, 'invitee_id');
     }
+
+    public function followRequests(): HasMany
+    {
+        return $this->hasMany(FollowRequest::class, 'followed_id');
+    }
+
+    public function notifications(): HasMany
+    {
+        return $this->hasMany(Notification::class, 'receiver_id');
+    }
 }
