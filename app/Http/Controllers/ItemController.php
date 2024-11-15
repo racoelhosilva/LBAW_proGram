@@ -13,7 +13,7 @@ class ItemController extends Controller
     public function create(Request $request, $card_id)
     {
         // Create a blank new item.
-        $item = new Item();
+        $item = new Item;
 
         // Set item's card.
         $item->card_id = $card_id;
