@@ -2,21 +2,16 @@ mkdir -p .git/hooks
 tee .git/hooks/pre-commit << EOF
 #!/bin/bash
 
-function ide_helper() {
-    php artisan ide-helper:generate 
-    php artisan ide-helper:eloquent
-    php artisan ide-helper:models -N
-}
+# IDE Helper
+php artisan ide-helper:generate > /dev/null
+php artisan ide-helper:eloquent > /dev/null
+php artisan ide-helper:models -N > /dev/null
 
-function laravel_pint() {
-    ./vendor/bin/pint --repair
-}
+# Laravel Pint
+./vendor/bin/pint --repair > /dev/null
 
-if ! ide_helper; then
-    echo "IDE Helper files regenerated or an error occurred" >&2
-    exit 1
-elif ! laravel_pint; then
-    echo "Laravel Pint reformatted files" >&2
+if ! git diff --quiet; then
+    echo "Some files were changed. Please add the changes to the commit." >&2
     exit 1
 fi
 EOF
