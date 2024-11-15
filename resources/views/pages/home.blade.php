@@ -2,7 +2,7 @@
 
 @section('content')
     <div>
-        <h1>Users You Might Nnow</h1>
+        <h1>Users You Might Now</h1>
         <p>No users at the moment</p>
     </div>
     <div>
