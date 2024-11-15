@@ -4,7 +4,9 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 // Added to define Eloquent relationships.
@@ -26,6 +28,16 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'register_timestamp',
+        'handle',
+        'is_public',
+        'is_deleted',
+        'description',
+        'profile_picture_url',
+        'banner_image_url',
+        'num_followers',
+        'num_following',
+        'tsvectors',
     ];
 
     /**
@@ -46,13 +58,36 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'register_timestamp' => 'datetime',
     ];
 
-    /**
-     * Get the cards for a user.
-     */
-    public function cards(): HasMany
+    public function stats(): HasOne
     {
-        return $this->hasMany(Card::class);
+        return $this->hasOne(UserStats::class);
+    }
+
+    public function groups(): BelongsToMany
+    {
+        return $this->belongsToMany(Group::class, 'group_member')->withPivot('join_timestamp');
+    }
+
+    public function posts(): HasMany
+    {
+        return $this->hasMany(Post::class, 'author_id');
+    }
+
+    public function groupInvitations(): HasMany
+    {
+        return $this->hasMany(GroupInvitation::class, 'invitee_id');
+    }
+
+    public function followRequests(): HasMany
+    {
+        return $this->hasMany(FollowRequest::class, 'followed_id');
+    }
+
+    public function notifications(): HasMany
+    {
+        return $this->hasMany(Notification::class, 'receiver_id');
     }
 }
