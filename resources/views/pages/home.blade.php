@@ -3,7 +3,15 @@
 @section('content')
     <div>
         <h1>Users You Might Now</h1>
-        <p>No users at the moment</p>
+        <ul>
+            @foreach($users as $user)
+                <li>
+                    <a href="{{ url('users/' . $user->id) }}">
+                        {{ $user->name }}
+                    </a>
+                </li>
+            @endforeach
+        </ul>
     </div>
     <div>
         <h1>Recommended Posts</h1>

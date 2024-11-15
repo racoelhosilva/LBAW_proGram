@@ -19,7 +19,9 @@ use Illuminate\Support\Facades\Route;
 */
 
 // Home
-Route::view('/', 'pages.home')->name('home');
+Route::controller(HomeController::class)->group(function () {
+    Route::get('/', 'show')->name('home');
+});
 
 // Cards
 Route::controller(CardController::class)->group(function () {
