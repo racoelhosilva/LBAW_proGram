@@ -95,8 +95,8 @@ namespace App\Models{
  * App\Models\CommentLike
  *
  * @property int $id
- * @property int $liker_id
  * @property int $comment_id
+ * @property int $liker_id
  * @property string $timestamp
  * @property-read \App\Models\Comment $comment
  * @property-read \App\Models\User $user
@@ -337,18 +337,18 @@ namespace App\Models{
  * App\Models\User
  *
  * @property int $id
- * @property string|null $name
- * @property string|null $email
- * @property mixed|null $password
+ * @property int $user_stats_id
+ * @property string $name
+ * @property string $email
+ * @property mixed $password
  * @property \Illuminate\Support\Carbon $register_timestamp
- * @property string|null $handle
- * @property bool|null $is_public
- * @property bool $is_deleted
+ * @property string $handle
+ * @property bool $is_public
  * @property string|null $description
  * @property string|null $profile_picture_url
  * @property string|null $banner_image_url
- * @property int|null $num_followers
- * @property int|null $num_following
+ * @property int $num_followers
+ * @property int $num_following
  * @property string|null $tsvectors
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\FollowRequest> $followRequests
  * @property-read int|null $follow_requests_count
@@ -372,7 +372,6 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|User whereEmail($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereHandle($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereIsDeleted($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereIsPublic($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereNumFollowers($value)
@@ -381,6 +380,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|User whereProfilePictureUrl($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereRegisterTimestamp($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereTsvectors($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereUserStatsId($value)
  */
 	class User extends \Eloquent {}
 }
@@ -390,7 +390,6 @@ namespace App\Models{
  * App\Models\UserStats
  *
  * @property int $id
- * @property int|null $user_id
  * @property string|null $github_url
  * @property string|null $gitlab_url
  * @property string|null $linkedin_url
@@ -406,7 +405,6 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|UserStats whereGitlabUrl($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserStats whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|UserStats whereLinkedinUrl($value)
- * @method static \Illuminate\Database\Eloquent\Builder|UserStats whereUserId($value)
  */
 	class UserStats extends \Eloquent {}
 }

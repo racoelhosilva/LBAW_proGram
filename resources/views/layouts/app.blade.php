@@ -13,12 +13,17 @@
         <!-- Styles -->
         <link href="{{ url('css/milligram.min.css') }}" rel="stylesheet">
         <link href="{{ url('css/app.css') }}" rel="stylesheet">
+
+        <!-- Tailwind -->
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script src="{{ url('js/tailwind.js') }}"></script>
+
+        <!-- Scripts -->
         <script type="text/javascript">
             // Fix for Firefox autofocus CSS bug
             // See: http://stackoverflow.com/questions/18943276/html-5-autofocus-messes-up-css-loading/18945951#18945951
         </script>
-        <script type="text/javascript" src={{ url('js/app.js') }} defer>
-        </script>
+        <script type="text/javascript" src={{ url('js/app.js') }} defer></script>
     </head>
     <body>
         <main>
