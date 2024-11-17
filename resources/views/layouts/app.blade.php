@@ -29,7 +29,7 @@
         </script>
         <script type="text/javascript" src={{ url('js/app.js') }} defer></script>
     </head>
-    <body class="text-white">
+    <body class="bg-slate-800 text-white">
         <main>
             <section id="content">
                 @include('partials.text-button', ['text' => 'Button'])
