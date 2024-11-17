@@ -15,6 +15,7 @@ class Administrator extends Authenticatable
     public $timestamps = false; // Set to false since we manually manage timestamps
 
     protected $table = 'administrator';
+
     /**
      * The attributes that are mass assignable.
      *

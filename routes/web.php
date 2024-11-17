@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\CardController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ItemController;
 use Illuminate\Support\Facades\Route;
 
@@ -48,4 +49,12 @@ Route::controller(LoginController::class)->group(function () {
 Route::controller(RegisterController::class)->group(function () {
     Route::get('/register', 'showRegistrationForm')->name('register');
     Route::post('/register', 'register');
+});
+
+Route::controller(CommentController::class)->group(function () {
+    Route::get('/api/comments', 'list');
+    Route::get('/api/comments/{id}', 'show');
+    Route::post('/api/comments', 'create');
+    Route::delete('/api/comments/{id}', 'delete');
+    Route::put('/api/comments/{id}', 'update');
 });

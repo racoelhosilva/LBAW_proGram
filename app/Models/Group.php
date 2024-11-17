@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Model;
 
 class Group extends Model
 {
@@ -23,7 +23,7 @@ class Group extends Model
         'creation_timestamp',
         'is_public',
         'member_count',
-        'tsvectors'
+        'tsvectors',
     ];
 
     // A group belongs to an owner (user)

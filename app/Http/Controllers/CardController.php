@@ -60,7 +60,7 @@ class CardController extends Controller
     public function create(Request $request)
     {
         // Create a blank new Card.
-        $card = new Card();
+        $card = new Card;
 
         // Check if the current user is authorized to create this card.
         $this->authorize('create', $card);
