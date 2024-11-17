@@ -10,13 +10,17 @@
 
         <title>{{ config('app.name', 'Laravel') }}</title>
 
+        <!-- Fonts -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+
         <!-- Styles -->
-        <link href="{{ url('css/milligram.min.css') }}" rel="stylesheet">
         <link href="{{ url('css/app.css') }}" rel="stylesheet">
 
         <!-- Tailwind -->
         <script src="https://cdn.tailwindcss.com"></script>
-        <script src="{{ url('js/tailwind.js') }}"></script>
+        <script src="{{ url('js/tailwind.config.js') }}"></script>
 
         <!-- Scripts -->
         <script type="text/javascript">
@@ -25,16 +29,10 @@
         </script>
         <script type="text/javascript" src={{ url('js/app.js') }} defer></script>
     </head>
-    <body>
+    <body class="text-white">
         <main>
-            <header>
-                <h1><a href="{{ url('/cards') }}">Thingy!</a></h1>
-                @if (Auth::check())
-                    <a class="button" href="{{ url('/logout') }}"> Logout </a> <span>{{ Auth::user()->name }}</span>
-                @endif
-            </header>
             <section id="content">
-                @yield('content')
+                @include('partials.button')
             </section>
         </main>
     </body>
