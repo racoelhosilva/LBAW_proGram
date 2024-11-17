@@ -32,7 +32,8 @@
     <body class="text-white">
         <main>
             <section id="content">
-                @include('partials.button')
+                @include('partials.text-button', ['text' => 'Button', 'transparent' => false])
+                @include('partials.text-button', ['text' => 'Other Button', 'transparent' => true])
             </section>
         </main>
     </body>
