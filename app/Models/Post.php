@@ -18,6 +18,7 @@ class Post extends Model
 
     protected $fillable = [
         'title',
+        'author_id',
         'text',
         'creation_timestamp',
         'is_announcement',

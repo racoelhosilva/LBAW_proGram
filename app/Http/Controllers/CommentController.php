@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Comment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CommentController extends Controller
 {
@@ -22,18 +23,32 @@ class CommentController extends Controller
         return response()->json($comment);
     }
 
+    //WORK IN PROGRESS
     public function create(Request $request)
     {
-        $request->validate([
-            'content' => 'required|string',
-            'post_id' => 'required|integer|exists:posts,id',
-        ]);
+        try {
+            $validated = $request->validate([
+                'content' => 'required|string',
+                'post_id' => 'required|integer|exists:posts,id',
+            ]);
 
-        $comment = Comment::create($request->all());
+            $comment = new Comment;
+            $comment->content = $request->input('content');
+            $comment->post_id = $request->input('post_id');
+            $comment->author_id = Auth::user()->id;
 
-        return response()->json($comment, 201); // 201 = Created
+            $comment->save();
+
+            return response()->json($comment, 201);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Failed to create comment',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
     }
 
+    //WORK IN PROGRESS
     public function delete(Request $request, $id)
     {
         $comment = Comment::findOrFail($id);
@@ -42,6 +57,7 @@ class CommentController extends Controller
         return response()->json(['message' => 'Comment deleted successfully']);
     }
 
+    //WORK IN PROGRESS
     public function update(Request $request, $id)
     {
         $comment = Comment::findOrFail($id);
