@@ -32,7 +32,10 @@
     <body class="text-white">
         <main>
             <section id="content">
-                @include('partials.text-button', ['text' => 'Button', 'transparent' => false])
+                @include('partials.text-button', ['text' => 'Button'])
+                @include('partials.text-button', ['text' => 'Other Button', 'transparent' => true])
+                @include('partials.icon-button', ['iconName' => 'home', 'transparent' => true])
+                @include('partials.icon-button', ['iconName' => 'grip'])
                 @include('partials.text-button', ['text' => 'Other Button', 'transparent' => true])
             </section>
         </main>
