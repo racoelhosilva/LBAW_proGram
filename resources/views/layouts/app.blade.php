@@ -32,11 +32,7 @@
     <body class="bg-white dark:bg-slate-800 text-black dark:text-white">
         <main>
             <section id="content">
-                @include('partials.text-button', ['text' => 'Button'])
-                @include('partials.text-button', ['text' => 'Other Button', 'transparent' => true])
-                @include('partials.icon-button', ['iconName' => 'home', 'label' => 'Home', 'transparent' => true])
-                @include('partials.icon-button', ['iconName' => 'grip', 'label' => 'More'])
-                @include('partials.text-button', ['text' => 'Other Button', 'transparent' => true])
+                @yield('content')
             </section>
         </main>
     </body>
