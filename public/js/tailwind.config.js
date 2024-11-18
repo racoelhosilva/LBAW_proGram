@@ -3,7 +3,6 @@
 module.exports = {
     darkMode: 'selector',
     theme: {
-        extend: {
-        }
+        extend: {}
     }
 }
