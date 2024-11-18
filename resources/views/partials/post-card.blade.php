@@ -8,6 +8,6 @@
     </div>
     <div class="pt-4">
         <a href="{{ url('post/' . $post->id) }}" class="font-bold text-lg">{{ $post->title }}</a>
-        <p>{{ $post->text }}</p>
+        <p class="whitespace-pre-wrap">{{ str_replace("\\n", "\n", $post->text) }}</p>
     </div>
 </article>
