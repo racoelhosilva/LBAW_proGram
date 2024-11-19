@@ -18,5 +18,7 @@ class VerifyCsrfToken extends Middleware
         'api/comments/*',
         'api/users',
         'api/users/*',
+        'api/groups',
+        'api/groups/*',
     ];
 }
