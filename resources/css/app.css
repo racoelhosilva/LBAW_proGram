@@ -11,6 +11,6 @@
 
 @layer components {
     .card {
-        @apply p-3 rounded-xl bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 shadow;
+        @apply p-4 rounded-xl bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 shadow;
     }
 }
