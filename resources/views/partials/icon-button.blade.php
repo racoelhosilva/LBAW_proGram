@@ -1,4 +1,4 @@
-@props(['iconName', 'label', 'type' => 'primary'])
+@props(['iconName', 'id', 'label', 'type' => 'primary'])
 
 @php
     $buttonClass = match($type) {
@@ -8,6 +8,6 @@
     };  
 @endphp
 
-<button aria-label="{{ $label }}" class="p-3 {{ $buttonClass }}">
+<button {{ isset($id) ? "id=$id" : "" }} aria-label="{{ $label }}" class="p-3 {{ $buttonClass }}">
     @include('partials.icon', ['name' => $iconName])
 </button>
