@@ -27,7 +27,7 @@
         </script>
 
         <!-- Styles & Scripts -->
-        @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/theme-switch.js'])
+        @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/header.js'])
     </head>
     <body class="bg-white dark:bg-slate-800 text-black dark:text-white">
         @include('partials.header')

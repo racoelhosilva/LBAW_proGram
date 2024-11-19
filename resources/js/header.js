@@ -8,13 +8,12 @@ const toggleTheme = () => {
     }
 }
 
-const addThemeButtonListener = (themeButton) => {
-    themeButton.addEventListener('click', toggleTheme);
+const addHeaderListeners = () => {
+    const themeButton = document.getElementById('theme-button');
+
+    if (themeButton) {
+        themeButton.addEventListener('click', toggleTheme);
+    }
 }
 
-(function() {
-    const themeButton = document.getElementById('theme-button');
-    if (themeButton) {
-        addThemeButtonListener(themeButton);
-    }
-})();
+addHeaderListeners();
