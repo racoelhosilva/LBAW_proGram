@@ -7,6 +7,10 @@
         font-family: "Inter", sans-serif;
         font-optical-sizing: auto;
     }
+
+    main {
+        min-height: calc(100vh - 7rem);
+    }
 }
 
 @layer components {
