@@ -3,9 +3,7 @@
 @tailwind utilities;
 
 @layer base {
-    body {
-        @apply bg-white dark:bg-slate-800 text-black dark:text-white;
-
+    :root {
         font-family: "Inter", sans-serif;
         font-optical-sizing: auto;
     }
