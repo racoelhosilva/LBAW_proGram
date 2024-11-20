@@ -13,6 +13,8 @@ class Comment extends Model
 
     protected $table = 'comment';
 
+    public $timestamps = false;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -22,6 +24,8 @@ class Comment extends Model
         'content',
         'likes',
         'timestamp',
+        'post_id',
+        'author_id',
     ];
 
     // The attributes that should be cast

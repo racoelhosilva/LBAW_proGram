@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Comment;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class CommentController extends Controller
 {
@@ -23,26 +22,27 @@ class CommentController extends Controller
         return response()->json($comment);
     }
 
-    //WORK IN PROGRESS
     public function create(Request $request)
     {
+        $request->validate([
+            'content' => 'required|string',
+            'post_id' => 'required|integer|exists:post,id',
+            'author_id' => 'nullable|exists:users,id',
+        ]);
+
         try {
-            $validated = $request->validate([
-                'content' => 'required|string',
-                'post_id' => 'required|integer|exists:posts,id',
+            // Create comment with the provided or default author_id
+            $comment = Comment::create([
+                'content' => $request->input('content'),
+                'post_id' => $request->input('post_id'),
+                'author_id' => $request->input('author_id'),
+                'likes' => 0,
             ]);
-
-            $comment = new Comment;
-            $comment->content = $request->input('content');
-            $comment->post_id = $request->input('post_id');
-            $comment->author_id = Auth::user()->id;
-
-            $comment->save();
 
             return response()->json($comment, 201);
         } catch (\Exception $e) {
             return response()->json([
-                'error' => 'Failed to create comment',
+                'error' => 'Failed to create comment.',
                 'message' => $e->getMessage(),
             ], 500);
         }
