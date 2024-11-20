@@ -83,4 +83,31 @@ class PostController extends Controller
 
         return response()->json($post);
     }
+
+    public function listComments($id)
+    {
+        $post = Post::findOrFail($id);
+
+        $comments = $post->allComments;
+
+        return response()->json($comments);
+    }
+
+    public function listLikes($id)
+    {
+        $post = Post::findOrFail($id);
+
+        $likes = $post->allLikes;
+
+        return response()->json($likes);
+    }
+
+    public function listTags($id)
+    {
+        $post = Post::findOrFail($id);
+
+        $tags = $post->tags;
+
+        return response()->json($tags);
+    }
 }

@@ -60,6 +60,9 @@ Route::controller(PostController::class)->group(function () {
     Route::post('/api/posts', 'create');
     Route::delete('/api/posts/{id}', 'delete');
     Route::put('/api/posts/{id}', 'update');
+    Route::get('/api/posts/{id}/comments', 'listComments');
+    Route::get('/api/posts/{id}/likes', 'listLikes');
+    Route::get('/api/posts/{id}/tags', 'listTags');
 });
 
 Route::controller(CommentController::class)->group(function () {
