@@ -10,24 +10,21 @@
 
         <title>{{ config('app.name', 'Laravel') }}</title>
 
-        <!-- Styles -->
-        <link href="{{ url('css/milligram.min.css') }}" rel="stylesheet">
-        <link href="{{ url('css/app.css') }}" rel="stylesheet">
+        <!-- Fonts -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+        
         <script type="text/javascript">
             // Fix for Firefox autofocus CSS bug
             // See: http://stackoverflow.com/questions/18943276/html-5-autofocus-messes-up-css-loading/18945951#18945951
         </script>
-        <script type="text/javascript" src={{ url('js/app.js') }} defer>
-        </script>
+
+        <!-- Styles & Scripts -->
+        @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body>
+    <body class="bg-white dark:bg-slate-800 text-black dark:text-white">
         <main>
-            <header>
-                <h1><a href="{{ url('/cards') }}">Thingy!</a></h1>
-                @if (Auth::check())
-                    <a class="button" href="{{ url('/logout') }}"> Logout </a> <span>{{ Auth::user()->name }}</span>
-                @endif
-            </header>
             <section id="content">
                 @yield('content')
             </section>
