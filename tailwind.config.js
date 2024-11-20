@@ -6,7 +6,11 @@ export default {
 		"./resources/**/*.js",
 	],
 	theme: {
-		extend: {},
+		extend: {
+			boxShadow: {
+				'DEFAULT': '0 0 3px 0 rgb(0 0 0 / 0.1), 0 0 2px -1px rgb(0 0 0 / 0.1)',
+			},
+		},
 	},
 	plugins: [],
 }
