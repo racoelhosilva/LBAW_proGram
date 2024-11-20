@@ -41,6 +41,7 @@ class PostController extends Controller
                 'author_id' => $request->input('author_id'),
                 'is_public' => $request->input('is_public', true),
                 'is_announcement' => $request->input('is_announcement', false),
+                'likes' => 0,
             ]);
 
             return response()->json($post, 201);
@@ -75,6 +76,9 @@ class PostController extends Controller
         $request->validate([
             'title' => 'nullable|string|max:255',
             'text' => 'nullable|string',
+            'likes' => 'nullable|integer',
+            'is_public' => 'nullable|boolean',
+            'is_announcement' => 'nullable|boolean',
         ]);
 
         $post = Post::findOrFail($id);

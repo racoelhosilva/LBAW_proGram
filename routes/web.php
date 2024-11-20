@@ -70,7 +70,7 @@ Route::controller(CommentController::class)->group(function () {
     Route::get('/api/comments', 'list');
     Route::get('/api/comments/{id}', 'show');
     Route::post('/api/comments', 'create');
-    Route::delete('/api/comments/{id}', 'delete');
+    //Route::delete('/api/comments/{id}', 'delete');
     Route::put('/api/comments/{id}', 'update');
 });
 

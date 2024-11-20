@@ -49,21 +49,13 @@ class CommentController extends Controller
     }
 
     //WORK IN PROGRESS
-    public function delete(Request $request, $id)
-    {
-        $comment = Comment::findOrFail($id);
-        $comment->delete();
-
-        return response()->json(['message' => 'Comment deleted successfully']);
-    }
-
-    //WORK IN PROGRESS
     public function update(Request $request, $id)
     {
         $comment = Comment::findOrFail($id);
 
         $request->validate([
             'content' => 'sometimes|required|string',
+            'likes' => 'sometimes|required|integer',
         ]);
 
         $comment->update($request->all());
