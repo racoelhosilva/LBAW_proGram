@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 // Home
+Route::view('/', 'home')->name('home');
 Route::redirect('/', '/login');
 
 // Cards
