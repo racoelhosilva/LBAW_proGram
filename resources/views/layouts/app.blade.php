@@ -14,20 +14,28 @@
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
-        
+
+        <!-- Set dark mode with browser preferences (added to head to avoid FOUC) -->
         <script type="text/javascript">
-            // Fix for Firefox autofocus CSS bug
+            document.documentElement.classList.toggle(
+                'dark',
+                localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)
+            );
+
+            // This also fixes the Firefox autofocus FOUC
             // See: http://stackoverflow.com/questions/18943276/html-5-autofocus-messes-up-css-loading/18945951#18945951
         </script>
 
         <!-- Styles & Scripts -->
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
+        @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/header.js'])
     </head>
     <body class="bg-white dark:bg-slate-800 text-black dark:text-white">
+        @include('partials.header')
         <main>
-            <section id="content">
-                @yield('content')
-            </section>
+            @yield('content')
         </main>
+        <footer class="p-4">
+            <p class="text-xs font-medium text-gray-500 dark:text-gray-400">© 2024 ProGram. All rights reserved.</p>
+        </footer>
     </body>
 </html>

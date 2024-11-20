@@ -3,28 +3,30 @@
 @tailwind utilities;
 
 @layer base {
-    body {
-        @apply bg-white dark:bg-slate-800 text-black dark:text-white;
-
+    :root {
         font-family: "Inter", sans-serif;
         font-optical-sizing: auto;
+    }
+
+    main {
+        min-height: calc(100vh - 7rem);
     }
 }
 
 @layer components {
     .primary-btn {
-        @apply rounded-full text-white bg-blue-600 hover:bg-blue-500 transition-colors shadow;
+        @apply border rounded-full text-white bg-blue-600 hover:bg-blue-500 border-blue-600 hover:border-blue-500 transition-colors shadow;
     }
 
     .secondary-btn {
-        @apply rounded-full text-black dark:text-white bg-white dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 border border-slate-300 dark:border-none transition-colors;
+        @apply border rounded-full text-black dark:text-white bg-white dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 border-slate-300 dark:border-slate-700 hover:dark:border-slate-600 transition-colors;
     }
 
     .transparent-btn {
-        @apply rounded-full text-black dark:text-white bg-white dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 transition-colors;
+        @apply border rounded-full text-black dark:text-white bg-white dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 border-white dark:border-slate-800 hover:border-slate-300 hover:dark:border-slate-700 transition-colors;
     }
 
     .card {
-        @apply p-4 rounded-xl bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 shadow;
+        @apply p-4 border rounded-xl bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 shadow;
     }
 }
