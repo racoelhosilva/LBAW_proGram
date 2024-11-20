@@ -51,4 +51,9 @@ class Post extends Model
     {
         return $this->hasMany(Comment::class, 'post_id');
     }
+
+    public function attachments(): HasMany
+    {
+        return $this->hasMany(PostAttachment::class, 'post_id');
+    }
 }

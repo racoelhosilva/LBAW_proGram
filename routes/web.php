@@ -63,6 +63,7 @@ Route::controller(PostController::class)->group(function () {
     Route::get('/api/posts/{id}/comments', 'listComments');
     Route::get('/api/posts/{id}/likes', 'listLikes');
     Route::get('/api/posts/{id}/tags', 'listTags');
+    Route::get('/api/posts/{id}/attachments', 'listAttachments');
 });
 
 Route::controller(CommentController::class)->group(function () {

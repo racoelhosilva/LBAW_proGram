@@ -110,4 +110,13 @@ class PostController extends Controller
 
         return response()->json($tags);
     }
+
+    public function listAttachments($id)
+    {
+        $post = Post::findOrFail($id);
+
+        $attachments = $post->attachments;
+
+        return response()->json($attachments);
+    }
 }
