@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\UserStats;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -68,5 +69,19 @@ class UserController extends Controller
                 'message' => $e->getMessage(),
             ], 500);
         }
+    }
+
+    public function listUserStats($id)
+    {
+
+        $userStats = UserStats::where('user_id', $id)
+            ->with(['technologies', 'languages', 'projects'])
+            ->first();
+
+        if (! $userStats) {
+            return response()->json(['message' => 'User stats not found'], 404);
+        }
+
+        return response()->json($userStats);
     }
 }

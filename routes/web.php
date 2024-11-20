@@ -4,7 +4,6 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\CardController;
 use App\Http\Controllers\CommentController;
-use App\Http\Controllers\GroupController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\UserController;
@@ -76,12 +75,5 @@ Route::controller(UserController::class)->group(function () {
     Route::post('/api/users', 'create');
     Route::delete('/api/users/{id}', 'delete');
     Route::put('/api/users/{id}', 'update');
-});
-
-Route::controller(GroupController::class)->group(function () {
-    Route::get('/api/groups', 'list');
-    Route::get('/api/groups/{id}', 'show');
-    Route::post('/api/groups', 'create');
-    Route::delete('/api/groups/{id}', 'delete');
-    Route::put('/api/groups/{id}', 'update');
+    Route::get('/api/users/{id}/userstats', 'listUserStats');
 });
