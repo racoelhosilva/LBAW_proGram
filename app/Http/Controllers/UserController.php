@@ -54,18 +54,26 @@ class UserController extends Controller
         }
     }
 
-    public function delete($id)
+    public function update(Request $request, $id)
     {
-        try {
-            $user = User::findOrFail($id);
-            $user->delete();
+        $user = User::findOrFail($id);
 
-            return response()->json([
-                'message' => 'User deleted successfully.',
-            ]);
+        $request->validate([
+            'name' => 'string|max:255',
+            'email' => 'email|unique:users,email',
+            'password' => 'string|min:8',
+            'handle' => 'string|unique:users,handle|max:50',
+            'is_public' => 'boolean',
+            'description' => 'string|max:500',
+        ]);
+
+        try {
+            $user->update($request->all());
+
+            return response()->json($user);
         } catch (\Exception $e) {
             return response()->json([
-                'error' => 'Failed to delete user.',
+                'error' => 'Failed to update user.',
                 'message' => $e->getMessage(),
             ], 500);
         }
