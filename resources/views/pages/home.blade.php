@@ -29,7 +29,7 @@
             <h1 class="text-xl font-bold">Trending Topics</h1>
             @if (count($tags) > 0)
                 @foreach($tags as $tag)
-                    <div>
+                    <div class="select-none">
                         <a href="/" class="ms-4 font-medium text-blue-600 dark:text-blue-400">{{ '#' . $tag->name }}</a>
                         <p class="ms-4 text-xs/3 text-gray-500 dark:text-gray-400">{{ $tag->posts->count() . ' posts' }}</p>
                     </div>
