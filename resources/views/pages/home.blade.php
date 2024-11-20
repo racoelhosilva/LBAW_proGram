@@ -1,24 +1,39 @@
 @extends('layouts.app')
 
 @section('content')
-    <div>
-        <h1>Users You Might Now</h1>
-        <ul>
-            @foreach($users as $user)
-                <li>
-                    <a href="{{ url('users/' . $user->id) }}">
-                        {{ $user->name }}
-                    </a>
-                </li>
-            @endforeach
-        </ul>
-    </div>
-    <div>
-        <h1>Recommended Posts</h1>
-        <p>No posts at the moment</p>
-    </div>
-    <div>
-        <h1>Trending Tags</h1>
-        <p>No tags at the moment</p>
-    </div>
+    <main id="home-page" class="px-8 py-4 grid grid-cols-4 gap-4">
+        <section class="card h-min flex flex-col gap-3">
+            <h1 class="text-xl font-bold">Users On This Platform</h1>
+            @if (count($users) > 0)
+                @foreach($users as $user)
+                    @include('partials.user-card', ['user' => $user])
+                @endforeach
+            @else
+                <p>No users at the moment</p>
+            @endif
+        </section>
+        <section class="card h-min flex flex-col gap-3 col-span-2">
+            <h1 class="text-xl font-bold">Recommended Posts</h1>
+            @if (count($posts) > 0)
+                @foreach($posts as $post)
+                    @include('partials.post-card', ['post' => $post])
+                @endforeach
+            @else
+                <p>No posts at the moment</p>
+            @endif
+        </section>
+        <section class="card h-min flex flex-col gap-3">
+            <h1 class="text-xl font-bold">Trending Topics</h1>
+            @if (count($tags) > 0)
+                @foreach($tags as $tag)
+                    <div>
+                        <a href="/" class="ms-4 font-medium text-blue-500 dark:text-blue-400">{{ '#' . $tag->name }}</a>
+                        <p class="ms-4 text-xs/3 text-gray-500 dark:text-gray-400">{{ $tag->posts->count() . ' posts' }}</p>
+                    </div>
+                @endforeach
+            @else
+                <p>No tags at the moment</p>
+            @endif
+        </section>
+    </main>
 @endsection

@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\View\View;
-use Illuminate\Http\Request;
-
+use App\Models\Post;
+use App\Models\Tag;
 use App\Models\User;
+use Illuminate\View\View;
 
 class HomeController extends Controller
 {
@@ -13,6 +13,8 @@ class HomeController extends Controller
     {
         return view('pages.home', [
             'users' => User::all(),
+            'posts' => Post::all(),
+            'tags' => Tag::all(),
         ]);
     }
 }
