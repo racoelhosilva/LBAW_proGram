@@ -84,4 +84,5 @@ Route::controller(UserController::class)->group(function () {
     Route::get('/api/users/{id}/following', 'listFollowing');
     Route::get('/api/users/{id}/posts', 'listPosts');
     Route::get('/api/users/{id}/userstats', 'listUserStats');
+    Route::get('/api/users/{id}/followrequests', 'listFollowRequests');
 });
