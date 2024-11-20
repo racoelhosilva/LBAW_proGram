@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <main id="home-page" class="px-8 py-4 grid grid-cols-4 gap-4">
+    <main id="home-page" class="px-8 py-4 grid grid-cols-4 gap-6">
         <section class="card h-min flex flex-col gap-3">
             <h1 class="text-xl font-bold">Users On This Platform</h1>
             @if (count($users) > 0)

@@ -12,9 +12,9 @@ class HomeController extends Controller
     public function show(): View
     {
         return view('pages.home', [
-            'users' => User::all(),
-            'posts' => Post::all(),
-            'tags' => Tag::all(),
+            'users' => User::orderBy('num_followers', 'DESC')->limit(10)->get(),
+            'posts' => Post::orderBy('likes', 'DESC')->get(),
+            'tags' => Tag::withCount('posts')->orderBy('posts_count', 'DESC')->limit(10)->get(),
         ]);
     }
 }
