@@ -1,4 +1,4 @@
-<header class="h-16 px-24 grid grid-cols-[1fr_auto] items-center justify-end">
+<header class="h-16 px-24 grid grid-cols-[1fr_auto] items-end justify-end">
     <div class="inline-flex gap-8 items-center">  {{-- Left elements --}}
         <a href="{{ route('home') }}">
             <img src="{{ url('svg/logo-large-black.svg') }}" alt="Logo" class="h-12 dark:hidden">
