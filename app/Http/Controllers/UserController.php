@@ -84,4 +84,18 @@ class UserController extends Controller
 
         return response()->json($userStats);
     }
+
+    public function listFollowers($id)
+    {
+        $user = User::findOrFail($id);
+
+        return response()->json($user->followers);
+    }
+
+    public function listFollowing($id)
+    {
+        $user = User::findOrFail($id);
+
+        return response()->json($user->following);
+    }
 }
