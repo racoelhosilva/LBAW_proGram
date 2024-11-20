@@ -52,7 +52,6 @@ class PostController extends Controller
         }
     }
 
-    //WORK IN PROGRESS
     public function delete($id)
     {
         try {
@@ -70,18 +69,17 @@ class PostController extends Controller
         }
     }
 
-    //WORK IN PROGRESS
     public function update(Request $request, $id)
     {
 
         $request->validate([
             'title' => 'nullable|string|max:255',
-            'content' => 'nullable|string',
+            'text' => 'nullable|string',
         ]);
 
         $post = Post::findOrFail($id);
 
-        $post->update($request->only(['title', 'content']));
+        $post->update($request->only(['title', 'text']));
 
         return response()->json($post);
     }
