@@ -9,7 +9,7 @@
     </a>
     <div class="ms-4 flex flex-col">
         <p class="text-base/4 font-medium"><a href="{{ $authorUrl }}">{{ $post->author->name }}</a></p>
-        <p class="text-xs/3 pt-1 font-medium text-gray-500 dark:text-gray-400"><a href="{{ $authorUrl }}">{{ '@' . $user->handle }}</a>{{ ' • ' . $post->creation_timestamp->diffForHumans() }}</p>
+        <p class="text-xs/3 pt-1 font-medium text-gray-500 dark:text-gray-400"><a href="{{ $authorUrl }}">{{ '@' . $post->author->handle }}</a>{{ ' • ' . $post->creation_timestamp->diffForHumans() }}</p>
     </div>
     <div class="ms-4 -me-3">
         @include('partials.icon-button', ['iconName' => 'ellipsis', 'label' => 'Options', 'type' => 'transparent'])
