@@ -26,7 +26,7 @@
         <div class="justify-self-end">
             @foreach($post->tags as $tag)
                 {{-- TODO: Add tag search results link --}}
-                <a href="/" class="text-sm font-medium text-blue-500 dark:text-blue-400">{{ '#' . $tag->name }}</a>
+                <a href="/" class="text-sm font-medium text-blue-600 dark:text-blue-400">{{ '#' . $tag->name }}</a>
             @endforeach
         </div>
     </div>
