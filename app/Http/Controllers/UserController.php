@@ -98,4 +98,11 @@ class UserController extends Controller
 
         return response()->json($user->following);
     }
+
+    public function listPosts($id)
+    {
+        $user = User::findOrFail($id);
+
+        return response()->json($user->posts);
+    }
 }
