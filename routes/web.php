@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\CardController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ItemController;
+use App\Http\Controllers\SearchController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -21,6 +22,11 @@ use Illuminate\Support\Facades\Route;
 // Home
 Route::controller(HomeController::class)->group(function () {
     Route::get('/', 'show')->name('home');
+});
+
+// Search
+Route::controller(SearchController::class)->group(function () {
+    Route::get('/search/users', 'show')->name('user-search');
 });
 
 // Cards
