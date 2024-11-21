@@ -34,6 +34,10 @@ class SearchController extends Controller
 
     public function listUsers(Request $request)
     {
+        $request->validate([
+            'query' => 'required|string',
+        ]);
+
         $users = $this->fullTextSearchUsers($request);
 
         return view('pages.user-search', ['users' => $users]);
@@ -41,6 +45,10 @@ class SearchController extends Controller
 
     public function listPosts(Request $request)
     {
+        $request->validate([
+            'query' => 'required|string',
+        ]);
+
         $posts = $this->fullTextSearchPosts($request);
 
         return view('pages.post-search', ['posts' => $posts]);
