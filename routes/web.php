@@ -26,7 +26,7 @@ Route::controller(HomeController::class)->group(function () {
 
 // Search
 Route::controller(SearchController::class)->group(function () {
-    Route::get('/search/users', 'show')->name('user-search');
+    Route::get('/search/users', 'listUsers')->name('user-search');
 });
 
 // Cards
