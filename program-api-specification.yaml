@@ -1,0 +1,758 @@
+openapi: 3.0.3
+info:
+  title: Program API
+  description: API for the Program web app
+  version: 1.0.0
+servers:
+- url: https://virtserver.swaggerhub.com/2409JMSOUSA/Program/1.0.0
+  description: SwaggerHub API Auto Mocking
+- url: http://localhost:8000/api
+paths:
+  /posts:
+    get:
+      tags:
+      - Posts
+      summary: List all posts
+      operationId: listPosts
+      responses:
+        "200":
+          description: A list of all posts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Post'
+    post:
+      tags:
+      - Posts
+      summary: Create a new post
+      operationId: createPost
+      requestBody:
+        description: Data required to create a new post
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostCreate'
+        required: true
+      responses:
+        "201":
+          description: Post created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+  /posts/{id}:
+    get:
+      tags:
+      - Posts
+      summary: Retrieve a single post
+      operationId: getPost
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: The requested post
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+    put:
+      tags:
+      - Posts
+      summary: Update a post
+      operationId: updatePost
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      requestBody:
+        description: Data to update the post
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostUpdate'
+        required: true
+      responses:
+        "200":
+          description: Post updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+    delete:
+      tags:
+      - Posts
+      summary: Delete a post
+      operationId: deletePost
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: Post deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200'
+  /posts/{id}/comments:
+    get:
+      tags:
+      - Posts
+      summary: List all comments for a specific post
+      operationId: listPostComments
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: List of comments for the post
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Comment'
+  /posts/{id}/likes:
+    get:
+      tags:
+      - Posts
+      summary: List all likes for a specific post
+      operationId: listPostLikes
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: List of likes for the post
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+  /posts/{id}/tags:
+    get:
+      tags:
+      - Posts
+      summary: List all tags for a specific post
+      operationId: listPostTags
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: List of tags for the post
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Tag'
+  /posts/{id}/attachments:
+    get:
+      tags:
+      - Posts
+      summary: List all attachments for a specific post
+      operationId: listPostAttachments
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: List of attachments for the post
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Attachment'
+  /comments:
+    get:
+      tags:
+      - Comments
+      summary: List all comments
+      operationId: listComments
+      responses:
+        "200":
+          description: A list of all comments
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Comment'
+    post:
+      tags:
+      - Comments
+      summary: Create a new comment
+      operationId: createComment
+      requestBody:
+        description: Data required to create a new comment
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Comment'
+        required: true
+      responses:
+        "201":
+          description: Comment created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comment'
+  /comments/{id}:
+    get:
+      tags:
+      - Comments
+      summary: Retrieve a single comment
+      operationId: getComment
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: The requested comment
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comment'
+    put:
+      tags:
+      - Comments
+      summary: Update a comment
+      operationId: updateComment
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      requestBody:
+        description: Data to update the comment
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Comment'
+        required: true
+      responses:
+        "200":
+          description: Comment updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comment'
+  /users:
+    get:
+      tags:
+      - Users
+      summary: List all users
+      operationId: listUsers
+      responses:
+        "200":
+          description: A list of all users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+    post:
+      tags:
+      - Users
+      summary: Create a new user
+      operationId: createUser
+      requestBody:
+        description: Data required to create a new user
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
+      responses:
+        "201":
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+  /users/{id}:
+    get:
+      tags:
+      - Users
+      summary: Retrieve a single user by ID
+      operationId: getUser
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: The requested user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+    put:
+      tags:
+      - Users
+      summary: Update a user's information
+      operationId: updateUser
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      requestBody:
+        description: Data to update the user
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
+      responses:
+        "200":
+          description: User updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+  /users/{id}/followers:
+    get:
+      tags:
+      - Users
+      summary: List followers of a user
+      operationId: listFollowers
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: A list of followers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+  /users/{id}/following:
+    get:
+      tags:
+      - Users
+      summary: List users that a user is following
+      operationId: listFollowing
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: A list of users being followed
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+  /users/{id}/posts:
+    get:
+      tags:
+      - Users
+      summary: List posts made by a user
+      operationId: listPostsFromUser
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: A list of posts made by the user
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Post'
+  /users/{id}/userstats:
+    get:
+      tags:
+      - Users
+      summary: Retrieve user statistics
+      operationId: listUserStats
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: User statistics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserStats'
+  /users/{id}/followrequests:
+    get:
+      tags:
+      - Users
+      summary: List follow requests for a user
+      operationId: listFollowRequests
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: A list of follow requests
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+components:
+  schemas:
+    Post:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        title:
+          type: string
+          example: Example Post Title
+        text:
+          type: string
+          example: This is the content of the post.
+        author_id:
+          type: integer
+          nullable: true
+          example: 123
+        is_public:
+          type: boolean
+          example: true
+        is_announcement:
+          type: boolean
+          example: false
+        likes:
+          type: integer
+          example: 10
+        created_at:
+          type: string
+          format: date-time
+          example: 2024-11-21T12:00:00Z
+        updated_at:
+          type: string
+          format: date-time
+          example: 2024-11-21T12:30:00Z
+    PostCreate:
+      required:
+      - text
+      - title
+      type: object
+      properties:
+        title:
+          type: string
+          example: New Post Title
+        text:
+          type: string
+          example: Content for the new post.
+        author_id:
+          type: integer
+          nullable: true
+          example: 123
+        is_public:
+          type: boolean
+          example: true
+        is_announcement:
+          type: boolean
+          example: false
+    PostUpdate:
+      type: object
+      properties:
+        title:
+          type: string
+          example: Updated Post Title
+        text:
+          type: string
+          example: Updated content of the post.
+        is_public:
+          type: boolean
+          example: true
+        is_announcement:
+          type: boolean
+          example: false
+    Tag:
+      required:
+      - id
+      - name
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique identifier for the tag.
+        name:
+          type: string
+          description: Name of the tag.
+      example:
+        id: 1
+        name: Technology
+    Comment:
+      required:
+      - author_id
+      - content
+      - id
+      - likes
+      - post_id
+      - timestamp
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique identifier for the comment.
+        post_id:
+          type: integer
+          description: ID of the associated post.
+        author_id:
+          type: integer
+          description: ID of the user who authored the comment.
+        content:
+          type: string
+          description: Content of the comment.
+        likes:
+          type: integer
+          description: Number of likes on the comment.
+          default: 0
+        timestamp:
+          type: string
+          description: Timestamp when the comment was created.
+          format: date-time
+      example:
+        id: 101
+        post_id: 5
+        author_id: 2
+        content: This is a very insightful post! Thanks for sharing.
+        likes: 15
+        timestamp: 2024-11-21T10:30:00Z
+    User:
+      required:
+      - handle
+      - id
+      - is_public
+      - register_timestamp
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique identifier for the user.
+        name:
+          type: string
+          description: Name of the user.
+        email:
+          type: string
+          description: Email address of the user.
+          format: email
+        handle:
+          type: string
+          description: Unique handle for the user.
+        is_public:
+          type: boolean
+          description: Whether the user's profile is public.
+        description:
+          type: string
+          description: Description or bio of the user.
+        profile_picture_url:
+          type: string
+          description: URL to the user's profile picture.
+          format: uri
+        banner_image_url:
+          type: string
+          description: URL to the user's banner image.
+          format: uri
+        num_followers:
+          type: integer
+          description: Number of followers the user has.
+        num_following:
+          type: integer
+          description: Number of users the user is following.
+        register_timestamp:
+          type: string
+          description: Timestamp when the user registered.
+          format: date-time
+      example:
+        id: 12
+        name: Alice Doe
+        email: alice@example.com
+        handle: alice123
+        is_public: true
+        description: Enthusiastic coder and tech enthusiast.
+        profile_picture_url: https://example.com/profiles/alice123.jpg
+        banner_image_url: https://example.com/banners/alice123.jpg
+        num_followers: 120
+        num_following: 80
+        register_timestamp: 2023-05-15T14:20:00Z
+    Attachment:
+      required:
+      - file_url
+      - id
+      - post_id
+      - uploaded_at
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique identifier for the attachment.
+        post_id:
+          type: integer
+          description: ID of the associated post.
+        file_url:
+          type: string
+          description: URL of the attachment file.
+          format: uri
+        uploaded_at:
+          type: string
+          description: Timestamp when the attachment was uploaded.
+          format: date-time
+      example:
+        id: 42
+        post_id: 5
+        file_url: https://example.com/uploads/document.pdf
+        uploaded_at: 2024-11-20T12:00:00Z
+    UserStats:
+      type: object
+      properties:
+        id:
+          type: integer
+        user_id:
+          type: integer
+        github_url:
+          type: string
+          nullable: true
+        gitlab_url:
+          type: string
+          nullable: true
+        linkedin_url:
+          type: string
+          nullable: true
+        technologies:
+          type: array
+          items:
+            $ref: '#/components/schemas/Technology'
+        languages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Language'
+        projects:
+          type: array
+          items:
+            $ref: '#/components/schemas/Project'
+    Technology:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        pivot:
+          $ref: '#/components/schemas/Technology_pivot'
+    Language:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+    Project:
+      type: object
+      properties:
+        id:
+          type: integer
+        user_stats_id:
+          type: integer
+        name:
+          type: string
+        url:
+          type: string
+          example: http://carter-gomez.net/
+    inline_response_200:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Post deleted successfully
+    Technology_pivot:
+      type: object
+      properties:
+        technology_id:
+          type: integer
+        user_stats_id:
+          type: integer
