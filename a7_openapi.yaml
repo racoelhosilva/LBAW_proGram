@@ -20,7 +20,7 @@ paths:
       tags:
       - M03 Posts and Announcements
       summary: List all posts
-      operationId: listPosts
+      operationId: R301
       responses:
         "200":
           description: A list of all posts
@@ -34,7 +34,7 @@ paths:
       tags:
       - M03 Posts and Announcements
       summary: Create a new post
-      operationId: createPost
+      operationId: R302
       requestBody:
         description: Data required to create a new post
         content:
@@ -54,7 +54,7 @@ paths:
       tags:
       - M03 Posts and Announcements
       summary: Retrieve a single post
-      operationId: getPost
+      operationId: R303
       parameters:
       - name: id
         in: path
@@ -74,7 +74,7 @@ paths:
       tags:
       - M03 Posts and Announcements
       summary: Update a post
-      operationId: updatePost
+      operationId: R304
       parameters:
       - name: id
         in: path
@@ -101,7 +101,7 @@ paths:
       tags:
       - M03 Posts and Announcements
       summary: Delete a post
-      operationId: deletePost
+      operationId: R305
       parameters:
       - name: id
         in: path
@@ -122,7 +122,7 @@ paths:
       tags:
       - M03 Posts and Announcements
       summary: List all comments for a specific post
-      operationId: listPostComments
+      operationId: R306
       parameters:
       - name: id
         in: path
@@ -145,7 +145,7 @@ paths:
       tags:
       - M03 Posts and Announcements
       summary: List all likes for a specific post
-      operationId: listPostLikes
+      operationId: R307
       parameters:
       - name: id
         in: path
@@ -168,7 +168,7 @@ paths:
       tags:
       - M03 Posts and Announcements
       summary: List all tags for a specific post
-      operationId: listPostTags
+      operationId: R308
       parameters:
       - name: id
         in: path
@@ -191,7 +191,7 @@ paths:
       tags:
       - M03 Posts and Announcements
       summary: List all attachments for a specific post
-      operationId: listPostAttachments
+      operationId: R309
       parameters:
       - name: id
         in: path
@@ -214,7 +214,7 @@ paths:
       tags:
       - M03 Posts and Announcements
       summary: List all comments
-      operationId: listComments
+      operationId:  R310
       responses:
         "200":
           description: A list of all comments
@@ -228,7 +228,7 @@ paths:
       tags:
       - M03 Posts and Announcements
       summary: Create a new comment
-      operationId: createComment
+      operationId: R311
       requestBody:
         description: Data required to create a new comment
         content:
@@ -248,7 +248,7 @@ paths:
       tags:
       - M03 Posts and Announcements
       summary: Retrieve a single comment
-      operationId: getComment
+      operationId: R312
       parameters:
       - name: id
         in: path
@@ -268,7 +268,7 @@ paths:
       tags:
       - M03 Posts and Announcements
       summary: Update a comment
-      operationId: updateComment
+      operationId: R312
       parameters:
       - name: id
         in: path
@@ -296,7 +296,7 @@ paths:
       tags:
       - M02 Authentication and Individual Profile
       summary: List all users
-      operationId: listUsers
+      operationId: R201
       responses:
         "200":
           description: A list of all users
@@ -310,7 +310,7 @@ paths:
       tags:
       - M02 Authentication and Individual Profile
       summary: Create a new user
-      operationId: createUser
+      operationId: R202
       requestBody:
         description: Data required to create a new user
         content:
@@ -330,7 +330,7 @@ paths:
       tags:
       - M02 Authentication and Individual Profile
       summary: Retrieve a single user by ID
-      operationId: getUser
+      operationId: R203
       parameters:
       - name: id
         in: path
@@ -350,7 +350,7 @@ paths:
       tags:
       - M02 Authentication and Individual Profile
       summary: Update a user's information
-      operationId: updateUser
+      operationId: R204
       parameters:
       - name: id
         in: path
@@ -378,7 +378,7 @@ paths:
       tags:
       - M02 Authentication and Individual Profile
       summary: List followers of a user
-      operationId: listFollowers
+      operationId: R205
       parameters:
       - name: id
         in: path
@@ -401,7 +401,7 @@ paths:
       tags:
       - M02 Authentication and Individual Profile
       summary: List users that a user is following
-      operationId: listFollowing
+      operationId: R206
       parameters:
       - name: id
         in: path
@@ -424,7 +424,7 @@ paths:
       tags:
       - M02 Authentication and Individual Profile
       summary: List posts made by a user
-      operationId: listPostsFromUser
+      operationId: R207
       parameters:
       - name: id
         in: path
@@ -447,7 +447,7 @@ paths:
       tags:
       - M02 Authentication and Individual Profile
       summary: Retrieve user statistics
-      operationId: listUserStats
+      operationId: R208
       parameters:
       - name: id
         in: path
@@ -468,7 +468,7 @@ paths:
       tags:
       - M02 Authentication and Individual Profile
       summary: List follow requests for a user
-      operationId: listFollowRequests
+      operationId:  R209
       parameters:
       - name: id
         in: path
