@@ -19,6 +19,15 @@ tags:
   - name: 'M05: Administration'
 
 paths:
+  /:
+    get:
+      operationId: R101
+      summary: 'R101: Home Page'
+      tags:
+        - 'M01: Home and Static Pages'
+      responses:
+        200:
+          description: 'Ok. Show home page.'
   /api/api/posts:
     get:
       tags:
@@ -510,7 +519,7 @@ components:
         ts-vector:
           type: string
           nullable: true
-          example: ''adult':83C 'although':69C 'billion':27C 'blue':31C 'board':98C 'born':88C 'burton':8A 'burton193':10A 'campaign':81C 'centuri':74C 'child':40C 'cindi':7A,9A 'comment':17C 'commentost':24C 'content':12B 'cost':86C 'crime':78C 'defens':89C 'design':82C 'differ':42C,96C 'difficult':73C 'director':28C 'doctor':99C 'dog':87C 'eat':37C 'energi':45C 'establish':100C'
+          example: "'aime':8A,10A 'burnt':17B 'code':38B 'develop':7A 'easi':14B 'engag':27B 'feel':16B 'grow':41B 'inspir':29B 'keep':33B,37B 'learn':39B 'motiv':4A,35B 'nhere':30B 'silva':9A 'silva43':11A 'stay':3A,26B 'tech':20B 'way':24B"
     PostCreate:
       required:
       - text
@@ -740,12 +749,6 @@ components:
         url:
           type: string
           example: http://carter-gomez.net/
-    inline_response_200:
-      type: object
-      properties:
-        message:
-          type: string
-          example: Post deleted successfully
     Technology_pivot:
       type: object
       properties:

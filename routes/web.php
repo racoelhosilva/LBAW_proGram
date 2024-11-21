@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\CardController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\UserController;
@@ -21,8 +22,9 @@ use Illuminate\Support\Facades\Route;
 */
 
 // Home
-Route::view('/', 'home')->name('home');
-Route::redirect('/', '/login');
+Route::controller(HomeController::class)->group(function () {
+    Route::get('/', 'show')->name('home');
+});
 
 // Cards
 Route::controller(CardController::class)->group(function () {
