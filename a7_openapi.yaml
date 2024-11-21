@@ -101,26 +101,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Post'
-    delete:
-      tags:
-      - M03 Posts and Announcements
-      summary: Delete a post
-      operationId: R305
-      parameters:
-      - name: id
-        in: path
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: integer
-      responses:
-        "200":
-          description: Post deleted successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/inline_response_200'
   /posts/{id}/comments:
     get:
       tags:
@@ -523,14 +503,14 @@ components:
         likes:
           type: integer
           example: 10
-        created_at:
+        creation_timestamp:
           type: string
           format: date-time
           example: 2024-11-21T12:00:00Z
-        updated_at:
+        ts-vector:
           type: string
-          format: date-time
-          example: 2024-11-21T12:30:00Z
+          nullable: true
+          example: ''adult':83C 'although':69C 'billion':27C 'blue':31C 'board':98C 'born':88C 'burton':8A 'burton193':10A 'campaign':81C 'centuri':74C 'child':40C 'cindi':7A,9A 'comment':17C 'commentost':24C 'content':12B 'cost':86C 'crime':78C 'defens':89C 'design':82C 'differ':42C,96C 'difficult':73C 'director':28C 'doctor':99C 'dog':87C 'eat':37C 'energi':45C 'establish':100C'
     PostCreate:
       required:
       - text

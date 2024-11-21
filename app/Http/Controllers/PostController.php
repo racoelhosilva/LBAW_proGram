@@ -53,23 +53,6 @@ class PostController extends Controller
         }
     }
 
-    public function delete($id)
-    {
-        try {
-            $post = Post::findOrFail($id);
-            $post->delete();
-
-            // Return a 200 OK response with a success message
-            return response()->json(['message' => 'Post deleted successfully'], 200);
-        } catch (\Exception $e) {
-            // If an error occurs, return a 500 Internal Server Error response
-            return response()->json([
-                'error' => 'Failed to delete post.',
-                'message' => $e->getMessage(),
-            ], 500);
-        }
-    }
-
     public function update(Request $request, $id)
     {
 

@@ -58,7 +58,7 @@ Route::controller(PostController::class)->group(function () {
     Route::get('/api/posts', 'list');
     Route::get('/api/posts/{id}', 'show');
     Route::post('/api/posts', 'create');
-    Route::delete('/api/posts/{id}', 'delete');
+    //Route::delete('/api/posts/{id}', 'delete');
     Route::put('/api/posts/{id}', 'update');
     Route::get('/api/posts/{id}/comments', 'listComments');
     Route::get('/api/posts/{id}/likes', 'listLikes');
