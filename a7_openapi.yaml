@@ -1,0 +1,26 @@
+openapi: 3.0.3
+info:
+  version: '1.0'
+  title: 'LBAW ProGram Web API'
+  description: 'Web Resources Specification (A7) for ProGram'
+
+# servers:
+# TODO: Add production server info
+
+externalDocs:
+  description: 'ProGram Wiki'
+  url: https://gitlab.up.pt/lbaw/lbaw2425/lbaw2411/-/wikis/home
+
+tags:
+  - name: 'M01: Home and Static Pages'
+  - name: 'M02: Authentication and Individual Profile'
+  - name: 'M03: Posts and Announcements'
+  - name: 'M04: Search'
+  - name: 'M05: Administration'
+
+paths:
+  /test:
+    get:
+      responses:
+        '200':
+          description: OK
