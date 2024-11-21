@@ -7,7 +7,7 @@
         @include('partials.post-card', ["post" => $post])
     </section>
     
-    <section class="card h-screen max-h-screen flex flex-col gap-3 col-span-1">
+    <section class="card h-fit flex flex-col gap-3 col-span-1">
         <h1 class="text-xl font-bold">Comments</h1>
         @if ($post->comments > 0)
             <div class="flex-1 overflow-y-auto space-y-3">
