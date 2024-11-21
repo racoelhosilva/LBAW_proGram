@@ -13,7 +13,7 @@ class HomeController extends Controller
     {
         return view('pages.home', [
             'users' => User::orderBy('num_followers', 'DESC')->limit(5)->get(),
-            'posts' => Post::orderBy('likes', 'DESC')->get(),
+            'posts' => Post::with('author')->orderBy('likes', 'DESC')->get(),   // with used to prevent the N+1 problem (see https://laravel-news.com/laravel-n1-query-problems for more details)
             'tags' => Tag::withCount('posts')->orderBy('posts_count', 'DESC')->limit(10)->get(),
         ]);
     }
