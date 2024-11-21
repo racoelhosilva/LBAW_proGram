@@ -7,11 +7,18 @@ servers:
 - url: https://virtserver.swaggerhub.com/2409JMSOUSA/Program/1.0.0
   description: SwaggerHub API Auto Mocking
 - url: http://localhost:8000/api
+
+tags :
+    - name: M01 Home and Static Pages
+    - name: M02 Authentication and Individual Profile
+    - name: M03 Posts and Announcements
+    - name: M04 Search
+    - name: M05 Administration
 paths:
   /posts:
     get:
       tags:
-      - Posts
+      - M03 Posts and Announcements
       summary: List all posts
       operationId: listPosts
       responses:
@@ -25,7 +32,7 @@ paths:
                   $ref: '#/components/schemas/Post'
     post:
       tags:
-      - Posts
+      - M03 Posts and Announcements
       summary: Create a new post
       operationId: createPost
       requestBody:
@@ -45,7 +52,7 @@ paths:
   /posts/{id}:
     get:
       tags:
-      - Posts
+      - M03 Posts and Announcements
       summary: Retrieve a single post
       operationId: getPost
       parameters:
@@ -65,7 +72,7 @@ paths:
                 $ref: '#/components/schemas/Post'
     put:
       tags:
-      - Posts
+      - M03 Posts and Announcements
       summary: Update a post
       operationId: updatePost
       parameters:
@@ -92,7 +99,7 @@ paths:
                 $ref: '#/components/schemas/Post'
     delete:
       tags:
-      - Posts
+      - M03 Posts and Announcements
       summary: Delete a post
       operationId: deletePost
       parameters:
@@ -113,7 +120,7 @@ paths:
   /posts/{id}/comments:
     get:
       tags:
-      - Posts
+      - M03 Posts and Announcements
       summary: List all comments for a specific post
       operationId: listPostComments
       parameters:
@@ -136,7 +143,7 @@ paths:
   /posts/{id}/likes:
     get:
       tags:
-      - Posts
+      - M03 Posts and Announcements
       summary: List all likes for a specific post
       operationId: listPostLikes
       parameters:
@@ -159,7 +166,7 @@ paths:
   /posts/{id}/tags:
     get:
       tags:
-      - Posts
+      - M03 Posts and Announcements
       summary: List all tags for a specific post
       operationId: listPostTags
       parameters:
@@ -182,7 +189,7 @@ paths:
   /posts/{id}/attachments:
     get:
       tags:
-      - Posts
+      - M03 Posts and Announcements
       summary: List all attachments for a specific post
       operationId: listPostAttachments
       parameters:
@@ -205,7 +212,7 @@ paths:
   /comments:
     get:
       tags:
-      - Comments
+      - M03 Posts and Announcements
       summary: List all comments
       operationId: listComments
       responses:
@@ -219,7 +226,7 @@ paths:
                   $ref: '#/components/schemas/Comment'
     post:
       tags:
-      - Comments
+      - M03 Posts and Announcements
       summary: Create a new comment
       operationId: createComment
       requestBody:
@@ -239,7 +246,7 @@ paths:
   /comments/{id}:
     get:
       tags:
-      - Comments
+      - M03 Posts and Announcements
       summary: Retrieve a single comment
       operationId: getComment
       parameters:
@@ -259,7 +266,7 @@ paths:
                 $ref: '#/components/schemas/Comment'
     put:
       tags:
-      - Comments
+      - M03 Posts and Announcements
       summary: Update a comment
       operationId: updateComment
       parameters:
@@ -287,7 +294,7 @@ paths:
   /users:
     get:
       tags:
-      - Users
+      - M02 Authentication and Individual Profile
       summary: List all users
       operationId: listUsers
       responses:
@@ -301,7 +308,7 @@ paths:
                   $ref: '#/components/schemas/User'
     post:
       tags:
-      - Users
+      - M02 Authentication and Individual Profile
       summary: Create a new user
       operationId: createUser
       requestBody:
@@ -321,7 +328,7 @@ paths:
   /users/{id}:
     get:
       tags:
-      - Users
+      - M02 Authentication and Individual Profile
       summary: Retrieve a single user by ID
       operationId: getUser
       parameters:
@@ -341,7 +348,7 @@ paths:
                 $ref: '#/components/schemas/User'
     put:
       tags:
-      - Users
+      - M02 Authentication and Individual Profile
       summary: Update a user's information
       operationId: updateUser
       parameters:
@@ -369,7 +376,7 @@ paths:
   /users/{id}/followers:
     get:
       tags:
-      - Users
+      - M02 Authentication and Individual Profile
       summary: List followers of a user
       operationId: listFollowers
       parameters:
@@ -392,7 +399,7 @@ paths:
   /users/{id}/following:
     get:
       tags:
-      - Users
+      - M02 Authentication and Individual Profile
       summary: List users that a user is following
       operationId: listFollowing
       parameters:
@@ -415,7 +422,7 @@ paths:
   /users/{id}/posts:
     get:
       tags:
-      - Users
+      - M02 Authentication and Individual Profile
       summary: List posts made by a user
       operationId: listPostsFromUser
       parameters:
@@ -438,7 +445,7 @@ paths:
   /users/{id}/userstats:
     get:
       tags:
-      - Users
+      - M02 Authentication and Individual Profile
       summary: Retrieve user statistics
       operationId: listUserStats
       parameters:
@@ -459,7 +466,7 @@ paths:
   /users/{id}/followrequests:
     get:
       tags:
-      - Users
+      - M02 Authentication and Individual Profile
       summary: List follow requests for a user
       operationId: listFollowRequests
       parameters:
