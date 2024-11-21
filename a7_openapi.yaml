@@ -11,7 +11,6 @@ externalDocs:
   description: 'ProGram Wiki'
   url: https://gitlab.up.pt/lbaw/lbaw2425/lbaw2411/-/wikis/home
 
-
 tags:
   - name: 'M01: Home and Static Pages'
   - name: 'M02: Authentication and Individual Profile'
@@ -491,6 +490,12 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/User'
+                  
+  /test:
+    get:
+      responses:
+        '200':
+          description: OK
 components:
   schemas:
     Post:
@@ -768,3 +773,4 @@ components:
           type: integer
         user_stats_id:
           type: integer
+
