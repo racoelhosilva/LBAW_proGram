@@ -19,7 +19,7 @@ tags:
   - name: 'M05: Administration'
 
 paths:
-  /posts:
+  /api/api/posts:
     get:
       tags:
       - M03 Posts and Announcements
@@ -53,7 +53,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Post'
-  /posts/{id}:
+  /api/api/posts/{id}:
     get:
       tags:
       - M03 Posts and Announcements
@@ -101,7 +101,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Post'
-  /posts/{id}/comments:
+  /api/posts/{id}/comments:
     get:
       tags:
       - M03 Posts and Announcements
@@ -124,7 +124,7 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Comment'
-  /posts/{id}/likes:
+  /api/posts/{id}/likes:
     get:
       tags:
       - M03 Posts and Announcements
@@ -147,7 +147,7 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/User'
-  /posts/{id}/tags:
+  /api/posts/{id}/tags:
     get:
       tags:
       - M03 Posts and Announcements
@@ -170,7 +170,7 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Tag'
-  /posts/{id}/attachments:
+  /api/posts/{id}/attachments:
     get:
       tags:
       - M03 Posts and Announcements
@@ -193,7 +193,7 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Attachment'
-  /comments:
+  /api/comments:
     get:
       tags:
       - M03 Posts and Announcements
@@ -227,7 +227,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Comment'
-  /comments/{id}:
+  /api/comments/{id}:
     get:
       tags:
       - M03 Posts and Announcements
@@ -275,7 +275,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Comment'
-  /users:
+  /api/users:
     get:
       tags:
       - M02 Authentication and Individual Profile
@@ -309,7 +309,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
-  /users/{id}:
+  /api/users/{id}:
     get:
       tags:
       - M02 Authentication and Individual Profile
@@ -357,7 +357,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
-  /users/{id}/followers:
+  /api/users/{id}/followers:
     get:
       tags:
       - M02 Authentication and Individual Profile
@@ -380,7 +380,7 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/User'
-  /users/{id}/following:
+  /api/users/{id}/following:
     get:
       tags:
       - M02 Authentication and Individual Profile
@@ -403,7 +403,7 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/User'
-  /users/{id}/posts:
+  /api/users/{id}/posts:
     get:
       tags:
       - M02 Authentication and Individual Profile
@@ -426,7 +426,7 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Post'
-  /users/{id}/userstats:
+  /api/users/{id}/userstats:
     get:
       tags:
       - M02 Authentication and Individual Profile
@@ -447,7 +447,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserStats'
-  /users/{id}/followrequests:
+  /api/users/{id}/followrequests:
     get:
       tags:
       - M02 Authentication and Individual Profile
