@@ -5,8 +5,14 @@
         <section class="card h-min">
             <h1 class="pb-2 text-xl font-semibold">Search Options</h1>
             <div class="border-t border-slate-300 dark:border-slate-600 grid justify-stretch">
-                <button id="see-users-button" class="py-2 hover:bg-slate-300 hover:dark:bg-slate-600 transition-colors font-medium flex">See Users</button>
-                <button id="see-posts-button" class="py-2 hover:bg-slate-300 hover:dark:bg-slate-600 transition-colors font-medium flex">See Posts</button>
+                <button id="see-users-button" class="px-4 py-2 hover:bg-slate-300 hover:dark:bg-slate-600 transition-colors font-medium flex">
+                    @include('partials.icon', ['name' => 'user-round'])
+                    <span class="ps-2">Users</span>
+                </button>
+                <button id="see-posts-button" class="px-4 py-2 hover:bg-slate-300 hover:dark:bg-slate-600 transition-colors font-medium flex">
+                    @include('partials.icon', ['name' => 'message-circle'])
+                    <span class="ps-2">Posts</span>
+                </button>
             </div>
         </section>
         <section id="post-results" class="flex flex-col col-span-3 gap-3">
