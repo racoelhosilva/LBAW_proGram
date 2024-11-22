@@ -25,6 +25,7 @@ class RegisterController extends Controller
     public function register(Request $request)
     {
         $request->validate([
+            'username' => 'required|string|max:20',
             'name' => 'required|string|max:250',
             'email' => 'required|email|max:250|unique:users',
             'password' => 'required|min:8|confirmed',
@@ -34,13 +35,16 @@ class RegisterController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'handle' => $request->username,
+            'is_public' => true,
+
         ]);
 
         $credentials = $request->only('email', 'password');
         Auth::attempt($credentials);
         $request->session()->regenerate();
 
-        return redirect()->route('cards')
+        return redirect()->route('/')
             ->withSuccess('You have successfully registered & logged in!');
     }
 }
