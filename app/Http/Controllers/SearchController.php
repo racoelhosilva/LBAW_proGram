@@ -33,7 +33,8 @@ class SearchController extends Controller
             ->whereRaw("tsvectors @@ plainto_tsquery('english', ?)", [$query])
             ->orderByRaw("ts_rank(tsvectors, plainto_tsquery('english', ?)) DESC", [$query]);
 
-        $exactSearchResults = Post::where('is_public', true)
+        $exactSearchResults = Post::with('author')
+            ->where('is_public', true)
             ->whereRaw('title ILIKE ?', ["%$query%"])
             ->orWhereRaw('text ILIKE ?', ["%$query%"]);
 
@@ -49,7 +50,8 @@ class SearchController extends Controller
         ]);
 
         $posts = $this->searchPosts($request);
+        $users = $this->searchUsers($request);
 
-        return view('pages.post-search', ['posts' => $posts]);
+        return view('pages.search', ['posts' => $posts, 'users' => $users]);
     }
 }
