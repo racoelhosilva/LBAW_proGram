@@ -12,15 +12,10 @@ class SearchController extends Controller
     {
         $query = $request->input('query');
 
-        $fullTextResults = User::where('is_public', true)
+        $users = User::where('is_public', true)
             ->whereRaw("tsvectors @@ plainto_tsquery('english', ?)", [$query])
-            ->orderByRaw("ts_rank(tsvectors, plainto_tsquery('english', ?)) DESC", [$query]);
-
-        $exactSearchResults = User::where('is_public', true)
-            ->whereRaw('name ILIKE ?', ["%$query%"])
-            ->orWhereRaw('handle ILIKE ?', ["%$query%"]);
-
-        $users = $exactSearchResults->union($fullTextResults)->get();
+            ->orderByRaw("ts_rank(tsvectors, plainto_tsquery('english', ?)) DESC", [$query])
+            ->get();
 
         return $users;
     }
@@ -29,16 +24,10 @@ class SearchController extends Controller
     {
         $query = $request->input('query');
 
-        $fullTextResults = Post::where('is_public', true)
+        $posts = Post::where('is_public', true)
             ->whereRaw("tsvectors @@ plainto_tsquery('english', ?)", [$query])
-            ->orderByRaw("ts_rank(tsvectors, plainto_tsquery('english', ?)) DESC", [$query]);
-
-        $exactSearchResults = Post::with('author')
-            ->where('is_public', true)
-            ->whereRaw('title ILIKE ?', ["%$query%"])
-            ->orWhereRaw('text ILIKE ?', ["%$query%"]);
-
-        $posts = $exactSearchResults->union($fullTextResults)->get();
+            ->orderByRaw("ts_rank(tsvectors, plainto_tsquery('english', ?)) DESC", [$query])
+            ->get();
 
         return $posts;
     }
