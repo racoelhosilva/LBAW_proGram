@@ -2,14 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Comment;
-use App\Models\CommentLike;
 use App\Models\GroupPost;
 use App\Models\Notification;
 use App\Models\Post;
-use App\Models\PostAttachment;
-use App\Models\PostLike;
-use App\Models\PostTag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -119,6 +114,9 @@ class PostController extends Controller
     {
         try {
             DB::transaction(function () use ($postId) {
+
+                $post = Post::find($postId);
+
                 Notification::where('post_id', $postId)
                     ->orWhereIn('comment_id', function ($query) use ($postId) {
                         $query->select('id')
@@ -138,30 +136,20 @@ class PostController extends Controller
                     })
                     ->delete();
 
-                CommentLike::whereIn('comment_id', function ($query) use ($postId) {
-                    $query->select('id')
-                        ->from('comment')
-                        ->where('post_id', $postId);
-                })
-                    ->delete();
+                foreach ($post->allComments as $comment) {
+                    $comment->allLikes()->delete();
+                    $comment->delete();
+                }
 
-                Comment::where('post_id', $postId)
-                    ->delete();
+                $post->allLikes()->delete();
 
-                PostLike::where('post_id', $postId)
-                    ->delete();
+                $post->tags()->delete();
+                $post->attachments()->delete();
 
-                PostTag::where('post_id', $postId)
-                    ->delete();
+                GroupPost::where('post_id', $postId)->delete();
 
-                PostAttachment::where('post_id', $postId)
-                    ->delete();
+                $post->delete();
 
-                GroupPost::where('post_id', $postId)
-                    ->delete();
-
-                Post::where('id', $postId)
-                    ->delete();
             });
 
             return response()->json(['message' => 'Post deleted successfully.'], 200);

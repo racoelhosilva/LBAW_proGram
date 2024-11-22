@@ -5,7 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Post extends Model
@@ -37,14 +36,14 @@ class Post extends Model
         return $this->belongsTo(User::class, 'author_id');
     }
 
-    public function tags(): BelongsToMany
+    public function tags(): HasMany
     {
-        return $this->belongsToMany(Tag::class, 'post_tag', 'post_id', 'tag_id');
+        return $this->hasMany(PostTag::class, 'post_id');
     }
 
-    public function allLikes(): BelongsToMany
+    public function allLikes(): HasMany
     {
-        return $this->belongsToMany(User::class, 'post_like', 'post_id', 'liker_id')->withPivot('timestamp');
+        return $this->hasMany(PostLike::class, 'post_id');
     }
 
     public function allComments(): HasMany
