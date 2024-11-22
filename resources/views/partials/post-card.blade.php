@@ -26,7 +26,7 @@
         <div class="select-none text-end break-keep">
             @foreach($post->tags as $tag)
                 {{-- TODO: Add tag search results link --}}
-                <a href="/" class="text-sm font-medium text-blue-600 dark:text-blue-400">{{ '#' . $tag->name }}</a>
+                <span class="text-sm font-medium text-blue-600 dark:text-blue-400">{{ '#' . $tag->name }}</span>
             @endforeach
         </div>
     </div>

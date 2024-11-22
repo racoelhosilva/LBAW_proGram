@@ -24,7 +24,7 @@ class Post extends Model
         'is_public',
         'likes',
         'comments',
-        'tsvector',
+        'tsvectors',
     ];
 
     protected $casts = [

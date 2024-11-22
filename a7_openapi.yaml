@@ -28,6 +28,15 @@ paths:
       responses:
         200:
           description: 'Ok. Show home page.'
+  /search:
+    get:
+      operationId: R102
+      summary: 'R102: Search Page'
+      tags:
+        - 'M04: Search'
+      responses:
+        200:
+          description: 'Ok. Show search page.'
   /api/posts:
     get:
       tags:
