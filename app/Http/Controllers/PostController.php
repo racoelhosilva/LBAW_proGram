@@ -2,8 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Comment;
+use App\Models\CommentLike;
+use App\Models\GroupPost;
+use App\Models\Notification;
 use App\Models\Post;
+use App\Models\PostAttachment;
+use App\Models\PostLike;
+use App\Models\PostTag;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class PostController extends Controller
 {
@@ -105,5 +113,60 @@ class PostController extends Controller
         $attachments = $post->attachments;
 
         return response()->json($attachments);
+    }
+
+    public function delete(Request $request, $postId)
+    {
+        try {
+            DB::transaction(function () use ($postId) {
+                Notification::where('post_id', $postId)
+                    ->orWhereIn('comment_id', function ($query) use ($postId) {
+                        $query->select('id')
+                            ->from('comment')
+                            ->where('post_id', $postId);
+                    })
+                    ->orWhereIn('post_like_id', function ($query) use ($postId) {
+                        $query->select('id')
+                            ->from('post_like')
+                            ->where('post_id', $postId);
+                    })
+                    ->orWhereIn('comment_like_id', function ($query) use ($postId) {
+                        $query->select('comment_like.id')
+                            ->from('comment_like')
+                            ->join('comment', 'comment_like.comment_id', '=', 'comment.id')
+                            ->where('comment.post_id', $postId);
+                    })
+                    ->delete();
+
+                CommentLike::whereIn('comment_id', function ($query) use ($postId) {
+                    $query->select('id')
+                        ->from('comment')
+                        ->where('post_id', $postId);
+                })
+                    ->delete();
+
+                Comment::where('post_id', $postId)
+                    ->delete();
+
+                PostLike::where('post_id', $postId)
+                    ->delete();
+
+                PostTag::where('post_id', $postId)
+                    ->delete();
+
+                PostAttachment::where('post_id', $postId)
+                    ->delete();
+
+                GroupPost::where('post_id', $postId)
+                    ->delete();
+
+                Post::where('id', $postId)
+                    ->delete();
+            });
+
+            return response()->json(['message' => 'Post deleted successfully.'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'An error occurred while deleting the post.', 'details' => $e->getMessage()], 500);
+        }
     }
 }

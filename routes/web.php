@@ -57,34 +57,34 @@ Route::controller(RegisterController::class)->group(function () {
 });
 
 Route::controller(PostController::class)->group(function () {
-    Route::get('/api/posts', 'list');
-    Route::get('/api/posts/{id}', 'show');
-    Route::post('/api/posts', 'create');
-    //Route::delete('/api/posts/{id}', 'delete');
-    Route::put('/api/posts/{id}', 'update');
-    Route::get('/api/posts/{id}/comments', 'listComments');
-    Route::get('/api/posts/{id}/likes', 'listLikes');
-    Route::get('/api/posts/{id}/tags', 'listTags');
-    Route::get('/api/posts/{id}/attachments', 'listAttachments');
+    Route::get('/api/post', 'list');
+    Route::get('/api/post/{id}', 'show');
+    Route::post('/api/post', 'create');
+    Route::delete('/api/post/{id}', 'delete');
+    Route::put('/api/post/{id}', 'update');
+    Route::get('/api/post/{id}/comment', 'listComments');
+    Route::get('/api/post/{id}/likes', 'listLikes');
+    Route::get('/api/post/{id}/tags', 'listTags');
+    Route::get('/api/post/{id}/attachments', 'listAttachments');
 });
 
 Route::controller(CommentController::class)->group(function () {
-    Route::get('/api/comments', 'list');
-    Route::get('/api/comments/{id}', 'show');
-    Route::post('/api/comments', 'create');
-    //Route::delete('/api/comments/{id}', 'delete');
-    Route::put('/api/comments/{id}', 'update');
+    Route::get('/api/comment', 'list');
+    Route::get('/api/comment/{id}', 'show');
+    Route::post('/api/comment', 'create');
+    //Route::delete('/api/comment/{id}', 'delete');
+    Route::put('/api/comment/{id}', 'update');
 });
 
 Route::controller(UserController::class)->group(function () {
-    Route::get('/api/users', 'list');
-    Route::get('/api/users/{id}', 'show');
-    Route::post('/api/users', 'create');
-    //Route::delete('/api/users/{id}', 'delete');
-    Route::put('/api/users/{id}', 'update');
-    Route::get('/api/users/{id}/followers', 'listFollowers');
-    Route::get('/api/users/{id}/following', 'listFollowing');
-    Route::get('/api/users/{id}/posts', 'listPosts');
-    Route::get('/api/users/{id}/userstats', 'listUserStats');
-    Route::get('/api/users/{id}/followrequests', 'listFollowRequests');
+    Route::get('/api/user', 'list');
+    Route::get('/api/user/{id}', 'show');
+    Route::post('/api/user', 'create');
+    //Route::delete('/api/user/{id}', 'delete');
+    Route::put('/api/user/{id}', 'update');
+    Route::get('/api/user/{id}/followers', 'listFollowers');
+    Route::get('/api/user/{id}/following', 'listFollowing');
+    Route::get('/api/user/{id}/post', 'listPosts');
+    Route::get('/api/user/{id}/userstats', 'listUserStats');
+    Route::get('/api/user/{id}/followrequests', 'listFollowRequests');
 });
