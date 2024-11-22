@@ -1,12 +1,12 @@
 @extends('layouts.app')
 
 @section('content')
-    <main class="p-4 grid grid-cols-4 gap-6">
+    <main class="px-8 grid grid-cols-4 gap-6">
         @if (count($posts) > 0)
             <section class="card h-min">
                 <h1 class="pb-2 text-xl font-semibold">Search Options</h1>
                 <div class="border-t hover:bg-slate-300 hover:dark:bg-slate-600 border-slate-300 dark:border-slate-600 transition-colors">
-                    <a href="{{ route('user-search', ['query' => request('query')]) }}" class="py-2 font-medium flex">Search users</a>
+                    <a href="{{ route('search', ['query' => request('query')]) }}" class="py-2 font-medium flex">Search users</a>
                 </div>
             </section>
             <section class="flex flex-col col-span-3 gap-3">
