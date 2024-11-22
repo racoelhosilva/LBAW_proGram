@@ -28,7 +28,7 @@ paths:
       responses:
         200:
           description: 'Ok. Show home page.'
-  /api/api/posts:
+  /api/posts:
     get:
       tags:
       - M03 Posts and Announcements
@@ -62,7 +62,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Post'
-  /api/api/posts/{id}:
+  /api/posts/{id}:
     get:
       tags:
       - M03 Posts and Announcements
@@ -110,6 +110,40 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Post'
+    delete:
+      tags:
+        - M03 Posts and Announcements
+      summary: Delete a post
+      operationId: R305
+      parameters:
+        - name: id
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Post deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Post deleted successfully."
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "An error occurred while deleting the post."
   /api/posts/{id}/comments:
     get:
       tags:
