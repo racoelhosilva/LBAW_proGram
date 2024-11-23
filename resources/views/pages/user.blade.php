@@ -20,7 +20,7 @@
     <section class=" h-min col-span-2 grid grid-cols-4 space-y-6">
        <article class = "card col-span-6 space-y-6 ">
             <h3 class="text-xl font-bold ">User Info</h3>
-            <p class="text-lg text-gray-300">{{$user->description}}</p>
+            <p class="text-lg ">{{$user->description}}</p>
             <p><span class="font-bold">Joined at: </span>{{ \Carbon\Carbon::parse($user->register_timestamp)->format('Y-m-d') }}</p>
             <p><span class="font-bold">Top Languages: </span>
                 @foreach($user->stats->languages as $language)
