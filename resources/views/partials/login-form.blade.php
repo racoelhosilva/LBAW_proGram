@@ -19,4 +19,8 @@
             @endif
         </div>
     </form>
+
+    <p>
+        Don't have an account? <a href="{{ route('register') }}" class="text-blue-600 dark:text-blue-400">Register</a>
+    </p>
 </article>
