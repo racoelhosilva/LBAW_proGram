@@ -3,10 +3,13 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Ban;
 use App\Models\User;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class AdminUserController extends Controller
 {
@@ -33,6 +36,37 @@ class AdminUserController extends Controller
         }
 
         return view('admin.user.index', ['users' => $users]);
+
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Ban
+    |--------------------------------------------------------------------------
+    */
+
+    public function listBans()
+    {
+        $bans = Ban::simplePaginate(20);
+
+        return view('admin.user.bans', ['bans' => $bans]);
+    }
+
+    public function banUser(Request $request)
+    {
+        $validated = $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'reason' => 'required|string|max:255',
+            'duration' => 'required|integer|min:1',
+        ]);
+        $duration = "{$validated['duration']} days";
+
+        $ban = Ban::create([
+            'user_id' => $validated['user_id'],
+            'administrator_id' => Auth::guard('admin')->id(),
+            'reason' => $validated['reason'],
+            'duration' => DB::raw("INTERVAL '$duration'"),
+        ]);
 
     }
 }
