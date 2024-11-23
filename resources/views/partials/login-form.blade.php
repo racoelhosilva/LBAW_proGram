@@ -5,12 +5,12 @@
     <form method="post" action="{{ route('login') }}" class="grid gap-4 justify-self-stretch">
         {{ csrf_field() }}
 
-        @include('partials.input-field', ['name' => 'email', 'label' => 'E-mail', 'type' => 'email', 'value' => old('email'), 'placeholder' => 'me@password.com', 'required' => true])
+        @include('partials.input-field', ['name' => 'email', 'label' => 'E-mail', 'type' => 'email', 'value' => old('email'), 'placeholder' => 'johndoe@password.com', 'required' => true])
         @include('partials.input-field', ['name' => 'password', 'label' => 'Password', 'type' => 'password', 'placeholder' => 'password123', 'required' => true])
 
         <div class="flex flex-col">
             <label class="mb-2">
-                <input type="checkbox" name="remember" {{ old('remember') ? 'checked' : '' }}> Remember Me
+                <input type="checkbox" name="remember" {{ old('remember') ? 'checked' : '' }}> <span class="font-medium">Remember Me</span>
             </label>
 
             @include('partials.text-button', ['text' => 'Login', 'label' => 'Login', 'type' => 'primary', 'submit' => true])
