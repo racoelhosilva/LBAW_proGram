@@ -21,15 +21,10 @@
                 <td>{{ $user->email }}</td>
                 <td>{{ $user->handle }}</td>
                 <td>
-                    <button>WIP</button>
-                    <!-- edit not defined yet-->
-                    <!-- <a href="{{-- route('admin.users.edit', $user->id) --}}">Edit</a> -->
-                    <!-- <form action="{{-- route('admin.users.destroy', $user->id) --}}" method="POST" -->
-                    <!--     style="display:inline;"> -->
-                    <!--     @csrf -->
-                    <!--     @method('DELETE') -->
-                    <!--     <button type="submit">Delete</button> -->
-                    <!-- </form> -->
+                    <!-- temporary route while the profile page is not ready -->
+                    <form action="/api/user/{{ $user->id }}" method="GET">
+                        <button type="submit">View Profile</button>
+                    </form>
                 </td>
             </tr>
         @empty
