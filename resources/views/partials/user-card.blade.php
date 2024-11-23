@@ -1,3 +1,5 @@
+@props(['user'])
+
 @php($userUrl = url('user/' . $user->id))
 
 <article class="card px-6 flex items-center">

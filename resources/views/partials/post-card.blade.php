@@ -1,3 +1,5 @@
+@props(['post'])
+
 @php
     $authorUrl = url('user/' . $post->author->id);
     $postUrl = url('post/' . $post->id);
