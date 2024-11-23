@@ -87,7 +87,10 @@ class PostController extends Controller
     {
         $post = Post::findOrFail($id);
 
-        $likes = $post->allLikes;
+        $likes = [];
+        foreach ($post->allLikes as $like) {
+            $likes[] = $like->liker;
+        }
 
         return response()->json($likes);
     }
@@ -96,7 +99,10 @@ class PostController extends Controller
     {
         $post = Post::findOrFail($id);
 
-        $tags = $post->tags;
+        $tags = [];
+        foreach ($post->tags as $tag) {
+            $tags[] = $tag->tag;
+        }
 
         return response()->json($tags);
     }

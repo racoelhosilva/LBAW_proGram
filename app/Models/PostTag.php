@@ -12,4 +12,9 @@ class PostTag extends Model
     protected $table = 'post_tag';
 
     public $timestamps = false;
+
+    public function tag()
+    {
+        return $this->belongsTo(Tag::class, 'tag_id');
+    }
 }
