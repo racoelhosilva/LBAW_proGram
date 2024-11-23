@@ -21,7 +21,7 @@
         </article>
     </section>
     <section class=" h-min col-span-2 grid grid-cols-4 space-y-6">
-       <article class = "card col-span-6 space-y-6 ">
+       <article class = "card col-span-4 space-y-6 ">
             <h3 class="text-xl font-bold ">User Info</h3>
             <p class="text-lg ">{{$user->description}}</p>
             <p><span class="font-bold">Joined at: </span>{{ \Carbon\Carbon::parse($user->register_timestamp)->format('Y-m-d') }}</p>
@@ -32,7 +32,7 @@
             </p>
        </article>
 
-       <article class = "card col-span-6 space-y-6 ">
+       <article class = "card col-span-4 space-y-6 ">
             <h3 class="text-xl font-bold ">Projects</h3>
             @foreach($user->stats->projects as $project)
                 <p class="font-bold" >{{ $project->name }} </p>
@@ -42,7 +42,7 @@
     </section>
 
     <section class=" h-min col-span-4 grid grid-cols-4 space-y-6">
-        <article class = "card col-span-6 space-y-6 "> 
+        <article class = "card col-span-4 space-y-6 "> 
             <h3 class="text-xl font-bold ">Posts</h3>
             @foreach ($user->posts as $post)
                 @include('partials.post-card', ['post' => $post])
@@ -51,11 +51,11 @@
         </article>
      </section>
      <section class=" h-min col-span-2 grid grid-cols-4  space-y-6">
-        <article class = "card col-span-6 space-y-6 "> 
+        <article class = "card col-span-4 space-y-6 "> 
             <h3 class="text-xl font-bold ">Followers : {{$user->num_followers}}</h3>
             <h3 class="text-xl font-bold ">Following : {{$user->num_following}}</h3>
         </article>
-        <article class = "card col-span-6 space-y-6 "> 
+        <article class = "card col-span-4 space-y-6 "> 
             <h3 class="text-xl font-bold ">Users you might know </h3>
             @include('partials.user-card', ['user' => $user])
             @include('partials.user-card', ['user' => $user])
