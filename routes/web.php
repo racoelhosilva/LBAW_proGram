@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Admin\AuthController;
+use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Api\ApiCommentController;
 use App\Http\Controllers\Api\ApiPostController;
 use App\Http\Controllers\Api\ApiUserController;
@@ -50,6 +52,19 @@ Route::controller(LoginController::class)->group(function () {
 Route::controller(RegisterController::class)->group(function () {
     Route::get('/register', 'showRegistrationForm')->name('register');
     Route::post('/register', 'register');
+});
+
+// Admin
+Route::controller(AuthController::class)->group(function () {
+    Route::get('/admin/login', 'showLoginForm')->name('admin.login');
+    Route::post('/admin/login', 'authenticate');
+    Route::get('/admin/logout', 'logout')->name('admin.logout');
+});
+
+Route::middleware('auth.admin')->group(function () {
+    Route::controller(DashboardController::class)->group(function () {
+        Route::get('/admin', 'index')->name('admin.dashboard');
+    });
 });
 
 // API
