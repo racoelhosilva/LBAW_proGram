@@ -50,15 +50,18 @@ Route::controller(RegisterController::class)->group(function () {
 });
 
 // Admin
-Route::controller(AuthController::class)->group(function () {
-    Route::get('/admin/login', 'showLoginForm')->name('admin.login');
-    Route::post('/admin/login', 'authenticate');
-    Route::get('/admin/logout', 'logout')->name('admin.logout');
-});
 
-Route::middleware('auth.admin')->group(function () {
-    Route::controller(DashboardController::class)->group(function () {
-        Route::get('/admin', 'index')->name('admin.dashboard');
+Route::prefix('admin')->group(function () {
+    Route::controller(AuthController::class)->group(function () {
+        Route::get('/login', 'showLoginForm')->name('admin.login');
+        Route::post('/login', 'authenticate');
+        Route::get('/logout', 'logout')->name('admin.logout');
+    });
+
+    Route::middleware('auth.admin')->group(function () {
+        Route::controller(DashboardController::class)->group(function () {
+            Route::get('/', 'index')->name('admin.dashboard');
+        });
     });
 });
 
