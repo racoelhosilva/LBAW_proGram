@@ -10,7 +10,7 @@
         @include('partials.input-field', ['name' => 'email', 'label' => 'Email', 'type' => 'email', 'value' => old('email'), 'placeholder' => 'johndoe@example.com', 'required' => true])
         @include('partials.input-field', ['name' => 'handle', 'label' => 'User Handle', 'type' => 'text', 'value' => old('handle'), 'placeholder' => 'johndoe2024', 'required' => true])
         @include('partials.input-field', ['name' => 'password', 'label' => 'Password', 'type' => 'password', 'placeholder' => 'password123', 'required' => true])
-        @include('partials.input-field', ['name' => 'password-confirm', 'label' => 'Confirm Password', 'type' => 'password', 'placeholder' => 'password123', 'required' => true])
+        @include('partials.input-field', ['name' => 'password_confirmation', 'label' => 'Confirm Password', 'type' => 'password', 'placeholder' => 'password123', 'required' => true])
 
         <div class="flex flex-col col-span-2">
             <label class="mb-2">
