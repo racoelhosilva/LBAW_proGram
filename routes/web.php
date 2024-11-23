@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Api\ApiCommentController;
@@ -55,17 +56,21 @@ Route::controller(RegisterController::class)->group(function () {
 });
 
 // Admin
-
 Route::prefix('admin')->group(function () {
+    // Admin authentication
     Route::controller(AuthController::class)->group(function () {
         Route::get('/login', 'showLoginForm')->name('admin.login');
         Route::post('/login', 'authenticate');
         Route::get('/logout', 'logout')->name('admin.logout');
     });
 
+    // Admin routes
     Route::middleware('auth.admin')->group(function () {
         Route::controller(DashboardController::class)->group(function () {
             Route::get('/', 'index')->name('admin.dashboard');
+        });
+        Route::controller(AdminUserController::class)->group(function () {
+            Route::get('/users/search', 'search')->name('admin.users.search');
         });
     });
 });
