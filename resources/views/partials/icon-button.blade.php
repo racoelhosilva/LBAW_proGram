@@ -1,4 +1,4 @@
-@props(['iconName', 'id', 'class' => '', 'label', 'type' => 'primary', 'anchorUrl'])
+@props(['iconName', 'id', 'label', 'type' => 'primary', 'anchorUrl'])
 
 @php
     $buttonClass = match($type) {
@@ -8,6 +8,12 @@
     };  
 @endphp
 
-<{{ isset($anchorUrl) ? 'a href=' . $anchorUrl : 'button'}} {{ isset($id) ? 'id=' . $id : '' }} aria-label="{{ $label }}" class="p-3 {{ $buttonClass }} {{ $class }}">
-    @include('partials.icon', ['name' => $iconName])
-</{{ isset($anchorUrl) ? 'a' : 'button'}}>
+@if (!isset($anchorUrl))
+    <button @if (isset($id)) id={{ $id }} @endif aria-label="{{ $label }}" class="p-3 {{ $buttonClass }}">
+        @include('partials.icon', ['name' => $iconName])
+    </button>
+@else
+    <a href={{ $anchorUrl }} @if (isset($id)) id={{ $id }} @endif aria-label="{{ $label }}" class="p-3 {{ $buttonClass }}">
+        @include('partials.icon', ['name' => $iconName])
+    </a>
+@endif
