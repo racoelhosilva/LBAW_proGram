@@ -65,7 +65,7 @@ Route::prefix('admin')->group(function () {
             Route::get('/', 'index')->name('admin.dashboard');
         });
         Route::controller(AdminUserController::class)->group(function () {
-            Route::get('/users/search', 'search')->name('admin.users.search');
+            Route::get('/user/search', 'search')->name('admin.user.search');
         });
     });
 });

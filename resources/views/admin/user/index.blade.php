@@ -1,4 +1,4 @@
-<form action="{{ route('admin.users.search') }}" method="GET">
+<form action="{{ route('admin.user.search') }}" method="GET">
     <input type="text" name="query" placeholder="Search users" value="{{ request()->query('query') }}">
     <button type="submit">Search</button>
 </form>

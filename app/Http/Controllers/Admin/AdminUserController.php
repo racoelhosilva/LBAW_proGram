@@ -33,7 +33,7 @@ class AdminUserController extends Controller
 
         }
 
-        return view('admin.users.index', ['users' => $users]);
+        return view('admin.user.index', ['users' => $users]);
 
     }
 }
