@@ -2,77 +2,64 @@
 
 @section('content')
 
-<main id="profile-page" class="px-8 py-4 grid grid-cols-4 gap-6 mt-4">
-    <article class="col-span-4 w-full bg-slate-700 text-white rounded-lg p-6">
-        <div class="grid grid-cols-12 gap-6">
-
-            <div class="col-span-3 grid grid-rows-2 items-start">
-                <div class="row-start-1 row-end-2 text-left ml-6 mt-6">
-                    <h2 class="text-6xl">{{$user->name}}</h2>
-                    <p class="text-3xl mt-4 text-gray-400">{{'@' . $user->handle}}</p>
-                </div>
-        
-                <div class="row-start-2 row-end-3 flex justify-start ml-6 mb-6">
-                    <img src="https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcTT5wgld84FW_-apTUYFMGpB_ZEhlT2KMqon-3Jx4DHdWWd-k5_" 
-                         alt="Profile picture" 
-                         class="w-60 h-60 object-cover border-4 border-slate-800 rounded-lg shadow-lg transform transition-transform duration-300 hover:scale-110 hover:shadow-2xl hover:rotate-3">
-                </div>
-            </div>
-        
-            <div class="col-span-6 grid grid-rows-3 items-center">
-                <p class="text-4xl row-start-3 row-end-4 text-center lg:text-left">{{$user->description}}</p>
-            </div>
-            
-            <div class="col-span-3 grid grid-rows-3 mb-6">
-                <div class="row-start-3 row-end-4 flex justify-center mt-auto">
-                    @include('partials.text-button', [
-                        'text' => 'Edit Profile', 
-                        'type' => 'primary', 
-                        'anchorUrl' => url('user/' . $user->id . '/edit'), 
-                        'class' => 'extra-class', 
-                    ])
-                </div>
-            </div>
-        </div>
-    </article>
-
-    <div class="col-span-4 w-full grid grid-cols-3 gap-4 ">
-    
-        <article class="bg-slate-700 p-4 rounded-lg text-center">
-            @include('partials.user-stat', ['user' => $user])
+<main id="profile-page" class="px-8 py-4 grid grid-cols-8 gap-6 mt-4">
+    <section class="card  h-min  col-span-8 grid grid-cols-6 bg-cover bg-center "  style="background-image: url('{{$user->banner_image_url}}');" >
+        <article class= " m-2 col-span-2 grid grid-rows-6"   >
+            <h1 class = "text-4xl font-bold row-start-1 row-end-2">{{$user->name}}</h1>
+            <h2 class = "text-xl mt-2 row-start-2 row-end-3">{{'@' . $user->handle}}</h2>
+            <img src = {{$user->profile_picture_url}} class ="w-52 h-52 rounded-full object-cover row-start-4 row-end-7">
         </article>
+        <article class= "m-2 col-start-6 col-end-7 grid grid-rows-6 ">
+            <div class ="profile-buttons row-start-6 row-end-7 space-x-4 ">
+                @include('partials.text-button', ['text' => 'Follow'])
+                @include('partials.text-button', ['text' => 'Edit Profile'])
+            </div>
 
-        <article class="bg-slate-700 p-4 rounded-lg text-center">
-            <h3 class="text-xl text-white font-semibold mb-4">Posts</h3>
+        </article>
+    </section>
+    <section class=" h-min col-span-2 grid grid-cols-4 space-y-6">
+       <article class = "card col-span-6 space-y-6 ">
+            <h3 class="text-xl font-bold ">User Info</h3>
+            <p class="text-lg text-gray-300">{{$user->description}}</p>
+            <p><span class="font-bold">Joined at: </span>{{ \Carbon\Carbon::parse($user->register_timestamp)->format('Y-m-d') }}</p>
+            <p><span class="font-bold">Top Languages: </span>
+                @foreach($user->stats->languages as $language)
+                    {{ $language->name }}@if(!$loop->last), @endif
+                @endforeach
+            </p>
+       </article>
 
-            @foreach ($user->posts as $post)
-
-                <div class ="m-4"> @include('partials.post-card', ['post' => $post, 'user' => $user])</div>
-               
+       <article class = "card col-span-6 space-y-6 ">
+            <h3 class="text-xl font-bold ">Projects</h3>
+            @foreach($user->stats->projects as $project)
+                <p><span class="font-bold" >{{ $project->name }} </span>- <a href="{{ $project->url }}" target="_blank">{{ $project->url }}</a></p>
             @endforeach
         </article>
-        
+    </section>
 
-        <article class="bg-slate-700 p-4 rounded-lg text-center">
-            <h3 class="text-xl text-white font-semibold mb-4">Follow Requests</h3>
-            
-            @if($user->followRequests->isEmpty())
-                <p class="text-lg text-gray-300">No follow requests.</p>
-            @else
-                @foreach ($user->followRequests as $followRequest)
-                    <div class =" mb-4">
-                         @include('partials.user-card', [
-                        'user' => $followRequest->follower,
-                        'userUrl' => url('user/' . $followRequest->follower->id),
-                    ])
-                    </div>
+    <section class=" h-min col-span-4 grid grid-cols-4 space-y-6">
+        <article class = "card col-span-6 space-y-6 "> 
+            <h3 class="text-xl font-bold ">Posts</h3>
+            @foreach ($user->posts as $post)
+                @include('partials.post-card', ['post' => $post])
                 
-                @endforeach
-            @endif
+            @endforeach
         </article>
-        
-        
-    </div>
+     </section>
+     <section class=" h-min col-span-2 grid grid-cols-4  space-y-6">
+        <article class = "card col-span-6 space-y-6 "> 
+            <h3 class="text-xl font-bold ">Followers : {{$user->num_followers}}</h3>
+            <h3 class="text-xl font-bold ">Following : {{$user->num_following}}</h3>
+        </article>
+        <article class = "card col-span-6 space-y-6 "> 
+            <h3 class="text-xl font-bold ">Users you might know </h3>
+            @include('partials.user-card', ['user' => $user])
+            @include('partials.user-card', ['user' => $user])
+        </article>
+     </section>
+
+     
+    
     
 </main>
 

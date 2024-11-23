@@ -59,5 +59,5 @@ Route::controller(RegisterController::class)->group(function () {
 });
 
 Route::controller(UserController::class)->group(function () {
-    Route::get('/users/{id}', 'show');
+    Route::get('/user/{id}', 'show');
 });
