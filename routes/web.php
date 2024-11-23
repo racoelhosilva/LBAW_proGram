@@ -66,6 +66,7 @@ Route::prefix('admin')->group(function () {
         });
         Route::controller(AdminUserController::class)->group(function () {
             Route::get('/user/search', 'search')->name('admin.user.search');
+            Route::get('/ban', 'listBans')->name('admin.ban');
         });
     });
 });
