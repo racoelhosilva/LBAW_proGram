@@ -3,10 +3,10 @@
 @section('content')
 
 <main id="profile-page" class="px-8 py-4 grid grid-cols-8 gap-6 mt-4">
-    <section class="card  h-min  col-span-8 grid grid-cols-6 bg-cover bg-center "  style="background-image: url('{{$user->banner_image_url}}');" >
-        <article class= " m-2 col-span-2 grid grid-rows-6"   >
-            <h1 class = "text-4xl font-bold row-start-1 row-end-2">{{$user->name}}</h1>
-            <h2 class = "text-2xl  row-start-2 row-end-3">{{'@' . $user->handle}}</h2>
+    <section class="card h-min  col-span-8 grid grid-cols-6 bg-cover bg-center "  style="background-image: url('{{$user->banner_image_url}}');" >
+        <article class= " m-2 col-span-2 grid grid-rows-6 "   >
+            <h1 class = "text-4xl text-white font-bold row-start-1 row-end-2">{{$user->name}}</h1>
+            <h2 class = "text-2xl text-white  row-start-2 row-end-3">{{'@' . $user->handle}}</h2>
             <img src = {{$user->profile_picture_url}} class ="w-52 h-52 rounded-full object-cover row-start-4 row-end-7">
         </article>
         <article class= "m-2 col-start-6 col-end-7 grid grid-rows-6 grid-cols-3 ">
