@@ -8,22 +8,24 @@
         <tr>
             <th>ID</th>
             <th>Name</th>
-            <th>Username</th>
             <th>Email</th>
-            <th>Actions</th>
+            <th>Username</th>
+            <th>Ban</th>
         </tr>
     </thead>
     <tbody>
         @forelse ($users as $user)
             <tr>
                 <td>{{ $user->id }}</td>
-                <td>{{ $user->name }}</td>
+                <td><a href="/api/user/{{ $user->id }}">{{ $user->name }}</a></td>
                 <td>{{ $user->email }}</td>
                 <td>{{ $user->handle }}</td>
                 <td>
-                    <!-- temporary route while the profile page is not ready -->
-                    <form action="/api/user/{{ $user->id }}" method="GET">
-                        <button type="submit">View Profile</button>
+                    <form action="{{ route('admin.ban.store', $user->id) }}" method="POST">
+                        @csrf
+                        <input type="text" name="reason" placeholder="Reason for ban" required>
+                        <input type="number" name="duration" placeholder="Duration (days)" required>
+                        <button type="submit">Ban</button>
                     </form>
                 </td>
             </tr>
