@@ -7,12 +7,18 @@ use App\Models\Ban;
 use App\Models\User;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class AdminUserController extends Controller
 {
+    /*
+    |--------------------------------------------------------------------------
+    | Search
+    |--------------------------------------------------------------------------
+    */
     public function search(Request $request): View|Factory
     {
         $validated = $request->validate([
@@ -44,21 +50,20 @@ class AdminUserController extends Controller
     | Ban
     |--------------------------------------------------------------------------
     */
-
-    public function listBans()
+    public function listBans(): View|Factory
     {
         $bans = Ban::simplePaginate(20);
 
         return view('admin.user.bans', ['bans' => $bans]);
     }
 
-    public function banUser(Request $request)
+    public function banUser(Request $request, User $user): RedirectResponse
     {
         $validated = $request->validate([
-            'user_id' => 'required|exists:users,id',
             'reason' => 'required|string|max:255',
             'duration' => 'required|integer|min:1',
         ]);
+        $validated['user_id'] = $user->id;
         $duration = "{$validated['duration']} days";
 
         $ban = Ban::create([
@@ -68,5 +73,6 @@ class AdminUserController extends Controller
             'duration' => DB::raw("INTERVAL '$duration'"),
         ]);
 
+        return redirect()->route('admin.bans.index');
     }
 }

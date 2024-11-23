@@ -4,6 +4,10 @@
         <button type="submit">Search Users</button>
     </form>
 
+    <form action="/admin/ban" method="GET">
+        <button type="submit">List Bans</button>
+    </form>
+
     <form action="{{ route('admin.logout') }}" method="GET">
         @csrf
         <button type="submit">Logout</button>
