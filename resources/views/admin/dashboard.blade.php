@@ -1,6 +1,6 @@
 <div>
     <p>Dashboard</p>
-    <form action="{{ route('admin.users.search') }}" method="GET">
+    <form action="{{ route('admin.user.search') }}" method="GET">
         <button type="submit">Search Users</button>
     </form>
 
