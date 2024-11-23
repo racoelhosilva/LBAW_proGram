@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -10,6 +11,13 @@ class UserController extends Controller
     {
         $user = User::findOrFail($id);
 
-        return view('pages.user', ['user' => $user]);
+        $authuser = Auth::user();
+
+        $isOwnProfile = $authuser && $authuser->id === $user->id;
+
+        return view('pages.user', [
+            'user' => $user,
+            'isOwnProfile' => $isOwnProfile, // Pass the flag to the view
+        ]);
     }
 }
