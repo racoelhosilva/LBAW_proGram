@@ -105,9 +105,10 @@ INSERT INTO user_stats (user_id, github_url, gitlab_url, linkedin_url) VALUES
     (49, 'https://www.watson.net/', 'http://www.brooks.biz/', 'https://www.savage-johnson.net/'),
     (50, 'NULL', 'NULL', 'NULL'),
     (51, 'https://github.com/HenriqueSFernandes', 'NULL', 'https://www.linkedin.com/in/-henriquesfernandes/');
+
 INSERT INTO administrator (name, email, password, register_timestamp) VALUES
     ('Katherine Herrera', 'kherrera@program.com', '$2y$10$RYObU9iEY6BU4HPBMesgDOcA/ZkkK4lPyi1mT8BLYF9tvsNSPuyg6', '2023-11-05 20:37:46'),
-		('Henrique Fernandes', 'ricky@gmail.com', '$2y$10$RYObU9iEY6BU4HPBMesgDOcA/ZkkK4lPyi1mT8BLYF9tvsNSPuyg6', '2023-11-05 20:37:46'),
+	('Henrique Fernandes', 'ricky@gmail.com', '$2y$10$RYObU9iEY6BU4HPBMesgDOcA/ZkkK4lPyi1mT8BLYF9tvsNSPuyg6', '2023-11-05 20:37:46'),
     ('John Watson', 'johnwatson@program.com', '$2y$10$RYObU9iEY6BU4HPBMesgDOcA/ZkkK4lPyi1mT8BLYF9tvsNSPuyg6', '2023-11-05 20:37:46');
 
 INSERT INTO language (name) VALUES
