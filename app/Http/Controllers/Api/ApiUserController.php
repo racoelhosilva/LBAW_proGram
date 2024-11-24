@@ -15,7 +15,7 @@ class ApiUserController extends Controller
         return response()->json($users);
     }
 
-    public function listOne($id)
+    public function show($id)
     {
         $user = User::findOrFail($id);
 

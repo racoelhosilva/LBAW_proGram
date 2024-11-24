@@ -65,7 +65,7 @@ Route::prefix('api')->group(function () {
 
     Route::controller(ApiUserController::class)->group(function () {
         Route::get('/user', 'list');
-        Route::get('/user/{id}', 'listOne');
+        Route::get('/user/{id}', 'show');
         Route::post('/user', 'create');
         //Route::delete('/user/{id}', 'delete');
         Route::put('/user/{id}', 'update');
