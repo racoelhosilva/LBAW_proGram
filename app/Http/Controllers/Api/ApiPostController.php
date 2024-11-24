@@ -65,16 +65,22 @@ class ApiPostController extends Controller
 
     public function update(Request $request, $id)
     {
+        if (! auth()->check()) {
+            return response()->json(['error' => 'You must be logged in to update a post.'], 401);
+        }
+
+        $post = Post::findOrFail($id);
+
+        if (auth()->id() !== $post->author_id) {
+            return response()->json(['error' => 'You are not authorized to update this post.'], 403);
+        }
 
         $request->validate([
             'title' => 'nullable|string|max:255',
             'text' => 'nullable|string',
-            'likes' => 'nullable|integer',
             'is_public' => 'nullable|boolean',
             'is_announcement' => 'nullable|boolean',
         ]);
-
-        $post = Post::findOrFail($id);
 
         $post->update($request->all());
 
@@ -125,10 +131,19 @@ class ApiPostController extends Controller
 
     public function delete(Request $request, $postId)
     {
-        try {
-            DB::transaction(function () use ($postId) {
+        if (! auth()->check()) {
+            return response()->json(['error' => 'You must be logged in to update a post.'], 401);
+        }
 
-                $post = Post::find($postId);
+        $post = Post::findOrFail($postId);
+
+        if (auth()->id() !== $post->author_id) {
+            return response()->json(['error' => 'You are not authorized to update this post.'], 403);
+        }
+
+        try {
+            DB::transaction(function () use ($post) {
+                $postId = $post->id;
 
                 Notification::where('post_id', $postId)
                     ->orWhereIn('comment_id', function ($query) use ($postId) {
