@@ -5,6 +5,17 @@
         @include('partials.icon-button', ['iconName' => 'home', 'id' => 'home-button', 'label' => 'Home', 'type' => 'secondary', 'anchorUrl' => route('admin.dashboard')])
         @include('partials.theme-button')
         @include('partials.icon-button', ['iconName' => 'log-out', 'id' => 'logout-button', 'label' => 'Logout', 'type' => 'secondary', 'anchorUrl' => route('admin.logout')])
-        @include('partials.icon-button', ['iconName' => 'grip', 'id' => 'more-button', 'label' => 'More', 'type' => 'transparent'])
+        <div class="dropdown">
+            @include('partials.icon-button', ['iconName' => 'grip', 'id' => 'more-button', 'label' => 'More', 'type' => 'transparent'])
+            <div class="hidden">
+                <div>
+                    @include('partials.dropdown-item', ['icon' => 'user-round', 'text' => 'View Users', 'anchorUrl' => route('admin.user.search')])
+                    @include('partials.dropdown-item', ['icon' => 'user-round-x', 'text' => 'View Bans', 'anchorUrl' => route('admin.ban')])
+                </div>
+                <div>
+                    @include('partials.dropdown-item', ['icon' => 'log-out', 'text' => 'Logout', 'anchorUrl' => route('admin.logout')])
+                </div>
+            </div>
+        </div>
     </div>
 </header>
