@@ -7,6 +7,7 @@
             <th>Reason</th>
             <th>Duration</th>
             <th>Is Active?</th>
+            <th>Revoke</th>
         </tr>
     </thead>
     <tbody>
@@ -19,11 +20,16 @@
                 <td>{{ $ban->duration }}</td>
                 <td>{{ $ban->is_active }}</td>
                 <td>
+                    <form action="{{ route('admin.ban.revoke', $ban->id) }}" method="POST">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit">Revoke</button>
+                    </form>
                 </td>
             </tr>
         @empty
             <tr>
-                <td colspan="4">No bans found.</td>
+                <td colspan="7">No bans found.</td>
             </tr>
         @endforelse
     </tbody>
