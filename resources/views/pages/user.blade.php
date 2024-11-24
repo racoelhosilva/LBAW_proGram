@@ -10,9 +10,9 @@
             <img src="{{$user->profile_picture_url}}" class="w-52 h-52 rounded-full object-cover row-start-4 row-end-7">
         </article>
         <article class="m-2 col-start-6 col-end-7 grid grid-rows-6 grid-cols-8">
-            <div class="profile-buttons row-start-6 row-end-7 col-start-5 col-end-9">
+            <div class="profile-buttons row-start-6 row-end-7 col-start-2 col-end-9">
                 @if ($isOwnProfile)
-                    @include('partials.text-button', ['text' => 'Edit Profile'])
+                    @include('partials.text-button', ['text' => 'Edit Profile', 'anchorUrl' => route('users.edit', $user->id)])
                 @else
                     @include('partials.text-button', ['text' => 'Follow'])
                 @endif
