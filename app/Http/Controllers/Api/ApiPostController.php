@@ -36,21 +36,23 @@ class ApiPostController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'text' => 'required|string',
-            'author_id' => 'nullable|exists:users,id',
+            'tags' => 'nullable|array',
+            'tags.*' => 'exists:tag,id',
             'is_public' => 'nullable|boolean',
             'is_announcement' => 'nullable|boolean',
         ]);
 
-        // Create post with the provided or default author_id and other fields
         try {
             $post = Post::create([
                 'title' => $request->input('title'),
                 'text' => $request->input('text'),
-                'author_id' => $request->input('author_id'),
+                'author_id' => auth()->id(),
                 'is_public' => $request->input('is_public', true),
                 'is_announcement' => $request->input('is_announcement', false),
                 'likes' => 0,
             ]);
+
+            $post->tags()->sync($request->input('tags'));
 
             return response()->json($post, 201);
         } catch (\Exception $e) {
