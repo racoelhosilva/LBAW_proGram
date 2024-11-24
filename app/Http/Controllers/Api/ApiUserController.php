@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\UserStats;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class ApiUserController extends Controller
 {
@@ -16,18 +15,9 @@ class ApiUserController extends Controller
         return response()->json($users);
     }
 
-    public function show($id)
+    public function listOne($id)
     {
         $user = User::findOrFail($id);
-
-        $authuser = Auth::user();
-
-        $isOwnProfile = $authuser && $authuser->id === $user->id;
-
-        return view('pages.user', [
-            'user' => $user,
-            'isOwnProfile' => $isOwnProfile,
-        ]);
 
         return response()->json($user);
     }
