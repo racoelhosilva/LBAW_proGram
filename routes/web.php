@@ -1,14 +1,12 @@
 <?php
 
+use App\Http\Controllers\Api\ApiCommentController;
+use App\Http\Controllers\Api\ApiPostController;
+use App\Http\Controllers\Api\ApiUserController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
-use App\Http\Controllers\CardController;
-use App\Http\Controllers\CommentController;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\ItemController;
-use App\Http\Controllers\PostController;
 use App\Http\Controllers\SearchController;
-use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -30,12 +28,6 @@ Route::controller(HomeController::class)->group(function () {
 // Search
 Route::get('/search', [SearchController::class, 'list'])->name('search');
 
-// Cards
-Route::controller(CardController::class)->group(function () {
-    Route::get('/cards', 'list')->name('cards');
-    Route::get('/cards/{id}', 'show');
-});
-
 // Authentication
 Route::controller(LoginController::class)->group(function () {
     Route::get('/login', 'showLoginForm')->name('login');
@@ -50,18 +42,7 @@ Route::controller(RegisterController::class)->group(function () {
 
 // API
 Route::prefix('api')->group(function () {
-    Route::controller(CardController::class)->group(function () {
-        Route::put('/cards', 'create');
-        Route::delete('/cards/{card_id}', 'delete');
-    });
-
-    Route::controller(ItemController::class)->group(function () {
-        Route::put('/cards/{card_id}', 'create');
-        Route::post('/item/{id}', 'update');
-        Route::delete('/item/{id}', 'delete');
-    });
-
-    Route::controller(PostController::class)->group(function () {
+    Route::controller(ApiPostController::class)->group(function () {
         Route::get('/post', 'list');
         Route::get('/post/{id}', 'show');
         Route::post('/post', 'create');
@@ -73,7 +54,7 @@ Route::prefix('api')->group(function () {
         Route::get('/post/{id}/attachments', 'listAttachments');
     });
 
-    Route::controller(CommentController::class)->group(function () {
+    Route::controller(ApiCommentController::class)->group(function () {
         Route::get('/comment', 'list');
         Route::get('/comment/{id}', 'show');
         Route::post('/comment', 'create');
@@ -81,7 +62,7 @@ Route::prefix('api')->group(function () {
         Route::put('/comment/{id}', 'update');
     });
 
-    Route::controller(UserController::class)->group(function () {
+    Route::controller(ApiUserController::class)->group(function () {
         Route::get('/user', 'list');
         Route::get('/user/{id}', 'show');
         Route::post('/user', 'create');
