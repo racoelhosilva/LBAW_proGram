@@ -82,7 +82,7 @@ Route::prefix('api')->group(function () {
         Route::get('/user/{id}/followrequests', 'listFollowRequests');
     });
 });
+
 Route::controller(UserController::class)->group(function () {
     Route::get('user/{id}', 'show');
-
 });
