@@ -13,7 +13,7 @@
                     'name' => 'title',
                     'label' => 'Post Title',
                     'placeholder' => 'Enter title',
-                    'value' => isset($post->title) ? $post->title : '',
+                    'value' => $post->title,
                     'required' => true
                 ])
                 
@@ -21,7 +21,7 @@
                     'name' => 'text',
                     'label' => 'Post Content',
                     'placeholder' => 'Write your post here...',
-                    'value' => isset($post->text) ? $post->text : '',
+                    'value' => $post->text,
                     'required' => true
                 ])
                     
