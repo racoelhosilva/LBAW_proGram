@@ -6,7 +6,7 @@ use App\Models\Post;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 
-class PostController extends Controller
+class ApiPostController extends Controller
 {
     /**
      * Display a listing of the resource.
