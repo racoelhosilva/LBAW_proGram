@@ -5,7 +5,7 @@
         {{ csrf_field() }}
 
         <div class="col-span-2">
-            @include('partials.input-field', ['name' => 'username', 'label' => 'User Name', 'type' => 'text', 'value' => old('username'), 'placeholder' => 'John Doe', 'required' => true])
+            @include('partials.input-field', ['name' => 'name', 'label' => 'Name', 'type' => 'text', 'value' => old('name'), 'placeholder' => 'John Doe', 'required' => true])
         </div>
         @include('partials.input-field', ['name' => 'email', 'label' => 'Email', 'type' => 'email', 'value' => old('email'), 'placeholder' => 'johndoe@example.com', 'required' => true])
         @include('partials.input-field', ['name' => 'handle', 'label' => 'User Handle', 'type' => 'text', 'value' => old('handle'), 'placeholder' => 'johndoe2024', 'required' => true])
