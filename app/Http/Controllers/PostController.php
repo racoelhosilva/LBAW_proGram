@@ -51,6 +51,8 @@ class PostController extends Controller
                 'likes' => 0,
             ]);
 
+            $post->tags()->sync($request->input('tags'));
+
             return redirect('post/'.$post->id);
         } catch (\Exception $e) {
             return redirect()->back()->withErrors(['error' => 'Failed to create post.']);
