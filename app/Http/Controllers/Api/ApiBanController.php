@@ -6,7 +6,7 @@ use App\Models\Ban;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class BanController extends Controller
+class ApiBanController extends Controller
 {
     /**
      * Display a listing of the resource.
