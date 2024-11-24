@@ -234,7 +234,7 @@ namespace App\Models{
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\PostAttachment> $attachments
  * @property-read int|null $attachments_count
  * @property-read \App\Models\User $author
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\PostTag> $tags
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Tag> $tags
  * @property-read int|null $tags_count
  * @method static \Illuminate\Database\Eloquent\Builder|Post newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Post newQuery()
@@ -272,22 +272,6 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|PostLike whereTimestamp($value)
  */
 	class PostLike extends \Eloquent {}
-}
-
-namespace App\Models{
-/**
- * App\Models\PostTag
- *
- * @property int $post_id
- * @property int $tag_id
- * @property-read \App\Models\Tag $tag
- * @method static \Illuminate\Database\Eloquent\Builder|PostTag newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|PostTag newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|PostTag query()
- * @method static \Illuminate\Database\Eloquent\Builder|PostTag wherePostId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|PostTag whereTagId($value)
- */
-	class PostTag extends \Eloquent {}
 }
 
 namespace App\Models{
