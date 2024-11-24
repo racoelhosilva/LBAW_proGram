@@ -13,7 +13,7 @@
         @else
             @include('partials.text-button', ['text' => 'Login/Register', 'id' => 'login-button', 'type' => 'primary', 'anchorUrl' => route('login')])
         @endif
-        <div class="dropdown">
+        <article class="dropdown">
             @include('partials.icon-button', ['iconName' => 'grip', 'id' => 'more-button', 'label' => 'More', 'type' => 'transparent'])
             <div class="hidden">
                 <div>
@@ -25,6 +25,6 @@
                     @endif
                 </div>
             </div>
-        </div>
+        </article>
     </div>
 </header>

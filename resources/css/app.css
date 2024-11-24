@@ -69,4 +69,28 @@
     table td {
          @apply p-2 border-t border-slate-300 dark:border-slate-600;
     }
+
+    .pagination {
+        @apply w-fit border rounded-lg border-slate-300 dark:border-slate-700 flex overflow-hidden;
+    }
+
+    .page-item {
+        @apply flex bg-white dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 border-slate-300 dark:border-slate-700 transition-colors;
+    }
+
+    .page-item > a {
+        @apply px-3 py-2;
+    }
+
+    .page-item:not(:first-child) {
+        @apply border-l;
+    }
+
+    .page-item.active {
+        @apply bg-blue-600 text-white border-blue-600;
+    }
+
+    .page-item.inactive {
+        @apply bg-slate-300 dark:bg-slate-700 text-slate-600 dark:text-slate-400;
+    }
 }
