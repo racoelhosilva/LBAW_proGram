@@ -14,9 +14,6 @@
             </label>
 
             @include('partials.text-button', ['text' => 'Login', 'label' => 'Login', 'type' => 'primary', 'submit' => true])
-            @if (session('success'))
-                <p class="text-sm text-green-500">{{ session('success') }}</p>
-            @endif
         </div>
     </form>
 
