@@ -6,6 +6,7 @@ use App\Models\Post;
 use App\Models\Tag;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PostController extends Controller
 {
@@ -22,6 +23,10 @@ class PostController extends Controller
      */
     public function create()
     {
+        if (! Auth::check()) {
+            return redirect()->route('login');
+        }
+
         return view('pages/create-post', [
             'tags' => Tag::all(),
         ]);
@@ -32,6 +37,10 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
+        if (! Auth::check()) {
+            return redirect()->route('login');
+        }
+
         $request->validate([
             'title' => 'required|string|max:255',
             'text' => 'required|string',
