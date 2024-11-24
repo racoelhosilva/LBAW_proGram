@@ -120,5 +120,6 @@ class ApiUserController extends Controller
         $user = User::findOrFail($id);
 
         return response()->json($user->followRequests);
+
     }
 }
