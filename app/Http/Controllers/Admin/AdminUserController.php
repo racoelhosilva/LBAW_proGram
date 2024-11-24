@@ -52,7 +52,7 @@ class AdminUserController extends Controller
     */
     public function listBans(): View|Factory
     {
-        $bans = Ban::simplePaginate(20);
+        $bans = Ban::with('administrator')->with('user')->simplePaginate(20);
 
         return view('admin.user.bans', ['bans' => $bans]);
     }
@@ -73,16 +73,17 @@ class AdminUserController extends Controller
             'duration' => DB::raw("INTERVAL '$duration'"),
         ]);
 
-        return redirect()->route('admin.bans.index')->with('success', 'User banned successfully');
+        return redirect()->route('admin.ban.index')->with('success', 'User banned successfully');
 
     }
 
     public function revokeBan(int $id): RedirectResponse
     {
         $ban = Ban::findOrFail($id);
+        $ban->is_active = false;
 
-        $ban->delete();
+        $ban->save();
 
-        return redirect()->route('admin.bans.index')->with('success', 'Ban revoked successfully.');
+        return redirect()->route('admin.ban.index')->with('success', 'Ban revoked successfully.');
     }
 }
