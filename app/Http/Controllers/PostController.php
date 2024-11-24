@@ -114,8 +114,8 @@ class PostController extends Controller
             $post->update([
                 'title' => $request->input('title', $post->title),
                 'text' => $request->input('text', $post->text),
-                'is_public' => $request->input('is_public', $post->is_public),
-                'is_announcement' => $request->input('is_announcement', $post->is_announcement),
+                'is_public' => $request->input('is_public', false),
+                'is_announcement' => $request->input('is_announcement', false),
             ]);
 
             $post->tags()->sync($request->input('tags'));
