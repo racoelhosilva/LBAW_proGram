@@ -24,7 +24,7 @@
                     <h2 class="text-xl font-bold">Bans</h2>
                     <p class="mb-4"><span class="font-semibold">Banned users:</span> {{ $bannedCount }}</p>
                     <div class="flex">
-                        @include('partials.text-button', ['text' => 'View Bans', 'anchorUrl' => route('admin.ban')])
+                        @include('partials.text-button', ['text' => 'View Bans', 'anchorUrl' => route('admin.ban.index')])
                     </div>
                 </div>
             </article>

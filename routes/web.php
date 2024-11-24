@@ -66,8 +66,10 @@ Route::prefix('admin')->group(function () {
         });
         Route::controller(AdminUserController::class)->group(function () {
             Route::get('/user/search', 'search')->name('admin.user.search');
-            Route::get('/ban', 'listBans')->name('admin.ban');
+            // Ban
+            Route::get('/ban', 'listBans')->name('admin.ban.index');
             Route::post('/ban/{user}', 'banUser')->name('admin.ban.store');
+            Route::post('/ban/{id}/revoke', 'revokeBan')->name('admin.ban.revoke');
         });
     });
 });
@@ -105,15 +107,6 @@ Route::prefix('api')->group(function () {
         Route::get('/user/{id}/post', 'listPosts');
         Route::get('/user/{id}/userstats', 'listUserStats');
         Route::get('/user/{id}/followrequests', 'listFollowRequests');
-    });
-
-    Route::controller(ApiBanController::class)->group(function () {
-        Route::get('/ban', 'index');
-        Route::post('/ban', 'store')->name('temp');
-        Route::get('/ban/{ban}', 'show');
-        Route::patch('/ban/{ban}', 'update');
-        Route::delete('/ban/{ban}', 'destroy');
-        Route::delete('/ban/{id}', 'revokeBan')->name('admin.ban.revoke');
     });
 });
 
