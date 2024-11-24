@@ -43,12 +43,14 @@ class UserController extends Controller
         $request->validate([
             'name' => 'string|max:255',
             'description' => 'string|max:500',
+            'is_public' => 'boolean',
 
         ]);
 
         try {
             $user->name = $request->input('name');
             $user->description = $request->input('description');
+            $user->is_public = $request->input('is_public', true);
             $user->save();
 
             return redirect()->route('users.show', $user->id);
