@@ -41,7 +41,7 @@ class PostController extends Controller
                 'title' => $request->input('title'),
                 'text' => $request->input('text'),
                 'author_id' => auth()->id(),
-                'is_public' => $request->input('is_public', true),
+                'is_public' => $request->input('is_public', false),
                 'is_announcement' => $request->input('is_announcement', false),
                 'likes' => 0,
             ]);
