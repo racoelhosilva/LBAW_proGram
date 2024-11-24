@@ -1,7 +1,7 @@
 <article class="card h-min p-10 pt-16 grid gap-12 justify-items-center col-start-2 col-span-2">
     @include('partials.logo', ['size' => 'large'])
 
-    <form method="post" action="{{ route('login') }}" class="grid grid-cols-2 gap-4 justify-self-stretch">
+    <form method="post" action="{{ route('register') }}" class="grid grid-cols-2 gap-4 justify-self-stretch">
         {{ csrf_field() }}
 
         <div class="col-span-2">
