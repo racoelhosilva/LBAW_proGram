@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Language;
+use App\Models\Technology;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -35,6 +36,7 @@ class UserController extends Controller
             'user' => $user,
             'isOwnProfile' => $isOwnProfile,
             'languages' => Language::all(),
+            'technologies' => Technology::all(),
         ]);
     }
 
@@ -50,6 +52,8 @@ class UserController extends Controller
             'handle' => 'string|unique:users,handle,'.$user->id,
             'languages' => 'array',
             'languages.*' => 'exists:language,id',
+            'technologies' => 'array',
+            'technologies.*' => 'exists:technology,id',
 
         ]);
 
@@ -59,6 +63,7 @@ class UserController extends Controller
             $user->is_public = $request->input('is_public', true);
             $user->handle = $request->input('handle');
             $user->stats->languages()->sync($request->input('languages'));
+            $user->stats->technologies()->sync($request->input('technologies'));
 
             $user->save();
 

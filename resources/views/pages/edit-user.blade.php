@@ -20,13 +20,33 @@
         </div>
 
         <div class="flex flex-col">
-            <label for="tags" class="mb-2 font-medium">Languages</label>
+            <label for="languages" class="mb-2 font-medium">Languages</label>
             <select name="languages[]" id="languages" multiple class="card overflow-auto">
                 @foreach ($languages as $language)
-                    <option class="w-full text-gray-600 dark:text-white px-4 py-2" value="{{ $language->id }}">{{ $language->name }}</option>
+                    <option 
+                        class="w-full text-gray-600 dark:text-white px-4 py-2" 
+                        value="{{ $language->id }}" 
+                        {{ $user->stats->languages->contains('id', $language->id) ? 'selected' : '' }}>
+                        {{ $language->name }}
+                    </option>
                 @endforeach
             </select>
         </div>
+        
+        <div class="flex flex-col">
+            <label for="technologies" class="mb-2 font-medium">Technologies</label>
+            <select name="technologies[]" id="technologies" multiple class="card overflow-auto">
+                @foreach ($technologies as $technology)
+                    <option 
+                        class="w-full text-gray-600 dark:text-white px-4 py-2" 
+                        value="{{ $technology->id }}" 
+                        {{ $user->stats->technologies->contains('id', $technology->id) ? 'selected' : '' }}>
+                        {{ $technology->name }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+        
 
 
         <div class="flex flex-col mt-6 max-w-40">

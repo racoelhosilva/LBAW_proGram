@@ -30,6 +30,11 @@
                     {{ $language->name }}@if(!$loop->last), @endif
                 @endforeach
             </p>
+            <p><span class="font-bold">Technologies: </span>
+                @foreach($user->stats->technologies as $technology)
+                    {{ $technology->name }}@if(!$loop->last), @endif
+                @endforeach
+            </p>
         </article>
 
         <article class="card col-span-4 space-y-3">
