@@ -49,4 +49,8 @@
     .dropdown > div > div:not(:last-child) {
         @apply border-b border-slate-300 dark:border-slate-600;
     }
+
+    .dashboard-card {
+        @apply card grid grid-cols-[auto_1fr] items-center gap-4;
+    }
 }
