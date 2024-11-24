@@ -82,7 +82,18 @@ class PostController extends Controller
      */
     public function edit(Post $post)
     {
-        //
+        if (! Auth::check()) {
+            return redirect()->route('login');
+        }
+
+        if (Auth::id() !== $post->author_id) {
+            return redirect()->route('home');
+        }
+
+        return view('pages/edit-post', [
+            'post' => $post,
+            'tags' => Tag::all(),
+        ]);
     }
 
     /**
@@ -90,7 +101,29 @@ class PostController extends Controller
      */
     public function update(Request $request, Post $post)
     {
-        //
+        $request->validate([
+            'title' => 'nullable|string|max:255',
+            'text' => 'nullable|string',
+            'tags' => 'nullable|array',
+            'tags.*' => 'exists:tag,id',
+            'is_public' => 'nullable|boolean',
+            'is_announcement' => 'nullable|boolean',
+        ]);
+
+        try {
+            $post->update([
+                'title' => $request->input('title', $post->title),
+                'text' => $request->input('text', $post->text),
+                'is_public' => $request->input('is_public', $post->is_public),
+                'is_announcement' => $request->input('is_announcement', $post->is_announcement),
+            ]);
+
+            $post->tags()->sync($request->input('tags'));
+
+            return redirect('post/'.$post->id);
+        } catch (\Exception $e) {
+            return redirect()->back()->withErrors(['error' => 'Failed to update post.']);
+        }
     }
 
     /**
