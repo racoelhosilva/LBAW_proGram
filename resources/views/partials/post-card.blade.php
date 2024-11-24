@@ -13,7 +13,10 @@
         <p class="text-base/4 font-medium select-none"><a href="{{ $authorUrl }}">{{ $post->author->name }}</a></p>
         <p class="text-xs/3 pt-1 font-medium text-gray-500 dark:text-gray-400 select-none"><a href="{{ $authorUrl }}">{{ '@' . $post->author->handle }}</a>{{ ' • ' . $post->creation_timestamp->diffForHumans() }}</p>
     </div>
-    <div class="ms-4 -me-3">
+    <div class="ms-4 -me-3 flex">
+        @if ($post->author->id === auth()->id())
+            @include('partials.icon-button', ['iconName' => 'pencil', 'label' => 'Edit', 'type' => 'transparent', 'anchorUrl' => url('post/' . $post->id . '/edit'), 'submit' => false])
+        @endif
         @include('partials.icon-button', ['iconName' => 'ellipsis', 'label' => 'Options', 'type' => 'transparent'])
     </div>
     <div class="mt-4 col-span-3">
