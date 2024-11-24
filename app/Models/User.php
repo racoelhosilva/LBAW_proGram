@@ -100,4 +100,14 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(User::class, 'follow', 'follower_id', 'followed_id')->withPivot('timestamp');
     }
+
+    public function bans(): HasMany
+    {
+        return $this->hasMany(Ban::class, 'user_id');
+    }
+
+    public function isBanned(): bool
+    {
+        return $this->bans()->active()->exists();
+    }
 }
