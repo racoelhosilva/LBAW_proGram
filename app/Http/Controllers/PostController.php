@@ -21,7 +21,7 @@ class PostController extends Controller
      */
     public function create()
     {
-        //
+        return view('pages/create-post');
     }
 
     /**
@@ -29,7 +29,27 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'text' => 'required|string',
+            'is_public' => 'nullable|boolean',
+            'is_announcement' => 'nullable|boolean',
+        ]);
+
+        try {
+            $post = Post::create([
+                'title' => $request->input('title'),
+                'text' => $request->input('text'),
+                'author_id' => auth()->id(),
+                'is_public' => $request->input('is_public', true),
+                'is_announcement' => $request->input('is_announcement', false),
+                'likes' => 0,
+            ]);
+
+            return redirect('post/'.$post->id);
+        } catch (\Exception $e) {
+            return redirect()->back()->withErrors(['error' => 'Failed to create post.']);
+        }
     }
 
     /**
@@ -37,7 +57,7 @@ class PostController extends Controller
      */
     public function show(Post $post): View
     {
-        return view('pages.post',
+        return view('pages/post',
             ['post' => $post]);
     }
 
