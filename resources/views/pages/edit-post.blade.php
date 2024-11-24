@@ -17,7 +17,7 @@
                     'required' => true
                 ])
                 
-                @include('partials.input-field', [
+                @include('partials.textarea', [
                     'name' => 'text',
                     'label' => 'Post Content',
                     'placeholder' => 'Write your post here...',
