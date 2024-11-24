@@ -3,12 +3,12 @@
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Api\ApiBanController;
 use App\Http\Controllers\Api\ApiCommentController;
 use App\Http\Controllers\Api\ApiPostController;
 use App\Http\Controllers\Api\ApiUserController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
-use App\Http\Controllers\BanController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\SearchController;
@@ -108,7 +108,7 @@ Route::prefix('api')->group(function () {
         Route::get('/user/{id}/followrequests', 'listFollowRequests');
     });
 
-    Route::controller(BanController::class)->group(function () {
+    Route::controller(ApiBanController::class)->group(function () {
         Route::get('/ban', 'index');
         Route::post('/ban', 'store')->name('temp');
         Route::get('/ban/{ban}', 'show');
