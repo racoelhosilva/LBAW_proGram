@@ -5,13 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Comment extends Model
 {
     use HasFactory;
 
     protected $table = 'comment';
+
+    public $timestamps = false;
 
     /**
      * The attributes that are mass assignable.
@@ -22,6 +23,8 @@ class Comment extends Model
         'content',
         'likes',
         'timestamp',
+        'post_id',
+        'author_id',
     ];
 
     // The attributes that should be cast
@@ -45,8 +48,8 @@ class Comment extends Model
         return $this->belongsTo(User::class, 'author_id');
     }
 
-    public function allLikes(): BelongsToMany
+    public function allLikes()
     {
-        return $this->belongsToMany(User::class, 'post_like', 'post_id', 'liker_id')->withPivot('timestamp');
+        return $this->hasMany(CommentLike::class, 'comment_id');
     }
 }

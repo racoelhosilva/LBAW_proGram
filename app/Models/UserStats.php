@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class UserStats extends Model
 {
@@ -32,5 +33,10 @@ class UserStats extends Model
     public function languages(): BelongsToMany
     {
         return $this->belongsToMany(Language::class, 'user_stats_language', 'language_id', 'user_stats_id');
+    }
+
+    public function projects(): HasMany
+    {
+        return $this->hasMany(TopProject::class, 'user_stats_id');
     }
 }
