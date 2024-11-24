@@ -11,9 +11,11 @@
             @else
                 <p>No users at the moment</p>
             @endif
-            <div class="flex justify-center pt-2">
-                @include('partials.text-button', ['text' => 'Login/Register', 'anchorUrl' => route('login')])
-            </div>
+            @if (!Auth::check())
+                <div class="flex justify-center pt-2">
+                    @include('partials.text-button', ['text' => 'Login/Register', 'anchorUrl' => route('login')])
+                </div>
+            @endif
         </section>
         <section class="card h-min flex flex-col gap-3 col-span-2">
             <h1 class="text-xl font-bold">Recommended Posts</h1>

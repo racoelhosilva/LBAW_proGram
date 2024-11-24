@@ -6,7 +6,13 @@
     <div class="inline-flex gap-2 items-center">  {{-- Right elements --}}
         @include('partials.icon-button', ['iconName' => 'home', 'id' => 'home-button', 'label' => 'Home', 'type' => 'secondary', 'anchorUrl' => route('home')])
         @include('partials.theme-button')
-        @include('partials.text-button', ['text' => 'Login/Register', 'id' => 'login-button', 'type' => 'primary', 'anchorUrl' => route('login')])
+        @if (Auth::check())
+            <a href="{{ route('home') }}">
+                <img src="/img/placeholder.png" alt="Profile photo" class="h-[49.5px] w-[49.5px] rounded-full">
+            </a>
+        @else
+            @include('partials.text-button', ['text' => 'Login/Register', 'id' => 'login-button', 'type' => 'primary', 'anchorUrl' => route('login')])
+        @endif
         @include('partials.icon-button', ['iconName' => 'grip', 'id' => 'more-button', 'label' => 'More', 'type' => 'transparent'])
     </div>
 </header>
