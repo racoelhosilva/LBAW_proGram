@@ -77,12 +77,13 @@ class AdminUserController extends Controller
 
     }
 
-    public function revokeBan(Ban $id): RedirectResponse
+    public function revokeBan(int $id): RedirectResponse
     {
         $ban = Ban::findOrFail($id);
+
         $ban->delete();
 
-        return redirect()->back()->with('success', 'Ban deleted successfully.');
+        return redirect()->route('admin.bans.index')->with('success', 'Ban revoked successfully.');
 
     }
 }
