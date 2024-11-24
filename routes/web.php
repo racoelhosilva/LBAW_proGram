@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\ApiUserController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\PostController;
 use App\Http\Controllers\SearchController;
 use Illuminate\Support\Facades\Route;
 
@@ -23,6 +24,11 @@ use Illuminate\Support\Facades\Route;
 // Home
 Route::controller(HomeController::class)->group(function () {
     Route::get('/', 'show')->name('home');
+});
+
+// Post
+Route::controller(PostController::class)->group(function () {
+    Route::get('/post/{post}', 'show');
 });
 
 // Search
