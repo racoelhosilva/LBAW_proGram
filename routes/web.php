@@ -3,9 +3,12 @@
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\CardController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\SearchController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -24,22 +27,17 @@ Route::controller(HomeController::class)->group(function () {
     Route::get('/', 'show')->name('home');
 });
 
+// Post
+Route::controller(PostController::class)->group(function () {
+    Route::get('/post/{post}', 'show');
+
+// Search
+Route::get('/search', [SearchController::class, 'list'])->name('search');
+
 // Cards
 Route::controller(CardController::class)->group(function () {
     Route::get('/cards', 'list')->name('cards');
     Route::get('/cards/{id}', 'show');
-});
-
-// API
-Route::controller(CardController::class)->group(function () {
-    Route::put('/api/cards', 'create');
-    Route::delete('/api/cards/{card_id}', 'delete');
-});
-
-Route::controller(ItemController::class)->group(function () {
-    Route::put('/api/cards/{card_id}', 'create');
-    Route::post('/api/item/{id}', 'update');
-    Route::delete('/api/item/{id}', 'delete');
 });
 
 // Authentication
@@ -54,6 +52,49 @@ Route::controller(RegisterController::class)->group(function () {
     Route::post('/register', 'register');
 });
 
-Route::controller(PostController::class)->group(function () {
-    Route::get('/post/{post}', 'show');
+// API
+Route::prefix('api')->group(function () {
+    Route::controller(CardController::class)->group(function () {
+        Route::put('/cards', 'create');
+        Route::delete('/cards/{card_id}', 'delete');
+    });
+
+    Route::controller(ItemController::class)->group(function () {
+        Route::put('/cards/{card_id}', 'create');
+        Route::post('/item/{id}', 'update');
+        Route::delete('/item/{id}', 'delete');
+    });
+
+    Route::controller(PostController::class)->group(function () {
+        Route::get('/post', 'list');
+        Route::get('/post/{id}', 'show');
+        Route::post('/post', 'create');
+        Route::delete('/post/{id}', 'delete');
+        Route::put('/post/{id}', 'update');
+        Route::get('/post/{id}/comment', 'listComments');
+        Route::get('/post/{id}/likes', 'listLikes');
+        Route::get('/post/{id}/tags', 'listTags');
+        Route::get('/post/{id}/attachments', 'listAttachments');
+    });
+
+    Route::controller(CommentController::class)->group(function () {
+        Route::get('/comment', 'list');
+        Route::get('/comment/{id}', 'show');
+        Route::post('/comment', 'create');
+        //Route::delete('/comment/{id}', 'delete');
+        Route::put('/comment/{id}', 'update');
+    });
+
+    Route::controller(UserController::class)->group(function () {
+        Route::get('/user', 'list');
+        Route::get('/user/{id}', 'show');
+        Route::post('/user', 'create');
+        //Route::delete('/user/{id}', 'delete');
+        Route::put('/user/{id}', 'update');
+        Route::get('/user/{id}/followers', 'listFollowers');
+        Route::get('/user/{id}/following', 'listFollowing');
+        Route::get('/user/{id}/post', 'listPosts');
+        Route::get('/user/{id}/userstats', 'listUserStats');
+        Route::get('/user/{id}/followrequests', 'listFollowRequests');
+    });
 });

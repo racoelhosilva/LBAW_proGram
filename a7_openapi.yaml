@@ -28,4 +28,775 @@ paths:
       responses:
         200:
           description: 'Ok. Show home page.'
-        
+  /search:
+    get:
+      operationId: R102
+      summary: 'R102: Search Page'
+      tags:
+        - 'M04: Search'
+      responses:
+        200:
+          description: 'Ok. Show search page.'
+  /api/posts:
+    get:
+      tags:
+      - M03 Posts and Announcements
+      summary: List all posts
+      operationId: R301
+      responses:
+        "200":
+          description: A list of all posts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Post'
+    post:
+      tags:
+      - M03 Posts and Announcements
+      summary: Create a new post
+      operationId: R302
+      requestBody:
+        description: Data required to create a new post
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostCreate'
+        required: true
+      responses:
+        "201":
+          description: Post created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+  /api/posts/{id}:
+    get:
+      tags:
+      - M03 Posts and Announcements
+      summary: Retrieve a single post
+      operationId: R303
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: The requested post
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+    put:
+      tags:
+      - M03 Posts and Announcements
+      summary: Update a post
+      operationId: R304
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      requestBody:
+        description: Data to update the post
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostUpdate'
+        required: true
+      responses:
+        "200":
+          description: Post updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+    delete:
+      tags:
+        - M03 Posts and Announcements
+      summary: Delete a post
+      operationId: R305
+      parameters:
+        - name: id
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Post deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Post deleted successfully."
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "An error occurred while deleting the post."
+  /api/posts/{id}/comments:
+    get:
+      tags:
+      - M03 Posts and Announcements
+      summary: List all comments for a specific post
+      operationId: R306
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: List of comments for the post
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Comment'
+  /api/posts/{id}/likes:
+    get:
+      tags:
+      - M03 Posts and Announcements
+      summary: List all likes for a specific post
+      operationId: R307
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: List of likes for the post
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+  /api/posts/{id}/tags:
+    get:
+      tags:
+      - M03 Posts and Announcements
+      summary: List all tags for a specific post
+      operationId: R308
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: List of tags for the post
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Tag'
+  /api/posts/{id}/attachments:
+    get:
+      tags:
+      - M03 Posts and Announcements
+      summary: List all attachments for a specific post
+      operationId: R309
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: List of attachments for the post
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Attachment'
+  /api/comments:
+    get:
+      tags:
+      - M03 Posts and Announcements
+      summary: List all comments
+      operationId:  R310
+      responses:
+        "200":
+          description: A list of all comments
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Comment'
+    post:
+      tags:
+      - M03 Posts and Announcements
+      summary: Create a new comment
+      operationId: R311
+      requestBody:
+        description: Data required to create a new comment
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Comment'
+        required: true
+      responses:
+        "201":
+          description: Comment created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comment'
+  /api/comments/{id}:
+    get:
+      tags:
+      - M03 Posts and Announcements
+      summary: Retrieve a single comment
+      operationId: R312
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: The requested comment
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comment'
+    put:
+      tags:
+      - M03 Posts and Announcements
+      summary: Update a comment
+      operationId: R313
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      requestBody:
+        description: Data to update the comment
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Comment'
+        required: true
+      responses:
+        "200":
+          description: Comment updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comment'
+  /api/users:
+    get:
+      tags:
+      - M02 Authentication and Individual Profile
+      summary: List all users
+      operationId: R201
+      responses:
+        "200":
+          description: A list of all users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+    post:
+      tags:
+      - M02 Authentication and Individual Profile
+      summary: Create a new user
+      operationId: R202
+      requestBody:
+        description: Data required to create a new user
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
+      responses:
+        "201":
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+  /api/users/{id}:
+    get:
+      tags:
+      - M02 Authentication and Individual Profile
+      summary: Retrieve a single user by ID
+      operationId: R203
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: The requested user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+    put:
+      tags:
+      - M02 Authentication and Individual Profile
+      summary: Update a user's information
+      operationId: R204
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      requestBody:
+        description: Data to update the user
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
+      responses:
+        "200":
+          description: User updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+  /api/users/{id}/followers:
+    get:
+      tags:
+      - M02 Authentication and Individual Profile
+      summary: List followers of a user
+      operationId: R205
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: A list of followers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+  /api/users/{id}/following:
+    get:
+      tags:
+      - M02 Authentication and Individual Profile
+      summary: List users that a user is following
+      operationId: R206
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: A list of users being followed
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+  /api/users/{id}/posts:
+    get:
+      tags:
+      - M02 Authentication and Individual Profile
+      summary: List posts made by a user
+      operationId: R207
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: A list of posts made by the user
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Post'
+  /api/users/{id}/userstats:
+    get:
+      tags:
+      - M02 Authentication and Individual Profile
+      summary: Retrieve user statistics
+      operationId: R208
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: User statistics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserStats'
+  /api/users/{id}/followrequests:
+    get:
+      tags:
+      - M02 Authentication and Individual Profile
+      summary: List follow requests for a user
+      operationId:  R209
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: A list of follow requests
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+                  
+  /test:
+    get:
+      responses:
+        '200':
+          description: OK
+components:
+  schemas:
+    Post:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        title:
+          type: string
+          example: Example Post Title
+        text:
+          type: string
+          example: This is the content of the post.
+        author_id:
+          type: integer
+          nullable: true
+          example: 123
+        is_public:
+          type: boolean
+          example: true
+        is_announcement:
+          type: boolean
+          example: false
+        likes:
+          type: integer
+          example: 10
+        creation_timestamp:
+          type: string
+          format: date-time
+          example: 2024-11-21T12:00:00Z
+        ts-vector:
+          type: string
+          nullable: true
+          example: "'aime':8A,10A 'burnt':17B 'code':38B 'develop':7A 'easi':14B 'engag':27B 'feel':16B 'grow':41B 'inspir':29B 'keep':33B,37B 'learn':39B 'motiv':4A,35B 'nhere':30B 'silva':9A 'silva43':11A 'stay':3A,26B 'tech':20B 'way':24B"
+    PostCreate:
+      required:
+      - text
+      - title
+      type: object
+      properties:
+        title:
+          type: string
+          example: New Post Title
+        text:
+          type: string
+          example: Content for the new post.
+        author_id:
+          type: integer
+          nullable: true
+          example: 123
+        is_public:
+          type: boolean
+          example: true
+        is_announcement:
+          type: boolean
+          example: false
+    PostUpdate:
+      type: object
+      properties:
+        title:
+          type: string
+          example: Updated Post Title
+        text:
+          type: string
+          example: Updated content of the post.
+        is_public:
+          type: boolean
+          example: true
+        is_announcement:
+          type: boolean
+          example: false
+    Tag:
+      required:
+      - id
+      - name
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique identifier for the tag.
+        name:
+          type: string
+          description: Name of the tag.
+      example:
+        id: 1
+        name: Technology
+    Comment:
+      required:
+      - author_id
+      - content
+      - id
+      - likes
+      - post_id
+      - timestamp
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique identifier for the comment.
+        post_id:
+          type: integer
+          description: ID of the associated post.
+        author_id:
+          type: integer
+          description: ID of the user who authored the comment.
+        content:
+          type: string
+          description: Content of the comment.
+        likes:
+          type: integer
+          description: Number of likes on the comment.
+          default: 0
+        timestamp:
+          type: string
+          description: Timestamp when the comment was created.
+          format: date-time
+      example:
+        id: 101
+        post_id: 5
+        author_id: 2
+        content: This is a very insightful post! Thanks for sharing.
+        likes: 15
+        timestamp: 2024-11-21T10:30:00Z
+    User:
+      required:
+      - handle
+      - id
+      - is_public
+      - register_timestamp
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique identifier for the user.
+        name:
+          type: string
+          description: Name of the user.
+        email:
+          type: string
+          description: Email address of the user.
+          format: email
+        handle:
+          type: string
+          description: Unique handle for the user.
+        is_public:
+          type: boolean
+          description: Whether the user's profile is public.
+        description:
+          type: string
+          description: Description or bio of the user.
+        profile_picture_url:
+          type: string
+          description: URL to the user's profile picture.
+          format: uri
+        banner_image_url:
+          type: string
+          description: URL to the user's banner image.
+          format: uri
+        num_followers:
+          type: integer
+          description: Number of followers the user has.
+        num_following:
+          type: integer
+          description: Number of users the user is following.
+        register_timestamp:
+          type: string
+          description: Timestamp when the user registered.
+          format: date-time
+      example:
+        id: 12
+        name: Alice Doe
+        email: alice@example.com
+        handle: alice123
+        is_public: true
+        description: Enthusiastic coder and tech enthusiast.
+        profile_picture_url: https://example.com/profiles/alice123.jpg
+        banner_image_url: https://example.com/banners/alice123.jpg
+        num_followers: 120
+        num_following: 80
+        register_timestamp: 2023-05-15T14:20:00Z
+    Attachment:
+      required:
+      - file_url
+      - id
+      - post_id
+      - uploaded_at
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique identifier for the attachment.
+        post_id:
+          type: integer
+          description: ID of the associated post.
+        file_url:
+          type: string
+          description: URL of the attachment file.
+          format: uri
+        uploaded_at:
+          type: string
+          description: Timestamp when the attachment was uploaded.
+          format: date-time
+      example:
+        id: 42
+        post_id: 5
+        file_url: https://example.com/uploads/document.pdf
+        uploaded_at: 2024-11-20T12:00:00Z
+    UserStats:
+      type: object
+      properties:
+        id:
+          type: integer
+        user_id:
+          type: integer
+        github_url:
+          type: string
+          nullable: true
+        gitlab_url:
+          type: string
+          nullable: true
+        linkedin_url:
+          type: string
+          nullable: true
+        technologies:
+          type: array
+          items:
+            $ref: '#/components/schemas/Technology'
+        languages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Language'
+        projects:
+          type: array
+          items:
+            $ref: '#/components/schemas/Project'
+    Technology:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        pivot:
+          $ref: '#/components/schemas/Technology_pivot'
+    Language:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+    Project:
+      type: object
+      properties:
+        id:
+          type: integer
+        user_stats_id:
+          type: integer
+        name:
+          type: string
+        url:
+          type: string
+          example: http://carter-gomez.net/
+    Technology_pivot:
+      type: object
+      properties:
+        technology_id:
+          type: integer
+        user_stats_id:
+          type: integer
+

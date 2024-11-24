@@ -40,7 +40,7 @@ class RegisterController extends Controller
         Auth::attempt($credentials);
         $request->session()->regenerate();
 
-        return redirect()->route('cards')
+        return redirect()->route('/')
             ->withSuccess('You have successfully registered & logged in!');
     }
 }

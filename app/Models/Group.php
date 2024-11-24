@@ -24,6 +24,7 @@ class Group extends Model
         'is_public',
         'member_count',
         'tsvectors',
+        'owner_id',
     ];
 
     // A group belongs to an owner (user)

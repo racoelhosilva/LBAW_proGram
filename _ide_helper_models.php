@@ -73,7 +73,7 @@ namespace App\Models{
  * @property string $content
  * @property int $likes
  * @property \Illuminate\Support\Carbon $timestamp
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\User> $allLikes
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\CommentLike> $allLikes
  * @property-read int|null $all_likes_count
  * @property-read \App\Models\User $author
  * @property-read \App\Models\Post $post
@@ -185,6 +185,21 @@ namespace App\Models{
 
 namespace App\Models{
 /**
+ * App\Models\GroupPost
+ *
+ * @property int $post_id
+ * @property int $group_id
+ * @method static \Illuminate\Database\Eloquent\Builder|GroupPost newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|GroupPost newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|GroupPost query()
+ * @method static \Illuminate\Database\Eloquent\Builder|GroupPost whereGroupId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|GroupPost wherePostId($value)
+ */
+	class GroupPost extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
  * App\Models\Language
  *
  * @property int $id
@@ -214,10 +229,12 @@ namespace App\Models{
  * @property string|null $tsvectors
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Comment> $allComments
  * @property-read int|null $all_comments_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\User> $allLikes
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\PostLike> $allLikes
  * @property-read int|null $all_likes_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\PostAttachment> $attachments
+ * @property-read int|null $attachments_count
  * @property-read \App\Models\User $author
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Tag> $tags
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\PostTag> $tags
  * @property-read int|null $tags_count
  * @method static \Illuminate\Database\Eloquent\Builder|Post newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Post newQuery()
@@ -255,6 +272,22 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|PostLike whereTimestamp($value)
  */
 	class PostLike extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * App\Models\PostTag
+ *
+ * @property int $post_id
+ * @property int $tag_id
+ * @property-read \App\Models\Tag $tag
+ * @method static \Illuminate\Database\Eloquent\Builder|PostTag newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|PostTag newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|PostTag query()
+ * @method static \Illuminate\Database\Eloquent\Builder|PostTag wherePostId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PostTag whereTagId($value)
+ */
+	class PostTag extends \Eloquent {}
 }
 
 namespace App\Models{
@@ -352,6 +385,10 @@ namespace App\Models{
  * @property string|null $tsvectors
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\FollowRequest> $followRequests
  * @property-read int|null $follow_requests_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, User> $followers
+ * @property-read int|null $followers_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, User> $following
+ * @property-read int|null $following_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\GroupInvitation> $groupInvitations
  * @property-read int|null $group_invitations_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Group> $groups
@@ -396,6 +433,8 @@ namespace App\Models{
  * @property string|null $linkedin_url
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Language> $languages
  * @property-read int|null $languages_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\TopProject> $projects
+ * @property-read int|null $projects_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Technology> $technologies
  * @property-read int|null $technologies_count
  * @property-read \App\Models\User|null $user

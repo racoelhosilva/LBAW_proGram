@@ -90,4 +90,14 @@ class User extends Authenticatable
     {
         return $this->hasMany(Notification::class, 'receiver_id');
     }
+
+    public function followers(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'follow', 'followed_id', 'follower_id')->withPivot('timestamp');
+    }
+
+    public function following(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'follow', 'follower_id', 'followed_id')->withPivot('timestamp');
+    }
 }
