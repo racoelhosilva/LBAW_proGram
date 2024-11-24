@@ -7,7 +7,7 @@ use App\Models\UserStats;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class UserController extends Controller
+class ApiUserController extends Controller
 {
     public function list()
     {
