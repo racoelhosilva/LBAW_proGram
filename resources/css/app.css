@@ -29,4 +29,12 @@
     .card {
         @apply p-4 border rounded-xl bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 shadow;
     }
+
+    .dropdown {
+        @apply absolute right-0 rounded-lg overflow-hidden w-60 mt-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 flex flex-col shadow;
+    }
+
+    .dropdown > div:not(:last-child) {
+        @apply border-b border-slate-300 dark:border-slate-600;
+    }
 }
