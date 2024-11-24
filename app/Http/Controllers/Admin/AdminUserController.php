@@ -10,7 +10,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\DB;
 
 class AdminUserController extends Controller
 {
@@ -59,26 +59,30 @@ class AdminUserController extends Controller
 
     public function banUser(Request $request, User $user): RedirectResponse
     {
+        $validated = $request->validate([
+            'reason' => 'required|string|max:255',
+            'duration' => 'required|integer|min:1',
+        ]);
 
-        $data = [
+        $duration = "{$validated['duration']} days";
+
+        $ban = Ban::create([
             'user_id' => $user->id,
             'administrator_id' => Auth::guard('admin')->id(),
-            'reason' => $request['reason'],
-            'duration' => $request['duration'],
-        ];
+            'reason' => $validated['reason'],
+            'duration' => DB::raw("INTERVAL '$duration'"),
+        ]);
 
-        $response = Http::post(route('temp'), $data);
-
-        if ($response->successful()) {
-            return redirect()->route('admin.bans.index')->with('success', 'User banned successfully.');
-        } else {
-            return redirect()->route('admin.bans.index')->with('error', 'Failed to ban the user.');
-        }
+        return redirect()->route('admin.bans.index')->with('success', 'User banned successfully');
 
     }
 
-    public function revokeBan($id)
+    public function revokeBan(Ban $id): RedirectResponse
     {
         $ban = Ban::findOrFail($id);
+        $ban->delete();
+
+        return redirect()->back()->with('success', 'Ban deleted successfully.');
+
     }
 }
