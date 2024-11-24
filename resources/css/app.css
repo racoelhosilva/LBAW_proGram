@@ -54,3 +54,7 @@
         @apply card grid grid-cols-[auto_1fr] items-center gap-4;
     }
 }
+
+#tags option:checked {
+    @apply bg-slate-300 dark:bg-slate-600;
+} 

@@ -32,7 +32,9 @@ Route::controller(HomeController::class)->group(function () {
 
 // Post
 Route::controller(PostController::class)->group(function () {
-    Route::get('/post/{post}', 'show');
+    Route::get('/post/create', 'create')->name('post.create');
+    Route::get('/post/{post}', 'show')->where('post', '[0-9]+')->name('post.show');
+    Route::post('/post', 'store')->name('post.store');
 });
 
 // Search

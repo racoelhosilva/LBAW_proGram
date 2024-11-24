@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
+use App\Models\Tag;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PostController extends Controller
 {
@@ -21,7 +23,13 @@ class PostController extends Controller
      */
     public function create()
     {
-        //
+        if (! Auth::check()) {
+            return redirect()->route('login');
+        }
+
+        return view('pages/create-post', [
+            'tags' => Tag::all(),
+        ]);
     }
 
     /**
@@ -29,7 +37,35 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        if (! Auth::check()) {
+            return redirect()->route('login');
+        }
+
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'text' => 'required|string',
+            'tags' => 'nullable|array',
+            'tags.*' => 'exists:tag,id',
+            'is_public' => 'nullable|boolean',
+            'is_announcement' => 'nullable|boolean',
+        ]);
+
+        try {
+            $post = Post::create([
+                'title' => $request->input('title'),
+                'text' => $request->input('text'),
+                'author_id' => auth()->id(),
+                'is_public' => $request->input('is_public', false),
+                'is_announcement' => $request->input('is_announcement', false),
+                'likes' => 0,
+            ]);
+
+            $post->tags()->sync($request->input('tags'));
+
+            return redirect('post/'.$post->id);
+        } catch (\Exception $e) {
+            return redirect()->back()->withErrors(['error' => 'Failed to create post.']);
+        }
     }
 
     /**
@@ -37,7 +73,7 @@ class PostController extends Controller
      */
     public function show(Post $post): View
     {
-        return view('pages.post',
+        return view('pages/post',
             ['post' => $post]);
     }
 
