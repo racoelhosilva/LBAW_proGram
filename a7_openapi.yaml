@@ -1,46 +1,46 @@
 openapi: 3.0.3
 info:
-  version: '1.0'
-  title: 'LBAW ProGram Web API'
-  description: 'Web Resources Specification (A7) for ProGram'
+  version: "1.0"
+  title: "LBAW ProGram Web API"
+  description: "Web Resources Specification (A7) for ProGram"
 
 # servers:
 # TODO: Add production server info
 
 externalDocs:
-  description: 'ProGram Wiki'
+  description: "ProGram Wiki"
   url: https://gitlab.up.pt/lbaw/lbaw2425/lbaw2411/-/wikis/home
 
 tags:
-  - name: 'M01: Home and Static Pages'
-  - name: 'M02: Authentication and Individual Profile'
-  - name: 'M03: Posts and Announcements'
-  - name: 'M04: Search'
-  - name: 'M05: Administration'
+  - name: "M01: Home and Static Pages"
+  - name: "M02: Authentication and Individual Profile"
+  - name: "M03: Posts and Announcements"
+  - name: "M04: Search"
+  - name: "M05: Administration"
 
 paths:
   /:
     get:
       operationId: R101
-      summary: 'R101: Home Page'
+      summary: "R101: Home Page"
       tags:
-        - 'M01: Home and Static Pages'
+        - "M01: Home and Static Pages"
       responses:
         200:
-          description: 'Ok. Show home page.'
+          description: "Ok. Show home page."
   /search:
     get:
       operationId: R102
-      summary: 'R102: Search Page'
+      summary: "R102: Search Page"
       tags:
-        - 'M04: Search'
+        - "M04: Search"
       responses:
         200:
-          description: 'Ok. Show search page.'
+          description: "Ok. Show search page."
   /api/posts:
     get:
       tags:
-      - M03 Posts and Announcements
+        - M03 Posts and Announcements
       summary: List all posts
       operationId: R301
       responses:
@@ -51,10 +51,10 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Post'
+                  $ref: "#/components/schemas/Post"
     post:
       tags:
-      - M03 Posts and Announcements
+        - M03 Posts and Announcements
       summary: Create a new post
       operationId: R302
       requestBody:
@@ -62,7 +62,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PostCreate'
+              $ref: "#/components/schemas/PostCreate"
         required: true
       responses:
         "201":
@@ -70,47 +70,47 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Post'
+                $ref: "#/components/schemas/Post"
   /api/posts/{id}:
     get:
       tags:
-      - M03 Posts and Announcements
+        - M03 Posts and Announcements
       summary: Retrieve a single post
       operationId: R303
       parameters:
-      - name: id
-        in: path
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: integer
+        - name: id
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: integer
       responses:
         "200":
           description: The requested post
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Post'
+                $ref: "#/components/schemas/Post"
     put:
       tags:
-      - M03 Posts and Announcements
+        - M03 Posts and Announcements
       summary: Update a post
       operationId: R304
       parameters:
-      - name: id
-        in: path
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: integer
+        - name: id
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: integer
       requestBody:
         description: Data to update the post
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PostUpdate'
+              $ref: "#/components/schemas/PostUpdate"
         required: true
       responses:
         "200":
@@ -118,7 +118,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Post'
+                $ref: "#/components/schemas/Post"
     delete:
       tags:
         - M03 Posts and Announcements
@@ -156,17 +156,17 @@ paths:
   /api/posts/{id}/comments:
     get:
       tags:
-      - M03 Posts and Announcements
+        - M03 Posts and Announcements
       summary: List all comments for a specific post
       operationId: R306
       parameters:
-      - name: id
-        in: path
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: integer
+        - name: id
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: integer
       responses:
         "200":
           description: List of comments for the post
@@ -175,21 +175,21 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Comment'
+                  $ref: "#/components/schemas/Comment"
   /api/posts/{id}/likes:
     get:
       tags:
-      - M03 Posts and Announcements
+        - M03 Posts and Announcements
       summary: List all likes for a specific post
       operationId: R307
       parameters:
-      - name: id
-        in: path
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: integer
+        - name: id
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: integer
       responses:
         "200":
           description: List of likes for the post
@@ -198,21 +198,21 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/User'
+                  $ref: "#/components/schemas/User"
   /api/posts/{id}/tags:
     get:
       tags:
-      - M03 Posts and Announcements
+        - M03 Posts and Announcements
       summary: List all tags for a specific post
       operationId: R308
       parameters:
-      - name: id
-        in: path
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: integer
+        - name: id
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: integer
       responses:
         "200":
           description: List of tags for the post
@@ -221,21 +221,21 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Tag'
+                  $ref: "#/components/schemas/Tag"
   /api/posts/{id}/attachments:
     get:
       tags:
-      - M03 Posts and Announcements
+        - M03 Posts and Announcements
       summary: List all attachments for a specific post
       operationId: R309
       parameters:
-      - name: id
-        in: path
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: integer
+        - name: id
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: integer
       responses:
         "200":
           description: List of attachments for the post
@@ -244,13 +244,13 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Attachment'
+                  $ref: "#/components/schemas/Attachment"
   /api/comments:
     get:
       tags:
-      - M03 Posts and Announcements
+        - M03 Posts and Announcements
       summary: List all comments
-      operationId:  R310
+      operationId: R310
       responses:
         "200":
           description: A list of all comments
@@ -259,10 +259,10 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Comment'
+                  $ref: "#/components/schemas/Comment"
     post:
       tags:
-      - M03 Posts and Announcements
+        - M03 Posts and Announcements
       summary: Create a new comment
       operationId: R311
       requestBody:
@@ -270,7 +270,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Comment'
+              $ref: "#/components/schemas/Comment"
         required: true
       responses:
         "201":
@@ -278,47 +278,47 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Comment'
+                $ref: "#/components/schemas/Comment"
   /api/comments/{id}:
     get:
       tags:
-      - M03 Posts and Announcements
+        - M03 Posts and Announcements
       summary: Retrieve a single comment
       operationId: R312
       parameters:
-      - name: id
-        in: path
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: integer
+        - name: id
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: integer
       responses:
         "200":
           description: The requested comment
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Comment'
+                $ref: "#/components/schemas/Comment"
     put:
       tags:
-      - M03 Posts and Announcements
+        - M03 Posts and Announcements
       summary: Update a comment
       operationId: R313
       parameters:
-      - name: id
-        in: path
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: integer
+        - name: id
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: integer
       requestBody:
         description: Data to update the comment
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Comment'
+              $ref: "#/components/schemas/Comment"
         required: true
       responses:
         "200":
@@ -326,11 +326,11 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Comment'
+                $ref: "#/components/schemas/Comment"
   /api/users:
     get:
       tags:
-      - M02 Authentication and Individual Profile
+        - M02 Authentication and Individual Profile
       summary: List all users
       operationId: R201
       responses:
@@ -341,10 +341,10 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/User'
+                  $ref: "#/components/schemas/User"
     post:
       tags:
-      - M02 Authentication and Individual Profile
+        - M02 Authentication and Individual Profile
       summary: Create a new user
       operationId: R202
       requestBody:
@@ -352,7 +352,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/User'
+              $ref: "#/components/schemas/User"
         required: true
       responses:
         "201":
@@ -360,47 +360,47 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
+                $ref: "#/components/schemas/User"
   /api/users/{id}:
     get:
       tags:
-      - M02 Authentication and Individual Profile
+        - M02 Authentication and Individual Profile
       summary: Retrieve a single user by ID
       operationId: R203
       parameters:
-      - name: id
-        in: path
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: integer
+        - name: id
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: integer
       responses:
         "200":
           description: The requested user
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
+                $ref: "#/components/schemas/User"
     put:
       tags:
-      - M02 Authentication and Individual Profile
+        - M02 Authentication and Individual Profile
       summary: Update a user's information
       operationId: R204
       parameters:
-      - name: id
-        in: path
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: integer
+        - name: id
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: integer
       requestBody:
         description: Data to update the user
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/User'
+              $ref: "#/components/schemas/User"
         required: true
       responses:
         "200":
@@ -408,21 +408,21 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
+                $ref: "#/components/schemas/User"
   /api/users/{id}/followers:
     get:
       tags:
-      - M02 Authentication and Individual Profile
+        - M02 Authentication and Individual Profile
       summary: List followers of a user
       operationId: R205
       parameters:
-      - name: id
-        in: path
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: integer
+        - name: id
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: integer
       responses:
         "200":
           description: A list of followers
@@ -431,21 +431,21 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/User'
+                  $ref: "#/components/schemas/User"
   /api/users/{id}/following:
     get:
       tags:
-      - M02 Authentication and Individual Profile
+        - M02 Authentication and Individual Profile
       summary: List users that a user is following
       operationId: R206
       parameters:
-      - name: id
-        in: path
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: integer
+        - name: id
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: integer
       responses:
         "200":
           description: A list of users being followed
@@ -454,21 +454,21 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/User'
+                  $ref: "#/components/schemas/User"
   /api/users/{id}/posts:
     get:
       tags:
-      - M02 Authentication and Individual Profile
+        - M02 Authentication and Individual Profile
       summary: List posts made by a user
       operationId: R207
       parameters:
-      - name: id
-        in: path
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: integer
+        - name: id
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: integer
       responses:
         "200":
           description: A list of posts made by the user
@@ -477,42 +477,42 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Post'
+                  $ref: "#/components/schemas/Post"
   /api/users/{id}/userstats:
     get:
       tags:
-      - M02 Authentication and Individual Profile
+        - M02 Authentication and Individual Profile
       summary: Retrieve user statistics
       operationId: R208
       parameters:
-      - name: id
-        in: path
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: integer
+        - name: id
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: integer
       responses:
         "200":
           description: User statistics
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserStats'
+                $ref: "#/components/schemas/UserStats"
   /api/users/{id}/followrequests:
     get:
       tags:
-      - M02 Authentication and Individual Profile
+        - M02 Authentication and Individual Profile
       summary: List follow requests for a user
-      operationId:  R209
+      operationId: R209
       parameters:
-      - name: id
-        in: path
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: integer
+        - name: id
+          in: path
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: integer
       responses:
         "200":
           description: A list of follow requests
@@ -521,12 +521,46 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/User'
-                  
+                  $ref: "#/components/schemas/User"
+  /api/ban:
+    get:
+      tags:
+        - M05 Administration
+      summary: List all bans
+      operationId: R201
+      responses:
+        "200":
+          description: A list of all users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Ban"
+    post:
+      tags:
+        - M05 Administration
+      summary: Create a new ban
+      operationId: R202
+      requestBody:
+        description: Data required to create a new ban
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Ban"
+        required: true
+      responses:
+        "201":
+          description: Ban created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Ban"
+
   /test:
     get:
       responses:
-        '200':
+        "200":
           description: OK
 components:
   schemas:
@@ -565,8 +599,8 @@ components:
           example: "'aime':8A,10A 'burnt':17B 'code':38B 'develop':7A 'easi':14B 'engag':27B 'feel':16B 'grow':41B 'inspir':29B 'keep':33B,37B 'learn':39B 'motiv':4A,35B 'nhere':30B 'silva':9A 'silva43':11A 'stay':3A,26B 'tech':20B 'way':24B"
     PostCreate:
       required:
-      - text
-      - title
+        - text
+        - title
       type: object
       properties:
         title:
@@ -600,10 +634,40 @@ components:
         is_announcement:
           type: boolean
           example: false
+    Ban:
+      type: object
+      required:
+        - user_id
+        - administrator_id
+        - reason
+        - duration
+      properties:
+        id:
+          type: integer
+          description: Unique identifier of the ban
+        user_id:
+          type: integer
+          description: ID of the user being banned
+        administrator_id:
+          type: integer
+          description: ID of the administrator who created the ban
+        start:
+          type: string
+          format: date-time
+          description: The date and time when the ban started
+        reason:
+          type: string
+          description: The reason for the ban
+        duration:
+          type: string
+          description: The duration of the ban (interval)
+        is_active:
+          type: boolean
+          description: Whether the ban is currently active
     Tag:
       required:
-      - id
-      - name
+        - id
+        - name
       type: object
       properties:
         id:
@@ -617,12 +681,12 @@ components:
         name: Technology
     Comment:
       required:
-      - author_id
-      - content
-      - id
-      - likes
-      - post_id
-      - timestamp
+        - author_id
+        - content
+        - id
+        - likes
+        - post_id
+        - timestamp
       type: object
       properties:
         id:
@@ -654,10 +718,10 @@ components:
         timestamp: 2024-11-21T10:30:00Z
     User:
       required:
-      - handle
-      - id
-      - is_public
-      - register_timestamp
+        - handle
+        - id
+        - is_public
+        - register_timestamp
       type: object
       properties:
         id:
@@ -711,10 +775,10 @@ components:
         register_timestamp: 2023-05-15T14:20:00Z
     Attachment:
       required:
-      - file_url
-      - id
-      - post_id
-      - uploaded_at
+        - file_url
+        - id
+        - post_id
+        - uploaded_at
       type: object
       properties:
         id:
@@ -755,15 +819,15 @@ components:
         technologies:
           type: array
           items:
-            $ref: '#/components/schemas/Technology'
+            $ref: "#/components/schemas/Technology"
         languages:
           type: array
           items:
-            $ref: '#/components/schemas/Language'
+            $ref: "#/components/schemas/Language"
         projects:
           type: array
           items:
-            $ref: '#/components/schemas/Project'
+            $ref: "#/components/schemas/Project"
     Technology:
       type: object
       properties:
@@ -772,7 +836,7 @@ components:
         name:
           type: string
         pivot:
-          $ref: '#/components/schemas/Technology_pivot'
+          $ref: "#/components/schemas/Technology_pivot"
     Language:
       type: object
       properties:
@@ -799,4 +863,3 @@ components:
           type: integer
         user_stats_id:
           type: integer
-
