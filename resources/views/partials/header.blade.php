@@ -14,14 +14,15 @@
         @else
             @include('partials.text-button', ['text' => 'Login/Register', 'id' => 'login-button', 'type' => 'primary', 'anchorUrl' => route('login')])
         @endif
-        <div class="relative">
+        <div class="dropdown">
             @include('partials.icon-button', ['iconName' => 'grip', 'id' => 'more-button', 'label' => 'More', 'type' => 'transparent'])
-            <div class="dropdown">
+            <div class="hidden">
                 <div>
                     @include('partials.dropdown-item', ['icon' => 'home', 'text' => 'Home', 'anchorUrl' => route('home')])
                 </div>
                 <div>
-                    @include('partials.dropdown-item', ['icon' => 'home', 'text' => 'Home', 'anchorUrl' => route('home')])
+                    @include('partials.dropdown-item', ['icon' => 'home', 'text' => 'Home'])
+                    @include('partials.dropdown-item', ['icon' => 'home', 'text' => 'Home'])
                 </div>
             </div>
         </div>

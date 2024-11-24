@@ -31,10 +31,22 @@
     }
 
     .dropdown {
-        @apply absolute right-0 rounded-lg overflow-hidden w-60 mt-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 flex flex-col shadow;
+        @apply relative;
     }
 
-    .dropdown > div:not(:last-child) {
+    .dropdown > div {
+        @apply absolute right-0 rounded-lg overflow-hidden w-60 mt-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 flex-col shadow;
+    }
+
+    .dropdown > div:not(.hidden) {
+        @apply flex;
+    }
+
+    .dropdown > div > div {
+        @apply flex flex-col;
+    }
+
+    .dropdown > div > div:not(:last-child) {
         @apply border-b border-slate-300 dark:border-slate-600;
     }
 }
