@@ -50,3 +50,7 @@
         @apply border-b border-slate-300 dark:border-slate-600;
     }
 }
+
+#tags option:checked {
+    @apply bg-slate-300 dark:bg-slate-600;
+} 
