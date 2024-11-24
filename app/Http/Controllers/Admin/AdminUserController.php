@@ -84,6 +84,5 @@ class AdminUserController extends Controller
         $ban->delete();
 
         return redirect()->route('admin.bans.index')->with('success', 'Ban revoked successfully.');
-
     }
 }
