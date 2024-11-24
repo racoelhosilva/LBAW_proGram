@@ -10,7 +10,6 @@
             <a href="{{ route('home') }}">
                 <img src="/img/placeholder.png" alt="Profile photo" class="h-[49.5px] w-[49.5px] rounded-full">
             </a>
-            @include('partials.icon-button', ['iconName' => 'log-out', 'id' => 'logout-button', 'label' => 'Logout', 'type' => 'secondary', 'anchorUrl' => route('logout')])
         @else
             @include('partials.text-button', ['text' => 'Login/Register', 'id' => 'login-button', 'type' => 'primary', 'anchorUrl' => route('login')])
         @endif
@@ -18,11 +17,12 @@
             @include('partials.icon-button', ['iconName' => 'grip', 'id' => 'more-button', 'label' => 'More', 'type' => 'transparent'])
             <div class="hidden">
                 <div>
-                    @include('partials.dropdown-item', ['icon' => 'home', 'text' => 'Home', 'anchorUrl' => route('home')])
-                </div>
-                <div>
-                    @include('partials.dropdown-item', ['icon' => 'home', 'text' => 'Home'])
-                    @include('partials.dropdown-item', ['icon' => 'home', 'text' => 'Home'])
+                    @if (Auth::check())
+                        @include('partials.dropdown-item', ['icon' => 'log-out', 'text' => 'Logout', 'anchorUrl' => route('logout')])
+                    @else
+                        @include('partials.dropdown-item', ['icon' => 'log-in', 'text' => 'Login', 'anchorUrl' => route('login')])
+                        @include('partials.dropdown-item', ['icon' => 'user-round-plus', 'text' => 'Register', 'anchorUrl' => route('register')])
+                    @endif
                 </div>
             </div>
         </div>
