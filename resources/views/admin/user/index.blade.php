@@ -11,7 +11,7 @@
                 <th>ID</th>
                 <th>Name</th>
                 <th>Email</th>
-                <th>Username</th>
+                <th>Handle</th>
                 <th>Ban</th>
             </tr>
         </thead>

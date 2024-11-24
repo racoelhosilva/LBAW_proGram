@@ -25,20 +25,19 @@ class AdminUserController extends Controller
             'query' => 'nullable|string|max:255',
         ]);
         if (empty($validated['query'])) {
-            $users = User::orderBy('id')->simplePaginate(20);
+            $users = User::orderBy('id')->paginate(20);
         } elseif (is_numeric($validated['query'])) {
             $query = '%'.str_replace(['\\', '%', '_'], ['\\\\', '\\%', '\\_'], $validated['query']).'%';
             $users = User::where('id', $validated['query'])
                 ->orderBy('id')
-                ->simplePaginate(20);
+                ->paginate(20);
         } else {
             $query = '%'.str_replace(['\\', '%', '_'], ['\\\\', '\\%', '\\_'], $validated['query']).'%';
             $users = User::where('name', 'ILIKE', $query)
                 ->orWhere('email', 'ILIKE', $query)
                 ->orWhere('handle', 'ILIKE', $query)
                 ->orderBy('id')
-                ->simplePaginate(20);
-
+                ->paginate(20);
         }
 
         return view('admin.user.index', ['users' => $users]);

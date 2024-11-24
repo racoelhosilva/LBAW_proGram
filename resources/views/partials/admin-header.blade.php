@@ -6,7 +6,7 @@
     <div class="inline-flex gap-2 items-center">
         @include('partials.icon-button', ['iconName' => 'home', 'id' => 'home-button', 'label' => 'Home', 'type' => 'secondary', 'anchorUrl' => route('admin.dashboard')])
         @include('partials.theme-button')
-        <div class="dropdown">
+        <article class="dropdown">
             @include('partials.icon-button', ['iconName' => 'grip', 'id' => 'more-button', 'label' => 'More', 'type' => 'transparent'])
             <div class="hidden">
                 <div>
@@ -17,6 +17,6 @@
                     @include('partials.dropdown-item', ['icon' => 'log-out', 'text' => 'Logout', 'anchorUrl' => route('admin.logout')])
                 </div>
             </div>
-        </div>
+        </article>
     </div>
 </header>
