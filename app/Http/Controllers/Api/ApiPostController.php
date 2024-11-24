@@ -78,11 +78,15 @@ class ApiPostController extends Controller
         $request->validate([
             'title' => 'nullable|string|max:255',
             'text' => 'nullable|string',
+            'tags' => 'nullable|array',
+            'tags.*' => 'exists:tag,id',
             'is_public' => 'nullable|boolean',
             'is_announcement' => 'nullable|boolean',
         ]);
 
         $post->update($request->all());
+
+        $post->tags()->sync($request->input('tags'));
 
         return response()->json($post);
     }
