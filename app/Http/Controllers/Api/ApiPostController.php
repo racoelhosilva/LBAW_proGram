@@ -29,6 +29,10 @@ class ApiPostController extends Controller
 
     public function create(Request $request)
     {
+        if (! auth()->check()) {
+            return response()->json(['error' => 'You must be logged in to create a post.'], 401);
+        }
+
         $request->validate([
             'title' => 'required|string|max:255',
             'text' => 'required|string',
