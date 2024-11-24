@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\ApiUserController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\PostController;
 use App\Http\Controllers\SearchController;
 use Illuminate\Support\Facades\Route;
 
@@ -28,6 +29,7 @@ Route::controller(HomeController::class)->group(function () {
 // Post
 Route::controller(PostController::class)->group(function () {
     Route::get('/post/{post}', 'show');
+});
 
 // Search
 Route::get('/search', [SearchController::class, 'list'])->name('search');
