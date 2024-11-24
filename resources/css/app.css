@@ -30,3 +30,7 @@
         @apply p-4 border rounded-xl bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 shadow;
     }
 }
+
+#tags option:checked {
+    @apply bg-slate-300 dark:bg-slate-600;
+}  

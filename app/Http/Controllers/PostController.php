@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
+use App\Models\Tag;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 
@@ -21,7 +22,9 @@ class PostController extends Controller
      */
     public function create()
     {
-        return view('pages/create-post');
+        return view('pages/create-post', [
+            'tags' => Tag::all(),
+        ]);
     }
 
     /**
@@ -32,6 +35,8 @@ class PostController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'text' => 'required|string',
+            'tags' => 'nullable|array',
+            'tags.*' => 'exists:tag,id',
             'is_public' => 'nullable|boolean',
             'is_announcement' => 'nullable|boolean',
         ]);

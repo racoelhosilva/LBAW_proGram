@@ -22,6 +22,15 @@
                     ])
                     
                     <div class="flex flex-col">
+                        <label for="tags" class="mb-2 font-medium">Associated Tags</label>
+                        <select name="tags[]" id="tags" multiple class="card overflow-auto">
+                            @foreach ($tags as $tag)
+                                <option class="w-full text-gray-600 dark:text-white px-4 py-2" value="{{ $tag->id }}">{{ $tag->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="flex flex-col">
                         <label class="mb-2">
                             <input type="checkbox" name="is_public" value="1" {{ old('is_public', true) ? 'checked' : '' }}> 
                             <span class="font-medium">Make this post public</span>
