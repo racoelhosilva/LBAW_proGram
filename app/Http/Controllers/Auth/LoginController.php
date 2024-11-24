@@ -18,7 +18,7 @@ class LoginController extends Controller
     public function showLoginForm(): Redirector|RedirectResponse|View|Factory
     {
         if (Auth::check()) {
-            return redirect('/');
+            return redirect()->route('home');
         } else {
             return view('auth.login');
         }
@@ -37,7 +37,7 @@ class LoginController extends Controller
         if (Auth::attempt($credentials, $request->filled('remember'))) {
             $request->session()->regenerate();
 
-            return redirect()->intended('/');
+            return redirect()->intended()->withSuccess('You have successfully logged in!');
         }
 
         return back()->withErrors([
@@ -54,7 +54,6 @@ class LoginController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('login')
-            ->withSuccess('You have logged out successfully!');
+        return redirect()->intended()->withSuccess('You have successfully logged out!');
     }
 }

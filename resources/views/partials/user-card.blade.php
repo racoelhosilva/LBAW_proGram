@@ -1,6 +1,8 @@
+@props(['user'])
+
 @php($userUrl = url('user/' . $user->id))
 
-<article class="card flex items-center">
+<article class="card px-6 flex items-center">
     {{-- TODO: Use real profile picture --}}
     {{-- TODO: Find better place for placeholder --}}
     <a href="{{ $userUrl }}">

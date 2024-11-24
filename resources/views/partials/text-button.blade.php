@@ -1,4 +1,4 @@
-@props(['text', 'id', 'class' => '', 'transparent', 'type' => 'primary', 'anchorUrl'])
+@props(['text', 'id', 'transparent', 'type' => 'primary', 'anchorUrl', 'submit' => false])
 
 @php
     $buttonClass = match($type) {
@@ -7,6 +7,12 @@
     };  
 @endphp
 
-<{{ isset($anchorUrl) ? 'a href=' . $anchorUrl : 'button'}} {{ isset($id) ? 'id=' . $id : ''}} class="px-4 py-3 {{ $buttonClass }} font-medium {{ $class }}">
-    {{ $text }}
-</{{ isset($anchorUrl) ? 'a' : 'button'}}>
+@if (!isset($anchorUrl))
+    <button {{ isset($id) ? "id=$id" : "" }} class="px-4 py-3 {{ $buttonClass }} font-medium">
+        {{ $text }}
+    </button>
+@else
+    <a href={{ $anchorUrl }} {{ isset($id) ? "id=$id" : "" }} class="px-4 py-3 {{ $buttonClass }} font-medium">
+        {{ $text }}
+    </a>
+@endif

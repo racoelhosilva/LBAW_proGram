@@ -27,10 +27,10 @@
         </script>
 
         <!-- Styles & Scripts -->
-        @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/header.js', 'resources/js/search.js'])
+        @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/header.js'])
     </head>
     <body class="bg-white dark:bg-slate-800 text-black dark:text-white">
-        @include('partials.header')
+        @include('partials.auth-header')
         @yield('content')
         <footer class="p-4">
             <p class="text-xs font-medium text-gray-500 dark:text-gray-400">© 2024 ProGram. All rights reserved.</p>
