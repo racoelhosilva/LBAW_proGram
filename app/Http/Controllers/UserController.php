@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Language;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -33,6 +34,7 @@ class UserController extends Controller
         return view('pages.edit-user', [
             'user' => $user,
             'isOwnProfile' => $isOwnProfile,
+            'languages' => Language::all(),
         ]);
     }
 
@@ -47,27 +49,16 @@ class UserController extends Controller
             'is_public' => 'boolean',
             'handle' => 'string|unique:users,handle,'.$user->id,
             'languages' => 'array',
+            'languages.*' => 'exists:language,id',
+
         ]);
-
-        $newLanguages = [];
-
-        if ($request->has('languages')) {
-            foreach ($request->input('languages') as $language) {
-                if (! $user->stats->languages->contains('name', $language)) {
-                    $newLanguages[] = $language;
-                }
-            }
-        }
 
         try {
             $user->name = $request->input('name');
             $user->description = $request->input('description');
             $user->is_public = $request->input('is_public', true);
             $user->handle = $request->input('handle');
-
-            foreach ($newLanguages as $language) {
-                $user->stats->languages()->create(['name' => $language]);
-            }
+            $user->stats->languages()->sync($request->input('languages'));
 
             $user->save();
 

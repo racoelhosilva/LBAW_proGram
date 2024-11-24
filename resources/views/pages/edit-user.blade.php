@@ -19,20 +19,15 @@
             </label>
         </div>
 
-        <div class="mt-6">
-            <h2 class="text-2xl font-semibold mb-4">Programming Languages</h2>
-            <div id="languages-container" class="grid gap-2">
-                @foreach ($user->stats->languages as $language)
-                    <div class="flex items-center">
-                        <input type="text" name="languages[]" value="{{ $language->name }}" class="flex-1 h-12 px-5 rounded-lg bg-white dark:bg-slate-700 text-gray-600 dark:text-white border border-slate-300 dark:border-slate-600 focus:border-blue-600 outline-none">
-                        <button type="button" class="ml-2 text-red-500 remove-language">Remove</button>
-                    </div>
+        <div class="flex flex-col">
+            <label for="tags" class="mb-2 font-medium">Languages</label>
+            <select name="languages[]" id="languages" multiple class="card overflow-auto">
+                @foreach ($languages as $language)
+                    <option class="w-full text-gray-600 dark:text-white px-4 py-2" value="{{ $language->id }}">{{ $language->name }}</option>
                 @endforeach
-            </div>
-            <button type="button" id="add-language-button" class="mt-4 text-blue-600 font-medium">
-                + Add Language
-            </button>
+            </select>
         </div>
+
 
         <div class="flex flex-col mt-6 max-w-40">
             @include('partials.text-button', ['text' => 'Update', 'label' => 'Update', 'type' => 'primary', 'submit' => true])
