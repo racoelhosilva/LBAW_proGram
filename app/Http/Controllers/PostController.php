@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\GroupPost;
+use App\Models\Notification;
 use App\Models\Post;
 use App\Models\Tag;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class PostController extends Controller
 {
@@ -131,6 +134,59 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
-        //
+        if (! Auth::check()) {
+            return redirect()->route('login');
+        }
+
+        if (Auth::id() !== $post->author_id) {
+            return redirect()->route('home');
+        }
+
+        try {
+            DB::transaction(function () use ($post) {
+                $postId = $post->id;
+
+                Notification::where('post_id', $postId)
+                    ->orWhereIn('comment_id', function ($query) use ($postId) {
+                        $query->select('id')
+                            ->from('comment')
+                            ->where('post_id', $postId);
+                    })
+                    ->orWhereIn('post_like_id', function ($query) use ($postId) {
+                        $query->select('id')
+                            ->from('post_like')
+                            ->where('post_id', $postId);
+                    })
+                    ->orWhereIn('comment_like_id', function ($query) use ($postId) {
+                        $query->select('comment_like.id')
+                            ->from('comment_like')
+                            ->join('comment', 'comment_like.comment_id', '=', 'comment.id')
+                            ->where('comment.post_id', $postId);
+                    })
+                    ->delete();
+
+                foreach ($post->allComments as $comment) {
+                    $comment->allLikes()->delete();
+                    $comment->delete();
+                }
+
+                $post->allLikes()->delete();
+
+                $post->tags()->detach();
+
+                $post->attachments()->delete();
+
+                GroupPost::where('post_id', $postId)->delete();
+
+                $post->delete();
+
+            });
+
+            return redirect('user/'.auth()->id())->with('success', 'Post deleted successfully.');
+        } catch (\Exception $e) {
+            dd($e);
+
+            return redirect()->back()->withErrors(['error' => 'Failed to delete post.']);
+        }
     }
 }

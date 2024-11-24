@@ -175,7 +175,8 @@ class ApiPostController extends Controller
 
                 $post->allLikes()->delete();
 
-                $post->tags()->delete();
+                $post->tags()->detach();
+
                 $post->attachments()->delete();
 
                 GroupPost::where('post_id', $postId)->delete();
