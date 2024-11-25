@@ -52,7 +52,7 @@ class Ban extends Model
     public function scopeActive(Builder $query): Builder
     {
         return $query->where('is_active', true)->where(function ($query) {
-            $query->where('duration', 0)->orWhereRaw('start + duration <= NOW()');
+            $query->whereRaw('start + duration > NOW()')->orWhere('duration', 0);
         });
     }
 }
