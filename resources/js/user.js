@@ -1,56 +1,70 @@
-let projectCounter = 1; 
+let projectCounter = 1;
 
-document.getElementById('add_project').addEventListener('click', function () {
-    const name = document.getElementById('new_project_name').value.trim();
-    const url = document.getElementById('new_project_url').value.trim();
+const addUserNewProjectListeners = () => {
 
-    if (name && url) {
-        const newProjectId = projectCounter++;
+    document.getElementById('add_project').addEventListener('click', function () {
+        const name = document.getElementById('new_project_name').value.trim();
+        const url = document.getElementById('new_project_url').value.trim();
 
-        const container = document.createElement('div');
-        container.classList.add('flex', 'items-center', 'mb-4');
-        container.dataset.projectId = newProjectId;
+        if (name && url) {
+            addProject(name, url);
+            clearInputFields();
+        } else {
+            alert('Please provide both project name and URL.');
+        }
+    });
 
-        const nameInput = document.createElement('input');
-        nameInput.type = 'text';
-        nameInput.name = `new_projects[${newProjectId}][name]`;
-        nameInput.value = name;
-        nameInput.placeholder = 'Project Name';
-        nameInput.dataset.projectId = newProjectId; 
-        nameInput.classList.add('w-full', 'card', 'mb-2', 'mr-2');
+};
 
-        const urlInput = document.createElement('input');
-        urlInput.type = 'url';
-        urlInput.name = `new_projects[${newProjectId}][url]`;
-        urlInput.value = url;
-        urlInput.placeholder = 'Project URL';
-        urlInput.dataset.projectId = newProjectId;
-        urlInput.classList.add('w-full', 'card', 'mb-2', 'mr-2');
+const addProject = (name, url) => {
+    const newProjectId = projectCounter++;
 
-        const removeButton = document.createElement('button');
-        removeButton.type = 'button';
-        removeButton.classList.add('btn', 'btn-danger', 'text-white');
-        removeButton.innerText = 'Remove';
-        removeButton.onclick = function () {
-            container.remove();
-        };
+    const container = document.createElement('div');
+    container.classList.add('flex', 'items-center', 'mb-4');
+    container.dataset.projectId = newProjectId;
 
-        container.appendChild(nameInput);
-        container.appendChild(urlInput);
-        container.appendChild(removeButton);
+    const nameInput = createInput('text', `new_projects[${newProjectId}][name]`, name, 'Project Name', newProjectId);
+    const urlInput = createInput('url', `new_projects[${newProjectId}][url]`, url, 'Project URL', newProjectId);
+    const removeButton = createRemoveButton(container);
 
-        const projectsSection = document.getElementById('new_projects');
-        projectsSection.appendChild(container);
+    container.appendChild(nameInput);
+    container.appendChild(urlInput);
+    container.appendChild(removeButton);
 
-        document.getElementById('new_project_name').value = '';
-        document.getElementById('new_project_url').value = '';
-    } else {
-        alert('Please provide both project name and URL.');
-    }
-});
-const removeProject =(button)  =>{
+    const projectsSection = document.getElementById('new_projects');
+    projectsSection.appendChild(container);
+};
+
+const createInput = (type, name, value, placeholder, projectId) => {
+    const input = document.createElement('input');
+    input.type = type;
+    input.name = name;
+    input.value = value;
+    input.placeholder = placeholder;
+    input.dataset.projectId = projectId;
+    input.classList.add('w-full', 'card', 'mb-2', 'mr-2');
+    return input;
+};
+
+const createRemoveButton = (container) => {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.classList.add('btn', 'btn-danger', 'text-white');
+    button.innerText = 'Remove';
+    button.onclick = function () {
+        container.remove();
+    };
+    return button;
+};
+
+const clearInputFields = () => {
+    document.getElementById('new_project_name').value = '';
+    document.getElementById('new_project_url').value = '';
+};
+
+const removeProject = (button) => {
     button.parentElement.remove();
-}
+};
 
 const addRemoveButtonEventListeners = () => {
     const removeButtons = document.querySelectorAll('#projects button');
@@ -60,8 +74,7 @@ const addRemoveButtonEventListeners = () => {
             removeProject(button);
         });
     });
-}
+};
+
 addRemoveButtonEventListeners();
-
-
-
+addUserNewProjectListeners();

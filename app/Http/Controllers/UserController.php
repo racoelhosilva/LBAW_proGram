@@ -63,27 +63,32 @@ class UserController extends Controller
 
             $projectsFromRequest = $request->input('projects'); // array of projects data (name, url)
             $existingProjectIds = [];
-            foreach ($projectsFromRequest as $index => $project) {
-                $existingProjectIds[] = $index;
+            if ($projectsFromRequest !== null) {
+
+                foreach ($projectsFromRequest as $index => $project) {
+                    $existingProjectIds[] = $index;
+                }
             }
             // Iterate through the user's existing projects and delete if not in the request
-            foreach ($user->stats->projects as $project) {
-                if (! in_array($project->id, $existingProjectIds)) {
-                    $project->delete(); // Delete project if its ID is not in the updated list
+            if ($user->stats->projects !== null) {
+                foreach ($user->stats->projects as $project) {
+                    if (! in_array($project->id, $existingProjectIds)) {
+                        $project->delete(); // Delete project if its ID is not in the updated list
+                    }
+
                 }
-
             }
+            if ($request->input('new_projects') !== null) {
+                foreach ($request->input('new_projects') as $project) {
 
-            foreach ($request->input('new_projects') as $project) {
-
-                $project = [
-                    'user_stats_id' => $user->stats->id,
-                    'name' => $project['name'],
-                    'url' => $project['url'],
-                ];
-                $createdProject = $user->stats->projects()->create($project);
+                    $project = [
+                        'user_stats_id' => $user->stats->id,
+                        'name' => $project['name'],
+                        'url' => $project['url'],
+                    ];
+                    $createdProject = $user->stats->projects()->create($project);
+                }
             }
-
             $user->save();
 
             return redirect()->route('users.show', $user->id);
