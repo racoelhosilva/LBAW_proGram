@@ -109,9 +109,7 @@ class PostController extends Controller
     public function update(Request $request, Post $post): Redirector|RedirectResponse
     {
 
-        if (! Gate::allows('update', $post)) {
-            return redirect()->back()->with(['error' => 'Unauthorized']);
-        }
+        Gate::authorize('update', $post);
         $request->validate([
             'title' => 'nullable|string|max:255',
             'text' => 'nullable|string',
@@ -145,10 +143,7 @@ class PostController extends Controller
         if (! Auth::check()) {
             return redirect()->route('login');
         }
-
-        if (Auth::id() !== $post->author_id) {
-            return redirect()->route('home');
-        }
+        Gate::authorize('delete', $post);
 
         try {
             DB::transaction(function () use ($post) {
@@ -192,8 +187,6 @@ class PostController extends Controller
 
             return redirect()->route('home')->with('success', 'Post deleted successfully.');
         } catch (\Exception $e) {
-            dd($e);
-
             return redirect()->back()->withErrors(['error' => 'Failed to delete post.']);
         }
     }

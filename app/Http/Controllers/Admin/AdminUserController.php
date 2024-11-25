@@ -60,7 +60,11 @@ class AdminUserController extends Controller
             $query = '%'.str_replace(['\\', '%', '_'], ['\\\\', '\\%', '\\_'], $validated['query']).'%';
             $posts = Post::where('title', 'ILIKE', $query)
                 ->orWhere('text', 'ILIKE', $query)
-                ->orWhere('handle', 'ILIKE', $query)
+                ->orWhereHas('author', function ($q) use ($query) {
+                    $q->where('handle', 'ILIKE', $query)
+                        ->orWhere('name', 'ILIKE', $query)
+                        ->orWHere('email', 'ILIKE', $query);
+                })
                 ->orderBy('id')
                 ->paginate(20);
         }
