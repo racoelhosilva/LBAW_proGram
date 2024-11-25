@@ -182,7 +182,7 @@ class PostController extends Controller
 
             });
 
-            return redirect('user/'.auth()->id())->with('success', 'Post deleted successfully.');
+            return redirect()->route('home')->with('success', 'Post deleted successfully.');
         } catch (\Exception $e) {
             dd($e);
 
