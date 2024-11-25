@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Ban;
+use App\Models\Post;
 use App\Models\User;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
@@ -19,7 +20,7 @@ class AdminUserController extends Controller
     | Search
     |--------------------------------------------------------------------------
     */
-    public function search(Request $request): View|Factory
+    public function searchUser(Request $request): View|Factory
     {
         $validated = $request->validate([
             'query' => 'nullable|string|max:255',
@@ -41,7 +42,30 @@ class AdminUserController extends Controller
         }
 
         return view('admin.user.index', ['users' => $users]);
+    }
 
+    public function searchPost(Request $request): View|Factory
+    {
+        $validated = $request->validate([
+            'query' => 'nullable|string|max:255',
+        ]);
+        if (empty($validated['query'])) {
+            $posts = Post::orderBy('id')->paginate(20);
+        } elseif (is_numeric($validated['query'])) {
+            $query = '%'.str_replace(['\\', '%', '_'], ['\\\\', '\\%', '\\_'], $validated['query']).'%';
+            $posts = Post::where('id', $validated['query'])
+                ->orderBy('id')
+                ->paginate(20);
+        } else {
+            $query = '%'.str_replace(['\\', '%', '_'], ['\\\\', '\\%', '\\_'], $validated['query']).'%';
+            $posts = Post::where('title', 'ILIKE', $query)
+                ->orWhere('text', 'ILIKE', $query)
+                ->orWhere('handle', 'ILIKE', $query)
+                ->orderBy('id')
+                ->paginate(20);
+        }
+
+        return view('admin.post.index', ['posts' => $posts]);
     }
 
     /*

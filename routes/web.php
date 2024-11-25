@@ -70,11 +70,13 @@ Route::prefix('admin')->group(function () {
             Route::get('/', 'index')->name('admin.dashboard');
         });
         Route::controller(AdminUserController::class)->group(function () {
-            Route::get('/user/search', 'search')->name('admin.user.search');
+            Route::get('/user/search', 'searchUser')->name('admin.user.search');
             // Ban
             Route::get('/ban', 'listBans')->name('admin.ban.index');
             Route::post('/ban/{user}', 'banUser')->name('admin.ban.store');
             Route::post('/ban/{id}/revoke', 'revokeBan')->name('admin.ban.revoke');
+            // Posts
+            Route::get('/post/search', 'searchPost')->name('admin.post.search');
         });
     });
 });
