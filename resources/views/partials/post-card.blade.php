@@ -26,7 +26,7 @@
     <div class="-ms-3 col-span-2 grid grid-cols-[auto_auto_auto_1fr_50%] items-center">
         @include('partials.icon-button', ['iconName' => 'heart', 'label' => 'Like', 'type' => 'transparent'])
         <p class="me-3 font-medium select-none">{{ $post->likes }}</p>
-        @include('partials.icon-button', ['iconName' => 'message-square-text', 'label' => 'Comments', 'type' => 'transparent'])
+        @include('partials.icon-button', ['iconName' => 'message-square-text', 'label' => 'Comments', 'type' => 'transparent', 'anchorUrl' => $postUrl])
         <p class="font-medium select-none">{{ $post->comments }}</p>
         <div class="select-none text-end break-keep">
             @foreach($post->tags as $tag)
