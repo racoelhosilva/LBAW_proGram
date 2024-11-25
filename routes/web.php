@@ -61,7 +61,9 @@ Route::prefix('api')->group(function () {
         Route::delete('/post/{id}', 'delete');
         Route::put('/post/{id}', 'update');
         Route::get('/post/{id}/comment', 'listComments');
-        Route::get('/post/{id}/likes', 'listLikes');
+        Route::get('/post/{id}/like', 'listLikes');
+        Route::post('/post/{id}/like', 'like')->where('id', '[0-9]+')->name('api.post.like');
+        Route::delete('/post/{id}/like', 'dislike')->where('id', '[0-9]+')->name('api.post.dislike');
         Route::get('/post/{id}/tags', 'listTags');
         Route::get('/post/{id}/attachments', 'listAttachments');
     });
