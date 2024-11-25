@@ -32,6 +32,9 @@ Route::controller(PostController::class)->group(function () {
     Route::get('/post/create', 'create')->name('post.create');
     Route::get('/post/{post}', 'show')->where('post', '[0-9]+')->name('post.show');
     Route::post('/post', 'store')->name('post.store');
+    Route::get('/post/{post}/edit', 'edit')->where('post', '[0-9]+')->name('post.edit');
+    Route::put('/post/{post}', 'update')->where('post', '[0-9]+')->name('post.update');
+    Route::delete('/post/{post}', 'destroy')->where('post', '[0-9]+')->name('post.destroy');
 });
 
 // Search
