@@ -24,7 +24,7 @@
                     <td class="pe-8 space-x-2 flex justify-end">
                         {{-- TODO: Place user profile --}}
                         @include('partials.text-button', ['text' => 'View Profile', 'type' => 'secondary', 'anchorUrl' => route('home', ['id' => $user->id])])
-                        <div class="modal">
+                        <div class="modal ban-modal">
                             @include('partials.text-button', ['text' => 'Ban', 'class' => 'open-button', 'type' => 'secondary'])
                             <div>
                                 <div>
@@ -36,6 +36,7 @@
                                         @csrf
                                         @include('partials.input-field', ['name' => 'reason', 'label' => 'Reason for ban', 'placeholder' => 'Inappropriate behavior', 'required' => true])
                                         @include('partials.input-field', ['name' => 'duration', 'type' => 'number', 'label' => 'Duration (days)', 'placeholder' => '15', 'required' => true])
+                                        <label><input type="checkbox" name="permanent"> Permanent</label>
                                         @include('partials.text-button', ['text' => 'Ban User', 'type' => 'primary', 'submit' => true])
                                     </form>
                                 </div>

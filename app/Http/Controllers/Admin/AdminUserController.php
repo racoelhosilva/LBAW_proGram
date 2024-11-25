@@ -88,10 +88,14 @@ class AdminUserController extends Controller
     {
         $validated = $request->validate([
             'reason' => 'required|string|max:255',
-            'duration' => 'required|integer|min:1',
+            'duration' => 'integer|min:1',
         ]);
 
-        $duration = "{$validated['duration']} days";
+        if ($request->filled('permanent')) {
+            $duration = '0 days';
+        } else {
+            $duration = "{$validated['duration']} days";
+        }
 
         $ban = Ban::create([
             'user_id' => $user->id,
@@ -100,7 +104,7 @@ class AdminUserController extends Controller
             'duration' => DB::raw("INTERVAL '$duration'"),
         ]);
 
-        return redirect()->route('admin.ban.index')->with('success', 'User banned successfully');
+        return redirect()->route('admin.user.search')->with('success', 'User banned successfully');
 
     }
 
