@@ -12,9 +12,12 @@ class TopProject extends Model
 
     protected $table = 'top_project';
 
+    public $timestamps = false;
+
     protected $fillable = [
         'name',
         'url',
+        'user_stats_id',
     ];
 
     public function owner(): BelongsTo

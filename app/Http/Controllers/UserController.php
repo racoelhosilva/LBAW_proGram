@@ -10,10 +10,8 @@ use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
-    public function show($id)
+    public function show(User $user)
     {
-        $user = User::findOrFail($id);
-
         $authuser = Auth::user();
 
         $isOwnProfile = $authuser && $authuser->id === $user->id;
@@ -24,17 +22,13 @@ class UserController extends Controller
         ]);
     }
 
-    public function edit($id)
+    public function edit(User $user)
     {
-        $user = User::findOrFail($id);
 
         $authuser = Auth::user();
 
-        $isOwnProfile = $authuser && $authuser->id === $user->id;
-
         return view('pages.edit-user', [
             'user' => $user,
-            'isOwnProfile' => $isOwnProfile,
             'languages' => Language::all(),
             'technologies' => Technology::all(),
         ]);
@@ -54,6 +48,8 @@ class UserController extends Controller
             'languages.*' => 'exists:language,id',
             'technologies' => 'array',
             'technologies.*' => 'exists:technology,id',
+            'projects' => 'array',
+            'new_projects' => 'array',
 
         ]);
 
@@ -65,11 +61,37 @@ class UserController extends Controller
             $user->stats->languages()->sync($request->input('languages'));
             $user->stats->technologies()->sync($request->input('technologies'));
 
+            $projectsFromRequest = $request->input('projects'); // array of projects data (name, url)
+            $existingProjectIds = [];
+            foreach ($projectsFromRequest as $index => $project) {
+                $existingProjectIds[] = $index;
+            }
+            // Iterate through the user's existing projects and delete if not in the request
+            foreach ($user->stats->projects as $project) {
+                if (! in_array($project->id, $existingProjectIds)) {
+                    $project->delete(); // Delete project if its ID is not in the updated list
+                }
+
+            }
+
+            foreach ($request->input('new_projects') as $project) {
+
+                $project = [
+                    'user_stats_id' => $user->stats->id,
+                    'name' => $project['name'],
+                    'url' => $project['url'],
+                ];
+                $createdProject = $user->stats->projects()->create($project);
+            }
+
             $user->save();
 
             return redirect()->route('users.show', $user->id);
         } catch (\Exception $e) {
-            return redirect()->route('error.page')->with('error', 'Failed to update user. Please try again.');
+            return response()->json([
+                'error' => 'Failed to update user.',
+                'message' => $e->getMessage(),
+            ], 500);
         }
     }
 }

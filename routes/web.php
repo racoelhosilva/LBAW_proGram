@@ -83,8 +83,8 @@ Route::prefix('api')->group(function () {
     });
 });
 Route::controller(UserController::class)->group(function () {
-    Route::get('user/{id}', 'show')->name('users.show');
-    Route::get('user/{id}/edit', 'edit')->name('users.edit');
-    Route::post('user/{id}/update', 'update')->name('users.update');
+    Route::get('user/{user}', 'show')->name('users.show');
+    Route::get('user/{user}/edit', 'edit')->name('users.edit');
+    Route::post('user/{user}/update', 'update')->name('users.update');
 
 });
