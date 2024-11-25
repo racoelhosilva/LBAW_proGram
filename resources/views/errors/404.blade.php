@@ -1,13 +1,8 @@
 @extends('layouts.auth')
 
 @section('content')
-    <main id="login-page" class="grid grid-cols-3 items-center">
-        <article class="h-min p-10 pt-16 grid gap-12 justify-items-center col-start-2">
-            @include('partials.logo', ['size' => 'large'])
-            <h1 class="text-3xl font-bold text-center">
-                404 - Page Not Found
-            </h1>
-        </article>
-    </main>
+    <main id="404-page" class="grid grid-cols-3 items-center">
+        @include('partials.error-page', ['error' => '404', 'message' => 'Page Not Found'])
+    </main> 
 @endsection
 
