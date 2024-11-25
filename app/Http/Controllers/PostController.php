@@ -95,9 +95,7 @@ class PostController extends Controller
             return redirect()->route('login');
         }
 
-        if (! Gate::allows('update', $post)) {
-            return redirect()->route('home')->with(['error' => 'Unauthorized']);
-        }
+        Gate::authorize('update', $post);
 
         return view('pages/edit-post', [
             'post' => $post,

@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Models\Administrator;
 use App\Models\Post;
 use App\Models\User;
 
@@ -18,9 +19,25 @@ class PostPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, Post $post): bool
+    public function view(?User $user, Post $post): bool
     {
-        return $user->id === $post->author->id || $post->is_public;
+        // Grant access if the post is public.
+        if ($post->is_public) {
+            return false;
+        }
+
+        // Grant access if the user is admin.
+        if ($user instanceof Administrator) {
+            return true;
+        }
+
+        // Grant access if the user is following the author.
+        if ($user instanceof User && $user->following->contains($post->author->id)) {
+            return true;
+        }
+
+        // Grant access if the user is the author.
+        return $user instanceof User && $user->id === $post->author->id;
     }
 
     /**
@@ -36,7 +53,11 @@ class PostPolicy
      */
     public function update(User $user, Post $post): bool
     {
-        return $user->id === $post->author->id;
+        if ($user instanceof Administrator) {
+            return true;
+        }
+
+        return $user instanceof User && $user->id === $post->author->id;
     }
 
     /**
@@ -44,7 +65,11 @@ class PostPolicy
      */
     public function delete(User $user, Post $post): bool
     {
-        return $user->id === $post->author->id;
+        if ($user instanceof Administrator) {
+            return true;
+        }
+
+        return $user instanceof User && $user->id === $post->author->id;
     }
 
     /**
