@@ -122,5 +122,5 @@ Route::prefix('api')->group(function () {
 });
 
 Route::controller(UserController::class)->group(function () {
-    Route::get('user/{id}', 'show');
+    Route::get('user/{id}', 'show')->name('user.show');
 });
