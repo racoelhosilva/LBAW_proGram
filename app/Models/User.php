@@ -104,6 +104,6 @@ class User extends Authenticatable
 
     public function getProfilePicture()
     {
-        return FileController::get('/profile', $this->id);
+        return FileController::get('profile', $this->id);
     }
 }
