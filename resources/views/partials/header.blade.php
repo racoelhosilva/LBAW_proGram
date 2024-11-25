@@ -4,10 +4,13 @@
         @include('partials.search-field')
     </div>
     <div class="inline-flex gap-2 items-center">  {{-- Right elements --}}
+        @if (Auth::check())
+            @include('partials.text-button', ['text' => 'Create Post', 'id' => 'create-post-button', 'type' => 'primary', 'anchorUrl' => route('post.create')])
+        @endif
         @include('partials.icon-button', ['iconName' => 'home', 'id' => 'home-button', 'label' => 'Home', 'type' => 'secondary', 'anchorUrl' => route('home')])
         @include('partials.theme-button')
         @if (Auth::check())
-            <a href="{{ route('home') }}">
+            <a href="{{ 'user/' . auth()->id() }}">
                 <img src="/img/placeholder.png" alt="Profile photo" class="h-[49.5px] w-[49.5px] rounded-full">
             </a>
         @else
