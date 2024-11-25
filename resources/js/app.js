@@ -24,4 +24,29 @@ const addDropdownListeners = () => {
     });
 };
 
+
+const openModal = (modal, event) => {
+    modal.classList.add('active');
+    event.stopPropagation();
+};
+
+const closeModal = (modal, event) => {
+    modal.classList.remove('active');
+    event.stopPropagation();
+}
+
+const addModalListeners = () => {
+    const modals = document.querySelectorAll('.modal');
+
+    modals.forEach(modal => {
+        const modalOpenButton = modal.querySelector(`:scope .open-button`);
+        const modalCloseButton = modal.querySelector(':scope .close-button');
+
+        modalOpenButton.addEventListener('click', event => openModal(modal, event));
+        modalCloseButton.addEventListener('click', event => closeModal(modal, event));
+    });
+}
+
+
 addDropdownListeners();
+addModalListeners();
