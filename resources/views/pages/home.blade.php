@@ -5,7 +5,7 @@
         <section class="card h-min flex flex-col gap-3">
             <h1 class="text-xl font-bold">Users On This Platform</h1>
             @if (count($users) > 0)
-                @foreach($users as $user)
+                @foreach ($users as $user)
                     @include('partials.user-card', ['user' => $user])
                 @endforeach
             @else
@@ -13,15 +13,20 @@
             @endif
             @if (!Auth::check())
                 <div class="flex justify-center pt-2">
-                    @include('partials.text-button', ['text' => 'Login/Register', 'anchorUrl' => route('login')])
+                    @include('partials.text-button', [
+                        'text' => 'Login/Register',
+                        'anchorUrl' => route('login'),
+                    ])
                 </div>
             @endif
         </section>
         <section class="card h-min flex flex-col gap-3 col-span-2">
             <h1 class="text-xl font-bold">Recommended Posts</h1>
             @if (count($posts) > 0)
-                @foreach($posts as $post)
-                    @include('partials.post-card', ['post' => $post])
+                @foreach ($posts as $post)
+                    @can('view', $post)
+                        @include('partials.post-card', ['post' => $post])
+                    @endcan
                 @endforeach
             @else
                 <p>No posts at the moment</p>
@@ -30,9 +35,10 @@
         <section class="card h-min flex flex-col gap-3">
             <h1 class="text-xl font-bold">Trending Topics</h1>
             @if (count($tags) > 0)
-                @foreach($tags as $tag)
+                @foreach ($tags as $tag)
                     <div class="select-none">
-                        <a href="/" class="ms-4 font-medium text-blue-600 dark:text-blue-400">{{ '#' . $tag->name }}</a>
+                        <a href="/"
+                            class="ms-4 font-medium text-blue-600 dark:text-blue-400">{{ '#' . $tag->name }}</a>
                         <p class="ms-4 text-xs/3 text-gray-500 dark:text-gray-400">{{ $tag->posts->count() . ' posts' }}</p>
                     </div>
                 @endforeach
