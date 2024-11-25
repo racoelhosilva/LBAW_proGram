@@ -56,4 +56,9 @@ class Post extends Model
     {
         return $this->hasMany(PostAttachment::class, 'post_id');
     }
+
+    public function hasTag(Tag $tag): bool
+    {
+        return $this->tags->contains($tag);
+    }
 }
