@@ -6,17 +6,21 @@ use App\Models\GroupPost;
 use App\Models\Notification;
 use App\Models\Post;
 use App\Models\Tag;
+use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 
 class PostController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): void
     {
         //
     }
@@ -24,7 +28,7 @@ class PostController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(): RedirectResponse|View|Factory
     {
         if (! Auth::check()) {
             return redirect()->route('login');
@@ -38,7 +42,7 @@ class PostController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse|Redirector
     {
         if (! Auth::check()) {
             return redirect()->route('login');
@@ -76,6 +80,8 @@ class PostController extends Controller
      */
     public function show(Post $post): View
     {
+        Gate::authorize('view', $post);
+
         return view('pages/post',
             ['post' => $post]);
     }
@@ -83,14 +89,14 @@ class PostController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Post $post)
+    public function edit(Post $post): RedirectResponse|View|Factory
     {
         if (! Auth::check()) {
             return redirect()->route('login');
         }
 
-        if (Auth::id() !== $post->author_id) {
-            return redirect()->route('home');
+        if (! Gate::allows('update', $post)) {
+            return redirect()->route('home')->with(['error' => 'Unauthorized']);
         }
 
         return view('pages/edit-post', [
@@ -102,8 +108,12 @@ class PostController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Post $post)
+    public function update(Request $request, Post $post): Redirector|RedirectResponse
     {
+
+        if (! Gate::allows('update', $post)) {
+            return redirect()->back()->with(['error' => 'Unauthorized']);
+        }
         $request->validate([
             'title' => 'nullable|string|max:255',
             'text' => 'nullable|string',
@@ -132,7 +142,7 @@ class PostController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Post $post)
+    public function destroy(Post $post): RedirectResponse
     {
         if (! Auth::check()) {
             return redirect()->route('login');
