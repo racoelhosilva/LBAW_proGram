@@ -91,6 +91,49 @@ class ApiPostController extends Controller
         return response()->json($post);
     }
 
+    public function like(Request $request, int $id)
+    {
+        if (! Auth::check()) {
+            return response()->json(['error' => 'You must be logged in to update a post.'], 401);
+        }
+
+        $post = Post::findOrFail($id);
+
+        if (! Auth::id() === $post->author_id) {
+            return response()->json(['error' => 'You cannot like your own post'], 403);
+        }
+
+        $like = PostLike::first([
+            'liker_id' => Auth::id(),
+            'post_id' => $post->id,
+        ]);
+
+        return response()->json($post);
+    }
+
+    public function dislike(Request $request, int $id)
+    {
+        if (! Auth::check()) {
+            return response()->json(['error' => 'You must be logged in to update a post.'], 401);
+        }
+
+        $post = Post::findOrFail($id);
+
+        if (! Auth::id() === $post->author_id) {
+            return response()->json(['error' => 'You cannot like your own post'], 403);
+        }
+
+        $like = PostLike::find([
+            'liker_id' => Auth::id(),
+            'post_id' => $post->id,
+        ]);
+        if ($like) {
+            $like->delete();
+        }
+
+        return response()->json($post);
+    }
+
     public function listComments($id)
     {
         $post = Post::findOrFail($id);
