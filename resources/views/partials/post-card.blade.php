@@ -5,7 +5,7 @@
     $postUrl = url('post/' . $post->id);
 @endphp
 
-<article class="card px-6 w-full grid grid-cols-[auto_1fr_auto] items-center content-start" data-post-id="{{ $post->id }}">
+<article class="post-card card px-6 w-full grid grid-cols-[auto_1fr_auto] items-center content-start" data-post-id="{{ $post->id }}">
     <a href="{{ $authorUrl }}">
         <img src="{{ url('img/placeholder.png') }}" alt="{{ $post->author->name }}" class="w-12 h-12 rounded-full object-cover">
     </a>
@@ -31,11 +31,10 @@
         <p class="whitespace-pre-wrap">{{ str_replace("\\n", "\n", $post->text) }}</p>
     </div>
     <div class="-ms-3 col-span-3 grid grid-cols-[auto_auto_auto_1fr_50%] items-center">
-        @if ($post->likedBy(Auth::user()))
-            @include('partials.icon-button', ['iconName' => 'filled-heart', 'label' => 'Like', 'type' => 'transparent', 'class' => 'like-button liked'])
-        @else
-            @include('partials.icon-button', ['iconName' => 'heart', 'label' => 'Like', 'type' => 'transparent', 'class' => 'like-button'])
-        @endif
+        <button aria-label="Like" class="p-3 .btn-transparent like-button {{ $post->likedBy(Auth::user()) ? 'liked' : '' }}">
+            @include('partials.icon', ['name' => 'heart'])
+            @include('partials.icon', ['name' => 'filled-heart'])
+        </button>
         <p class="me-3 font-medium select-none">{{ $post->likes }}</p>
         @include('partials.icon-button', ['iconName' => 'message-square-text', 'label' => 'Comments', 'type' => 'transparent', 'anchorUrl' => $postUrl])
         <p class="font-medium select-none">{{ $post->comments }}</p>
