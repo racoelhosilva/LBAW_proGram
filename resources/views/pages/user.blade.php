@@ -2,7 +2,7 @@
 
 @section('content')
     <main id="profile-page" class="px-8 py-4 grid grid-cols-4 gap-6">
-        <section style="background-image: url('{{ $user->banner_image_url }}');"
+        <section style="background-image: url('{{ $user->getBannerImage() }}');"
             class="card h-min col-span-4 grid grid-cols-[auto_1fr] bg-cover">
             <article class="m-2 col-span-2 grid grid-rows-6">
                 <h1 class="text-4xl text-white font-bold row-start-1 row-end-2">{{ $user->name }}</h1>

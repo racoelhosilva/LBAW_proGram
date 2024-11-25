@@ -106,4 +106,9 @@ class User extends Authenticatable
     {
         return FileController::get('profile', $this->id);
     }
+
+    public function getBannerImage()
+    {
+        return FileController::get('banner', $this->id);
+    }
 }

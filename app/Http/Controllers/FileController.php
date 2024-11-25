@@ -14,6 +14,8 @@ class FileController extends Controller
 
     public static $systemTypes = [
         'profile' => ['png', 'jpg', 'jpeg'],
+        'banner' => ['png', 'jpg', 'jpeg'],
+        'post' => ['png', 'jpg', 'jpeg'],
     ];
 
     private static function getDefaultExtension(string $type)
@@ -46,8 +48,11 @@ class FileController extends Controller
             case 'profile':
                 $fileName = User::find($id)->profile_picture_url;
                 break;
+            case 'banner':
+                $fileName = User::find($id)->banner_image_url;
+                break;
             case 'post':
-                // other models
+                // TODO: post image get name
                 break;
         }
 
@@ -62,10 +67,13 @@ class FileController extends Controller
 
             switch ($type) {
                 case 'profile':
-                    User::find($id)->profile_image = null;
+                    User::find($id)->profile_picture_url = null;
+                    break;
+                case 'banner':
+                    User::find($id)->banner_image_url = null;
                     break;
                 case 'post':
-                    // other models
+                    // TODO: post image delete
                     break;
             }
         }
@@ -130,9 +138,18 @@ class FileController extends Controller
                     $error = 'unknown user';
                 }
                 break;
+            case 'banner':
+                $user = User::findOrFail($request->id);
+                if ($user) {
+                    $user->banner_image_url = $fileName;
+                    $user->save();
+                } else {
+                    $error = 'unknown user';
+                }
+                break;
 
             case 'post':
-                // other models
+                // TODO: post image upload
                 break;
 
             default:
