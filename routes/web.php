@@ -73,6 +73,8 @@ Route::prefix('api')->group(function () {
         Route::get('/comment/{id}', 'show');
         Route::post('/comment', 'create');
         //Route::delete('/comment/{id}', 'delete');
+        Route::post('/comment/{id}/like', 'like')->where('id', '[0-9]+')->name('api.comment.like');
+        Route::delete('/comment/{id}/like', 'dislike')->where('id', '[0-9]+')->name('api.comment.dislike');
         Route::put('/comment/{id}', 'update');
     });
 

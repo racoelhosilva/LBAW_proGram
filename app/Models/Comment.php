@@ -52,4 +52,9 @@ class Comment extends Model
     {
         return $this->hasMany(CommentLike::class, 'comment_id');
     }
+
+    public function likedBy(User $user): bool
+    {
+        return $this->allLikes()->where('liker_id', $user->id)->exists();
+    }
 }

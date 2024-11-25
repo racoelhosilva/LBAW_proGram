@@ -95,7 +95,7 @@ class ApiPostController extends Controller
     public function like(Request $request, int $id)
     {
         if (! Auth::check()) {
-            return response()->json(['error' => 'You must be logged in to update a post.'], 401);
+            return response()->json(['error' => 'You must be logged in to like a post.'], 401);
         }
 
         $post = Post::findOrFail($id);
