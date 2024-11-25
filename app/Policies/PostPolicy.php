@@ -23,7 +23,7 @@ class PostPolicy
     {
         // Grant access if the post is public.
         if ($post->is_public) {
-            return false;
+            return true;
         }
 
         // Grant access if the user is admin.
@@ -53,10 +53,6 @@ class PostPolicy
      */
     public function update(User $user, Post $post): bool
     {
-        if ($user instanceof Administrator) {
-            return true;
-        }
-
         return $user instanceof User && $user->id === $post->author->id;
     }
 
