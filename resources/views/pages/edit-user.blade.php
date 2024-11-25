@@ -3,7 +3,7 @@
 @section('content')
 <article class="card h-min p-10 pt-16 grid gap-12 justify-items-center col-start-2 m-6 md:m-12 lg:m-24">
     <h1 class="text-4xl font-bold">Edit Profile</h1>
-    <form method="post" action="{{ route('users.update', $user->id) }}" class="grid gap-4 justify-self-stretch">
+    <form method="post" action="{{ route('users.update', $user->id) }}" class="grid gap-4 justify-self-stretch" id="profile-form">
         {{ csrf_field() }}
 
         @include('partials.input-field', ['name' => 'name', 'label' => 'Name', 'type' => 'text', 'value' => $user->name, 'placeholder' => 'John Doe', 'required' => false])
@@ -19,6 +19,7 @@
             </label>
         </div>
 
+        <!-- Languages Section -->
         <div class="flex flex-col">
             <label for="languages" class="mb-2 font-medium">Languages</label>
             <select name="languages[]" id="languages" multiple class="card overflow-auto">
@@ -33,6 +34,7 @@
             </select>
         </div>
         
+        <!-- Technologies Section -->
         <div class="flex flex-col">
             <label for="technologies" class="mb-2 font-medium">Technologies</label>
             <select name="technologies[]" id="technologies" multiple class="card overflow-auto">
@@ -46,8 +48,30 @@
                 @endforeach
             </select>
         </div>
-        
 
+        <!-- Projects Section -->
+        <div class="flex flex-col">
+            <label for="projects" class="mb-2 font-medium">Projects</label>
+
+            <!-- Existing Projects List -->
+            <div id="existing-projects">
+                @foreach ($user->stats->projects as $project)
+                    <div class="flex items-center mb-4" data-project-id="{{ $project->id }}">
+                        <input type="hidden" name="existing_projects[]" value="{{ $project->id }}">
+                        <input type="text" name="projects[{{ $project->id }}][name]" value="{{ $project->name }}" placeholder="Project Name" class="w-full card mb-2 mr-2">
+                        <input type="url" name="projects[{{ $project->id }}][url]" value="{{ $project->url }}" placeholder="Project URL" class="w-full card mb-2 mr-2">
+                        <button type="button" class="btn btn-danger text-white remove-project-btn" onclick="removeProject(this)">Remove</button>
+                    </div>
+                @endforeach
+            </div>
+
+            <!-- Add New Project Button -->
+            <div class="flex items-center mb-4">
+                <input type="text" id="new_project_name" placeholder="Project Name" class="w-full card mb-2 mr-2">
+                <input type="url" id="new_project_url" placeholder="Project URL" class="w-full card mb-2 mr-2">
+                <button type="button" id="add_project" class="btn btn-primary text-white">Add Project</button>
+            </div>
+        </div>
 
         <div class="flex flex-col mt-6 max-w-40">
             @include('partials.text-button', ['text' => 'Update', 'label' => 'Update', 'type' => 'primary', 'submit' => true])
@@ -56,25 +80,56 @@
 </article>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const container = document.getElementById('languages-container');
-        const addButton = document.getElementById('add-language-button');
+    // Add a new project to the form
+    document.getElementById('add_project').addEventListener('click', function() {
+        var name = document.getElementById('new_project_name').value;
+        var url = document.getElementById('new_project_url').value;
 
-        addButton.addEventListener('click', function () {
-            const newField = document.createElement('div');
-            newField.classList.add('flex', 'items-center', 'mt-2');
-            newField.innerHTML = `
-                <input type="text" name="languages[]" class="flex-1 h-12 px-5 rounded-lg bg-white dark:bg-slate-700 text-gray-600 dark:text-white border border-slate-300 dark:border-slate-600 focus:border-blue-600 outline-none" placeholder="New Language">
-                <button type="button" class="ml-2 text-red-500 remove-language">Remove</button>
-            `;
-            container.appendChild(newField);
-        });
+        if (name && url) {
+            var container = document.createElement('div');
+            container.classList.add('flex', 'items-center', 'mb-4');
 
-        container.addEventListener('click', function (e) {
-            if (e.target && e.target.classList.contains('remove-language')) {
-                e.target.parentElement.remove();
-            }
-        });
+            // Add input for project name
+            var nameInput = document.createElement('input');
+            nameInput.type = 'text';
+            nameInput.name = 'projects[new][name]';
+            nameInput.value = name;
+            nameInput.placeholder = 'Project Name';
+            nameInput.classList.add('w-full', 'card', 'mb-2', 'mr-2');
+
+            // Add input for project URL
+            var urlInput = document.createElement('input');
+            urlInput.type = 'url';
+            urlInput.name = 'projects[new][url]';
+            urlInput.value = url;
+            urlInput.placeholder = 'Project URL';
+            urlInput.classList.add('w-full', 'card', 'mb-2', 'mr-2');
+
+            // Add remove button for the new project
+            var removeButton = document.createElement('button');
+            removeButton.type = 'button';
+            removeButton.classList.add('btn', 'btn-danger', 'text-white');
+            removeButton.innerText = 'Remove';
+            removeButton.onclick = function() { removeProject(removeButton); };
+
+            // Append inputs and remove button to container
+            container.appendChild(nameInput);
+            container.appendChild(urlInput);
+            container.appendChild(removeButton);
+
+            // Append new project container to the existing projects list
+            document.getElementById('existing-projects').appendChild(container);
+
+            // Clear input fields for new project
+            document.getElementById('new_project_name').value = '';
+            document.getElementById('new_project_url').value = '';
+        }
     });
+
+    // Remove project from form
+    function removeProject(button) {
+        button.parentElement.remove();
+    }
 </script>
+
 @endsection
