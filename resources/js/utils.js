@@ -18,4 +18,36 @@ const sendPost = (url) => {
     }).then(response => response.json());
 }
 
-export { sendDelete, sendPost };
+const fadeToastMessage = (toastMessage) => {
+    setTimeout(() => {
+        toastMessage.classList.add('opacity-0');
+        setTimeout(() => {
+            toastMessage.classList.add('hidden');
+            toastMessage.classList.remove('opacity-0');
+        }, 500);
+    }, 3000);
+}
+
+const sendToastMessage = (message, type) => {
+    switch (type) {
+        case 'success':
+            className = 'success-toast';
+            break;
+        case 'error':
+            className = 'error-toast';
+            break;
+        case 'message':
+            className = 'message-toast';
+            break;
+        default:
+            return;
+    }
+
+    const toastMessage = document.querySelector('.toast-message.' + className);
+    const toastMessageText = toastMessage.querySelector(':scope > p');
+    toastMessageText.textContent = message;
+
+    fadeToastMessage(toastMessage);
+}
+
+export { sendDelete, sendPost, fadeToastMessage, sendToastMessage };
