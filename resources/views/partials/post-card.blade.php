@@ -21,10 +21,10 @@
             @include('partials.icon-button', ['iconName' => 'ellipsis', 'label' => 'Options', 'type' => 'transparent'])
             <div class="hidden">
                 <div>
-                    @include('partials.dropdown-item', ['icon' => 'message-circle', 'text' => 'See Post', 'anchorUrl' => url('post/' . $post->id)])
-                    @if ($post->author->id === auth()->id())
+                    @include('partials.dropdown-item', ['icon' => 'message-circle', 'text' => 'See Post', 'anchorUrl' => route('post.show', $post->id)])
+                    @can('update', $post)
                         @include('partials.dropdown-item', ['icon' => 'pencil', 'text' => 'Edit Post', 'anchorUrl' => route('post.edit', $post->id)])
-                    @endif
+                    @endcan
                 </div>
             </div>
         </div>

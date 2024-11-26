@@ -21,7 +21,7 @@
         ])
         @include('partials.theme-button')
         @if (Auth::check())
-            <a href="{{ 'user/' . auth()->id() }}">
+            <a href="{{ route('user.show', auth()->id()) }}">
                 <img src="{{ auth()->user()->getProfilePicture() }}" alt="Profile photo"
                     class="h-[49.5px] w-[49.5px] rounded-full">
             </a>
@@ -33,7 +33,7 @@
                 'anchorUrl' => route('login'),
             ])
         @endif
-        <div class="dropdown">
+        <article class="dropdown">
             @include('partials.icon-button', [
                 'iconName' => 'grip',
                 'id' => 'more-button',
@@ -62,6 +62,6 @@
                     @endif
                 </div>
             </div>
-        </div>
+        </article>
     </div>
 </header>

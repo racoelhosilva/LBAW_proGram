@@ -1,7 +1,7 @@
 <article class="card h-min p-10 pt-16 grid gap-12 justify-items-center col-start-2">
-    @include('partials.logo', ['size' => 'large'])
+    @include('partials.admin-logo', ['size' => 'large'])
     
-    <form method="post" action="{{ route('login') }}" class="grid gap-4 justify-self-stretch">
+    <form method="post" action="{{ route('admin.login') }}" class="grid gap-4 justify-self-stretch">
         {{ csrf_field() }}
 
         @include('partials.input-field', ['name' => 'email', 'label' => 'E-mail', 'type' => 'email', 'value' => old('email'), 'placeholder' => 'johndoe@password.com', 'required' => true])
@@ -15,8 +15,4 @@
             @include('partials.text-button', ['text' => 'Login', 'label' => 'Login', 'type' => 'primary', 'submit' => true])
         </div>
     </form>
-
-    <p>
-        Don't have an account? <a href="{{ route('register') }}" class="text-blue-600 dark:text-blue-400">Register</a>
-    </p>
 </article>

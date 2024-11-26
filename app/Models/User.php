@@ -111,4 +111,14 @@ class User extends Authenticatable
     {
         return FileController::get('banner', $this->id);
     }
+
+    public function bans(): HasMany
+    {
+        return $this->hasMany(Ban::class, 'user_id');
+    }
+
+    public function isBanned(): bool
+    {
+        return $this->bans()->active()->exists();
+    }
 }
