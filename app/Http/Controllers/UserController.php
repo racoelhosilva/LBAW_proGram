@@ -26,20 +26,29 @@ class UserController extends Controller
     public function recommendedUsers($currentUser, $visitedUser)
     {
         if ($currentUser->id !== $visitedUser->id) {
-            // Case 1: If the IDs are different, focus on visitedUser's follows (user is not in its profile)
-            return $visitedUser->followers()
+            $users = $visitedUser->followers()
                 ->whereNotIn('follower_id', $currentUser->following()->pluck('followed_id')->toArray())
                 ->where('is_public', true)
                 ->orderBy('num_followers', 'desc')
-                ->take(5)
+                ->take(20)
                 ->get();
+
+            return $users->random(min($users->count(), 5))
+                ->sortByDesc('num_followers')
+                ->values();
         } else {
-            // Case 2: If the IDs are the same, focus on currentUser's follows (user is in its profile)
-            return User::whereNotIn('id', $currentUser->following()->pluck('followed_id')->toArray())
+
+            $users = User::whereNotIn('id', $currentUser->following()->pluck('followed_id')->toArray())
                 ->where('is_public', true)
+                ->where('id', '!=', $currentUser->id)
                 ->orderBy('num_followers', 'desc')
-                ->take(5)
+                ->take(20)
                 ->get();
+
+            return $users->random(min($users->count(), 5))
+                ->sortByDesc('num_followers')
+                ->values();
         }
+
     }
 }

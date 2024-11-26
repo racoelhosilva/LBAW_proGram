@@ -24,12 +24,16 @@ class HomeController extends Controller
             $followedUserIds = auth()->user()->following->pluck('id');
 
             return User::whereNotIn('id', $followedUserIds)
+                ->where('id', '!=', auth()->id())
+                ->where('is_public', true)
                 ->orderBy('num_followers', 'DESC')
                 ->limit(5)
                 ->get();
         }
 
         return User::orderBy('num_followers', 'DESC')
+            ->where('id', '!=', auth()->id())
+            ->where('is_public', true)
             ->limit(5)
             ->get();
     }
