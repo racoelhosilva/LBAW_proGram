@@ -16,8 +16,6 @@ class CommentLike extends Model
 
     protected $fillable = [
         'timestamp',
-        'liker_id',
-        'comment_id',
     ];
 
     public function user(): BelongsTo

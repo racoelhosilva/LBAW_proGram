@@ -4,11 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Comment;
-use App\Models\CommentLike;
-use App\Models\Notification;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 
 class ApiCommentController extends Controller
 {
@@ -48,6 +44,7 @@ class ApiCommentController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'error' => 'Failed to create comment.',
+                'message' => $e->getMessage(),
             ], 500);
         }
     }
@@ -65,60 +62,5 @@ class ApiCommentController extends Controller
         $comment->update($request->all());
 
         return response()->json($comment);
-    }
-
-    public function like(Request $request, $id)
-    {
-        if (! Auth::check()) {
-            return response()->json(['error' => 'You must be logged in to like a comment.'], 401);
-        }
-
-        $comment = Comment::findOrFail($id);
-
-        if (! Auth::id() === $comment->author_id) {
-            return response()->json(['error' => 'You cannot like your own comment'], 403);
-        }
-
-        try {
-            $like = CommentLike::create([
-                'comment_id' => $id,
-                'liker_id' => Auth::id(),
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'error' => 'Failed to like comment.',
-            ], 400);
-        }
-
-        return response()->json($like, 201);
-    }
-
-    public function dislike(Request $request, $id)
-    {
-        if (! Auth::check()) {
-            return response()->json(['error' => 'You must be logged in to unlike a comment.'], 401);
-        }
-
-        $comment = Comment::findOrFail($id);
-
-        if (! Auth::id() === $comment->author_id) {
-            return response()->json(['error' => 'You cannot unlike your own comment'], 403);
-        }
-
-        $like = CommentLike::where('comment_id', $id)
-            ->where('liker_id', Auth::id())
-            ->first();
-
-        if (! $like) {
-            return response()->json(['error' => 'You have not liked this comment'], 400);
-        }
-
-        DB::transaction(function () use ($like) {
-            Notification::where('comment_like_id', $like->id)->delete();
-
-            $like->delete();
-        });
-
-        return response()->json(['message' => 'You have unliked the comment.']);
     }
 }

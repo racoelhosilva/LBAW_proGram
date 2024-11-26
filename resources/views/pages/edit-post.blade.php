@@ -1,10 +1,10 @@
 @extends('layouts.app')
 
 @section('content')
-    <main id="create-post-page" class="grid grid-cols-3 items-center">
-        <article class="card h-min p-10 pt-16 grid justify-items-center col-start-2">
-            <h1 class="mb-12 text-xl font-bold">Edit Post</h1>
-            <form action="{{ route('post.update', $post->id) }}" method="POST" class="mb-4 grid gap-4 justify-self-stretch">
+<main id="create-post-page" class="grid grid-cols-3 items-center">
+        <article class="card h-min p-10 pt-16 grid gap-12 justify-items-center col-start-2">
+            <h1 class="text-xl font-bold">Edit Post</h1>
+            <form action="{{ route('post.update', $post->id) }}" method="POST" class="grid gap-4 justify-self-stretch">
                 @csrf
 
                 @method('PUT')
@@ -40,12 +40,8 @@
                         <span class="font-medium">Make this post public</span>
                     </label>
                 </div>
+                            
                 @include('partials.text-button', ['text' => 'Update Post', 'label' => 'update', 'type' => 'primary', 'submit' => true])
-            </form>
-            <form method="post" action="{{ route('post.destroy', $post->id) }}" class="w-full flex flex-col">
-                @csrf
-                @method('DELETE')
-                @include('partials.text-button', ['text' => 'Delete Post', 'type' => 'primary', 'submit' => true])
             </form>
         </article>
     </main>

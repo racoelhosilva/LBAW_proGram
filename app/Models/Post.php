@@ -47,11 +47,6 @@ class Post extends Model
         return $this->hasMany(PostLike::class, 'post_id');
     }
 
-    public function likedBy(User $user): bool
-    {
-        return $this->allLikes()->where('liker_id', $user->id)->exists();
-    }
-
     public function allComments(): HasMany
     {
         return $this->hasMany(Comment::class, 'post_id')->orderBy('timestamp', 'asc');
