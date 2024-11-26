@@ -16,8 +16,6 @@ class UserController extends Controller
         $isOwnProfile = $authuser && $authuser->id === $user->id;
 
         $isFollowing = $authuser && $authuser->following()->where('followed_id', $user->id)->exists();
-        var_dump($authuser->following()->where('followed_id', $user->id));
-        var_dump($isFollowing);
 
         return view('pages.user', [
             'user' => $user,
@@ -29,16 +27,23 @@ class UserController extends Controller
 
     public function recommendedUsers($currentUser, $visitedUser)
     {
+        // Case 1: If the IDs are different, focus on visitedUser's follows
+        if ($currentUser->id !== $visitedUser->id) {
 
-        $followingIds = $currentUser->following()->pluck('followed_id')->toArray();
-
-        $excludedIds = array_merge($followingIds, [$currentUser->id, $visitedUser->id]);
-
-        $users = User::where('is_public', true)
-            ->whereNotIn('id', $excludedIds)
-            ->orderBy('num_followers', 'desc') // Example criteria: sort by popularity
-            ->take(5)
-            ->get();
+            $users = $visitedUser->followers()
+                ->whereNotIn('follower_id', $currentUser->following()->pluck('followed_id')->toArray())
+                ->where('is_public', true)
+                ->orderBy('num_followers', 'desc')
+                ->take(5)
+                ->get();
+        } else {
+            // Case 2: If the IDs are the same, focus on currentUser's follows
+            $users = User::whereNotIn('id', $currentUser->following()->pluck('followed_id')->toArray())
+                ->where('is_public', true)
+                ->orderBy('num_followers', 'desc')
+                ->take(5)
+                ->get();
+        }
 
         return $users;
     }
