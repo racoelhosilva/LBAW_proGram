@@ -24,6 +24,13 @@ class UserController extends Controller
 
     public function edit(User $user)
     {
+        if (! Auth::check()) {
+            return redirect()->route('login');
+        }
+
+        if (Auth::id() !== $user->id) {
+            return redirect()->route('home');
+        }
 
         $authuser = Auth::user();
 
@@ -34,10 +41,15 @@ class UserController extends Controller
         ]);
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, User $user)
     {
-        $user = User::findOrFail($id);
+        if (! Auth::check()) {
+            return redirect()->route('login');
+        }
 
+        if (Auth::id() !== $user->id) {
+            return redirect()->route('home');
+        }
         // Validate incoming request data
         $request->validate([
             'name' => 'string|max:30',
