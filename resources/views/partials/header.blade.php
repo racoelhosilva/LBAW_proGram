@@ -33,7 +33,7 @@
                 'anchorUrl' => route('login'),
             ])
         @endif
-        <div class="dropdown">
+        <article class="dropdown">
             @include('partials.icon-button', [
                 'iconName' => 'grip',
                 'id' => 'more-button',
