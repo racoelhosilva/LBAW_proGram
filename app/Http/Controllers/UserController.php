@@ -28,7 +28,6 @@ class UserController extends Controller
         if ($currentUser->id !== $visitedUser->id) {
             $users = $visitedUser->followers()
                 ->whereNotIn('follower_id', $currentUser->following()->pluck('followed_id')->toArray())
-                ->where('is_public', true)
                 ->orderBy('num_followers', 'desc')
                 ->take(20)
                 ->get();
@@ -39,7 +38,6 @@ class UserController extends Controller
         } else {
 
             $users = User::whereNotIn('id', $currentUser->following()->pluck('followed_id')->toArray())
-                ->where('is_public', true)
                 ->where('id', '!=', $currentUser->id)
                 ->orderBy('num_followers', 'desc')
                 ->take(20)
