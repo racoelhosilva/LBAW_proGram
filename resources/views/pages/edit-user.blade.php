@@ -67,10 +67,21 @@
                 <button type="button" id="add_project" class="btn btn-primary ">Add Project</button>
             </div>
         </div>
-
+        <div>
+            <label for="profile_picture" class="font-medium block mb-2">Profile Picture</label>
+            <input id="profile_picture" name="profile_picture" type="file" required>
+        </div>
+        <div>
+            <label for="banner_picture" class="font-medium block mb-2">Banner Picture</label>
+            <input id="banner_picture" name="banner_picture" type="file" required>
+        </div>
+        
+       
         <div class="flex flex-col w-full ">
             @include('partials.text-button', ['text' => 'Update', 'label' => 'Update', 'type' => 'primary', 'submit' => true])
         </div>
+
+        
     </form>
 </article>
 
