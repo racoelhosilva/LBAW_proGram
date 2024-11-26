@@ -13,12 +13,14 @@ class UserController extends Controller
     public function show(User $user)
     {
         $authuser = Auth::user();
-
         $isOwnProfile = $authuser && $authuser->id === $user->id;
+        $isFollowing = $authuser && $authuser->following()->where('followed_id', $user->id)->exists();
 
         return view('pages.user', [
             'user' => $user,
             'isOwnProfile' => $isOwnProfile,
+            'recommendedUsers' => $this->recommendedUsers($authuser, $user),
+            'isFollowing' => $isFollowing,
         ]);
     }
 
@@ -107,5 +109,32 @@ class UserController extends Controller
         } catch (\Exception $e) {
             return redirect()->back()->withErrors(['error' => 'Failed to update user.']);
         }
+    }
+
+    public function recommendedUsers($currentUser, $visitedUser)
+    {
+        if ($currentUser->id !== $visitedUser->id) {
+            $users = $visitedUser->followers()
+                ->whereNotIn('follower_id', $currentUser->following()->pluck('followed_id')->toArray())
+                ->orderBy('num_followers', 'desc')
+                ->take(20)
+                ->get();
+
+            return $users->random(min($users->count(), 5))
+                ->sortByDesc('num_followers')
+                ->values();
+        } else {
+
+            $users = User::whereNotIn('id', $currentUser->following()->pluck('followed_id')->toArray())
+                ->where('id', '!=', $currentUser->id)
+                ->orderBy('num_followers', 'desc')
+                ->take(20)
+                ->get();
+
+            return $users->random(min($users->count(), 5))
+                ->sortByDesc('num_followers')
+                ->values();
+        }
+
     }
 }

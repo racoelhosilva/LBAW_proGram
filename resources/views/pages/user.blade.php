@@ -74,8 +74,9 @@
         </article>
         <article class="card col-span-4 space-y-3">
             <h3 class="text-xl font-bold">Users you might know</h3>
-            @include('partials.user-card', ['user' => $user])
-            @include('partials.user-card', ['user' => $user])
+            @foreach ($recommendedUsers as $recommendedUser)
+                @include('partials.user-card', ['user' => $recommendedUser])
+            @endforeach
         </article>
     </section>
 
