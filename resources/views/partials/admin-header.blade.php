@@ -11,7 +11,8 @@
             <div class="hidden">
                 <div>
                     @include('partials.dropdown-item', ['icon' => 'user-round', 'text' => 'View Users', 'anchorUrl' => route('admin.user.search')])
-                    @include('partials.dropdown-item', ['icon' => 'user-round-x', 'text' => 'View Bans', 'anchorUrl' => route('admin.ban.index')])
+                    @include('partials.dropdown-item', ['icon' => 'user-round-x', 'text' => 'View Bans', 'anchorUrl' => route('admin.ban.search')])
+                    @include('partials.dropdown-item', ['icon' => 'message-circle', 'text' => 'View Posts', 'anchorUrl' => route('admin.post.search')])
                 </div>
                 <div>
                     @include('partials.dropdown-item', ['icon' => 'log-out', 'text' => 'Logout', 'anchorUrl' => route('admin.logout')])

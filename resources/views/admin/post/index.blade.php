@@ -4,7 +4,7 @@
     <main class="px-4 flex flex-col gap-4">
         @include('partials.admin-search-field', ['route' => 'admin.post.search'])
 
-        <table class="mt-4">
+        <table>
             <thead class="text-center">
                 <tr>
                     <th>ID</th>

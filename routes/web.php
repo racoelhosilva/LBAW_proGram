@@ -72,7 +72,7 @@ Route::prefix('admin')->group(function () {
         Route::controller(AdminUserController::class)->group(function () {
             Route::get('/user/search', 'searchUser')->name('admin.user.search');
             // Ban
-            Route::get('/ban', 'listBans')->name('admin.ban.index');
+            Route::get('/ban', 'searchBans')->name('admin.ban.search');
             Route::post('/ban/{user}', 'banUser')->name('admin.ban.store');
             Route::post('/ban/{id}/revoke', 'revokeBan')->name('admin.ban.revoke');
             // Posts
