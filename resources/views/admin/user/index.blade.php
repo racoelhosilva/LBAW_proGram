@@ -21,7 +21,7 @@
                     <td><a href="/api/user/{{ $user->id }}">{{ $user->name }}</a></td>
                     <td>{{ $user->email }}</td>
                     <td>{{ $user->handle }}</td>
-                    <td class="pe-8 space-x-2 flex justify-end">
+                    <td class="pe-8 flex justify-end gap-2">
                         {{-- TODO: Place user profile --}}
                         @include('partials.text-button', ['text' => 'View Profile', 'type' => 'secondary', 'anchorUrl' => route('home', ['id' => $user->id])])
                         <div class="modal ban-modal">
