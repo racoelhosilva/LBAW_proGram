@@ -11,7 +11,7 @@ const hideDropdown = (dropdown, event) => {
     if (!dropdown.contains(event.target)) {
         dropdownContent.classList.add('hidden');
     }
-}
+};
 
 const addDropdownListeners = () => {
     const dropdowns = document.querySelectorAll('.dropdown');
@@ -55,7 +55,7 @@ const addToastMessageListeners = () => {
 
         toastMessages.forEach(fadeToastMessage);
     });
-}
+};
 
 addDropdownListeners();
 addModalListeners();
