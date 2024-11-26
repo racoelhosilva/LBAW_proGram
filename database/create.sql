@@ -43,7 +43,7 @@ CREATE TABLE users (
     email TEXT NOT NULL UNIQUE,
     password TEXT NOT NULL,
     register_timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    handle TEXT UNIQUE NOT NULL,
+    handle TEXT NOT NULL UNIQUE,
     is_public BOOLEAN NOT NULL,
     is_deleted BOOLEAN NOT NULL DEFAULT FALSE,
     description TEXT,
