@@ -41,7 +41,7 @@
                     <div class="flex">
                         @include('partials.text-button', [
                             'text' => 'View Bans',
-                            'anchorUrl' => route('admin.ban.index'),
+                            'anchorUrl' => route('admin.ban.search'),
                         ])
                     </div>
                 </div>

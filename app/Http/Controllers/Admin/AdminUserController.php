@@ -63,7 +63,7 @@ class AdminUserController extends Controller
                 ->orWhereHas('author', function ($q) use ($query) {
                     $q->where('handle', 'ILIKE', $query)
                         ->orWhere('name', 'ILIKE', $query)
-                        ->orWHere('email', 'ILIKE', $query);
+                        ->orWhere('email', 'ILIKE', $query);
                 })
                 ->orderBy('id')
                 ->paginate(20);
@@ -77,9 +77,33 @@ class AdminUserController extends Controller
     | Ban
     |--------------------------------------------------------------------------
     */
-    public function listBans(): View|Factory
+    public function searchBans(Request $request): View|Factory
     {
-        $bans = Ban::with('administrator')->with('user')->simplePaginate(20);
+        $validated = $request->validate([
+            'query' => 'nullable|string|max:255',
+        ]);
+
+        if (empty($validated['query'])) {
+            $bans = Ban::orderBy('id')->paginate(20);
+        } elseif (is_numeric($validated['query'])) {
+            $query = '%'.str_replace(['\\', '%', '_'], ['\\\\', '\\%', '\\_'], $validated['query']).'%';
+            $bans = Ban::where('id', $validated['query'])
+                ->orderBy('id')
+                ->paginate(20);
+        } else {
+            $query = '%'.str_replace(['\\', '%', '_'], ['\\\\', '\\%', '\\_'], $validated['query']).'%';
+            $bans = Ban::whereHas('administrator', function ($q) use ($query) {
+                $q->where('name', 'ILIKE', $query)
+                    ->orWhere('email', 'ILIKE', $query);
+            })
+                ->orWhereHas('user', function ($q) use ($query) {
+                    $q->where('handle', 'ILIKE', $query)
+                        ->orWhere('name', 'ILIKE', $query)
+                        ->orWhere('email', 'ILIKE', $query);
+                })
+                ->orderBy('id')
+                ->paginate(20);
+        }
 
         return view('admin.user.bans', ['bans' => $bans]);
     }
@@ -115,6 +139,6 @@ class AdminUserController extends Controller
 
         $ban->save();
 
-        return redirect()->route('admin.ban.index')->with('success', 'Ban revoked successfully.');
+        return redirect()->route('admin.ban.search')->with('success', 'Ban revoked successfully.');
     }
 }

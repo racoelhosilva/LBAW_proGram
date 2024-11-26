@@ -10,12 +10,14 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        $userCount = User::count();
-
         $bannedCount = User::whereHas('bans', function ($query) {
             $query->active();
         })->count();
 
-        return view('admin.dashboard', ['userCount' => User::count(), 'bannedCount' => $bannedCount, 'postCount' => Post::count()]);
+        return view('admin.dashboard', [
+            'userCount' => User::count(),
+            'bannedCount' => $bannedCount,
+            'postCount' => Post::count(),
+        ]);
     }
 }
