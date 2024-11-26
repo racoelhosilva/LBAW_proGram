@@ -4,5 +4,5 @@
     <button type="submit" aria-label="Search" class="me-2">
         @include('partials.icon', ['name' => 'search'])
     </button>
-    <input type="search" name="query" placeholder="Search..." value="{{ request('query') }}" class="bg-transparent placeholder-gray-500 dark:placeholder-white outline-none">
+    <input type="search" name="query" placeholder="Search..." value="{{ request('query') }}" class="w-full bg-transparent placeholder-gray-500 dark:placeholder-white outline-none">
 </form>
