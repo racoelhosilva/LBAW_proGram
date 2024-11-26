@@ -21,8 +21,8 @@ const addProject = (name, url) => {
     const newProjectId = projectCounter++;
 
     const container = document.createElement('div');
-    //
-    container.classList.add('grid', 'grid-cols-12', 'mb-4');
+    
+    container.classList.add('grid', 'grid-cols-12', 'mb-4','gap-2');
     container.dataset.projectId = newProjectId;
 
     const nameInput = createInput('text', `new_projects[${newProjectId}][name]`, name, 'Project Name', newProjectId);
@@ -58,7 +58,7 @@ const createInput = (type, name, value, placeholder, projectId) => {
 const createRemoveButton = (container) => {
     const button = document.createElement('button');
     button.type = 'button';
-    button.classList.add('btn', 'btn-danger', 'text-white');
+    button.classList.add('btn', 'btn-danger');
     button.innerText = 'Remove';
     button.onclick = function () {
         container.remove();
