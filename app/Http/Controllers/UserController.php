@@ -40,10 +40,10 @@ class UserController extends Controller
 
         // Validate incoming request data
         $request->validate([
-            'name' => 'string|max:255',
-            'description' => 'string|max:500',
+            'name' => 'string|max:30',
+            'description' => 'string|max:200',
             'is_public' => 'boolean',
-            'handle' => 'string|unique:users,handle,'.$user->id,
+            'handle' => 'string|max:20|unique:users,handle,'.$user->id,
             'languages' => 'array',
             'languages.*' => 'exists:language,id',
             'technologies' => 'array',
