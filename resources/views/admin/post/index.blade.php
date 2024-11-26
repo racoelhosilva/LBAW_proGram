@@ -20,11 +20,19 @@
                         <td><a href="/api/user/{{ $post->author->id }}">{{ $post->author->name }}</a></td>
                         <td>{{ $post->title }}</td>
                         <td class="pe-8 flex justify-end gap-2">
-                            @include('partials.text-button', ['text' => 'View Post', 'type' => 'secondary', 'anchorUrl' => route('post.show', $post->id)])
+                            @include('partials.text-button', [
+                                'text' => 'View Post',
+                                'type' => 'secondary',
+                                'anchorUrl' => route('post.show', $post->id),
+                            ])
                             <form method="post" action="{{ route('post.destroy', $post->id) }}">
                                 @csrf
-								@method("DELETE")
-                                @include('partials.text-button', ['text' => 'Delete', 'type' => 'secondary', 'submit' => true])
+                                @method('DELETE')
+                                @include('partials.text-button', [
+                                    'text' => 'Delete',
+                                    'type' => 'secondary',
+                                    'submit' => true,
+                                ])
                             </form>
                         </td>
                     </tr>
