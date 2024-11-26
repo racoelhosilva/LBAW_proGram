@@ -56,9 +56,9 @@
             <!-- Existing Projects List -->
             <div id="projects" >
                 @foreach ($user->stats->projects as $project)
-                    <div class="flex items-center mb-4" data-project-id="{{ $project->id }}">
-                        <input type="text" name="projects[{{ $project->id }}][name]" value="{{ $project->name }}" placeholder="Project Name" class="w-full card mb-2 mr-2">
-                        <input type="url" name="projects[{{ $project->id }}][url]" value="{{ $project->url }}" placeholder="Project URL" class="w-full card mb-2 mr-2">
+                    <div class="grid grid-cols-12 gap-2 mb-4" data-project-id="{{ $project->id }}">
+                        <input type="text" name="projects[{{ $project->id }}][name]" value="{{ $project->name }}" placeholder="Project Name" class="col-span-5 w-full card mb-2 mr-2">
+                        <input type="url" name="projects[{{ $project->id }}][url]" value="{{ $project->url }}" placeholder="Project URL" class="lg:col-span-6 col-span-5 w-full card mb-2 mr-2">
                         <button type="button" class="btn btn-danger text-white remove-project-btn">Remove</button>
                     </div>
                 @endforeach
@@ -67,9 +67,9 @@
             </div>
 
             <!-- Add New Project Button -->
-            <div class="flex items-center mb-4">
-                <input type="text" id="new_project_name" placeholder="Project Name" class="w-full card mb-2 mr-2">
-                <input type="url" id="new_project_url" placeholder="Project URL" class="w-full card mb-2 mr-2">
+            <div class="grid grid-cols-12 gap-2 mb-4">
+                <input type="text" id="new_project_name" placeholder="Project Name" class="col-span-5 w-full card mb-2 mr-2">
+                <input type="url" id="new_project_url" placeholder="Project URL" class="lg:col-span-6 col-span-5 w-full card mb-2 mr-2">
                 <button type="button" id="add_project" class="btn btn-primary text-white">Add Project</button>
             </div>
         </div>

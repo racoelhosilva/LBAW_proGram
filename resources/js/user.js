@@ -17,10 +17,12 @@ const addUserNewProjectListeners = () => {
 };
 
 const addProject = (name, url) => {
+    console.log('add project'); 
     const newProjectId = projectCounter++;
 
     const container = document.createElement('div');
-    container.classList.add('flex', 'items-center', 'mb-4');
+    //
+    container.classList.add('grid', 'grid-cols-12', 'mb-4');
     container.dataset.projectId = newProjectId;
 
     const nameInput = createInput('text', `new_projects[${newProjectId}][name]`, name, 'Project Name', newProjectId);
@@ -42,7 +44,13 @@ const createInput = (type, name, value, placeholder, projectId) => {
     input.value = value;
     input.placeholder = placeholder;
     input.dataset.projectId = projectId;
-    input.classList.add('w-full', 'card', 'mb-2', 'mr-2');
+    if (type === 'url') {
+        input.classList.add('lg:col-span-6','col-span-5','w-full', 'card', 'mb-2', 'mr-2');
+    }else {
+        input.classList.add('col-span-5','w-full', 'card', 'mb-2', 'mr-2');
+    }
+
+    
     return input;
 };
 
