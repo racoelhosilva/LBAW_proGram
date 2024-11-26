@@ -15,10 +15,9 @@
                     @include('partials.text-button', ['text' => 'Edit Profile'])
                 <!--
                 @elseif ($isFollowing)
-                        @include('partials.text-button', ['text' => 'Unfollow'])
-                    @else
-                        @include('partials.text-button', ['text' => 'Follow'])
-                    @endif
+                    @include('partials.text-button', ['text' => 'Unfollow'])
+                @else
+                    @include('partials.text-button', ['text' => 'Follow'])
                 -->
                 @endif
             </div>
