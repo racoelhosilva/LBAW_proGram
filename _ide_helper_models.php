@@ -357,18 +357,18 @@ namespace App\Models{
  * App\Models\User
  *
  * @property int $id
- * @property string|null $name
- * @property string|null $email
- * @property mixed|null $password
+ * @property string $name
+ * @property string $email
+ * @property mixed $password
  * @property \Illuminate\Support\Carbon $register_timestamp
- * @property string|null $handle
- * @property bool|null $is_public
+ * @property string $handle
+ * @property bool $is_public
  * @property bool $is_deleted
  * @property string|null $description
  * @property string|null $profile_picture_url
  * @property string|null $banner_image_url
- * @property int|null $num_followers
- * @property int|null $num_following
+ * @property int $num_followers
+ * @property int $num_following
  * @property string|null $remember_token
  * @property string|null $tsvectors
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Ban> $bans
