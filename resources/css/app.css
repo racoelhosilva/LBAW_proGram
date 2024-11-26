@@ -50,6 +50,10 @@
         @apply border-b border-slate-300 dark:border-slate-600;
     }
 
+    .dashboard-card {
+        @apply card grid grid-cols-[auto_1fr] items-center gap-4;
+    }
+
     .like-button.liked .lucide-heart {
         @apply hidden;
     }
@@ -57,8 +61,56 @@
     .like-button:not(.liked) .lucide-heart-filled {
         @apply hidden;
     }
-}
 
-#tags option:checked {
-    @apply bg-slate-300 dark:bg-slate-600;
-} 
+    #tags option:checked {
+        @apply bg-slate-300 dark:bg-slate-600;
+    }
+
+    table {
+        @apply w-full overflow-hidden border border-separate border-spacing-0 rounded-xl bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 shadow;
+    }
+
+    table th {
+        @apply p-2 bg-white dark:bg-slate-700;
+    }
+ 
+    table td {
+         @apply p-2 border-t border-slate-300 dark:border-slate-600;
+    }
+
+    .pagination {
+        @apply w-fit border rounded-lg border-slate-300 dark:border-slate-700 flex overflow-hidden;
+    }
+
+    .page-item {
+        @apply flex bg-white dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 border-slate-300 dark:border-slate-700 transition-colors;
+    }
+
+    .page-item > a {
+        @apply px-3 py-2;
+    }
+
+    .page-item:not(:first-child) {
+        @apply border-l;
+    }
+
+    .page-item.active {
+        @apply bg-blue-600 text-white border-blue-600;
+    }
+
+    .page-item.inactive {
+        @apply bg-slate-300 dark:bg-slate-700 text-slate-600 dark:text-slate-300;
+    }
+
+    .modal > div {
+        @apply hidden z-10 fixed bg-black bg-opacity-50 top-0 left-0 w-full h-full justify-center items-center;
+    }
+
+    .modal.active > div {
+        @apply flex;
+    }
+
+    .modal > div > div {
+        @apply card col-start-2;
+    }
+}

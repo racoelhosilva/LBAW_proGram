@@ -105,7 +105,7 @@ class UserController extends Controller
             }
             $user->save();
 
-            return redirect()->route('users.show', $user->id);
+            return redirect()->route('user.show', $user->id);
         } catch (\Exception $e) {
             return redirect()->back()->withErrors(['error' => 'Failed to update user.']);
         }

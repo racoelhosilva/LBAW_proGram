@@ -18,9 +18,25 @@ class PostPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, Post $post): bool
+    public function view(?User $user, Post $post): bool
     {
-        //
+        // Grant access if the post is public.
+        if ($post->is_public) {
+            return true;
+        }
+
+        // Grant access if the user is admin.
+        if (auth()->guard('admin')->check()) {
+            return true;
+        }
+
+        // Grant access if the user is following the author.
+        if ($user && $user->following->contains($post->author->id)) {
+            return true;
+        }
+
+        // Grant access if the user is the author.
+        return $user && $user->id === $post->author->id;
     }
 
     /**
@@ -36,15 +52,19 @@ class PostPolicy
      */
     public function update(User $user, Post $post): bool
     {
-        //
+        return $user->id === $post->author->id;
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Post $post): bool
+    public function delete(?User $user, Post $post): bool
     {
-        //
+        if (auth()->guard('admin')->check()) {
+            return true;
+        }
+
+        return $user && $user->id === $post->author->id;
     }
 
     /**
@@ -65,6 +85,6 @@ class PostPolicy
 
     public function like(User $user, Post $post): bool
     {
-        return $user->id !== $post->author_id;
+        return $user->id !== $post->author->id;
     }
 }

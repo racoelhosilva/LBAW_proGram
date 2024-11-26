@@ -1,10 +1,14 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminUserController;
+use App\Http\Controllers\Admin\AuthController;
+use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Api\ApiCommentController;
 use App\Http\Controllers\Api\ApiPostController;
 use App\Http\Controllers\Api\ApiUserController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\FileController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\SearchController;
@@ -26,6 +30,8 @@ use Illuminate\Support\Facades\Route;
 Route::controller(HomeController::class)->group(function () {
     Route::get('/', 'show')->name('home');
 });
+
+Route::post('/file/upload', [FileController::class, 'upload']);
 
 // Post
 Route::controller(PostController::class)->group(function () {
@@ -50,6 +56,32 @@ Route::controller(LoginController::class)->group(function () {
 Route::controller(RegisterController::class)->group(function () {
     Route::get('/register', 'showRegistrationForm')->name('register');
     Route::post('/register', 'register');
+});
+
+// Admin
+Route::prefix('admin')->group(function () {
+    // Admin authentication
+    Route::controller(AuthController::class)->group(function () {
+        Route::get('/login', 'showLoginForm')->name('admin.login');
+        Route::post('/login', 'authenticate');
+        Route::get('/logout', 'logout')->name('admin.logout');
+    });
+
+    // Admin routes
+    Route::middleware('auth.admin')->group(function () {
+        Route::controller(DashboardController::class)->group(function () {
+            Route::get('/', 'index')->name('admin.dashboard');
+        });
+        Route::controller(AdminUserController::class)->group(function () {
+            Route::get('/user/search', 'searchUser')->name('admin.user.search');
+            // Ban
+            Route::get('/ban', 'searchBans')->name('admin.ban.search');
+            Route::post('/ban/{user}', 'banUser')->name('admin.ban.store');
+            Route::post('/ban/{id}/revoke', 'revokeBan')->name('admin.ban.revoke');
+            // Posts
+            Route::get('/post/search', 'searchPost')->name('admin.post.search');
+        });
+    });
 });
 
 // API
@@ -93,8 +125,8 @@ Route::prefix('api')->group(function () {
 });
 
 Route::controller(UserController::class)->group(function () {
-    Route::get('user/{user}', 'show')->name('users.show');
-    Route::get('user/{user}/edit', 'edit')->name('users.edit');
-    Route::post('user/{user}/update', 'update')->name('users.update');
+    Route::get('user/{user}', 'show')->name('user.show');
+    Route::get('user/{user}/edit', 'edit')->name('user.edit');
+    Route::post('user/{user}/update', 'update')->name('user.update');
 
 });

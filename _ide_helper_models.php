@@ -49,6 +49,7 @@ namespace App\Models{
  * @property bool $is_active
  * @property-read \App\Models\Administrator $administrator
  * @property-read \App\Models\User $user
+ * @method static \Illuminate\Database\Eloquent\Builder|Ban active()
  * @method static \Illuminate\Database\Eloquent\Builder|Ban newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Ban newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Ban query()
@@ -367,6 +368,8 @@ namespace App\Models{
  * @property int|null $num_followers
  * @property int|null $num_following
  * @property string|null $tsvectors
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Ban> $bans
+ * @property-read int|null $bans_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\FollowRequest> $followRequests
  * @property-read int|null $follow_requests_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, User> $followers
