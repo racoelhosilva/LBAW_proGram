@@ -7,7 +7,7 @@
 
 <article class="post-card card px-6 w-full grid grid-cols-[auto_1fr_auto] items-center content-start" data-post-id="{{ $post->id }}">
     <a href="{{ $authorUrl }}">
-        <img src="{{ url('img/placeholder.png') }}" alt="{{ $post->author->name }}"
+        <img src="{{ $post->author->getProfilePicture() }}" alt="{{ $post->author->name }}"
             class="w-12 h-12 rounded-full object-cover">
     </a>
     <div class="ms-4 flex flex-col">
