@@ -184,8 +184,15 @@ class PostController extends Controller
                 $post->delete();
 
             });
+            $referer = url()->previous();
 
-            return redirect()->route('home')->with('success', 'Post deleted successfully.');
+            // if the previous page was the post page, then redirect to profile, otherwise go to the previous url.
+            if ($referer === route('post.show', $post)) {
+                return redirect()->route('user.show', $post->author->id)->with('success', 'Post deleted successfully.');
+            }
+
+            return redirect()->back()->with('success', 'Post deleted successfully.');
+
         } catch (\Exception $e) {
             return redirect()->back()->withErrors(['error' => 'Failed to delete post.']);
         }

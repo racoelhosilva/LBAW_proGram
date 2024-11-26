@@ -2,7 +2,6 @@
 
 namespace App\Policies;
 
-use App\Models\Administrator;
 use App\Models\Post;
 use App\Models\User;
 
@@ -27,17 +26,17 @@ class PostPolicy
         }
 
         // Grant access if the user is admin.
-        if ($user instanceof Administrator) {
+        if (auth()->guard('admin')->check()) {
             return true;
         }
 
         // Grant access if the user is following the author.
-        if ($user instanceof User && $user->following->contains($post->author->id)) {
+        if ($user && $user->following->contains($post->author->id)) {
             return true;
         }
 
         // Grant access if the user is the author.
-        return $user instanceof User && $user->id === $post->author->id;
+        return $user && $user->id === $post->author->id;
     }
 
     /**
@@ -53,19 +52,19 @@ class PostPolicy
      */
     public function update(User $user, Post $post): bool
     {
-        return $user instanceof User && $user->id === $post->author->id;
+        return $user->id === $post->author->id;
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Post $post): bool
+    public function delete(?User $user, Post $post): bool
     {
-        if ($user instanceof Administrator) {
+        if (auth()->guard('admin')->check()) {
             return true;
         }
 
-        return $user instanceof User && $user->id === $post->author->id;
+        return $user && $user->id === $post->author->id;
     }
 
     /**
