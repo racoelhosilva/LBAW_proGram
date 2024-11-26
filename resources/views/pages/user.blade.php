@@ -19,7 +19,7 @@
             </article>
         </section>
 
-        <section class="h-min col-span-1 lg:col-span-1 grid grid-cols-4 space-y-3">
+        <section class="h-min col-span-4 lg:col-span-1 grid grid-cols-4 space-y-3">
             <article class="card col-span-4 space-y-3">
                 <h3 class="text-xl font-bold">User Info</h3>
                 <p>{{$user->description}}</p>
@@ -56,7 +56,7 @@
                 @endif
             </article>
     </section>
-        <section class="h-min col-span-2 lg:col-span-2 grid grid-cols-4 space-y-3">
+        <section class="h-min col-span-4 lg:col-span-2 grid grid-cols-4 space-y-3">
             <article class="card col-span-4 space-y-3">
                 <h3 class="text-xl font-bold">Posts</h3>
                 @foreach ($user->posts as $post)
@@ -65,7 +65,7 @@
             </article>
         </section>
 
-        <section class="h-min col-span-1 lg:col-span-1 grid grid-cols-4 space-y-3">
+        <section class="h-min col-span-4 lg:col-span-1 grid grid-cols-4 space-y-3">
             <article class="card col-span-4 space-y-3">
                 <h3 class="text-xl font-bold">Followers: {{ $user->num_followers }}</h3>
                 <h3 class="text-xl font-bold">Following: {{ $user->num_following }}</h3>
