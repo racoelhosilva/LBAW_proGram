@@ -93,10 +93,7 @@ class UserController extends Controller
 
             return redirect()->route('users.show', $user->id);
         } catch (\Exception $e) {
-            return response()->json([
-                'error' => 'Failed to update user.',
-                'message' => $e->getMessage(),
-            ], 500);
+            return redirect()->back()->withErrors(['error' => 'Failed to update user.']);
         }
     }
 }
