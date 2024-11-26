@@ -1,4 +1,4 @@
-import { sendDelete, sendPost } from "./utils";
+import { sendDelete, sendPost, sendToastMessage } from './utils'
 
 const togglePostLike = (likeButton, likeCount, postId) => {
 	likeButton.disabled = true;
@@ -11,7 +11,7 @@ const togglePostLike = (likeButton, likeCount, postId) => {
 			})
 			.catch((error) => {
 				likeButton.disable = false;
-				return console.log(error);
+				sendToastMessage('An error occurred while unliking.', 'error');
 			});
 	} else {
 		sendPost(`/api/post/${postId}/like`)
@@ -22,7 +22,7 @@ const togglePostLike = (likeButton, likeCount, postId) => {
 			})
 			.catch((error) => {
 				likeButton.disabled = false;
-				return console.log(error);
+				sendToastMessage('An error occurred while liking.', 'error');
 			});
 	}
 };
@@ -38,7 +38,7 @@ const toggleCommentLike = (likeButton, likeCount, commentId) => {
 			})
 			.catch((error) => {
 				likeButton.disabled = false;
-				return console.log(error);
+				sendToastMessage('An error occurred while unliking.', 'error');
 			});
 	} else {
 		sendPost(`/api/comment/${commentId}/like`)
@@ -49,7 +49,7 @@ const toggleCommentLike = (likeButton, likeCount, commentId) => {
 			})
 			.catch((error) => {
 				likeButton.disabled = false;
-				return console.log(error);
+				sendToastMessage('An error occurred while liking.', 'error');
 			});
 	}
 };
@@ -62,9 +62,7 @@ const addLikeButtonListeners = () => {
 		const likeButton = postCard.querySelector(".like-button");
 		const likeCount = postCard.querySelector(".like-button + p");
 
-		likeButton.addEventListener("click", () =>
-			togglePostLike(likeButton, likeCount, postId),
-		);
+		likeButton.addEventListener("click", () =>	togglePostLike(likeButton, likeCount, postId));
 	});
 
 	const commentCards = document.querySelectorAll(".comment-card");
@@ -74,10 +72,8 @@ const addLikeButtonListeners = () => {
 		const likeButton = commentCard.querySelector(".like-button");
 		const likeCount = commentCard.querySelector(".like-button + p");
 
-		likeButton.addEventListener("click", () =>
-			toggleCommentLike(likeButton, likeCount, commentId),
-		);
-	});
+        likeButton.addEventListener('click', () => toggleCommentLike(likeButton, likeCount, commentId));
+    });
 };
 
 addLikeButtonListeners();
