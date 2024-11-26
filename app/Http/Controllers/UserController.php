@@ -27,9 +27,8 @@ class UserController extends Controller
 
     public function recommendedUsers($currentUser, $visitedUser)
     {
-        // Case 1: If the IDs are different, focus on visitedUser's follows
         if ($currentUser->id !== $visitedUser->id) {
-
+            // Case 1: If the IDs are different, focus on visitedUser's follows (user is not in its profile)
             $users = $visitedUser->followers()
                 ->whereNotIn('follower_id', $currentUser->following()->pluck('followed_id')->toArray())
                 ->where('is_public', true)
@@ -37,7 +36,7 @@ class UserController extends Controller
                 ->take(5)
                 ->get();
         } else {
-            // Case 2: If the IDs are the same, focus on currentUser's follows
+            // Case 2: If the IDs are the same, focus on currentUser's follows (user is in its profile)
             $users = User::whereNotIn('id', $currentUser->following()->pluck('followed_id')->toArray())
                 ->where('is_public', true)
                 ->orderBy('num_followers', 'desc')
