@@ -49,7 +49,7 @@ class Post extends Model
 
     public function likedBy(User $user): bool
     {
-        return $this->allLikes()->where('liker_id', $user->id)->exists();
+        return $this->allLikes->contains('liker_id', $user->id);
     }
 
     public function allComments(): HasMany

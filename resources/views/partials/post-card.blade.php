@@ -30,11 +30,17 @@
         <h1 class="font-bold text-xl"><a href="{{ $postUrl }}">{{ $post->title }}</a></h1>
         <p class="whitespace-pre-wrap">{{ str_replace("\\n", "\n", $post->text) }}</p>
     </div>
-    <div class="-ms-3 col-span-3 grid grid-cols-[auto_auto_auto_1fr_50%] items-center">
-        <button aria-label="Like" class="p-3 .btn-transparent like-button {{ $post->likedBy(Auth::user()) ? 'liked' : '' }}">
-            @include('partials.icon', ['name' => 'heart'])
-            @include('partials.icon', ['name' => 'filled-heart'])
-        </button>
+    <div class="-ms-3 col-span-2 grid grid-cols-[auto_auto_auto_1fr_50%] items-center">
+        @can('like', $post)
+            <button aria-label="Like" class="p-3 .btn-transparent like-button {{ $post->likedBy(Auth::user()) ? 'liked' : '' }}">
+                @include('partials.icon', ['name' => 'heart'])
+                @include('partials.icon', ['name' => 'filled-heart'])
+            </button>
+        @else
+            <button aria-label="Like" class="p-3 .btn-transparent like-button" disabled>
+                @include('partials.icon', ['name' => 'heart'])
+            </button>
+        @endcan
         <p class="me-3 font-medium select-none">{{ $post->likes }}</p>
         @include('partials.icon-button', ['iconName' => 'message-square-text', 'label' => 'Comments', 'type' => 'transparent', 'anchorUrl' => $postUrl])
         <p class="font-medium select-none">{{ $post->comments }}</p>
