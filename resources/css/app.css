@@ -49,6 +49,14 @@
     .dropdown > div > div:not(:last-child) {
         @apply border-b border-slate-300 dark:border-slate-600;
     }
+
+    .like-button.liked .lucide-heart {
+        @apply hidden;
+    }
+
+    .like-button:not(.liked) .lucide-heart-filled {
+        @apply hidden;
+    }
 }
 
 #tags option:checked {

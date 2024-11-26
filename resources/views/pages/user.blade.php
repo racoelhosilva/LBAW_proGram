@@ -23,7 +23,7 @@
     <section class="h-min col-span-4 lg:col-span-1 grid grid-cols-4 space-y-3">
         <article class="card col-span-4 space-y-3">
             <h3 class="text-xl font-bold">User Info</h3>
-            <p class="text-lg">{{$user->description}}</p>
+            <p>{{$user->description}}</p>
             <p><span class="font-bold">Joined at: </span>{{ \Carbon\Carbon::parse($user->register_timestamp)->format('Y-m-d') }}</p>
             @if ($user->stats->languages->count() > 0)
                 <p><span class="font-bold">Top Languages: </span>
@@ -42,11 +42,19 @@
         </article>
 
         <article class="card col-span-4 space-y-3">
-            <h3 class="text-xl font-bold">Projects</h3>
-            @foreach($user->stats->projects as $project)
-                <p class="font-bold">{{ $project->name }}</p>
-                <a href="{{ $project->url }}" target="_blank">{{ $project->url }}</a>
-            @endforeach
+            <h3 class="text-xl font-bold">Top Projects</h3>
+            @if (count($user->stats->projects) > 0)
+                <ul class="ms-4 list-disc">
+                    @foreach($user->stats->projects as $project)
+                        <li>
+                            <p class="font-bold">{{ $project->name }}</p>
+                            <a href="{{ $project->url }}" target="_blank">{{ $project->url }}</a>
+                        </li>
+                    @endforeach
+                </ul>
+            @else
+                <p>No projects to show</p>
+            @endif
         </article>
     </section>
 
