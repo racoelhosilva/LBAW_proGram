@@ -54,6 +54,14 @@
         @apply card grid grid-cols-[auto_1fr] items-center gap-4;
     }
 
+    .like-button.liked .lucide-heart {
+        @apply hidden;
+    }
+
+    .like-button:not(.liked) .lucide-heart-filled {
+        @apply hidden;
+    }
+
     #tags option:checked {
         @apply bg-slate-300 dark:bg-slate-600;
     }
