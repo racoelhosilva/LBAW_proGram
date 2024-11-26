@@ -12,9 +12,9 @@ use Illuminate\View\View;
 class RegisterController extends Controller
 {
     /**
-     * Display a login form.
+     * Display a registration form.
      */
-    public function showRegistrationForm(): View
+    public function show(): View
     {
         return view('auth.register');
     }

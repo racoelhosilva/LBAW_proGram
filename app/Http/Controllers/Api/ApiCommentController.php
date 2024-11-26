@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\DB;
 
 class ApiCommentController extends Controller
 {
-    public function list(Request $request)
+    public function index(Request $request)
     {
         // Retrieve all comments
         $comments = Comment::all();
@@ -27,7 +27,7 @@ class ApiCommentController extends Controller
         return response()->json($comment);
     }
 
-    public function create(Request $request)
+    public function store(Request $request)
     {
         $request->validate([
             'content' => 'required|string',
@@ -41,7 +41,6 @@ class ApiCommentController extends Controller
                 'content' => $request->input('content'),
                 'post_id' => $request->input('post_id'),
                 'author_id' => $request->input('author_id'),
-                'likes' => 0,
             ]);
 
             return response()->json($comment, 201);
@@ -93,7 +92,7 @@ class ApiCommentController extends Controller
         return response()->json($like, 201);
     }
 
-    public function dislike(Request $request, $id)
+    public function unlike(Request $request, $id)
     {
         if (! Auth::check()) {
             return response()->json(['error' => 'You must be logged in to unlike a comment.'], 401);
@@ -120,5 +119,18 @@ class ApiCommentController extends Controller
         });
 
         return response()->json(['message' => 'You have unliked the comment.']);
+    }
+
+    public function destroy(Request $request, $id)
+    {
+        $comment = Comment::findOrFail($id);
+
+        DB::transaction(function () use ($comment) {
+            Notification::where('comment_id', $comment->id)->delete();
+            $comment->allLikes()->delete();
+            $comment->delete();
+        });
+
+        return response()->json(['message' => 'Comment deleted successfully.']);
     }
 }

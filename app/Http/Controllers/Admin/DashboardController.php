@@ -8,7 +8,7 @@ use App\Models\User;
 
 class DashboardController extends Controller
 {
-    public function index()
+    public function show()
     {
         $bannedCount = User::whereHas('bans', function ($query) {
             $query->active();

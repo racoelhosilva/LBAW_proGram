@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\DB;
 class ApiPostController extends Controller
 {
     // Retrieve all posts
-    public function list()
+    public function index()
     {
         $posts = Post::all();
 
@@ -29,7 +29,7 @@ class ApiPostController extends Controller
         return response()->json($post);
     }
 
-    public function create(Request $request)
+    public function store(Request $request)
     {
         if (! auth()->check()) {
             return response()->json(['error' => 'You must be logged in to create a post.'], 401);
@@ -116,7 +116,7 @@ class ApiPostController extends Controller
         return response()->json($like, 201);
     }
 
-    public function dislike(Request $request, int $id)
+    public function unlike(Request $request, int $id)
     {
         if (! Auth::check()) {
             return response()->json(['error' => 'You must be logged in to update a post.'], 401);
@@ -144,7 +144,7 @@ class ApiPostController extends Controller
         return response()->json($like);
     }
 
-    public function listComments($id)
+    public function indexComments($id)
     {
         $post = Post::findOrFail($id);
 
@@ -153,7 +153,7 @@ class ApiPostController extends Controller
         return response()->json($comments);
     }
 
-    public function listLikes($id)
+    public function indexLikes($id)
     {
         $post = Post::findOrFail($id);
 
@@ -165,7 +165,7 @@ class ApiPostController extends Controller
         return response()->json($likes);
     }
 
-    public function listTags($id)
+    public function indexTags($id)
     {
         $post = Post::findOrFail($id);
 
@@ -177,7 +177,7 @@ class ApiPostController extends Controller
         return response()->json($tags);
     }
 
-    public function listAttachments($id)
+    public function indexAttachments($id)
     {
         $post = Post::findOrFail($id);
 
@@ -186,7 +186,7 @@ class ApiPostController extends Controller
         return response()->json($attachments);
     }
 
-    public function delete(Request $request, $postId)
+    public function destroy(Request $request, $postId)
     {
         if (! auth()->check()) {
             return response()->json(['error' => 'You must be logged in to update a post.'], 401);

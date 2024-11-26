@@ -15,7 +15,7 @@ class LoginController extends Controller
     /**
      * Display a login form.
      */
-    public function showLoginForm(): Redirector|RedirectResponse|View|Factory
+    public function show(): Redirector|RedirectResponse|View|Factory
     {
         if (Auth::check()) {
             return redirect()->route('home');
