@@ -51,6 +51,7 @@ CREATE TABLE users (
     banner_image_url TEXT,
     num_followers INTEGER DEFAULT 0,
     num_following INTEGER DEFAULT 0,
+    remember_token TEXT,
     PRIMARY KEY (id),
     CONSTRAINT user_info_not_null CHECK (is_deleted OR (name IS NOT NULL AND email IS NOT NULL AND password IS NOT NULL AND handle IS NOT NULL AND is_public IS NOT NULL)),
     CONSTRAINT user_info_null_if_deleted CHECK (NOT is_deleted OR (name IS NULL AND email IS NULL AND password IS NULL AND handle IS NULL AND is_public IS NULL))
@@ -61,6 +62,7 @@ CREATE TABLE administrator (
     name TEXT NOT NULL,
     email TEXT NOT NULL UNIQUE,
     password TEXT NOT NULL,
+    remember_token TEXT,
     register_timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id)
 );

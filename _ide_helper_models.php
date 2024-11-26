@@ -19,6 +19,7 @@ namespace App\Models{
  * @property string $name
  * @property string $email
  * @property mixed $password
+ * @property string|null $remember_token
  * @property \Illuminate\Support\Carbon $register_timestamp
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
  * @property-read int|null $notifications_count
@@ -32,6 +33,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Administrator whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Administrator wherePassword($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Administrator whereRegisterTimestamp($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Administrator whereRememberToken($value)
  */
 	class Administrator extends \Eloquent {}
 }
@@ -367,6 +369,7 @@ namespace App\Models{
  * @property string|null $banner_image_url
  * @property int|null $num_followers
  * @property int|null $num_following
+ * @property string|null $remember_token
  * @property string|null $tsvectors
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Ban> $bans
  * @property-read int|null $bans_count
@@ -404,6 +407,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|User wherePassword($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereProfilePictureUrl($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereRegisterTimestamp($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereRememberToken($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereTsvectors($value)
  */
 	class User extends \Eloquent {}
