@@ -21,7 +21,7 @@
             @include('partials.icon-button', ['iconName' => 'ellipsis', 'label' => 'Options', 'type' => 'transparent'])
             <div class="hidden">
                 <div>
-                    @include('partials.dropdown-item', ['icon' => 'message-circle', 'text' => 'See Post', 'anchorUrl' => route('post', $post->id)])
+                    @include('partials.dropdown-item', ['icon' => 'message-circle', 'text' => 'See Post', 'anchorUrl' => route('post.show', $post->id)])
                     @can('update', $post)
                         @include('partials.dropdown-item', ['icon' => 'pencil', 'text' => 'Edit Post', 'anchorUrl' => route('post.edit', $post->id)])
                     @endcan

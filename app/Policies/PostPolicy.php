@@ -82,4 +82,9 @@ class PostPolicy
     {
         //
     }
+
+    public function like(User $user, Post $post): bool
+    {
+        return $user->id !== $post->author->id;
+    }
 }
