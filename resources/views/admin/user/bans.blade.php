@@ -28,10 +28,16 @@
                         <td>{{ $ban->duration != '00:00:00' ? $ban->duration : 'Permanent' }}</td>
                         <td>{{ $ban->isActive() ? 'Yes' : 'No' }}</td>
                         <td class="pe-8 flex justify-end gap-2">
-                            <form action="{{ route('admin.ban.revoke', $ban->id) }}" method="POST">
-                                @csrf
-                                @include('partials.text-button', ['text' => 'Revoke', 'type' => 'secondary', 'submit' => true])
-                            </form>
+                            @if ($ban->isActive())
+                                <form action="{{ route('admin.ban.revoke', $ban->id) }}" method="POST">
+                                    @csrf
+                                    @include('partials.text-button', [
+                                        'text' => 'Revoke',
+                                        'type' => 'secondary',
+                                        'submit' => true,
+                                    ])
+                                </form>
+                            @endif
                         </td>
                     </tr>
                 @empty
