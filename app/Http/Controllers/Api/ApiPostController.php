@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\GroupPost;
 use App\Models\Notification;
 use App\Models\Post;
+use App\Models\PostLike;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class ApiPostController extends Controller
@@ -58,7 +60,6 @@ class ApiPostController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'error' => 'Failed to create post.',
-                'message' => $e->getMessage(),
             ], 500);
         }
     }
@@ -89,6 +90,56 @@ class ApiPostController extends Controller
         $post->tags()->sync($request->input('tags'));
 
         return response()->json($post);
+    }
+
+    public function like(Request $request, int $id)
+    {
+        if (! Auth::check()) {
+            return response()->json(['error' => 'You must be logged in to like a post.'], 401);
+        }
+
+        $post = Post::findOrFail($id);
+
+        if (! Auth::id() === $post->author_id) {
+            return response()->json(['error' => 'You cannot like your own post'], 403);
+        }
+
+        try {
+            $like = PostLike::create([
+                'liker_id' => auth()->id(),
+                'post_id' => $post->id,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to like post'], 500);
+        }
+
+        return response()->json($like, 201);
+    }
+
+    public function dislike(Request $request, int $id)
+    {
+        if (! Auth::check()) {
+            return response()->json(['error' => 'You must be logged in to update a post.'], 401);
+        }
+
+        $post = Post::findOrFail($id);
+
+        if (! Auth::id() === $post->author_id) {
+            return response()->json(['error' => 'You cannot like your own post'], 403);
+        }
+
+        $like = PostLike::where('post_id', $post->id)
+            ->where('liker_id', Auth::id())
+            ->first();
+
+        if ($like) {
+            DB::transaction(function () use ($like) {
+                Notification::where('post_like_id', $like->id)->delete();
+                $like->delete();
+            });
+        }
+
+        return response()->json($like);
     }
 
     public function listComments($id)
