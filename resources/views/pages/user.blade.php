@@ -19,19 +19,22 @@
             </article>
         </section>
 
-        <section class="h-min col-span-4 lg:col-span-1 grid grid-cols-4 space-y-3">
+        <section class="h-min col-span-1 lg:col-span-1 grid grid-cols-4 space-y-3">
             <article class="card col-span-4 space-y-3">
                 <h3 class="text-xl font-bold">User Info</h3>
-                <p>{{ $user->description }}</p>
-                <p><span class="font-bold">Joined at:
-                    </span>{{ \Carbon\Carbon::parse($user->register_timestamp)->format('Y-m-d') }}</p>
+                <p>{{$user->description}}</p>
+                <p><span class="font-bold">Joined at: </span>{{ \Carbon\Carbon::parse($user->register_timestamp)->format('Y-m-d') }}</p>
                 @if ($user->stats->languages->count() > 0)
-                    <p>
-                        <span class="font-bold">Top Languages: </span>
-                        @foreach ($user->stats->languages as $language)
-                            {{ $language->name }}@if (!$loop->last)
-                                ,
-                            @endif
+                    <p><span class="font-bold">Top Languages: </span>
+                        @foreach($user->stats->languages as $language)
+                            {{ $language->name }}@if(!$loop->last), @endif
+                        @endforeach
+                    </p>
+                @endif
+                @if ($user->stats->technologies->count() > 0)
+                    <p><span class="font-bold">Technologies: </span>
+                        @foreach($user->stats->technologies as $technology)
+                            {{ $technology->name }}@if(!$loop->last), @endif
                         @endforeach
                     </p>
                 @endif
@@ -53,7 +56,6 @@
                 @endif
             </article>
     </section>
-   
         <section class="h-min col-span-2 lg:col-span-2 grid grid-cols-4 space-y-3">
             <article class="card col-span-4 space-y-3">
                 <h3 class="text-xl font-bold">Posts</h3>
