@@ -125,5 +125,8 @@ Route::prefix('api')->group(function () {
 });
 
 Route::controller(UserController::class)->group(function () {
-    Route::get('user/{id}', 'show')->name('user.show');
+    Route::get('user/{user}', 'show')->name('user.show');
+    Route::get('user/{user}/edit', 'edit')->name('user.edit');
+    Route::post('user/{user}/update', 'update')->name('user.update');
+
 });
