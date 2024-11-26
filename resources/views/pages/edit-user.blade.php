@@ -20,7 +20,7 @@
         </div>
 
         <div class="flex flex-col">
-            <label for="languages" class="mb-2 font-medium">Languages</label>
+            <label for="languages" class="font-medium">Languages</label>
             <select name="languages[]" id="languages" multiple class="card overflow-auto">
                 @foreach ($languages as $language)
                     <option 
@@ -34,7 +34,7 @@
         </div>
         
         <div class="flex flex-col">
-            <label for="technologies" class="mb-2 font-medium">Technologies</label>
+            <label for="technologies" class="font-medium">Technologies</label>
             <select name="technologies[]" id="technologies" multiple class="card overflow-auto">
                 @foreach ($technologies as $technology)
                     <option 
@@ -48,7 +48,7 @@
         </div>
 
         <div class="flex flex-col">
-            <label for="projects" class="mb-2 font-medium">Projects</label>
+            <label for="projects" class="font-medium">Projects</label>
             <div id="projects" >
                 @foreach ($user->stats->projects as $project)
                     <div class="grid grid-cols-12 gap-2 mb-4" data-project-id="{{ $project->id }}">
