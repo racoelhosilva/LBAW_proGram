@@ -13,12 +13,13 @@
             <div class="profile-buttons row-start-6 row-end-7 col-start-5 col-end-9">
                 @if ($isOwnProfile)
                     @include('partials.text-button', ['text' => 'Edit Profile'])
-                @else
-                    @if ($isFollowing)
+                <!--
+                @elseif ($isFollowing)
                         @include('partials.text-button', ['text' => 'Unfollow'])
                     @else
                         @include('partials.text-button', ['text' => 'Follow'])
                     @endif
+                -->
                 @endif
             </div>
         </article>
