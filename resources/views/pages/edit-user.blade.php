@@ -19,7 +19,6 @@
             </label>
         </div>
 
-        <!-- Languages Section -->
         <div class="flex flex-col">
             <label for="languages" class="mb-2 font-medium">Languages</label>
             <select name="languages[]" id="languages" multiple class="card overflow-auto">
@@ -34,7 +33,6 @@
             </select>
         </div>
         
-        <!-- Technologies Section -->
         <div class="flex flex-col">
             <label for="technologies" class="mb-2 font-medium">Technologies</label>
             <select name="technologies[]" id="technologies" multiple class="card overflow-auto">
@@ -49,11 +47,8 @@
             </select>
         </div>
 
-        <!-- Projects Section -->
         <div class="flex flex-col">
             <label for="projects" class="mb-2 font-medium">Projects</label>
-
-            <!-- Existing Projects List -->
             <div id="projects" >
                 @foreach ($user->stats->projects as $project)
                     <div class="grid grid-cols-12 gap-2 mb-4" data-project-id="{{ $project->id }}">
@@ -66,7 +61,6 @@
             <div id = "new_projects">
             </div>
 
-            <!-- Add New Project Button -->
             <div class="grid grid-cols-12 gap-2 mb-4">
                 <input type="text" id="new_project_name" placeholder="Project Name" class="col-span-5 w-full card mb-2 mr-2">
                 <input type="url" id="new_project_url" placeholder="Project URL" class="lg:col-span-6 col-span-5 w-full card mb-2 mr-2">
