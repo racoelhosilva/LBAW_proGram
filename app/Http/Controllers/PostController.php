@@ -179,6 +179,10 @@ class PostController extends Controller
             $post->delete();
         });
 
-        return back()->withSuccess('Post deleted successfully.');
+        if (request()->is('/admin/*')) {
+            return back()->withSuccess('Post deleted successfully.');
+        }
+
+        return redirect()->route('home')->withSuccess('Post deleted successfully.');
     }
 }
