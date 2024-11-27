@@ -12,6 +12,9 @@ class UserStats extends Model
 {
     use HasFactory;
 
+    // Don't add create and update timestamps in database.
+    public $timestamps = false;
+
     protected $table = 'user_stats';
 
     protected $fillable = [

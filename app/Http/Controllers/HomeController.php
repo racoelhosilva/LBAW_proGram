@@ -49,10 +49,12 @@ class HomeController extends Controller
         // and have a higher number of likes are considered more popular and are shown first
         return Post::with(['author', 'tags'])
             ->when(Auth::check(), function ($query) {
+                $query->where('author_id', '<>', Auth::id());
+            })
+            ->when(Auth::check() && Auth::user()->following->isNotEmpty(), function ($query) {
                 $followedUserIds = Auth::user()->following->pluck('id');
 
-                $query->where('author_id', '<>', Auth::id())
-                    ->orderByRaw('CASE WHEN author_id IN ('.implode(',', array_fill(0, count($followedUserIds), '?')).') THEN 1 ELSE 2 END', $followedUserIds);
+                $query->orderByRaw('CASE WHEN author_id IN ('.implode(',', array_fill(0, count($followedUserIds), '?')).') THEN 1 ELSE 2 END', $followedUserIds);
             })
             ->orderByRaw('(likes / POW((EXTRACT(EPOCH FROM (NOW() - creation_timestamp)) / 3600) + 2, 1.5)) DESC')
             ->get();
