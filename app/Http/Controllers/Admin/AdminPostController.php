@@ -12,29 +12,29 @@ class AdminPostController extends Controller
 {
     public function index(Request $request): Factory|View
     {
-        $validated = $request->validate([
+        $request->validate([
             'query' => 'nullable|string|max:255',
         ]);
 
-        if (empty($validated['query'])) {
-            $posts = Post::orderBy('id')->paginate(20);
-        } elseif (is_numeric($validated['query'])) {
-            $query = '%'.str_replace(['\\', '%', '_'], ['\\\\', '\\%', '\\_'], $validated['query']).'%';
-            $posts = Post::where('id', $validated['query'])
-                ->orderBy('id')
-                ->paginate(20);
-        } else {
-            $query = '%'.str_replace(['\\', '%', '_'], ['\\\\', '\\%', '\\_'], $validated['query']).'%';
-            $posts = Post::where('title', 'ILIKE', $query)
-                ->orWhere('text', 'ILIKE', $query)
-                ->orWhereHas('author', function ($q) use ($query) {
-                    $q->where('handle', 'ILIKE', $query)
-                        ->orWhere('name', 'ILIKE', $query)
-                        ->orWhere('email', 'ILIKE', $query);
-                })
-                ->orderBy('id')
-                ->paginate(20);
+        $posts = Post::query();
+
+        if (! empty($request->input('query'))) {
+            $pattern = '%'.str_replace(['\\', '%', '_'], ['\\\\', '\\%', '\\_'], $request->input('query')).'%';
+
+            $posts = $posts->where('title', 'ILIKE', $pattern)
+                ->orWhere('text', 'ILIKE', $pattern)
+                ->orWhereHas('author', function ($query) use ($pattern) {
+                    $query->where('handle', 'ILIKE', $pattern)
+                        ->orWhere('name', 'ILIKE', $pattern)
+                        ->orWhere('email', 'ILIKE', $pattern);
+                });
+
+            if (is_numeric($request->input('query'))) {
+                $posts = $posts->orWhere('id', $request->input('query'));
+            }
         }
+
+        $posts = $posts->orderBy('id')->paginate(20);
 
         return view('admin.post.index', ['posts' => $posts]);
     }
