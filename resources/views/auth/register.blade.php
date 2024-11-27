@@ -2,6 +2,6 @@
 
 @section('content')
     <main class="grid grid-cols-4 items-center">
-        @include('partials.register-form')
+        @include('auth.register-form')
     </main>
 @endsection
