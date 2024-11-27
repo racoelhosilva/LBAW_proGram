@@ -11,6 +11,7 @@
             @else
                 <p>No users at the moment</p>
             @endif
+
             @if (!Auth::check())
                 <div class="flex justify-center pt-2">
                     @include('partials.text-button', [
@@ -20,6 +21,7 @@
                 </div>
             @endif
         </section>
+
         <section class="card h-min flex flex-col gap-3 col-span-2">
             <h1 class="text-xl font-bold">Recommended Posts</h1>
             @if (count($posts) > 0)
@@ -32,6 +34,7 @@
                 <p>No posts at the moment</p>
             @endif
         </section>
+
         <section class="card h-min flex flex-col gap-3">
             <h1 class="text-xl font-bold">Trending Topics</h1>
             @if (count($tags) > 0)
