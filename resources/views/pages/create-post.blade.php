@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title') {{'Create Post'}} @endsection
+@section('title') {{'Create Post | ProGram'}} @endsection
 @section('content')
     <main id="create-post-page" class="grid grid-cols-3 items-center">
         <article class="card h-min p-10 pt-16 grid gap-12 justify-items-center col-start-2">

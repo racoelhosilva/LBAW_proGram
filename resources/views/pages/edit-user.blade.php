@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title') {{'Edit :'.  $user->name   }} @endsection
+@section('title') {{'Edit ' . $user->name . ' | ProGram'}} @endsection
 @section('content')
 <article class="card h-min p-10 pt-16 grid gap-12 justify-items-center col-start-2 m-6 md:m-16 lg:m-32">
     <h1 class="text-4xl font-bold">Edit Profile</h1>

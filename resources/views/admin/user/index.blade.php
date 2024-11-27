@@ -1,5 +1,5 @@
 @extends('layouts.admin')
-@section('title') {{'Admin User Search'}} @endsection
+@section('title') {{'Admin User Search | ProGram'}} @endsection
 @section('content')
     <main class="px-4 flex flex-col gap-4">
         @include('partials.admin-search-field', ['route' => 'admin.user.search'])

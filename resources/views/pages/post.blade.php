@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title') {{'Post :' . $post->title}} @endsection
+@section('title') {{'Post ' . $post->title . ' | ProGram'}} @endsection
 @section('content')
 
 <main id="home-page" class="px-8 py-4 grid grid-cols-3 gap-6">
