@@ -2,19 +2,17 @@
 
 @section('content')
     <main id="profile-page" class="px-8 py-4 grid grid-cols-4 gap-6">
-        <section id="banner-section" style="background-image: url('{{ $user->getBannerImage() }}');" class="card h-min col-span-4 grid grid-cols-[auto_1fr] bg-cover">
-            <article class="m-2 col-span-2 grid grid-rows-6">
-                <h1 class="text-4xl font-bold row-start-1 row-end-2">{{ $user->name }}</h1>
-                <h2 class="text-2xl row-start-2 row-end-3">{{ '@' . $user->handle }}</h2>
-                <img src="{{ $user->getProfilePicture() }}" class="w-52 h-52 rounded-full object-cover row-start-4 row-end-7">
-            </article>
-            <article class="m-2 col-start-3 flex items-end mb-6">
-                <div class="profile-buttons row-start-9 ">
-                    @if ($isOwnProfile)
-                        @include('partials.text-button', ['text' => 'Edit Profile', 'anchorUrl' => route('user.edit',auth()->id())])
-                    @endif
-                </div>
-            </article>
+        <section id="banner-section" style="background-image: url('{{ $user->getBannerImage() }}');" class="card h-min col-span-4 grid grid-cols-[auto_1fr] gap-y-16 p-4 bg-cover">
+            <div class="col-span-full">
+                <h1 class="text-4xl font-bold">{{ $user->name }}</h1>
+                <h2 class="text-2xl">{{ '@' . $user->handle }}</h2>
+            </div>
+            <img src="{{ $user->getProfilePicture() }}" class="w-52 h-52 rounded-full object-cover">
+            <div class="profile-buttons flex justify-end items-end">
+                @if ($isOwnProfile)
+                    @include('partials.text-button', ['text' => 'Edit Profile', 'anchorUrl' => route('user.edit',auth()->id())])
+                @endif
+            </div>
         </section>
 
         <section id="profile-left" class="h-min col-span-4 lg:col-span-1 grid grid-cols-4 space-y-3">
