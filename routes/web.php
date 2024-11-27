@@ -34,7 +34,7 @@ Route::get('/', [HomeController::class, 'show'])->name('home');
 Route::controller(LoginController::class)->group(function () {
     Route::get('/login', 'show')->name('login');
     Route::post('/login', 'authenticate');
-    Route::get('/logout', 'logout')->name('logout');  // TODO: Change to POST
+    Route::post('/logout', 'logout')->name('logout');
 });
 
 Route::controller(RegisterController::class)->group(function () {
@@ -68,7 +68,7 @@ Route::prefix('admin')->group(function () {
     Route::controller(AdminAuthController::class)->group(function () {
         Route::get('/login', 'show')->name('admin.login');
         Route::post('/login', 'authenticate');
-        Route::get('/logout', 'logout')->name('admin.logout');
+        Route::post('/logout', 'logout')->name('admin.logout');
     });
 
     Route::middleware('auth.admin')->group(function () {
@@ -125,8 +125,6 @@ Route::prefix('api')->group(function () {
     //     Route::get('/user/{id}/followers', 'listFollowers');
     //     Route::get('/user/{id}/following', 'listFollowing');
     //     Route::get('/user/{id}/post', 'listPosts');
-    //     Route::get('/user/{id}/userstats', 'listUserStats');
-    //     Route::get('/user/{id}/followrequests', 'listFollowRequests');
     // });
 });
 

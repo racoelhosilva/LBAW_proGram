@@ -16,7 +16,10 @@
                     @include('partials.dropdown-item', ['icon' => 'message-circle', 'text' => 'View Posts', 'anchorUrl' => route('admin.post.index')])
                 </div>
                 <div>
-                    @include('partials.dropdown-item', ['icon' => 'log-out', 'text' => 'Logout', 'anchorUrl' => route('admin.logout')])
+                    <form method="post" action="{{ route('admin.logout') }}" class="flex flex-col">
+                        @csrf
+                        @include('partials.dropdown-item', ['icon' => 'log-out', 'text' => 'Logout', 'submit' => true])
+                    </form>
                 </div>
             </div>
         </article>
