@@ -11,8 +11,8 @@
             @include('partials.input-field', ['name' => 'handle', 'label' => 'Handle', 'type' => 'text', 'value' => $user->handle, 'placeholder' => 'john_doe', 'required' => false])
 
             <section id="visibility" class="flex items-center mt-4">
-                <input type="checkbox" id="is_public" name="is_public" value="1" class="w-5 h-5 mr-2 text-blue-600 border-gray-300 rounded focus:ring-blue-500 focus:ring-2" {{ $user->is_public ? 'checked' : '' }}>
-                <label for="is_public" class="font-medium text-gray-700 dark:text-gray-200">
+                <input type="checkbox" id="is-public" name="is_public" class="w-5 h-5 mr-2 text-blue-600 border-gray-300 rounded focus:ring-blue-500 focus:ring-2" {{ $user->is_public ? 'checked' : '' }}>
+                <label for="is-public" class="font-medium text-gray-700 dark:text-gray-200">
                     Make profile public
                 </label>
             </section>
@@ -35,24 +35,22 @@
                 </select>
             </section>
 
-            <section id="projects-section" class="flex flex-col">
-                <label for="projects" class="font-medium">Projects</label>
-                <div id="projects" >
-                    @foreach ($user->stats->projects as $project)
-                        <div class="grid grid-cols-12 gap-2" data-project-id="{{ $project->id }}">
-                            <input type="text" name="projects[{{ $project->id }}][name]" value="{{ $project->name }}" placeholder="Project Name" class="col-span-5 w-full card my-2" readonly>
-                            <input type="url" name="projects[{{ $project->id }}][url]" value="{{ $project->url }}" placeholder="Project URL" class="lg:col-span-6 col-span-5 w-full card my-2" readonly>
-                            <button type="button" class="btn btn-danger remove-project-btn">Remove</button>
-                        </div>
-                    @endforeach
-                </div>
+        <section id="projects-section" class="flex flex-col">
+            <label for="projects" class="font-medium">Projects</label>
+            <div id="projects">
+                @foreach ($user->stats->topProjects as $project)
+                    <div class="grid grid-cols-12 gap-2 mb-4" data-project-id="{{ $project->id }}">
+                        <input type="text" name="top_projects[{{ $project->id }}][name]" value="{{ $project->name }}" placeholder="Project Name" class="col-span-5 w-full card m-2" readonly>
+                        <input type="url" name="top_projects[{{ $project->id }}][url]" value="{{ $project->url }}" placeholder="Project URL" class="lg:col-span-6 col-span-5 w-full card m-2" readonly>
+                        <button type="button" class="btn btn-danger remove-project-btn">Remove</button>
+                    </div>
+                @endforeach
+            </div>
 
-                <div id = "new_projects"></div>
-
-                <div class="grid grid-cols-12 gap-2">
-                    <input type="text" id="new_project_name" placeholder="Project Name" class="col-span-5 w-full card my-2">
-                    <input type="url" id="new_project_url" placeholder="Project URL" class="lg:col-span-6 col-span-5 w-full card my-2">
-                    <button type="button" id="add_project" class="btn btn-primary">Add Project</button>
+                <div class="grid grid-cols-12 gap-2 mb-4">
+                    <input type="text" id="new-project-name" placeholder="Project Name" class="col-span-5 w-full card m-2">
+                    <input type="url" id="new-project-url" placeholder="Project URL" class="lg:col-span-6 col-span-5 w-full card m-2">
+                    <button type="button" id="add-project" class="btn btn-primary">Add Project</button>
                 </div>
             </section>
             
@@ -67,7 +65,9 @@
                 </div>
             </section>
 
-            @include('partials.text-button', ['text' => 'Update', 'label' => 'Update', 'type' => 'primary', 'submit' => true, 'class' => 'w-full'])
-        </form>
-    </main>
+        <div class="flex flex-col w-full">
+            @include('partials.text-button', ['text' => 'Update', 'label' => 'Update', 'type' => 'primary', 'submit' => true])
+        </div>
+    </form>
+</main>
 @endsection

@@ -132,4 +132,12 @@ class User extends Authenticatable
     {
         return $this->bans()->active()->exists();
     }
+
+    public function lastActiveBan(): ?Ban
+    {
+        return $this->bans()
+            ->active()
+            ->orderByRaw('CASE WHEN duration = \'00:00:00\' THEN 0 ELSE 1 END, start + duration DESC')
+            ->first();
+    }
 }

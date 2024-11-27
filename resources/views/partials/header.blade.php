@@ -43,11 +43,10 @@
             <div class="hidden">
                 <div>
                     @if (Auth::check())
-                        @include('partials.dropdown-item', [
-                            'icon' => 'log-out',
-                            'text' => 'Logout',
-                            'anchorUrl' => route('logout'),
-                        ])
+                        <form method="post" action="{{ route('logout') }}" class="flex flex-col">
+                            @csrf
+                            @include('partials.dropdown-item', ['icon' => 'log-out', 'text' => 'Logout', 'submit' => true])
+                        </form>
                     @else
                         @include('partials.dropdown-item', [
                             'icon' => 'log-in',

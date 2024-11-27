@@ -1,5 +1,5 @@
 @php
-    $authorUrl = url('user/' . $comment->author->id);
+    $authorUrl = route('user.show', $comment->author->id);
 @endphp
 
 <article class="comment-card card px-6 w-full grid grid-cols-[1fr_auto] gap-x-1 items-center content-start" data-comment-id="{{ $comment->id }}">

@@ -9,12 +9,12 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class AuthController extends Controller
+class AdminAuthController extends Controller
 {
     /**
      * Display a login form.
      */
-    public function showLoginForm(): RedirectResponse|View|Factory
+    public function show(): RedirectResponse|View|Factory
     {
         if (Auth::guard('admin')->check()) {
             return redirect()->route('admin.dashboard');
@@ -36,8 +36,7 @@ class AuthController extends Controller
         if (Auth::guard('admin')->attempt($credentials, $request->filled('remember'))) {
             $request->session()->regenerate();
 
-            return redirect()->route('admin.dashboard')
-                ->withSuccess('You have logged in successfully!');
+            return redirect()->route('admin.dashboard')->withSuccess('You have logged in successfully!');
         }
 
         return back()->withErrors([
@@ -54,7 +53,6 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('admin.login')
-            ->withSuccess('You have logged out successfully!');
+        return redirect()->route('admin.login')->withSuccess('You have logged out successfully!');
     }
 }

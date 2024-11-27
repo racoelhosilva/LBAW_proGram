@@ -34,8 +34,7 @@
             <h1 class="text-xl font-bold">Trending Topics</h1>
             @forelse ($tags as $tag)
                 <div class="select-none">
-                    <a href="/"
-                        class="ms-4 font-medium text-blue-600 dark:text-blue-400">{{ '#' . $tag->name }}</a>
+                    <span class="ms-4 font-medium text-blue-600 dark:text-blue-400">{{ '#' . $tag->name }}</span>
                     <p class="ms-4 text-xs/3 text-gray-500 dark:text-gray-400">{{ $tag->posts->count() . ' posts' }}</p>
                 </div>
             @empty
