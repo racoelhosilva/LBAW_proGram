@@ -15,6 +15,9 @@ class UserController extends Controller
     {
         $user = User::findOrFail($id);
 
+        $this->authorize('view', $user);
+        $this->authorize('viewAny', User::class);
+
         $authuser = Auth::user();
         $isOwnProfile = $authuser && $authuser->id === $user->id;
         $isFollowing = $authuser && $authuser->following()->where('followed_id', $user->id)->exists();
@@ -31,6 +34,8 @@ class UserController extends Controller
     public function edit(int $id)
     {
         $user = User::findOrFail($id);
+
+        $this->authorize('update', $user);
 
         if (! Auth::check()) {
             return redirect()->route('login');
@@ -50,6 +55,8 @@ class UserController extends Controller
     public function update(Request $request, int $id)
     {
         $user = User::findOrFail($id);
+
+        $this->authorize('update', $user);
 
         if (! Auth::check()) {
             return redirect()->route('login');
@@ -94,7 +101,6 @@ class UserController extends Controller
                     if (! in_array($project->id, $existingProjectIds)) {
                         $project->delete(); // Delete project if its ID is not in the updated list
                     }
-
                 }
             }
             if ($request->input('new_projects') !== null) {
@@ -108,6 +114,7 @@ class UserController extends Controller
                     $createdProject = $user->stats->projects()->create($project);
                 }
             }
+
             $user->save();
 
             return redirect()->route('user.show', $user->id);
@@ -131,7 +138,7 @@ class UserController extends Controller
         } else {
 
             $users = User::whereNotIn('id', $currentUser->following()->pluck('followed_id')->toArray())
-                ->where('id', '!=', $currentUser->id)
+                ->where('id', '<>', $currentUser->id)
                 ->orderBy('num_followers', 'desc')
                 ->take(20)
                 ->get();
