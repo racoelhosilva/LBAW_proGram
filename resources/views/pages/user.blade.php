@@ -79,5 +79,4 @@
         </section>
 
     </main>
-
 @endsection
