@@ -18,7 +18,7 @@
                     'name' => 'text',
                     'label' => 'Post Content',
                     'placeholder' => 'Write your post here...',
-                    'required' => true
+                    'required' => false
                 ])
                     
                 <section class="flex flex-col">
