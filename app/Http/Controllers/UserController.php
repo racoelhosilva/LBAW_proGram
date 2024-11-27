@@ -53,6 +53,7 @@ class UserController extends Controller
             return redirect()->route('home');
         }
         // Validate incoming request data
+
         $request->validate([
             'name' => 'string|max:30',
             'description' => 'string|max:200',
@@ -64,6 +65,8 @@ class UserController extends Controller
             'technologies.*' => 'exists:technology,id',
             'projects' => 'array',
             'new_projects' => 'array',
+            'banner_picture' => 'image|mimes:jpeg,png,jpg,gif,svg|max:10240',
+            'profile_picture' => 'image|mimes:jpeg,png,jpg,gif,svg|max:10240',
 
         ]);
 
@@ -103,9 +106,38 @@ class UserController extends Controller
                     $createdProject = $user->stats->projects()->create($project);
                 }
             }
+            $fileController = new FileController;
+            if ($request->hasFile('profile_picture')) {
+
+                // Make a request to the file upload route
+                $profilePicture = $request->file('profile_picture');
+                $res = $fileController->handleFileUpload([
+                    'file' => $profilePicture,
+                    'type' => 'profile',
+                    'id' => $user->id,
+                ]);
+
+                if ($res !== 'success') {
+                    return redirect()->back()->with('error', 'Profile picture upload failed');
+                }
+            }
+
+            if ($request->hasFile('banner_picture')) {
+                $bannerPicture = $request->file('banner_picture');
+                $fileController->handleFileUpload([
+                    'file' => $bannerPicture,
+                    'type' => 'banner',
+                    'id' => $user->id,
+                ]);
+
+                // Check if the upload was successful
+                if ($res !== 'success') {
+                    return redirect()->back()->with('error', 'Banner picture upload failed');
+                }
+            }
             $user->save();
 
-            return redirect()->route('user.show', $user->id);
+            return redirect()->route('user.show', ['user' => $user->id]);
         } catch (\Exception $e) {
             return redirect()->back()->withErrors(['error' => 'Failed to update user.']);
         }

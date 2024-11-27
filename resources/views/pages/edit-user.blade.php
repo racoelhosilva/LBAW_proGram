@@ -3,7 +3,7 @@
 @section('content')
 <article class="card h-min p-10 pt-16 grid gap-12 justify-items-center col-start-2 m-6 md:m-16 lg:m-32">
     <h1 class="text-4xl font-bold">Edit Profile</h1>
-    <form method="post" action="{{ route('user.update', $user->id) }}" class="grid gap-4 justify-self-stretch" id="profile-form">
+    <form method="post" action="{{ route('user.update', $user->id) }}" class="grid gap-4 justify-self-stretch" id="profile-form" enctype="multipart/form-data">
         {{ csrf_field() }}
 
         @include('partials.input-field', ['name' => 'name', 'label' => 'Name', 'type' => 'text', 'value' => $user->name, 'placeholder' => 'John Doe', 'required' => false])
@@ -69,11 +69,11 @@
         </div>
         <div>
             <label for="profile_picture" class="font-medium block mb-2">Profile Picture</label>
-            <input id="profile_picture" name="profile_picture" type="file" required>
+            <input id="profile_picture" name="profile_picture" type="file" >
         </div>
         <div>
             <label for="banner_picture" class="font-medium block mb-2">Banner Picture</label>
-            <input id="banner_picture" name="banner_picture" type="file" required>
+            <input id="banner_picture" name="banner_picture" type="file" >
         </div>
         
        

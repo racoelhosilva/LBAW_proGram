@@ -164,4 +164,47 @@ class FileController extends Controller
 
         return redirect()->back()->with('success', 'Success: upload completed!');
     }
+
+    public function handleFileUpload(array $params)
+    {
+
+        if (! $params['file']) {
+            return 'File not found';
+        }
+
+        if (! $this->isValidType($params['type'])) {
+            return 'Type not found';
+        }
+        $file = $params['file'];
+        $extension = $file->extension();
+        if (! $this->isValidExtension($params['type'], $extension)) {
+            return 'Extension not found';
+        }
+
+        $this->delete($params['type'], $params['id']);
+
+        $fileName = $file->hashName();
+
+        $user = User::findOrFail($params['id']);
+        if (! $user) {
+            return 'User not found';
+        }
+
+        switch ($params['type']) {
+            case 'profile':
+                $user->profile_picture_url = $fileName;
+                break;
+            case 'banner':
+                $user->banner_image_url = $fileName;
+                break;
+            default:
+                return 'Type not found';
+        }
+
+        $user->save();
+
+        $file->storeAs($params['type'], $fileName, self::$diskName);
+
+        return 'success';
+    }
 }

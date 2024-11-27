@@ -32,6 +32,7 @@ Route::controller(HomeController::class)->group(function () {
 });
 
 Route::post('/file/upload', [FileController::class, 'upload']);
+Route::post('/api/file/upload', [FileController::class, 'uploadAPI']);
 
 // Post
 Route::controller(PostController::class)->group(function () {
