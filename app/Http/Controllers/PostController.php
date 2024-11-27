@@ -112,8 +112,8 @@ class PostController extends Controller
         $this->authorize('update', $post);
 
         $request->validate([
-            'title' => 'string|max:255',
-            'text' => 'string',
+            'title' => 'required|string|max:255',
+            'text' => 'nullable|string',
             'tags' => 'nullable|array',
             'tags.*' => 'exists:tag,id',
             'is_public' => 'nullable|boolean',
