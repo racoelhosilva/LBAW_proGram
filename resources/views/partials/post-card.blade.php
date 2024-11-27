@@ -37,7 +37,7 @@
         <p class="whitespace-pre-wrap">{{ str_replace("\\n", "\n", $post->text) }}</p>
     </div>
     
-    <div class="-ms-3 col-span-2 grid grid-cols-[auto_auto_auto_1fr_50%] items-center">
+    <div class="-ms-3 col-span-3 grid grid-cols-[auto_auto_auto_1fr_50%] items-center">
         @can('like', $post)
             <button aria-label="Like" class="p-3 .btn-transparent like-button {{ $post->likedBy(Auth::user()) ? 'liked' : '' }}">
                 @include('partials.icon', ['name' => 'heart'])
