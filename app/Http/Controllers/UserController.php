@@ -69,8 +69,8 @@ class UserController extends Controller
             'technologies' => 'nullable|array',
             'technologies.*' => 'exists:technology,id',
             'top_projects' => 'nullable|array|max:10',
-            'banner_picture' => 'image|mimes:jpeg,png,jpg,gif,svg|max:10240',
-            'profile_picture' => 'image|mimes:jpeg,png,jpg,gif,svg|max:10240',
+            'banner_picture' => 'image|mimes:jpeg,png,jpg|max:10240',
+            'profile_picture' => 'image|mimes:jpeg,png,jpg|max:10240',
 
         ]);
 
