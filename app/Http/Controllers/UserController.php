@@ -69,6 +69,9 @@ class UserController extends Controller
             'technologies' => 'nullable|array',
             'technologies.*' => 'exists:technology,id',
             'top_projects' => 'nullable|array|max:10',
+            'banner_picture' => 'image|mimes:jpeg,png,jpg,gif,svg|max:10240',
+            'profile_picture' => 'image|mimes:jpeg,png,jpg,gif,svg|max:10240',
+
         ]);
 
         DB::transaction(function () use ($request, $user) {
@@ -102,6 +105,30 @@ class UserController extends Controller
                 $newProject->save();
             }
         });
+
+        if ($request->hasFile('profile_picture')) {
+
+            // Make a request to the file upload route
+            $profilePicture = $request->file('profile_picture');
+
+            $res = $user->updateProfileImage($profilePicture);
+            if ($res !== 'success') {
+                return redirect()->back()->withErrors(['error' => 'Failed to update user.']);
+            }
+
+        }
+
+        if ($request->hasFile('banner_picture')) {
+            $bannerPicture = $request->file('banner_picture');
+
+            $res = $user->updateBannerImage($bannerPicture);
+
+            if ($res !== 'success') {
+                return redirect()->back()->withErrors(['error' => 'Failed to update user.']);
+            }
+
+        }
+        $user->save();
 
         return redirect()->route('user.show', $user->id);
     }

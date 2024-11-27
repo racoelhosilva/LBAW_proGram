@@ -29,7 +29,7 @@ const addProject = (name, url, projectsSection) => {
 
     const container = document.createElement('div');
     
-    container.classList.add('grid', 'grid-cols-12', 'mb-4','gap-2');
+    container.classList.add('grid', 'grid-cols-12', 'gap-2');
     container.dataset.projectId = newProjectId;
 
     const nameInput = createInput('text', `top_projects[${newProjectId}][name]`, name, 'Project Name', newProjectId);
@@ -52,9 +52,9 @@ const createInput = (type, name, value, placeholder, projectId) => {
     input.dataset.projectId = projectId;
     input.readOnly= true;
     if (type === 'url') {
-        input.classList.add('lg:col-span-6','col-span-5','w-full', 'card', 'm-2');
+        input.classList.add('lg:col-span-6','col-span-5','w-full', 'card', 'my-2');
     }else {
-        input.classList.add('col-span-5','w-full', 'card', 'm-2');
+        input.classList.add('col-span-5','w-full', 'card', 'my-2');
     }
 
     return input;

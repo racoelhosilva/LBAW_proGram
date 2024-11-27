@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 
 class FileController extends Controller
@@ -159,5 +160,47 @@ class FileController extends Controller
         $file->storeAs($type, $fileName, self::$diskName);
 
         return redirect()->back()->withSuccess('Upload successful!');
+    }
+
+    public static function updateImage(string $type, int $id, UploadedFile $file)
+    {
+
+        if (! $file) {
+            return 'File not found';
+        }
+
+        if (! self::isValidType($type)) {
+            return 'Type not found';
+        }
+        $extension = $file->extension();
+        if (! self::isValidExtension($type, $extension)) {
+            return 'Extension not found';
+        }
+
+        self::delete($type, $id);
+
+        $fileName = $file->hashName();
+
+        $user = User::findOrFail($id);
+        if (! $user) {
+            return 'User not found';
+        }
+
+        switch ($type) {
+            case 'profile':
+                $user->profile_picture_url = $fileName;
+                break;
+            case 'banner':
+                $user->banner_image_url = $fileName;
+                break;
+            default:
+                return 'Type not found';
+        }
+
+        $user->save();
+
+        $file->storeAs($type, $fileName, self::$diskName);
+
+        return 'success';
     }
 }

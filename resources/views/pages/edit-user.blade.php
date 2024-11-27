@@ -1,10 +1,10 @@
 @extends('layouts.app')
 @section('title') {{'Edit ' . $user->name . ' | ProGram'}} @endsection
 @section('content')
-<main class="card h-min p-10 pt-16 grid gap-12 justify-items-center col-start-2 m-6 md:m-16 lg:m-32">
-    <h1 class="text-4xl font-bold">Edit Profile</h1>
-    <form method="post" action="{{ route('user.update', $user->id) }}" class="grid gap-4 justify-self-stretch" id="profile-form">
-        {{ csrf_field() }}
+    <main class="card h-min p-10 pt-16 grid gap-12 justify-items-center col-start-2 m-6 md:m-16 lg:m-32">
+        <h1 class="text-4xl font-bold">Edit Profile</h1>
+        <form method="post" action="{{ route('user.update', $user->id) }}" class="grid gap-4 justify-self-stretch" id="profile-form"  enctype="multipart/form-data">
+            {{ csrf_field() }}
 
             @include('partials.input-field', ['name' => 'name', 'label' => 'Name', 'type' => 'text', 'value' => $user->name, 'placeholder' => 'John Doe', 'required' => false])
             @include('partials.textarea', ['name' => 'description', 'label' => 'Description', 'type' => 'text', 'value' => $user->description, 'placeholder' => 'I am just a chill dev', 'required' => false])
@@ -35,22 +35,33 @@
                 </select>
             </section>
 
-        <section id="projects-section" class="flex flex-col">
-            <label for="projects" class="font-medium">Projects</label>
-            <div id="projects">
-                @foreach ($user->stats->topProjects as $project)
-                    <div class="grid grid-cols-12 gap-2 mb-4" data-project-id="{{ $project->id }}">
-                        <input type="text" name="top_projects[{{ $project->id }}][name]" value="{{ $project->name }}" placeholder="Project Name" class="col-span-5 w-full card m-2" readonly>
-                        <input type="url" name="top_projects[{{ $project->id }}][url]" value="{{ $project->url }}" placeholder="Project URL" class="lg:col-span-6 col-span-5 w-full card m-2" readonly>
-                        <button type="button" class="btn btn-danger remove-project-btn">Remove</button>
-                    </div>
-                @endforeach
-            </div>
+            <section id="projects-section" class="flex flex-col">
+                <label for="projects" class="font-medium">Projects</label>
+                <div id="projects">
+                    @foreach ($user->stats->topProjects as $project)
+                        <div class="grid grid-cols-12 gap-2" data-project-id="{{ $project->id }}">
+                            <input type="text" name="top_projects[{{ $project->id }}][name]" value="{{ $project->name }}" placeholder="Project Name" class="col-span-5 w-full card my-2" readonly>
+                            <input type="url" name="top_projects[{{ $project->id }}][url]" value="{{ $project->url }}" placeholder="Project URL" class="lg:col-span-6 col-span-5 w-full card my-2" readonly>
+                            <button type="button" class="btn btn-danger remove-project-btn">Remove</button>
+                        </div>
+                    @endforeach
+                </div>
 
-                <div class="grid grid-cols-12 gap-2 mb-4">
-                    <input type="text" id="new-project-name" placeholder="Project Name" class="col-span-5 w-full card m-2">
-                    <input type="url" id="new-project-url" placeholder="Project URL" class="lg:col-span-6 col-span-5 w-full card m-2">
+                <div class="grid grid-cols-12 gap-2">
+                    <input type="text" id="new-project-name" placeholder="Project Name" class="col-span-5 w-full card my-2">
+                    <input type="url" id="new-project-url" placeholder="Project URL" class="lg:col-span-6 col-span-5 w-full card my-2">
                     <button type="button" id="add-project" class="btn btn-primary">Add Project</button>
+                </div>
+            </section>
+            
+            <section id="image-uploads">
+                <div class="my-4">
+                    <label for="profile_picture" class="font-medium block my-2">Profile Picture</label>
+                    <input id="profile_picture" name="profile_picture" type="file" >
+                </div>
+                <div class="my-4">
+                    <label for="banner_picture" class="font-medium block my-2">Banner Picture</label>
+                    <input id="banner_picture" name="banner_picture" type="file" >
                 </div>
             </section>
 

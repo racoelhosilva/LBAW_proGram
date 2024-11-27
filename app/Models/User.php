@@ -112,6 +112,17 @@ class User extends Authenticatable
         return FileController::get('banner', $this->id);
     }
 
+    public function updateBannerImage($file)
+    {
+        return FileController::updateImage('banner', $this->id, $file);
+    }
+
+    public function updateProfileImage($file)
+    {
+
+        return FileController::updateImage('profile', $this->id, $file);
+    }
+
     public function bans(): HasMany
     {
         return $this->hasMany(Ban::class, 'user_id');
