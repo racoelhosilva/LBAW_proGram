@@ -22,8 +22,7 @@
         @include('partials.theme-button')
         @if (Auth::check())
             <a href="{{ route('user.show', auth()->id()) }}">
-                <img src="{{ auth()->user()->getProfilePicture() }}" alt="Profile photo"
-                    class="h-[49.5px] w-[49.5px] rounded-full">
+                <img src="{{ auth()->user()->getProfilePicture() }}" alt="Profile photo" class="h-[49.5px] w-[49.5px] rounded-full object-cover">
             </a>
         @else
             @include('partials.text-button', [
