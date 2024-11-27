@@ -41,7 +41,7 @@ class AdminBanController extends Controller
         return view('admin.user.bans', ['bans' => $bans]);
     }
 
-    public function revoke(int $id): RedirectResponse
+    public function revoke(Request $request, int $id): RedirectResponse
     {
         $ban = Ban::findOrFail($id);
 

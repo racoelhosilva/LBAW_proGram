@@ -16,24 +16,24 @@ class AdminUserController extends Controller
 {
     public function index(Request $request): View|Factory
     {
-        $validated = $request->validate([
+        $request->validate([
             'query' => 'nullable|string|max:255',
         ]);
-        if (empty($validated['query'])) {
-            $users = User::orderBy('id')->paginate(20);
-        } elseif (is_numeric($validated['query'])) {
-            $query = '%'.str_replace(['\\', '%', '_'], ['\\\\', '\\%', '\\_'], $validated['query']).'%';
-            $users = User::where('id', $validated['query'])
-                ->orderBy('id')
-                ->paginate(20);
-        } else {
-            $query = '%'.str_replace(['\\', '%', '_'], ['\\\\', '\\%', '\\_'], $validated['query']).'%';
-            $users = User::where('name', 'ILIKE', $query)
-                ->orWhere('email', 'ILIKE', $query)
-                ->orWhere('handle', 'ILIKE', $query)
-                ->orderBy('id')
-                ->paginate(20);
+
+        $users = User::query();
+
+        if (! empty($request->input('query'))) {
+            $pattern = '%'.str_replace(['\\', '%', '_'], ['\\\\', '\\%', '\\_'], $request->input('query')).'%';
+            $users = User::where('name', 'ILIKE', $pattern)
+                ->orWhere('email', 'ILIKE', $pattern)
+                ->orWhere('handle', 'ILIKE', $pattern);
+
+            if (is_numeric($request->input('query'))) {
+                $users = $users->orWhere('id', $request->input('query'));
+            }
         }
+
+        $users = $users->orderBy('id')->paginate(20);
 
         return view('admin.user.index', ['users' => $users]);
     }
@@ -42,24 +42,24 @@ class AdminUserController extends Controller
     {
         $user = User::findOrFail($id);
 
-        $validated = $request->validate([
+        $request->validate([
             'reason' => 'required|string|max:255',
             'duration' => 'integer|min:1',
         ]);
 
-        if ($request->filled('permanent')) {
-            $duration = '0 days';
-        } else {
-            $duration = "{$validated['duration']} days";
-        }
+        $duration = $request->filled('permanent')
+            ? '0 days'
+            : $request->input('duration').' days';
 
-        Ban::create([
-            'user_id' => $user->id,
-            'administrator_id' => Auth::guard('admin')->id(),
-            'reason' => $validated['reason'],
-            'duration' => DB::raw("INTERVAL '$duration'"),
-        ]);
+        $ban = new Ban;
 
-        return redirect()->route('admin.user.index')->with('success', 'User banned successfully');
+        $ban->user_id = $user->id;
+        $ban->administrator_id = Auth::guard('admin')->id();
+        $ban->reason = $request->input('reason');
+        $ban->duration = DB::raw("INTERVAL '$duration'");
+
+        $ban->save();
+
+        return redirect()->route('admin.user.index')->withSuccess('User banned successfully');
     }
 }

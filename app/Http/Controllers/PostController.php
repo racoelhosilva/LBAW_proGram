@@ -187,7 +187,7 @@ class PostController extends Controller
             $referer = url()->previous();
 
             // if the previous page was the post page, then redirect to profile, otherwise go to the previous url.
-            if ($referer === route('post.show', $post)) {
+            if ($referer === route('post.edit', $post)) {
                 return redirect()->route('user.show', $post->author->id)->with('success', 'Post deleted successfully.');
             }
 

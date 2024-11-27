@@ -11,8 +11,10 @@ use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
-    public function show(User $user)
+    public function show(int $id)
     {
+        $user = User::findOrFail($id);
+
         $authuser = Auth::user();
         $isOwnProfile = $authuser && $authuser->id === $user->id;
         $isFollowing = $authuser && $authuser->following()->where('followed_id', $user->id)->exists();
@@ -26,8 +28,10 @@ class UserController extends Controller
         ]);
     }
 
-    public function edit(User $user)
+    public function edit(int $id)
     {
+        $user = User::findOrFail($id);
+
         if (! Auth::check()) {
             return redirect()->route('login');
         }
@@ -43,8 +47,10 @@ class UserController extends Controller
         ]);
     }
 
-    public function update(Request $request, User $user)
+    public function update(Request $request, int $id)
     {
+        $user = User::findOrFail($id);
+
         if (! Auth::check()) {
             return redirect()->route('login');
         }
