@@ -1,8 +1,8 @@
 @props(['post'])
 
 @php
-    $authorUrl = url('user/' . $post->author->id);
-    $postUrl = url('post/' . $post->id);
+    $authorUrl = route('user.show', $post->author->id);
+    $postUrl = route('post.show', $post->id);
 @endphp
 
 <article class="post-card card px-6 w-full grid grid-cols-[auto_1fr_auto] items-center content-start" data-post-id="{{ $post->id }}">
