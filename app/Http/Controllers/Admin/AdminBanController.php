@@ -11,31 +11,32 @@ class AdminBanController extends Controller
 {
     public function index(Request $request)
     {
-        $validated = $request->validate([
+        $request->validate([
             'query' => 'nullable|string|max:255',
         ]);
 
-        if (empty($validated['query'])) {
-            $bans = Ban::orderBy('id')->paginate(20);
-        } elseif (is_numeric($validated['query'])) {
-            $query = '%'.str_replace(['\\', '%', '_'], ['\\\\', '\\%', '\\_'], $validated['query']).'%';
-            $bans = Ban::where('id', $validated['query'])
-                ->orderBy('id')
-                ->paginate(20);
-        } else {
-            $query = '%'.str_replace(['\\', '%', '_'], ['\\\\', '\\%', '\\_'], $validated['query']).'%';
-            $bans = Ban::whereHas('administrator', function ($q) use ($query) {
-                $q->where('name', 'ILIKE', $query)
-                    ->orWhere('email', 'ILIKE', $query);
-            })
-                ->orWhereHas('user', function ($q) use ($query) {
-                    $q->where('handle', 'ILIKE', $query)
-                        ->orWhere('name', 'ILIKE', $query)
-                        ->orWhere('email', 'ILIKE', $query);
+        $bans = Ban::query();
+
+        if (! empty($request->input('query'))) {
+            $pattern = '%'.str_replace(['\\', '%', '_'], ['\\\\', '\\%', '\\_'], $request->input('query')).'%';
+
+            $bans = $bans->where('reason', 'ILIKE', $pattern)
+                ->orWhereHas('administrator', function ($query) use ($pattern) {
+                    $query->where('name', 'ILIKE', $pattern)
+                        ->orWhere('email', 'ILIKE', $pattern);
                 })
-                ->orderBy('id')
-                ->paginate(20);
+                ->orWhereHas('user', function ($query) use ($pattern) {
+                    $query->where('handle', 'ILIKE', $pattern)
+                        ->orWhere('name', 'ILIKE', $pattern)
+                        ->orWhere('email', 'ILIKE', $pattern);
+                });
+
+            if (is_numeric($request->input('query'))) {
+                $bans = $bans->orWhere('id', $request->input('query'));
+            }
         }
+
+        $bans = $bans->orderBy('id')->paginate(20);
 
         return view('admin.user.bans', ['bans' => $bans]);
     }
@@ -43,10 +44,10 @@ class AdminBanController extends Controller
     public function revoke(int $id): RedirectResponse
     {
         $ban = Ban::findOrFail($id);
-        $ban->is_active = false;
 
+        $ban->is_active = false;
         $ban->save();
 
-        return redirect()->route('admin.ban.index')->with('success', 'Ban revoked successfully.');
+        return redirect()->route('admin.ban.index')->withSuccess('Ban revoked successfully.');
     }
 }
