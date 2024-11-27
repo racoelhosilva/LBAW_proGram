@@ -1,27 +1,23 @@
 @extends('layouts.app')
 @section('title') {{$user->name . ' | ProGram'}} @endsection
 @section('content')
-
     <main id="profile-page" class="px-8 py-4 grid grid-cols-4 gap-6">
-        <section style="background-image: url('{{ $user->getBannerImage() }}');"
-            class="card h-min col-span-4 grid grid-cols-[auto_1fr] bg-cover">
-            <article class="m-2 col-span-2 grid grid-rows-6">
-                <h1 class="text-4xl text-white font-bold row-start-1 row-end-2">{{ $user->name }}</h1>
-                <h2 class="text-2xl text-white row-start-2 row-end-3">{{ '@' . $user->handle }}</h2>
-                <img src="{{ $user->getProfilePicture() }}" class="w-52 h-52 rounded-full object-cover row-start-4 row-end-7">
-            </article>
-            <article class="m-2 col-start-3 flex items-end mb-6">
-                <div class="profile-buttons row-start-9 ">
-                    @if ($isOwnProfile)
-                        @include('partials.text-button', ['text' => 'Edit Profile', 'anchorUrl' => route('user.edit',auth()->id())])
-                    @endif
-                </div>
-            </article>
+        <section id="banner-section" style="background-image: url('{{ $user->getBannerImage() }}');" class="card h-min col-span-4 grid grid-cols-[auto_1fr] gap-y-16 p-4 bg-cover">
+            <div class="col-span-full">
+                <h1 class="text-4xl font-bold">{{ $user->name }}</h1>
+                <h2 class="text-2xl">{{ '@' . $user->handle }}</h2>
+            </div>
+            <img src="{{ $user->getProfilePicture() }}" class="w-52 h-52 rounded-full object-cover">
+            <div class="profile-buttons flex justify-end items-end">
+                @if ($isOwnProfile)
+                    @include('partials.text-button', ['text' => 'Edit Profile', 'anchorUrl' => route('user.edit',auth()->id())])
+                @endif
+            </div>
         </section>
 
-        <section class="h-min col-span-4 lg:col-span-1 grid grid-cols-4 space-y-3">
-            <article class="card col-span-4 space-y-3">
-                <h3 class="text-xl font-bold">User Info</h3>
+        <section id="profile-left" class="h-min col-span-4 lg:col-span-1 grid grid-cols-4 space-y-3">
+            <article id="user-info" class="card col-span-4 space-y-3">
+                <h1 class="text-xl font-bold">User Info</h1>
                 <p>{{$user->description}}</p>
                 <p><span class="font-bold">Joined at: </span>{{ \Carbon\Carbon::parse($user->register_timestamp)->format('Y-m-d') }}</p>
                 @if ($user->stats->languages->count() > 0)
@@ -40,8 +36,8 @@
                 @endif
             </article>
 
-            <article class="card col-span-4 space-y-3">
-                <h3 class="text-xl font-bold">Top Projects</h3>
+            <article id="top-projects" class="card col-span-4 space-y-3">
+                <h1 class="text-xl font-bold">Top Projects</h1>
                 @if (count($user->stats->projects) > 0)
                     <ul class="ms-4 list-disc">
                         @foreach ($user->stats->projects as $project)
@@ -55,31 +51,36 @@
                     <p>No projects to show</p>
                 @endif
             </article>
-    </section>
-        <section class="h-min col-span-4 lg:col-span-2 grid grid-cols-4 space-y-3">
+        </section>
+
+        <section id="profile-middle" class="h-min col-span-4 lg:col-span-2 grid grid-cols-4 space-y-3">
             <article class="card col-span-4 space-y-3">
-                <h3 class="text-xl font-bold">Posts</h3>
-                @foreach ($user->posts as $post)
-                    @include('partials.post-card', ['post' => $post])
-                @endforeach
+                <h1 class="text-xl font-bold">Posts</h1>
+                @if ($user->posts->count() === 0)
+                    <p>No posts to show</p>
+                @else
+                    @foreach ($user->posts as $post)
+                        @include('partials.post-card', ['post' => $post])
+                    @endforeach
+                @endif
             </article>
         </section>
 
-        <section class="h-min col-span-4 lg:col-span-1 grid grid-cols-4 space-y-3">
-            <article class="card col-span-4 space-y-3">
-                <h3 class="text-xl font-bold">Followers: {{ $user->num_followers }}</h3>
-                <h3 class="text-xl font-bold">Following: {{ $user->num_following }}</h3>
+        <section id="profile-right" class="h-min col-span-4 lg:col-span-1 grid grid-cols-4 space-y-3">
+            <article id="follows" class="card col-span-4 space-y-3">
+                <p class="text-xl font-bold">Followers: {{ $user->num_followers }}</p>
+                <p class="text-xl font-bold">Following: {{ $user->num_following }}</p>
             </article>
+
             @if ($recommendedUsers !== null && $recommendedUsers->count() > 0)
-            <article class="card col-span-4 space-y-3">
-                <h3 class="text-xl font-bold">Users you might know</h3>
-                @foreach ($recommendedUsers as $recommendedUser)
-                    @include('partials.user-card', ['user' => $recommendedUser])
-                @endforeach
-            </article>     
+                <article id="users" class="card col-span-4 space-y-3">
+                    <h3 class="text-xl font-bold">Users you might know</h3>
+                    @foreach ($recommendedUsers as $recommendedUser)
+                        @include('partials.user-card', ['user' => $recommendedUser])
+                    @endforeach
+                </article>     
             @endif
         </section>
 
     </main>
-
 @endsection

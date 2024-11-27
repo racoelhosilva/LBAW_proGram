@@ -13,7 +13,9 @@ class HomeController extends Controller
     {
         return view('pages.home', [
             'users' => $this->getTopUsers(),
-            'posts' => $this->getHomepagePosts(),
+            'posts' => $this->getHomepagePosts()->filter(function ($post) {
+                return auth()->check() ? auth()->user()->can('view', $post) : $post->is_public;
+            }),
             'tags' => Tag::withCount('posts')->orderBy('posts_count', 'DESC')->limit(10)->get(),
         ]);
     }
