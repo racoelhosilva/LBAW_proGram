@@ -2,7 +2,7 @@ let projectCounter = 1;
 
 const addUserNewProjectListeners = () => {
     const addProjectButton = document.getElementById('add-project');
-    const projectsSection = document.getElementById('new-projects');
+    const projectsSection = document.getElementById('projects');
     const newProjectName = document.getElementById('new-project-name');
     const newProjectUrl = document.getElementById('new-project-url');
 
@@ -32,8 +32,8 @@ const addProject = (name, url, projectsSection) => {
     container.classList.add('grid', 'grid-cols-12', 'mb-4','gap-2');
     container.dataset.projectId = newProjectId;
 
-    const nameInput = createInput('text', `new_projects[${newProjectId}][name]`, name, 'Project Name', newProjectId);
-    const urlInput = createInput('url', `new_projects[${newProjectId}][url]`, url, 'Project URL', newProjectId);
+    const nameInput = createInput('text', `top_projects[${newProjectId}][name]`, name, 'Project Name', newProjectId);
+    const urlInput = createInput('url', `top_projects[${newProjectId}][url]`, url, 'Project URL', newProjectId);
     const removeButton = createRemoveButton(container);
 
     container.appendChild(nameInput);

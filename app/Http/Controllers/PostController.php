@@ -49,8 +49,8 @@ class PostController extends Controller
             'text' => 'required|string',
             'tags' => 'nullable|array',
             'tags.*' => 'exists:tag,id',
-            'is_public' => 'nullable|boolean',
-            'is_announcement' => 'nullable|boolean',
+            'is_public' => 'nullable',
+            'is_announcement' => 'nullable',
         ]);
 
         $post = new Post;

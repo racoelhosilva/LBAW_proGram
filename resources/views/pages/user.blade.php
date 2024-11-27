@@ -38,9 +38,9 @@
 
             <article id="top-projects" class="card col-span-4 space-y-3">
                 <h1 class="text-xl font-bold">Top Projects</h1>
-                @if (count($user->stats->projects) > 0)
+                @if ($user->stats->topProjects()->count() > 0)
                     <ul class="ms-4 list-disc">
-                        @foreach ($user->stats->projects as $project)
+                        @foreach ($user->stats->topProjects as $project)
                             <li>
                                 <p class="font-bold">{{ $project->name }}</p>
                                 <a href="{{ $project->url }}" target="_blank">{{ $project->url }}</a>

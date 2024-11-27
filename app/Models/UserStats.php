@@ -35,7 +35,7 @@ class UserStats extends Model
         return $this->belongsToMany(Language::class, 'user_stats_language', 'language_id', 'user_stats_id');
     }
 
-    public function projects(): HasMany
+    public function topProjects(): HasMany
     {
         return $this->hasMany(TopProject::class, 'user_stats_id');
     }
