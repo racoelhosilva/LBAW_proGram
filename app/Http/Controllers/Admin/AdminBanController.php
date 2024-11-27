@@ -40,7 +40,7 @@ class AdminBanController extends Controller
 
         $bans = $bans->orderBy('id')->paginate(20);
 
-        return view('admin.user.bans', ['bans' => $bans]);
+        return view('admin.pages.ban', ['bans' => $bans]);
     }
 
     public function revoke(Request $request, int $id): RedirectResponse

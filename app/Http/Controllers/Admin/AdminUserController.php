@@ -37,7 +37,7 @@ class AdminUserController extends Controller
 
         $users = $users->orderBy('id')->paginate(20);
 
-        return view('admin.user.index', ['users' => $users]);
+        return view('admin.pages.user', ['users' => $users]);
     }
 
     public function banUser(Request $request, int $id): RedirectResponse

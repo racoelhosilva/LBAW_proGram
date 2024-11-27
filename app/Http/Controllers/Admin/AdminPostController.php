@@ -38,6 +38,6 @@ class AdminPostController extends Controller
 
         $posts = $posts->orderBy('id')->paginate(20);
 
-        return view('admin.post.index', ['posts' => $posts]);
+        return view('admin.pages.post', ['posts' => $posts]);
     }
 }
