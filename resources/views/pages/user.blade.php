@@ -70,12 +70,14 @@
                 <p class="text-xl font-bold">Following: {{ $user->num_following }}</p>
             </article>
 
-            <article id="users" class="card col-span-4 space-y-3">
-                <h3 class="text-xl font-bold">Users you might know</h3>
-                @foreach ($recommendedUsers as $recommendedUser)
-                    @include('partials.user-card', ['user' => $recommendedUser])
-                @endforeach
-            </article>
+            @if ($recommendedUsers !== null && $recommendedUsers->count() > 0)
+                <article id="users" class="card col-span-4 space-y-3">
+                    <h3 class="text-xl font-bold">Users you might know</h3>
+                    @foreach ($recommendedUsers as $recommendedUser)
+                        @include('partials.user-card', ['user' => $recommendedUser])
+                    @endforeach
+                </article>     
+            @endif
         </section>
 
     </main>
