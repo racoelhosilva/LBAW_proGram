@@ -424,10 +424,10 @@ namespace App\Models{
  * @property string|null $linkedin_url
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Language> $languages
  * @property-read int|null $languages_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\TopProject> $projects
- * @property-read int|null $projects_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Technology> $technologies
  * @property-read int|null $technologies_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\TopProject> $topProjects
+ * @property-read int|null $top_projects_count
  * @property-read \App\Models\User|null $user
  * @method static \Illuminate\Database\Eloquent\Builder|UserStats newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|UserStats newQuery()

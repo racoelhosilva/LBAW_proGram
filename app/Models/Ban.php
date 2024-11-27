@@ -55,9 +55,18 @@ class Ban extends Model
 
     public function isActive(): bool
     {
+        return $this->is_active && ($this->isPermanent() || $this->end()->isFuture());
+    }
+
+    public function end(): ?Carbon
+    {
+        if ($this->isPermanent()) {
+            return null;
+        }
+
         $start = Carbon::parse($this->start);
         $duration = CarbonInterval::make($this->duration);
 
-        return $this->is_active && ($this->isPermanent() || $start->add($duration)->isFuture());
+        return $start->add($duration);
     }
 }

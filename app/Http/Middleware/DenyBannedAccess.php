@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
-class AdminMiddleware
+class DenyBannedAccess
 {
     /**
      * Handle an incoming request.
@@ -16,8 +16,13 @@ class AdminMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (! Auth::guard('admin')->check()) {
-            return redirect()->route('admin.login');
+        if (Auth::check() && Auth::user()->isBanned()) {
+            $ban = Auth::user()->lastActiveBan();
+
+            return response()->view('errors.banned', [
+                'reason' => $ban->reason,
+                'expires' => ! $ban->isPermanent() ? $ban->end()->diffForHumans() : 'Indefinitely',
+            ], 403);
         }
 
         return $next($request);

@@ -32,7 +32,7 @@ class SearchController extends Controller
         return $posts;
     }
 
-    public function list(Request $request)
+    public function index(Request $request)
     {
         $request->validate([
             'query' => 'required|string',

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Comment;
 use App\Models\GroupPost;
 use App\Models\Notification;
 use App\Models\Post;
@@ -14,9 +15,18 @@ use Illuminate\Support\Facades\DB;
 class ApiPostController extends Controller
 {
     // Retrieve all posts
-    public function list()
+    public function index()
     {
-        $posts = Post::all();
+        $this->authorize('viewAny', Post::class);
+
+        $posts = Post::where('is_public', true);
+
+        if (Auth::check()) {
+            $followingIds = Auth::user()->following->pluck('id');
+            $posts = $posts->orWhereIn('author_id', $followingIds);
+        }
+
+        $posts = $posts->get();
 
         return response()->json($posts);
     }
@@ -26,14 +36,14 @@ class ApiPostController extends Controller
     {
         $post = Post::findOrFail($id);
 
+        $this->authorize('view', $post);
+
         return response()->json($post);
     }
 
-    public function create(Request $request)
+    public function store(Request $request)
     {
-        if (! auth()->check()) {
-            return response()->json(['error' => 'You must be logged in to create a post.'], 401);
-        }
+        $this->authorize('create', Post::class);
 
         $request->validate([
             'title' => 'required|string|max:255',
@@ -66,15 +76,9 @@ class ApiPostController extends Controller
 
     public function update(Request $request, $id)
     {
-        if (! auth()->check()) {
-            return response()->json(['error' => 'You must be logged in to update a post.'], 401);
-        }
-
         $post = Post::findOrFail($id);
 
-        if (auth()->id() !== $post->author_id) {
-            return response()->json(['error' => 'You are not authorized to update this post.'], 403);
-        }
+        $this->authorize('update', $post);
 
         $request->validate([
             'title' => 'nullable|string|max:255',
@@ -94,39 +98,29 @@ class ApiPostController extends Controller
 
     public function like(Request $request, int $id)
     {
-        if (! Auth::check()) {
-            return response()->json(['error' => 'You must be logged in to like a post.'], 401);
-        }
-
         $post = Post::findOrFail($id);
 
-        if (! Auth::id() === $post->author_id) {
-            return response()->json(['error' => 'You cannot like your own post.'], 403);
+        $this->authorize('like', $post);
+
+        if (PostLike::where('post_id', $id)->where('liker_id', Auth::id())->exists()) {
+            return response()->json(['error' => 'You have already liked this post.'], 400);
         }
 
-        try {
-            $like = PostLike::create([
-                'liker_id' => auth()->id(),
-                'post_id' => $post->id,
-            ]);
-        } catch (\Exception $e) {
-            return response()->json(['error' => 'Failed to like post.'], 500);
-        }
+        $like = new PostLike;
+
+        $like->liker_id = Auth::id();
+        $like->post_id = $post->id;
+
+        $like->save();
 
         return response()->json($like, 201);
     }
 
-    public function dislike(Request $request, int $id)
+    public function unlike(Request $request, int $id)
     {
-        if (! Auth::check()) {
-            return response()->json(['error' => 'You must be logged in to update a post.'], 401);
-        }
-
         $post = Post::findOrFail($id);
 
-        if (! Auth::id() === $post->author_id) {
-            return response()->json(['error' => 'You cannot like your own post.'], 403);
-        }
+        $this->authorize('like', $post);
 
         $like = PostLike::where('post_id', $id)
             ->where('liker_id', Auth::id())
@@ -144,59 +138,57 @@ class ApiPostController extends Controller
         return response()->json($like);
     }
 
-    public function listComments($id)
+    public function indexComments($id)
     {
         $post = Post::findOrFail($id);
+
+        $this->authorize('view', $post);
+        $this->authorize('viewAny', Comment::class);
 
         $comments = $post->allComments;
 
         return response()->json($comments);
     }
 
-    public function listLikes($id)
+    public function indexLikes($id)
     {
         $post = Post::findOrFail($id);
 
-        $likes = [];
-        foreach ($post->allLikes as $like) {
-            $likes[] = $like->liker;
-        }
+        $this->authorize('view', $post);
+
+        $likes = $post->allLikes;
 
         return response()->json($likes);
     }
 
-    public function listTags($id)
+    public function indexTags($id)
     {
         $post = Post::findOrFail($id);
 
-        $tags = [];
-        foreach ($post->tags as $tag) {
-            $tags[] = $tag->tag;
-        }
+        $this->authorize('view', $post);
+
+        $tags = $post->tags;
 
         return response()->json($tags);
     }
 
-    public function listAttachments($id)
+    public function indexAttachments($id)
     {
         $post = Post::findOrFail($id);
+
+        $this->authorize('view', $post);
 
         $attachments = $post->attachments;
 
         return response()->json($attachments);
     }
 
-    public function delete(Request $request, $postId)
+    public function destroy(Request $request, $postId)
     {
-        if (! auth()->check()) {
-            return response()->json(['error' => 'You must be logged in to update a post.'], 401);
-        }
 
         $post = Post::findOrFail($postId);
 
-        if (auth()->id() !== $post->author_id) {
-            return response()->json(['error' => 'You are not authorized to update this post.'], 403);
-        }
+        $this->authorize('forceDelete', $post);
 
         try {
             DB::transaction(function () use ($post) {
@@ -240,7 +232,7 @@ class ApiPostController extends Controller
 
             return response()->json(['message' => 'Post deleted successfully.'], 200);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'An error occurred while deleting the post.', 'details' => $e->getMessage()], 500);
+            return response()->json(['error' => 'An error occurred while deleting the post.'], 500);
         }
     }
 }

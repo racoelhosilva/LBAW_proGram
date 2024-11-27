@@ -1,8 +1,8 @@
 @props(['post'])
 
 @php
-    $authorUrl = url('user/' . $post->author->id);
-    $postUrl = url('post/' . $post->id);
+    $authorUrl = route('user.show', $post->author->id);
+    $postUrl = route('post.show', $post->id);
 @endphp
 
 <article class="post-card card px-6 w-full grid grid-cols-[auto_1fr_auto] items-center content-start" data-post-id="{{ $post->id }}">
@@ -34,10 +34,10 @@
 
     <div class="mt-4 col-span-3">
         <h1 class="font-bold text-xl"><a href="{{ $postUrl }}">{{ $post->title }}</a></h1>
-        <p class="whitespace-pre-wrap">{{ str_replace("\\n", "\n", $post->text) }}</p>
+        <p class="whitespace-pre-wrap text-pretty break-words">{{ str_replace("\\n", "\n", $post->text) }}</p>
     </div>
     
-    <div class="-ms-3 col-span-2 grid grid-cols-[auto_auto_auto_1fr_50%] items-center">
+    <div class="-ms-3 col-span-3 grid grid-cols-[auto_auto_auto_1fr_50%] items-center">
         @can('like', $post)
             <button aria-label="Like" class="p-3 .btn-transparent like-button {{ $post->likedBy(Auth::user()) ? 'liked' : '' }}">
                 @include('partials.icon', ['name' => 'heart'])

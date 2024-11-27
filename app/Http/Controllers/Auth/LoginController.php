@@ -15,7 +15,7 @@ class LoginController extends Controller
     /**
      * Display a login form.
      */
-    public function showLoginForm(): Redirector|RedirectResponse|View|Factory
+    public function show(): Redirector|RedirectResponse|View|Factory
     {
         if (Auth::check()) {
             return redirect()->route('home');
@@ -30,8 +30,8 @@ class LoginController extends Controller
     public function authenticate(Request $request): RedirectResponse
     {
         $credentials = $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required'],
+            'email' => 'required|email',
+            'password' => 'required|string',
         ]);
 
         if (Auth::attempt($credentials, $request->filled('remember'))) {

@@ -1,5 +1,7 @@
 @extends('layouts.app')
+
 @section('title') {{$user->name . ' | ProGram'}} @endsection
+
 @section('content')
     <main id="profile-page" class="px-8 py-4 grid grid-cols-4 gap-6">
         <section id="banner-section" style="background-image: url('{{ $user->getBannerImage() }}');" class="card h-min col-span-4 grid grid-cols-[auto_1fr] gap-y-16 p-4 bg-cover">
@@ -38,9 +40,9 @@
 
             <article id="top-projects" class="card col-span-4 space-y-3">
                 <h1 class="text-xl font-bold">Top Projects</h1>
-                @if (count($user->stats->projects) > 0)
+                @if ($user->stats->topProjects()->count() > 0)
                     <ul class="ms-4 list-disc">
-                        @foreach ($user->stats->projects as $project)
+                        @foreach ($user->stats->topProjects as $project)
                             <li>
                                 <p class="font-bold">{{ $project->name }}</p>
                                 <a href="{{ $project->url }}" target="_blank">{{ $project->url }}</a>

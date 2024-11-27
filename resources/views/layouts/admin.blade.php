@@ -33,5 +33,6 @@
         @include('admin.partials.header')
         @yield('content')
         @include('partials.footer')
+        @include('partials.toast-messages')
     </body>
 </html>

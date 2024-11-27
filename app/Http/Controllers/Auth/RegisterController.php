@@ -4,17 +4,19 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\UserStats;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\View\View;
 
 class RegisterController extends Controller
 {
     /**
-     * Display a login form.
+     * Display a registration form.
      */
-    public function showRegistrationForm(): View
+    public function show(): View
     {
         return view('auth.register');
     }
@@ -31,13 +33,21 @@ class RegisterController extends Controller
             'password' => 'required|min:8|confirmed',
         ]);
 
-        User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'handle' => $request->handle,
-            'is_public' => true,
-        ]);
+        DB::transaction(function () use ($request) {
+            $user = new User;
+
+            $user->name = $request->input('name');
+            $user->email = $request->input('email');
+            $user->password = Hash::make($request->input('password'));
+            $user->handle = $request->input('handle');
+            $user->is_public = true;
+
+            $user->save();
+
+            $userStats = new UserStats;
+            $userStats->user_id = $user->id;
+            $userStats->save();
+        });
 
         $credentials = $request->only('email', 'password');
         Auth::attempt($credentials);

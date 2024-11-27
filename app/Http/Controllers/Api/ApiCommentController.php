@@ -12,23 +12,30 @@ use Illuminate\Support\Facades\DB;
 
 class ApiCommentController extends Controller
 {
-    public function list(Request $request)
+    public function index(Request $request)
     {
-        // Retrieve all comments
-        $comments = Comment::all();
+        $this->authorize('viewAny', Comment::class);
+
+        $comments = Comment::whereHas('post', function ($query) {
+            $query->where('is_public', true);
+        })->get();
 
         return response()->json($comments);
     }
 
     public function show(Request $request, $id)
     {
-        $comment = Comment::findOrFail($id); // Throws 404 if not found
+        $comment = Comment::findOrFail($id);
+
+        $this->authorize('view', $comment);
 
         return response()->json($comment);
     }
 
-    public function create(Request $request)
+    public function store(Request $request)
     {
+        $this->authorize('create', Comment::class);
+
         $request->validate([
             'content' => 'required|string',
             'post_id' => 'required|integer|exists:post,id',
@@ -41,7 +48,6 @@ class ApiCommentController extends Controller
                 'content' => $request->input('content'),
                 'post_id' => $request->input('post_id'),
                 'author_id' => $request->input('author_id'),
-                'likes' => 0,
             ]);
 
             return response()->json($comment, 201);
@@ -57,6 +63,8 @@ class ApiCommentController extends Controller
     {
         $comment = Comment::findOrFail($id);
 
+        $this->authorize('update', $comment);
+
         $request->validate([
             'content' => 'sometimes|required|string',
             'likes' => 'sometimes|required|integer',
@@ -69,41 +77,29 @@ class ApiCommentController extends Controller
 
     public function like(Request $request, $id)
     {
-        if (! Auth::check()) {
-            return response()->json(['error' => 'You must be logged in to like a comment.'], 401);
-        }
-
         $comment = Comment::findOrFail($id);
 
-        if (! Auth::id() === $comment->author_id) {
-            return response()->json(['error' => 'You cannot like your own comment'], 403);
+        $this->authorize('like', $comment);
+
+        if (CommentLike::where('comment_id', $id)->where('liker_id', Auth::id())->exists()) {
+            return response()->json(['error' => 'You have already liked this comment'], 400);
         }
 
-        try {
-            $like = CommentLike::create([
-                'comment_id' => $id,
-                'liker_id' => Auth::id(),
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'error' => 'Failed to like comment.',
-            ], 400);
-        }
+        $like = new CommentLike;
+
+        $like->liker_id = Auth::id();
+        $like->comment_id = $id;
+
+        $like->save();
 
         return response()->json($like, 201);
     }
 
-    public function dislike(Request $request, $id)
+    public function unlike(Request $request, $id)
     {
-        if (! Auth::check()) {
-            return response()->json(['error' => 'You must be logged in to unlike a comment.'], 401);
-        }
-
         $comment = Comment::findOrFail($id);
 
-        if (! Auth::id() === $comment->author_id) {
-            return response()->json(['error' => 'You cannot unlike your own comment'], 403);
-        }
+        $this->authorize('like', $comment);
 
         $like = CommentLike::where('comment_id', $id)
             ->where('liker_id', Auth::id())
@@ -120,5 +116,20 @@ class ApiCommentController extends Controller
         });
 
         return response()->json(['message' => 'You have unliked the comment.']);
+    }
+
+    public function destroy(Request $request, $id)
+    {
+        $comment = Comment::findOrFail($id);
+
+        $this->authorize('delete', $comment);
+
+        DB::transaction(function () use ($comment) {
+            Notification::where('comment_id', $comment->id)->delete();
+            $comment->allLikes()->delete();
+            $comment->delete();
+        });
+
+        return response()->json(['message' => 'Comment deleted successfully.']);
     }
 }

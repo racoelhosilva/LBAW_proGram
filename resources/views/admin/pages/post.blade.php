@@ -2,7 +2,7 @@
 @section('title') {{'Admin Post Search | ProGram'}} @endsection
 @section('content')
     <main class="px-4 flex flex-col gap-4">
-        @include('admin.partials.search-field', ['route' => 'admin.post.search'])
+        @include('admin.partials.search-field', ['route' => 'admin.post.index'])
 
         <table>
             <thead class="text-center">
@@ -17,7 +17,7 @@
                 @forelse ($posts as $post)
                     <tr class="border-t border-white">
                         <td>{{ $post->id }}</td>
-                        <td><a href="/api/user/{{ $post->author->id }}">{{ $post->author->name }}</a></td>
+                        <td>{{ $post->author->name }}</td>
                         <td>{{ $post->title }}</td>
                         <td class="pe-8 flex justify-end gap-2">
                             @include('partials.text-button', [
