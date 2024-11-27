@@ -27,9 +27,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// Home
-Route::get('/', [HomeController::class, 'show'])->name('home');
-
 // Authentication
 Route::controller(LoginController::class)->group(function () {
     Route::get('/login', 'show')->name('login');
@@ -42,25 +39,30 @@ Route::controller(RegisterController::class)->group(function () {
     Route::post('/register', 'register');
 });
 
-// Post
-Route::controller(PostController::class)->group(function () {
-    Route::post('/post', 'store')->name('post.store');
-    Route::get('/post/create', 'create')->name('post.create');
-    Route::get('/post/{id}', 'show')->where('id', '[0-9]+')->name('post.show');
-    Route::put('/post/{id}', 'update')->where('id', '[0-9]+')->name('post.update');
-    Route::delete('/post/{id}', 'destroy')->where('id', '[0-9]+')->name('post.destroy');
-    Route::get('/post/{id}/edit', 'edit')->where('id', '[0-9]+')->name('post.edit');
-});
+Route::middleware('deny.banned')->group(function () {
+    // Home
+    Route::get('/', [HomeController::class, 'show'])->name('home');
 
-// User
-Route::controller(UserController::class)->group(function () {
-    Route::get('/user/{id}', 'show')->where('id', '[0-9]+')->name('user.show');
-    Route::post('/user/{id}', 'update')->where('id', '[0-9]+')->name('user.update');
-    Route::get('/user/{id}/edit', 'edit')->where('id', '[0-9]+')->name('user.edit');
-});
+    // Post
+    Route::controller(PostController::class)->group(function () {
+        Route::post('/post', 'store')->name('post.store');
+        Route::get('/post/create', 'create')->name('post.create');
+        Route::get('/post/{id}', 'show')->where('id', '[0-9]+')->name('post.show');
+        Route::put('/post/{id}', 'update')->where('id', '[0-9]+')->name('post.update');
+        Route::delete('/post/{id}', 'destroy')->where('id', '[0-9]+')->name('post.destroy');
+        Route::get('/post/{id}/edit', 'edit')->where('id', '[0-9]+')->name('post.edit');
+    });
 
-// Search
-Route::get('/search', [SearchController::class, 'index'])->name('search');
+    // User
+    Route::controller(UserController::class)->group(function () {
+        Route::get('/user/{id}', 'show')->where('id', '[0-9]+')->name('user.show');
+        Route::post('/user/{id}', 'update')->where('id', '[0-9]+')->name('user.update');
+        Route::get('/user/{id}/edit', 'edit')->where('id', '[0-9]+')->name('user.edit');
+    });
+
+    // Search
+    Route::get('/search', [SearchController::class, 'index'])->name('search');
+});
 
 // Admin
 Route::prefix('admin')->group(function () {
@@ -81,7 +83,7 @@ Route::prefix('admin')->group(function () {
 
         // Admin bans
         Route::get('/ban', [AdminBanController::class, 'index'])->name('admin.ban.index');
-        Route::put('/ban/{id}/revoke', [AdminBanController::class, 'revoke'])->where('id', '[0-9]+')->name('admin.ban.revoke');
+        Route::post('/ban/{id}/revoke', [AdminBanController::class, 'revoke'])->where('id', '[0-9]+')->name('admin.ban.revoke');
 
         // Admin posts
         Route::get('/post', [AdminPostController::class, 'index'])->name('admin.post.index');

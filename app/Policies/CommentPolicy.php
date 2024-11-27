@@ -13,7 +13,9 @@ class CommentPolicy
      */
     public function viewAny(?User $user): bool
     {
-        return true;
+        $isBanned = $user && $user->isBanned();
+
+        return ! $isBanned;
     }
 
     /**
@@ -21,11 +23,12 @@ class CommentPolicy
      */
     public function view(?User $user, Comment $comment): bool
     {
+        $isBanned = $user && $user->isBanned();
         $isAdmin = Auth::guard('admin')->check();
         $postPublic = $comment->post->is_public;
         $followsPost = $user && $user->following->contains('id', $comment->post->author->id);
 
-        return $isAdmin || $postPublic || $followsPost;
+        return ! $isBanned && ($isAdmin || $postPublic || $followsPost);
     }
 
     /**
@@ -33,7 +36,7 @@ class CommentPolicy
      */
     public function create(?User $user): bool
     {
-        return isset($user);
+        return $user && ! $user->isBanned();
     }
 
     /**
@@ -41,7 +44,7 @@ class CommentPolicy
      */
     public function update(?User $user, Comment $comment): bool
     {
-        return $user && $user->id === $comment->author_id;
+        return $user && ! $user->isBanned() && $user->id === $comment->author_id;
     }
 
     /**
@@ -51,11 +54,11 @@ class CommentPolicy
     {
         $isAdmin = Auth::guard('admin')->check();
 
-        return $isAdmin || ($user && $user->id === $comment->author_id);
+        return $isAdmin || ($user && ! $user->isBanned() && $user->id === $comment->author_id);
     }
 
     public function like(?User $user, Comment $comment): bool
     {
-        return $user && $user->id !== $comment->author_id;
+        return $user && ! $user->isBanned() && $user->id !== $comment->author_id;
     }
 }

@@ -12,7 +12,9 @@ class UserPolicy
      */
     public function viewAny(?User $user): bool
     {
-        return true;
+        $isBanned = $user && $user->isBanned();
+
+        return ! $isBanned;
     }
 
     /**
@@ -20,7 +22,9 @@ class UserPolicy
      */
     public function view(?User $user, User $model): bool
     {
-        return true;
+        $isBanned = $user && $user->isBanned();
+
+        return ! $isBanned;
     }
 
     public function viewContent(?User $user, User $model): bool
@@ -28,8 +32,9 @@ class UserPolicy
         $isAdmin = Auth::guard('admin')->check();
         $followsUser = $user && $user->following->contains('id', $model->id);
         $isSelf = $user && $user->id === $model->id;
+        $isBanned = $user && $user->isBanned();
 
-        return $isAdmin || $followsUser || $isSelf;
+        return ! $isBanned && ($isAdmin || $followsUser || $isSelf);
     }
 
     /**
@@ -37,7 +42,9 @@ class UserPolicy
      */
     public function create(?User $user): bool
     {
-        return true;
+        $isBanned = $user && $user->isBanned();
+
+        return ! $isBanned;
     }
 
     /**
@@ -45,7 +52,7 @@ class UserPolicy
      */
     public function update(?User $user, User $model): bool
     {
-        return $user && $user->id === $model->id;
+        return $user && ! $user->isBanned() && $user->id === $model->id;
     }
 
     /**
@@ -55,6 +62,6 @@ class UserPolicy
     {
         $isAdmin = Auth::guard('admin')->check();
 
-        return $isAdmin || ($user && $user->id === $model->id);
+        return $isAdmin || ($user && ! $user->isBanned() && $user->id === $model->id);
     }
 }
