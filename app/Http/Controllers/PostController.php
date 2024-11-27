@@ -80,7 +80,7 @@ class PostController extends Controller
      */
     public function show(Post $post): View
     {
-        Gate::authorize('view', $post);
+        $this->authorize('view', $post);
 
         return view('pages/post',
             ['post' => $post]);

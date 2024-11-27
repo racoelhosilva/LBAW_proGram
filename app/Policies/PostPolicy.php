@@ -18,7 +18,7 @@ class PostPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(?User $user, Post $post): bool
+    public function view(User $user, Post $post): bool
     {
         // Grant access if the post is public.
         if ($post->is_public) {
@@ -31,7 +31,7 @@ class PostPolicy
         }
 
         // Grant access if the user is following the author.
-        if ($user && $user->following->contains($post->author->id)) {
+        if ($user && $user->following->contains('id', $post->author->id)) {
             return true;
         }
 

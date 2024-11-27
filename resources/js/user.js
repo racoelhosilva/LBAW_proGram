@@ -1,14 +1,22 @@
 let projectCounter = 1;
 
 const addUserNewProjectListeners = () => {
+    const addProjectButton = document.getElementById('add-project');
+    const projectsSection = document.getElementById('new-projects');
+    const newProjectName = document.getElementById('new-project-name');
+    const newProjectUrl = document.getElementById('new-project-url');
 
-    document.getElementById('add_project').addEventListener('click', function () {
-        const name = document.getElementById('new_project_name').value.trim();
-        const url = document.getElementById('new_project_url').value.trim();
+    if (!addProjectButton || !projectsSection || !newProjectName || !newProjectUrl) {
+        return;
+    }
+    
+    addProjectButton.addEventListener('click', function () {
+        const name = newProjectName.value.trim();
+        const url = newProjectUrl.value.trim();
 
         if (name && url) {
-            addProject(name, url);
-            clearInputFields();
+            addProject(name, url, projectsSection);
+            clearInputFields(newProjectName, newProjectUrl);
         } else {
             alert('Please provide both project name and URL.');
         }
@@ -16,8 +24,7 @@ const addUserNewProjectListeners = () => {
 
 };
 
-const addProject = (name, url) => {
-    console.log('add project'); 
+const addProject = (name, url, projectsSection) => {
     const newProjectId = projectCounter++;
 
     const container = document.createElement('div');
@@ -33,7 +40,6 @@ const addProject = (name, url) => {
     container.appendChild(urlInput);
     container.appendChild(removeButton);
 
-    const projectsSection = document.getElementById('new_projects');
     projectsSection.appendChild(container);
 };
 
@@ -51,7 +57,6 @@ const createInput = (type, name, value, placeholder, projectId) => {
         input.classList.add('col-span-5','w-full', 'card', 'm-2');
     }
 
-    
     return input;
 };
 
@@ -60,15 +65,14 @@ const createRemoveButton = (container) => {
     button.type = 'button';
     button.classList.add('btn', 'btn-danger');
     button.innerText = 'Remove';
-    button.onclick = function () {
-        container.remove();
-    };
+    button.addEventListener('click', () => container.remove());
+
     return button;
 };
 
-const clearInputFields = () => {
-    document.getElementById('new_project_name').value = '';
-    document.getElementById('new_project_url').value = '';
+const clearInputFields = (newProjectName, newProjectUrl) => {
+    newProjectName.value = '';
+    newProjectUrl.value = '';
 };
 
 const removeProject = (button) => {
@@ -77,9 +81,9 @@ const removeProject = (button) => {
 
 const addRemoveButtonEventListeners = () => {
     const removeButtons = document.querySelectorAll('#projects button');
+
     removeButtons.forEach(button => {
         button.addEventListener('click', function () {
-            console.log('remove button clicked');
             removeProject(button);
         });
     });

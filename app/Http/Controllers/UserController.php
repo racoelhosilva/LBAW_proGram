@@ -7,6 +7,7 @@ use App\Models\Technology;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
@@ -56,14 +57,13 @@ class UserController extends Controller
             'name' => 'string|max:30',
             'description' => 'string|max:200',
             'is_public' => 'boolean',
-            'handle' => 'string|max:20|unique:users,handle,'.$user->id,
+            'handle' => ['string', 'max:20', Rule::unique('users')->ignore($user->id)],
             'languages' => 'array',
             'languages.*' => 'exists:language,id',
             'technologies' => 'array',
             'technologies.*' => 'exists:technology,id',
             'projects' => 'array',
             'new_projects' => 'array',
-
         ]);
 
         try {

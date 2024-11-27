@@ -46,17 +46,17 @@ Route::controller(RegisterController::class)->group(function () {
 Route::controller(PostController::class)->group(function () {
     Route::post('/post', 'store')->name('post.store');
     Route::get('/post/create', 'create')->name('post.create');
-    Route::get('/post/{id}', 'show')->where('id', '[0-9]+')->name('post.show');
-    Route::put('/post/{id}', 'update')->where('id', '[0-9]+')->name('post.update');
-    Route::delete('/post/{id}', 'destroy')->where('id', '[0-9]+')->name('post.destroy');
-    Route::get('/post/{id}/edit', 'edit')->where('id', '[0-9]+')->name('post.edit');
+    Route::get('/post/{post}', 'show')->where('post', '[0-9]+')->name('post.show');
+    Route::put('/post/{post}', 'update')->where('post', '[0-9]+')->name('post.update');
+    Route::delete('/post/{post}', 'destroy')->where('post', '[0-9]+')->name('post.destroy');
+    Route::get('/post/{post}/edit', 'edit')->where('post', '[0-9]+')->name('post.edit');
 });
 
 // User
 Route::controller(UserController::class)->group(function () {
-    Route::get('/user/{id}', 'show')->where('id', '[0-9]+')->name('user.show');
-    Route::post('/user/{id}', 'update')->where('id', '[0-9]+')->name('user.update');
-    Route::get('/user/{id}/edit', 'edit')->where('id', '[0-9]+')->name('user.edit');
+    Route::get('/user/{user}', 'show')->where('user', '[0-9]+')->name('user.show');
+    Route::post('/user/{user}', 'update')->where('user', '[0-9]+')->name('user.update');
+    Route::get('/user/{user}/edit', 'edit')->where('user', '[0-9]+')->name('user.edit');
 });
 
 // Search
