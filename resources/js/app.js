@@ -1,4 +1,5 @@
 import './bootstrap';
+import { fadeToastMessage } from './utils'
 
 const toggleDropdown = (dropdownContent, event) => {
     dropdownContent.classList.toggle('hidden');
@@ -10,7 +11,7 @@ const hideDropdown = (dropdown, event) => {
     if (!dropdown.contains(event.target)) {
         dropdownContent.classList.add('hidden');
     }
-}
+};
 
 const addDropdownListeners = () => {
     const dropdowns = document.querySelectorAll('.dropdown');
@@ -48,5 +49,14 @@ const addModalListeners = () => {
 }
 
 
+const addToastMessageListeners = () => {
+    document.addEventListener('DOMContentLoaded', () => {
+        const toastMessages = document.querySelectorAll('.toast-message:not(.hidden)');
+
+        toastMessages.forEach(fadeToastMessage);
+    });
+};
+
 addDropdownListeners();
 addModalListeners();
+addToastMessageListeners();

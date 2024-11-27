@@ -1,6 +1,6 @@
 <header class="h-24 px-24 grid grid-cols-[1fr_auto] items-center justify-end">
     <div class="flex">
-        @include('partials.admin-logo')
+        @include('admin.partials.logo')
     </div>
 
     <div class="inline-flex gap-2 items-center">

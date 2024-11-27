@@ -101,7 +101,7 @@ class ApiPostController extends Controller
         $post = Post::findOrFail($id);
 
         if (! Auth::id() === $post->author_id) {
-            return response()->json(['error' => 'You cannot like your own post'], 403);
+            return response()->json(['error' => 'You cannot like your own post.'], 403);
         }
 
         try {
@@ -110,7 +110,7 @@ class ApiPostController extends Controller
                 'post_id' => $post->id,
             ]);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Failed to like post'], 500);
+            return response()->json(['error' => 'Failed to like post.'], 500);
         }
 
         return response()->json($like, 201);
@@ -125,19 +125,21 @@ class ApiPostController extends Controller
         $post = Post::findOrFail($id);
 
         if (! Auth::id() === $post->author_id) {
-            return response()->json(['error' => 'You cannot like your own post'], 403);
+            return response()->json(['error' => 'You cannot like your own post.'], 403);
         }
 
-        $like = PostLike::where('post_id', $post->id)
+        $like = PostLike::where('post_id', $id)
             ->where('liker_id', Auth::id())
             ->first();
 
-        if ($like) {
-            DB::transaction(function () use ($like) {
-                Notification::where('post_like_id', $like->id)->delete();
-                $like->delete();
-            });
+        if (! $like) {
+            return response()->json(['error' => 'You have not liked this post.'], 400);
         }
+
+        DB::transaction(function () use ($like) {
+            Notification::where('post_like_id', $like->id)->delete();
+            $like->delete();
+        });
 
         return response()->json($like);
     }

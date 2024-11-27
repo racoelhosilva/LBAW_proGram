@@ -32,6 +32,7 @@
                 'anchorUrl' => route('login'),
             ])
         @endif
+        
         <article class="dropdown">
             @include('partials.icon-button', [
                 'iconName' => 'grip',

@@ -10,12 +10,14 @@
         <img src="{{ $post->author->getProfilePicture() }}" alt="{{ $post->author->name }}"
             class="w-12 h-12 rounded-full object-cover">
     </a>
+
     <div class="ms-4 flex flex-col">
         <p class="text-base/4 font-medium select-none"><a href="{{ $authorUrl }}">{{ $post->author->name }}</a></p>
         <p class="text-xs/3 pt-1 font-medium text-gray-500 dark:text-gray-400 select-none"><a
                 href="{{ $authorUrl }}">{{ '@' . $post->author->handle }}</a>{{ ' • ' . $post->creation_timestamp->diffForHumans() }}
         </p>
     </div>
+    
     <div class="ms-4 -me-3 flex">
         <div class="dropdown">
             @include('partials.icon-button', ['iconName' => 'ellipsis', 'label' => 'Options', 'type' => 'transparent'])
@@ -29,10 +31,12 @@
             </div>
         </div>
     </div>
+
     <div class="mt-4 col-span-3">
         <h1 class="font-bold text-xl"><a href="{{ $postUrl }}">{{ $post->title }}</a></h1>
         <p class="whitespace-pre-wrap">{{ str_replace("\\n", "\n", $post->text) }}</p>
     </div>
+    
     <div class="-ms-3 col-span-2 grid grid-cols-[auto_auto_auto_1fr_50%] items-center">
         @can('like', $post)
             <button aria-label="Like" class="p-3 .btn-transparent like-button {{ $post->likedBy(Auth::user()) ? 'liked' : '' }}">

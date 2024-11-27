@@ -8,8 +8,7 @@
         <!-- CSRF Token -->
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>{{ config('app.name', 'Laravel') }}</title>
-
+        <title>@yield('title')</title>
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -32,8 +31,7 @@
     <body class="bg-white dark:bg-slate-800 text-black dark:text-white">
         @include('partials.header')
         @yield('content')
-        <footer class="p-4">
-            <p class="text-xs font-medium text-gray-500 dark:text-gray-400">© 2024 ProGram. All rights reserved.</p>
-        </footer>
+        @include('partials.footer')
+        @include('partials.toast-messages')
     </body>
 </html>
