@@ -39,9 +39,9 @@
                 <label for="projects" class="font-medium">Projects</label>
                 <div id="projects" >
                     @foreach ($user->stats->projects as $project)
-                        <div class="grid grid-cols-12 gap-2 mb-4" data-project-id="{{ $project->id }}">
-                            <input type="text" name="projects[{{ $project->id }}][name]" value="{{ $project->name }}" placeholder="Project Name" class="col-span-5 w-full card m-2" readonly>
-                            <input type="url" name="projects[{{ $project->id }}][url]" value="{{ $project->url }}" placeholder="Project URL" class="lg:col-span-6 col-span-5 w-full card m-2" readonly>
+                        <div class="grid grid-cols-12 gap-2" data-project-id="{{ $project->id }}">
+                            <input type="text" name="projects[{{ $project->id }}][name]" value="{{ $project->name }}" placeholder="Project Name" class="col-span-5 w-full card my-2" readonly>
+                            <input type="url" name="projects[{{ $project->id }}][url]" value="{{ $project->url }}" placeholder="Project URL" class="lg:col-span-6 col-span-5 w-full card my-2" readonly>
                             <button type="button" class="btn btn-danger remove-project-btn">Remove</button>
                         </div>
                     @endforeach
@@ -49,20 +49,20 @@
 
                 <div id = "new_projects"></div>
 
-                <div class="grid grid-cols-12 gap-2 mb-4">
-                    <input type="text" id="new_project_name" placeholder="Project Name" class="col-span-5 w-full card m-2">
-                    <input type="url" id="new_project_url" placeholder="Project URL" class="lg:col-span-6 col-span-5 w-full card m-2">
+                <div class="grid grid-cols-12 gap-2">
+                    <input type="text" id="new_project_name" placeholder="Project Name" class="col-span-5 w-full card my-2">
+                    <input type="url" id="new_project_url" placeholder="Project URL" class="lg:col-span-6 col-span-5 w-full card my-2">
                     <button type="button" id="add_project" class="btn btn-primary">Add Project</button>
                 </div>
             </section>
             
             <section id="image-uploads">
-                <div>
-                    <label for="profile_picture" class="font-medium block mb-2">Profile Picture</label>
+                <div class="my-4">
+                    <label for="profile_picture" class="font-medium block my-2">Profile Picture</label>
                     <input id="profile_picture" name="profile_picture" type="file" >
                 </div>
-                <div>
-                    <label for="banner_picture" class="font-medium block mb-2">Banner Picture</label>
+                <div class="my-4">
+                    <label for="banner_picture" class="font-medium block my-2">Banner Picture</label>
                     <input id="banner_picture" name="banner_picture" type="file" >
                 </div>
             </section>
