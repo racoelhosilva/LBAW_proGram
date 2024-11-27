@@ -15,6 +15,8 @@ class AdminBanController extends Controller
             'query' => 'nullable|string|max:255',
         ]);
 
+        $this->authorize('viewAny', Ban::class);
+
         $bans = Ban::query();
 
         if (! empty($request->input('query'))) {
@@ -44,6 +46,8 @@ class AdminBanController extends Controller
     public function revoke(Request $request, int $id): RedirectResponse
     {
         $ban = Ban::findOrFail($id);
+
+        $this->authorize('update', $ban);
 
         $ban->is_active = false;
         $ban->save();

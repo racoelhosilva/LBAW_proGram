@@ -20,6 +20,8 @@ class AdminUserController extends Controller
             'query' => 'nullable|string|max:255',
         ]);
 
+        $this->authorize('viewAny', User::class);
+
         $users = User::query();
 
         if (! empty($request->input('query'))) {
@@ -40,6 +42,8 @@ class AdminUserController extends Controller
 
     public function banUser(Request $request, int $id): RedirectResponse
     {
+        $this->authorize('create', Ban::class);
+
         $user = User::findOrFail($id);
 
         $request->validate([

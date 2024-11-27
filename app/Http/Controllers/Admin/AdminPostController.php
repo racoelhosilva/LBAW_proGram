@@ -16,6 +16,8 @@ class AdminPostController extends Controller
             'query' => 'nullable|string|max:255',
         ]);
 
+        $this->authorize('viewAny', Post::class);
+
         $posts = Post::query();
 
         if (! empty($request->input('query'))) {
