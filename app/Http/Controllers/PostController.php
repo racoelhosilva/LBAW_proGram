@@ -28,7 +28,7 @@ class PostController extends Controller
 
         $this->authorize('create', Post::class);
 
-        return view('pages/create-post', [
+        return view('pages.create-post', [
             'tags' => Tag::all(),
         ]);
     }
@@ -53,22 +53,21 @@ class PostController extends Controller
             'is_announcement' => 'nullable|boolean',
         ]);
 
-        try {
-            $post = Post::create([
-                'title' => $request->input('title'),
-                'text' => $request->input('text'),
-                'author_id' => auth()->id(),
-                'is_public' => $request->input('is_public', false),
-                'is_announcement' => $request->input('is_announcement', false),
-                'likes' => 0,
-            ]);
+        $post = new Post;
+
+        DB::transaction(function () use ($post, $request) {
+            $post->title = $request->input('title');
+            $post->text = $request->input('text');
+            $post->author_id = Auth::id();
+            $post->is_public = $request->input('is_public', false);
+            $post->is_announcement = $request->input('is_announcement', false);
+
+            $post->save();
 
             $post->tags()->sync($request->input('tags'));
+        });
 
-            return redirect('post/'.$post->id);
-        } catch (\Exception $e) {
-            return redirect()->back()->withErrors(['error' => 'Failed to create post.']);
-        }
+        return redirect(route('post.show', $post->id));
     }
 
     /**
@@ -81,7 +80,7 @@ class PostController extends Controller
         $this->authorize('view', $post);
         $this->authorize('viewAny', Comment::class);
 
-        return view('pages/post', ['post' => $post]);
+        return view('pages.post', ['post' => $post]);
     }
 
     /**
@@ -97,7 +96,7 @@ class PostController extends Controller
 
         $this->authorize('update', $post);
 
-        return view('pages/edit-post', [
+        return view('pages.edit-post', [
             'post' => $post,
             'tags' => Tag::all(),
         ]);
@@ -113,28 +112,28 @@ class PostController extends Controller
         $this->authorize('update', $post);
 
         $request->validate([
-            'title' => 'nullable|string|max:255',
-            'text' => 'nullable|string',
+            'title' => 'string|max:255',
+            'text' => 'string',
             'tags' => 'nullable|array',
             'tags.*' => 'exists:tag,id',
             'is_public' => 'nullable|boolean',
             'is_announcement' => 'nullable|boolean',
         ]);
 
-        try {
-            $post->update([
-                'title' => $request->input('title', $post->title),
-                'text' => $request->input('text', $post->text),
-                'is_public' => $request->input('is_public', false),
-                'is_announcement' => $request->input('is_announcement', false),
-            ]);
+        $post = Post::findOrFail($id);
+
+        DB::transaction(function () use ($post, $request) {
+            $post->title = $request->input('title', $post->title);
+            $post->text = $request->input('text', $post->text);
+            $post->is_public = $request->filled('is_public');
+            $post->is_announcement = $request->filled('is_announcement');
+
+            $post->save();
 
             $post->tags()->sync($request->input('tags'));
+        });
 
-            return redirect('post/'.$post->id);
-        } catch (\Exception $e) {
-            return redirect()->back()->withErrors(['error' => 'Failed to update post.']);
-        }
+        return redirect()->route('post.show', $post->id);
     }
 
     /**
@@ -146,56 +145,40 @@ class PostController extends Controller
 
         $this->authorize('forceDelete', $post);
 
-        try {
-            DB::transaction(function () use ($post) {
-                $postId = $post->id;
+        DB::transaction(function () use ($post) {
+            Notification::where('post_id', $post->id)
+                ->orWhereIn('comment_id', function ($query) use ($post) {
+                    $query->select('id')
+                        ->from('comment')
+                        ->where('post_id', $post->id);
+                })
+                ->orWhereIn('post_like_id', function ($query) use ($post) {
+                    $query->select('id')
+                        ->from('post_like')
+                        ->where('post_id', $post->id);
+                })
+                ->orWhereIn('comment_like_id', function ($query) use ($post) {
+                    $query->select('comment_like.id')
+                        ->from('comment_like')
+                        ->join('comment', 'comment_like.comment_id', '=', 'comment.id')
+                        ->where('comment.post_id', $post->id);
+                })
+                ->delete();
 
-                Notification::where('post_id', $postId)
-                    ->orWhereIn('comment_id', function ($query) use ($postId) {
-                        $query->select('id')
-                            ->from('comment')
-                            ->where('post_id', $postId);
-                    })
-                    ->orWhereIn('post_like_id', function ($query) use ($postId) {
-                        $query->select('id')
-                            ->from('post_like')
-                            ->where('post_id', $postId);
-                    })
-                    ->orWhereIn('comment_like_id', function ($query) use ($postId) {
-                        $query->select('comment_like.id')
-                            ->from('comment_like')
-                            ->join('comment', 'comment_like.comment_id', '=', 'comment.id')
-                            ->where('comment.post_id', $postId);
-                    })
-                    ->delete();
-
-                foreach ($post->allComments as $comment) {
-                    $comment->allLikes()->delete();
-                    $comment->delete();
-                }
-
-                $post->allLikes()->delete();
-
-                $post->tags()->detach();
-
-                $post->attachments()->delete();
-
-                GroupPost::where('post_id', $postId)->delete();
-
-                $post->delete();
-
-            });
-            $referer = url()->previous();
-
-            // if the previous page was the post page, then redirect to profile, otherwise go to the previous url.
-            if ($referer === route('post.edit', $post)) {
-                return redirect()->route('user.show', $post->author->id)->with('success', 'Post deleted successfully.');
+            foreach ($post->allComments as $comment) {
+                $comment->allLikes()->delete();
+                $comment->delete();
             }
 
-            return redirect()->back()->with('success', 'Post deleted successfully.');
+            $post->allLikes()->delete();
+            $post->tags()->detach();
+            $post->attachments()->delete();
 
-        } catch (\Exception $e) {
-            return redirect()->back()->withErrors(['error' => 'Failed to delete post.']);
-        }
+            GroupPost::where('post_id', $post->id)->delete();
+
+            $post->delete();
+        });
+
+        return back()->withSuccess('Post deleted successfully.');
     }
 }
