@@ -112,13 +112,21 @@ class UserController extends Controller
                 // Make a request to the file upload route
                 $profilePicture = $request->file('profile_picture');
 
-                $user->updateProfileImage($profilePicture);
+                $res = $user->updateProfileImage($profilePicture);
+                if ($res !== 'success') {
+                    return redirect()->back()->withErrors(['error' => 'Failed to update user.']);
+                }
 
             }
 
             if ($request->hasFile('banner_picture')) {
                 $bannerPicture = $request->file('banner_picture');
-                $user->updateBannerImage($bannerPicture);
+
+                $res = $user->updateBannerImage($bannerPicture);
+
+                if ($res !== 'success') {
+                    return redirect()->back()->withErrors(['error' => 'Failed to update user.']);
+                }
 
             }
             $user->save();
