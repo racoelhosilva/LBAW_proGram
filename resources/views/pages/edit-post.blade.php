@@ -22,7 +22,7 @@
                     'label' => 'Post Content',
                     'placeholder' => 'Write your post here...',
                     'value' => $post->text,
-                    'required' => true
+                    'required' => false
                 ])
                     
                 <section class="flex flex-col">
