@@ -10,13 +10,6 @@
             @include('partials.textarea', ['name' => 'description', 'label' => 'Description', 'type' => 'text', 'value' => $user->description, 'placeholder' => 'I am just a chill dev', 'required' => false])
             @include('partials.input-field', ['name' => 'handle', 'label' => 'Handle', 'type' => 'text', 'value' => $user->handle, 'placeholder' => 'john_doe', 'required' => false])
 
-            <section id="visibility" class="flex items-center mt-4">
-                <input type="checkbox" id="is-public" name="is_public" class="w-5 h-5 mr-2 text-blue-600 border-gray-300 rounded focus:ring-blue-500 focus:ring-2" {{ $user->is_public ? 'checked' : '' }}>
-                <label for="is-public" class="font-medium text-gray-700 dark:text-gray-200">
-                    Make profile public
-                </label>
-            </section>
-
             <section id="languages-section" class="flex flex-col">
                 <label for="languages" class="font-medium">Languages</label>
                 <select name="languages[]" id="languages" multiple class="card overflow-auto">
