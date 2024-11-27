@@ -30,12 +30,12 @@ class UserStats extends Model
 
     public function technologies(): BelongsToMany
     {
-        return $this->belongsToMany(Technology::class, 'user_stats_technology', 'technology_id', 'user_stats_id');
+        return $this->belongsToMany(Technology::class, 'user_stats_technology', 'user_stats_id', 'technology_id');
     }
 
     public function languages(): BelongsToMany
     {
-        return $this->belongsToMany(Language::class, 'user_stats_language', 'language_id', 'user_stats_id');
+        return $this->belongsToMany(Language::class, 'user_stats_language', 'user_stats_id', 'language_id');
     }
 
     public function topProjects(): HasMany

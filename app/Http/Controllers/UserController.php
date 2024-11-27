@@ -64,9 +64,9 @@ class UserController extends Controller
             'description' => 'required|string|max:200',
             'is_public' => 'nullable',
             'handle' => ['required', 'string', 'max:20', Rule::unique('users')->ignore($user->id)],
-            'languages' => 'required|array',
+            'languages' => 'nullable|array',
             'languages.*' => 'exists:language,id',
-            'technologies' => 'required|array',
+            'technologies' => 'nullable|array',
             'technologies.*' => 'exists:technology,id',
             'top_projects' => 'nullable|array|max:10',
         ]);
@@ -76,8 +76,9 @@ class UserController extends Controller
             $user->description = $request->input('description');
             $user->is_public = $request->filled('is_public');
             $user->handle = $request->input('handle');
-            $user->stats->languages()->sync($request->input('languages'));
-            $user->stats->technologies()->sync($request->input('technologies'));
+
+            $user->stats->languages()->sync($request->input('languages') ?? []);
+            $user->stats->technologies()->sync($request->input('technologies') ?? []);
 
             $user->save();
 
