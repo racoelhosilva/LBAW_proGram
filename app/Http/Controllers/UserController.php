@@ -106,34 +106,20 @@ class UserController extends Controller
                     $createdProject = $user->stats->projects()->create($project);
                 }
             }
-            $fileController = new FileController;
+
             if ($request->hasFile('profile_picture')) {
 
                 // Make a request to the file upload route
                 $profilePicture = $request->file('profile_picture');
-                $res = $fileController->handleFileUpload([
-                    'file' => $profilePicture,
-                    'type' => 'profile',
-                    'id' => $user->id,
-                ]);
 
-                if ($res !== 'success') {
-                    return redirect()->back()->with('error', 'Profile picture upload failed');
-                }
+                $user->updateProfileImage($profilePicture);
+
             }
 
             if ($request->hasFile('banner_picture')) {
                 $bannerPicture = $request->file('banner_picture');
-                $fileController->handleFileUpload([
-                    'file' => $bannerPicture,
-                    'type' => 'banner',
-                    'id' => $user->id,
-                ]);
+                $user->updateBannerImage($bannerPicture);
 
-                // Check if the upload was successful
-                if ($res !== 'success') {
-                    return redirect()->back()->with('error', 'Banner picture upload failed');
-                }
             }
             $user->save();
 
