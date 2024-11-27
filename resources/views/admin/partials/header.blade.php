@@ -4,7 +4,8 @@
     </div>
 
     <div class="inline-flex gap-2 items-center">
-        @include('partials.icon-button', ['iconName' => 'home', 'id' => 'home-button', 'label' => 'Home', 'type' => 'secondary', 'anchorUrl' => route('admin.dashboard')])
+        @include('partials.icon-button', ['iconName' => 'home', 'id' => 'home-button', 'label' => 'Home', 'type' => 'secondary', 'anchorUrl' => route('home')])
+        @include('partials.icon-button', ['iconName' => 'layout-dashboard', 'id' => 'dashboard-button', 'label' => 'Home', 'type' => 'secondary', 'anchorUrl' => route('admin.dashboard')])
         @include('partials.theme-button')
         <article class="dropdown">
             @include('partials.icon-button', ['iconName' => 'grip', 'id' => 'more-button', 'label' => 'More', 'type' => 'transparent'])
