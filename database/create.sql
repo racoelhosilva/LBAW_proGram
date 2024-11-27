@@ -39,21 +39,20 @@ CREATE TYPE notification_type AS ENUM (
 -- Plural used because "user" is a reserved keyword in PostgreSQL
 CREATE TABLE users (
     id SERIAL,
-    name TEXT,
-    email TEXT UNIQUE,
-    password TEXT,
+    name TEXT NOT NULL,
+    email TEXT NOT NULL UNIQUE,
+    password TEXT NOT NULL,
     register_timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    handle TEXT UNIQUE,
-    is_public BOOLEAN,
+    handle TEXT NOT NULL UNIQUE,
+    is_public BOOLEAN NOT NULL,
     is_deleted BOOLEAN NOT NULL DEFAULT FALSE,
     description TEXT,
     profile_picture_url TEXT,
     banner_image_url TEXT,
-    num_followers INTEGER DEFAULT 0,
-    num_following INTEGER DEFAULT 0,
-    PRIMARY KEY (id),
-    CONSTRAINT user_info_not_null CHECK (is_deleted OR (name IS NOT NULL AND email IS NOT NULL AND password IS NOT NULL AND handle IS NOT NULL AND is_public IS NOT NULL)),
-    CONSTRAINT user_info_null_if_deleted CHECK (NOT is_deleted OR (name IS NULL AND email IS NULL AND password IS NULL AND handle IS NULL AND is_public IS NULL))
+    num_followers INTEGER NOT NULL DEFAULT 0,
+    num_following INTEGER NOT NULL DEFAULT 0,
+    remember_token TEXT,
+    PRIMARY KEY (id)
 );
 
 CREATE TABLE administrator (
@@ -61,6 +60,7 @@ CREATE TABLE administrator (
     name TEXT NOT NULL,
     email TEXT NOT NULL UNIQUE,
     password TEXT NOT NULL,
+    remember_token TEXT,
     register_timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id)
 );
@@ -335,38 +335,46 @@ CREATE INDEX post_author_creation ON post USING btree(author_id, creation_timest
 ALTER TABLE post
 ADD COLUMN tsvectors TSVECTOR;
 
+CREATE FUNCTION calculate_post_tsvectors(post_id INTEGER)
+RETURNS VOID AS $$
+BEGIN
+    UPDATE post
+    SET tsvectors = (
+        setweight(to_tsvector('english', post.title), 'A') ||
+        setweight(to_tsvector('english', coalesce((
+            SELECT users.name
+            FROM users
+            WHERE users.id = post.author_id
+        ), '')), 'A') ||
+        setweight(to_tsvector('english', coalesce((
+            SELECT users.handle
+            FROM users
+            WHERE users.id = post.author_id
+        ), '')), 'A') ||
+        setweight(to_tsvector('english', coalesce(post.text, '')), 'B') ||
+        setweight(to_tsvector('english', (
+            SELECT coalesce(string_agg(comment.content, ' '), '')
+            FROM comment
+            WHERE comment.post_id = post.id
+        )), 'C'))
+    WHERE post.id = post_id;
+END;
+$$ LANGUAGE plpgsql;
+
 CREATE FUNCTION post_search_update()
 RETURNS TRIGGER AS $$
 BEGIN
     IF TG_OP = 'INSERT'
     OR (TG_OP = 'UPDATE' AND (NEW.title <> OLD.title OR NEW.text <> OLD.text))
     THEN
-        NEW.tsvectors = (
-            setweight(to_tsvector('english', NEW.title), 'A') ||
-            setweight(to_tsvector('english', coalesce((
-                SELECT users.name
-                FROM users
-                WHERE users.id = NEW.author_id
-            ), '')), 'A') ||
-            setweight(to_tsvector('english', coalesce((
-                SELECT users.handle
-                FROM users
-                WHERE users.id = NEW.author_id
-            ), '')), 'A') ||
-            setweight(to_tsvector('english', coalesce(NEW.text, '')), 'B') ||
-            setweight(to_tsvector('english', (
-                SELECT coalesce(string_agg(comment.content, ' '), '')
-                FROM comment
-                WHERE comment.post_id = NEW.id
-            )), 'C')
-        );
+        PERFORM calculate_post_tsvectors(NEW.id);
     END IF;
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
 CREATE TRIGGER post_search_update
-BEFORE INSERT OR UPDATE ON post
+AFTER INSERT OR UPDATE ON post
 FOR EACH ROW
 EXECUTE PROCEDURE post_search_update();
 
@@ -375,51 +383,13 @@ RETURNS TRIGGER AS $$
 BEGIN
     IF TG_OP = 'INSERT' OR TG_OP = 'UPDATE' THEN
         IF TG_OP = 'INSERT' OR NEW.content <> OLD.content THEN
-            UPDATE post
-            SET tsvectors = (
-                setweight(to_tsvector('english', post.title), 'A') ||
-                setweight(to_tsvector('english', coalesce((
-                    SELECT users.name
-                    FROM users
-                    WHERE users.id = post.author_id
-                ), '')), 'A') ||
-                setweight(to_tsvector('english', coalesce((
-                    SELECT users.handle
-                    FROM users
-                    WHERE users.id = post.author_id
-                ), '')), 'A') ||
-                setweight(to_tsvector('english', coalesce(post.text, '')), 'B') ||
-                setweight(to_tsvector('english', (
-                    SELECT coalesce(string_agg(comment.content, ' '), '')
-                    FROM comment
-                    WHERE comment.post_id = post.id
-                )), 'C'))
-            WHERE post.id = NEW.post_id;
+            PERFORM calculate_post_tsvectors(NEW.post_id);
         END IF;
 
         RETURN NEW;
 
     ELSIF TG_OP = 'DELETE' THEN
-        UPDATE post
-        SET tsvectors = (
-            setweight(to_tsvector('english', post.title), 'A') ||
-            setweight(to_tsvector('english', coalesce((
-                SELECT users.name
-                FROM users
-                WHERE users.id = post.author_id
-            ), '')), 'A') ||
-            setweight(to_tsvector('english', coalesce((
-                SELECT users.handle
-                FROM users
-                WHERE users.id = post.author_id
-            ), '')), 'A') ||
-            setweight(to_tsvector('english', coalesce(post.text, '')), 'B') ||
-            setweight(to_tsvector('english', (
-                SELECT coalesce(string_agg(comment.content, ' '), '')
-                FROM comment
-                WHERE comment.post_id = post.id
-            )), 'C'))
-        WHERE post.id = OLD.post_id;
+        PERFORM calculate_post_tsvectors(OLD.post_id);
 
         RETURN OLD;
     END IF;
@@ -436,26 +406,7 @@ RETURNS TRIGGER AS $$
 BEGIN
     IF TG_OP = 'UPDATE' AND (OLD.name <> NEW.name OR OLD.handle <> NEW.handle)
     THEN 
-        UPDATE post
-        SET tsvectors = (
-            setweight(to_tsvector('english', post.title), 'A') ||
-            setweight(to_tsvector('english', coalesce((
-                SELECT users.name
-                FROM users
-                WHERE users.id = post.author_id
-            ), '')), 'A') ||
-            setweight(to_tsvector('english', coalesce((
-                SELECT users.handle
-                FROM users
-                WHERE users.id = post.author_id
-            ), '')), 'A') ||
-            setweight(to_tsvector('english', coalesce(post.text, '')), 'B') ||
-            setweight(to_tsvector('english', (
-                SELECT coalesce(string_agg(comment.content, ' '), '')
-                FROM comment
-                WHERE comment.post_id = NEW.id
-            )), 'C'))
-        WHERE post.author_id = NEW.id;
+        PERFORM calculate_post_tsvectors(NEW.id);
     END IF;
     RETURN NEW;
 END;
