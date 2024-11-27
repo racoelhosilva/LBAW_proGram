@@ -15,11 +15,15 @@ class UserController extends Controller
         $authuser = Auth::user();
         $isOwnProfile = $authuser && $authuser->id === $user->id;
         $isFollowing = $authuser && $authuser->following()->where('followed_id', $user->id)->exists();
+        $recommendedUsers = null;
+        if ($authuser !== null) {
+            $recommendedUsers = $this->recommendedUsers($authuser, $user);
+        }
 
         return view('pages.user', [
             'user' => $user,
             'isOwnProfile' => $isOwnProfile,
-            'recommendedUsers' => $this->recommendedUsers($authuser, $user),
+            'recommendedUsers' => $recommendedUsers,
             'isFollowing' => $isFollowing,
         ]);
     }
