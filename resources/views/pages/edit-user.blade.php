@@ -35,21 +35,21 @@
                 </select>
             </section>
 
-        <section id="projects-section" class="flex flex-col">
-            <label for="projects" class="font-medium">Projects</label>
-            <div id="projects">
-                @foreach ($user->stats->topProjects as $project)
-                    <div class="grid grid-cols-12 gap-2 mb-4" data-project-id="{{ $project->id }}">
-                        <input type="text" name="top_projects[{{ $project->id }}][name]" value="{{ $project->name }}" placeholder="Project Name" class="col-span-5 w-full card m-2" readonly>
-                        <input type="url" name="top_projects[{{ $project->id }}][url]" value="{{ $project->url }}" placeholder="Project URL" class="lg:col-span-6 col-span-5 w-full card m-2" readonly>
-                        <button type="button" class="btn btn-danger remove-project-btn">Remove</button>
-                    </div>
-                @endforeach
-            </div>
+            <section id="projects-section" class="flex flex-col">
+                <label for="projects" class="font-medium">Projects</label>
+                <div id="projects">
+                    @foreach ($user->stats->topProjects as $project)
+                        <div class="grid grid-cols-12 gap-2" data-project-id="{{ $project->id }}">
+                            <input type="text" name="top_projects[{{ $project->id }}][name]" value="{{ $project->name }}" placeholder="Project Name" class="col-span-5 w-full card my-2" readonly>
+                            <input type="url" name="top_projects[{{ $project->id }}][url]" value="{{ $project->url }}" placeholder="Project URL" class="lg:col-span-6 col-span-5 w-full card my-2" readonly>
+                            <button type="button" class="btn btn-danger remove-project-btn">Remove</button>
+                        </div>
+                    @endforeach
+                </div>
 
-                <div class="grid grid-cols-12 gap-2 mb-4">
-                    <input type="text" id="new-project-name" placeholder="Project Name" class="col-span-5 w-full card m-2">
-                    <input type="url" id="new-project-url" placeholder="Project URL" class="lg:col-span-6 col-span-5 w-full card m-2">
+                <div class="grid grid-cols-12 gap-2">
+                    <input type="text" id="new-project-name" placeholder="Project Name" class="col-span-5 w-full card my-2">
+                    <input type="url" id="new-project-url" placeholder="Project URL" class="lg:col-span-6 col-span-5 w-full card my-2">
                     <button type="button" id="add-project" class="btn btn-primary">Add Project</button>
                 </div>
             </section>
