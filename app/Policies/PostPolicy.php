@@ -11,7 +11,7 @@ class PostPolicy
     /**
      * Determine whether the user can view any models.
      */
-    public function viewAny(User $user): bool
+    public function viewAny(?User $user): bool
     {
         return true;
     }
@@ -19,7 +19,7 @@ class PostPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, Post $post): bool
+    public function view(?User $user, Post $post): bool
     {
         // Grant access if the post is public.
         if ($post->is_public) {
@@ -43,17 +43,17 @@ class PostPolicy
     /**
      * Determine whether the user can create models.
      */
-    public function create(User $user): bool
+    public function create(?User $user): bool
     {
-        return Auth::check() || Auth::guard('admin')->check();
+        return isset($user);
     }
 
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Post $post): bool
+    public function update(?User $user, Post $post): bool
     {
-        return $user->id === $post->author->id;
+        return $user && $user->id === $post->author->id;
     }
 
     /**
@@ -71,15 +71,15 @@ class PostPolicy
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, Post $post): bool
+    public function forceDelete(?User $user, Post $post): bool
     {
         $isAdmin = Auth::guard('admin')->check();
 
-        return $isAdmin || $user->id === $post->author->id;
+        return $isAdmin || ($user && $user->id === $post->author->id);
     }
 
     public function like(User $user, Post $post): bool
     {
-        return $user->id !== $post->author->id;
+        return $user && $user->id !== $post->author->id;
     }
 }

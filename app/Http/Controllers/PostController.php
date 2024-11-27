@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Comment;
 use App\Models\GroupPost;
 use App\Models\Notification;
 use App\Models\Post;
@@ -78,6 +79,7 @@ class PostController extends Controller
         $post = Post::findOrFail($id);
 
         $this->authorize('view', $post);
+        $this->authorize('viewAny', Comment::class);
 
         return view('pages/post', ['post' => $post]);
     }
