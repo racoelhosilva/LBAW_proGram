@@ -26,7 +26,7 @@ class HomeController extends Controller
             $followedUserIds = auth()->user()->following->pluck('id');
 
             return User::whereNotIn('id', $followedUserIds)
-                ->where('id', '!=', auth()->id())
+                ->where('id', '<>', auth()->id())
                 ->where('is_public', true)
                 ->orderBy('num_followers', 'DESC')
                 ->limit(5)
@@ -34,7 +34,7 @@ class HomeController extends Controller
         }
 
         return User::orderBy('num_followers', 'DESC')
-            ->where('id', '!=', auth()->id())
+            ->where('id', '<>', auth()->id())
             ->where('is_public', true)
             ->limit(5)
             ->get();
@@ -49,7 +49,7 @@ class HomeController extends Controller
             ->when(auth()->check() && (count(auth()->user()->following) > 0), function ($query) {
                 $followedUserIds = auth()->user()->following->pluck('id');
 
-                $query->where('author_id', '!=', auth()->id())
+                $query->where('author_id', '<>', auth()->id())
                     ->orderByRaw('CASE WHEN author_id IN ('.$followedUserIds->join(',').') THEN 1 ELSE 2 END')
                     ->orderByRaw('(likes / POW((EXTRACT(EPOCH FROM (NOW() - creation_timestamp)) / 3600) + 2, 1.5)) DESC');
             }, function ($query) {

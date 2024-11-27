@@ -35,8 +35,6 @@ class UserController extends Controller
             return redirect()->route('home');
         }
 
-        $authuser = Auth::user();
-
         return view('pages.edit-user', [
             'user' => $user,
             'languages' => Language::all(),
