@@ -46,9 +46,9 @@ const createInput = (type, name, value, placeholder, projectId) => {
     input.dataset.projectId = projectId;
     input.readOnly= true;
     if (type === 'url') {
-        input.classList.add('lg:col-span-6','col-span-5','w-full', 'card', 'mb-2', 'mr-2');
+        input.classList.add('lg:col-span-6','col-span-5','w-full', 'card', 'm-2');
     }else {
-        input.classList.add('col-span-5','w-full', 'card', 'mb-2', 'mr-2');
+        input.classList.add('col-span-5','w-full', 'card', 'm-2');
     }
 
     
