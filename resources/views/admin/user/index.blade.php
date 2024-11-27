@@ -2,7 +2,7 @@
 @section('title') {{'Admin User Search | ProGram'}} @endsection
 @section('content')
     <main class="px-4 flex flex-col gap-4">
-        @include('admin.partials.search-field', ['route' => 'admin.user.search'])
+        @include('admin.partials.search-field', ['route' => 'admin.user.index'])
 
         <table>
             <thead class="text-center">
@@ -19,7 +19,7 @@
                 @forelse ($users as $user)
                     <tr class="border-t border-white">
                         <td>{{ $user->id }}</td>
-                        <td><a href="/api/user/{{ $user->id }}">{{ $user->name }}</a></td>
+                        <td>{{ $user->name }}</td>
                         <td>{{ $user->email }}</td>
                         <td>{{ $user->handle }}</td>
                         <td>{{ $user->isBanned() ? 'Yes' : 'No' }}</td>
@@ -34,7 +34,7 @@
                                             <h1 class="text-2xl font-bold">Ban User</h1>
                                             @include('partials.icon-button', ['iconName' => 'x', 'class' => 'close-button', 'label' => 'Close', 'type' => 'transparent'])
                                         </div>
-                                        <form method="post" action="{{ route('admin.ban.store', $user->id) }}" class="grid gap-4">
+                                        <form method="post" action="{{ route('admin.user.ban', $user->id) }}" class="grid gap-4">
                                             @csrf
                                             @include('partials.input-field', ['name' => 'reason', 'label' => 'Reason for ban', 'placeholder' => 'Inappropriate behavior', 'required' => true])
                                             @include('partials.input-field', ['name' => 'duration', 'type' => 'number', 'label' => 'Duration (days)', 'placeholder' => '15', 'required' => true])
@@ -48,7 +48,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="5" class="text-center">No users found.</td>
+                        <td colspan="6" class="text-center">No users found.</td>
                     </tr>
                 @endforelse
             </tbody>

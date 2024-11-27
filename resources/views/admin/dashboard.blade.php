@@ -16,7 +16,7 @@
                     <div class="flex">
                         @include('partials.text-button', [
                             'text' => 'View Users',
-                            'anchorUrl' => route('admin.user.search'),
+                            'anchorUrl' => route('admin.user.index'),
                         ])
                     </div>
                 </div>
@@ -30,12 +30,12 @@
                     <div class="flex">
                         @include('partials.text-button', [
                             'text' => 'View Bans',
-                            'anchorUrl' => route('admin.ban.search'),
+                            'anchorUrl' => route('admin.ban.index'),
                         ])
                     </div>
                 </div>
             </article>
-
+            
             <article class="dashboard-card">
                 <svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-message-circle"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>
                 <div class="w-full flex flex-col">
@@ -44,7 +44,7 @@
                     <div class="flex">
                         @include('partials.text-button', [
                             'text' => 'View Posts',
-                            'anchorUrl' => route('admin.post.search'),
+                            'anchorUrl' => route('admin.post.index'),
                         ])
                     </div>
                 </div>

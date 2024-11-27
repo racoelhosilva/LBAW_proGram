@@ -1,11 +1,12 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminAuthController;
+use App\Http\Controllers\Admin\AdminBanController;
+use App\Http\Controllers\Admin\AdminPostController;
 use App\Http\Controllers\Admin\AdminUserController;
-use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Api\ApiCommentController;
 use App\Http\Controllers\Api\ApiPostController;
-use App\Http\Controllers\Api\ApiUserController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\FileController;
@@ -64,30 +65,32 @@ Route::get('/search', [SearchController::class, 'index'])->name('search');
 // Admin
 Route::prefix('admin')->group(function () {
     // Admin authentication
-    Route::controller(AuthController::class)->group(function () {
+    Route::controller(AdminAuthController::class)->group(function () {
         Route::get('/login', 'show')->name('admin.login');
         Route::post('/login', 'authenticate');
         Route::get('/logout', 'logout')->name('admin.logout');
     });
 
-    // Admin routes
-    Route::middleware('auth.admin')->group(function () {  // TODO: Remove middleware
+    Route::middleware('auth.admin')->group(function () {
+        // Admin dashboard
         Route::get('/', [DashboardController::class, 'show'])->name('admin.dashboard');
 
-        Route::controller(AdminUserController::class)->group(function () {  // TODO: Separate into AdminUserController and AdminBanController and AdminPostController...
-            Route::get('/user/search', 'searchUser')->name('admin.user.search');
-            // Ban
-            Route::get('/ban', 'searchBans')->name('admin.ban.search');
-            Route::post('/user/{id}/ban', 'banUser')->where('id', '[0-9]+')->name('admin.user.ban');
-            Route::post('/ban/{id}/revoke', 'revokeBan')->where('id', '[0-9]+')->name('admin.ban.revoke');
-            // Posts
-            Route::get('/post/search', 'searchPost')->name('admin.post.search');
-        });
+        // Admin users
+        Route::get('/user', [AdminUserController::class, 'index'])->name('admin.user.index');
+        Route::post('/user/{id}/ban', [AdminUserController::class, 'banUser'])->where('id', '[0-9]+')->name('admin.user.ban');
+
+        // Admin bans
+        Route::get('/ban', [AdminBanController::class, 'index'])->name('admin.ban.index');
+        Route::put('/ban/{id}/revoke', [AdminBanController::class, 'revoke'])->where('id', '[0-9]+')->name('admin.ban.revoke');
+
+        // Admin posts
+        Route::get('/post', [AdminPostController::class, 'index'])->name('admin.post.index');
     });
 });
 
 // API
 Route::prefix('api')->group(function () {
+    // Post
     Route::controller(ApiPostController::class)->group(function () {
         Route::get('/post', 'index')->name('api.post.index');
         Route::post('/post', 'store')->name('api.post.store');
@@ -102,6 +105,7 @@ Route::prefix('api')->group(function () {
         Route::get('/post/{id}/attachments', 'indexAttachments')->where('id', '[0-9]+')->name('api.post.attachments.index');
     });
 
+    // Comment
     Route::controller(ApiCommentController::class)->group(function () {
         Route::get('/comment', 'index')->name('api.comment.index');
         Route::post('/comment', 'store')->name('api.comment.store');

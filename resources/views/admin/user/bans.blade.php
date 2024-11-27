@@ -2,7 +2,7 @@
 @section('title') {{'Admin Ban Search | ProGram'}} @endsection
 @section('content')
     <main class="px-4 flex flex-col gap-4">
-        @include('admin.partials.search-field', ['route' => 'admin.ban.search'])
+        @include('admin.partials.search-field', ['route' => 'admin.ban.index'])
 
         <table>
             <thead>
@@ -42,7 +42,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="7">No bans found.</td>
+                        <td colspan="8">No bans found.</td>
                     </tr>
                 @endforelse
             </tbody>

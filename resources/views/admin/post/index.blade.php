@@ -2,7 +2,7 @@
 @section('title') {{'Admin Post Search | ProGram'}} @endsection
 @section('content')
     <main class="px-4 flex flex-col gap-4">
-        @include('admin.partials.search-field', ['route' => 'admin.post.search'])
+        @include('admin.partials.search-field', ['route' => 'admin.post.index'])
 
         <table>
             <thead class="text-center">
