@@ -6,9 +6,9 @@
         <form method="post" action="{{ route('user.update', $user->id) }}" class="grid gap-4 justify-self-stretch" id="profile-form"  enctype="multipart/form-data">
             {{ csrf_field() }}
 
-            @include('partials.input-field', ['name' => 'name', 'label' => 'Name', 'type' => 'text', 'value' => $user->name, 'placeholder' => 'John Doe', 'required' => false])
+            @include('partials.input-field', ['name' => 'name', 'label' => 'Name', 'type' => 'text', 'value' => $user->name, 'placeholder' => 'John Doe', 'required' => true])
             @include('partials.textarea', ['name' => 'description', 'label' => 'Description', 'type' => 'text', 'value' => $user->description, 'placeholder' => 'I am just a chill dev', 'required' => false])
-            @include('partials.input-field', ['name' => 'handle', 'label' => 'Handle', 'type' => 'text', 'value' => $user->handle, 'placeholder' => 'john_doe', 'required' => false])
+            @include('partials.input-field', ['name' => 'handle', 'label' => 'Handle', 'type' => 'text', 'value' => $user->handle, 'placeholder' => 'john_doe', 'required' => true])
 
             <section id="languages-section" class="flex flex-col">
                 <label for="languages" class="font-medium">Languages</label>

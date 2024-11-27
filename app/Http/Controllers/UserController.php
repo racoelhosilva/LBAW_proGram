@@ -61,7 +61,7 @@ class UserController extends Controller
 
         $request->validate([
             'name' => 'required|string|max:30',
-            'description' => 'required|string|max:200',
+            'description' => 'nullable|string|max:200',
             'is_public' => 'nullable',
             'handle' => ['required', 'string', 'max:20', Rule::unique('users')->ignore($user->id)],
             'languages' => 'nullable|array',
