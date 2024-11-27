@@ -9,7 +9,6 @@ use App\Http\Controllers\Api\ApiCommentController;
 use App\Http\Controllers\Api\ApiPostController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
-use App\Http\Controllers\FileController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\SearchController;
@@ -130,5 +129,3 @@ Route::prefix('api')->group(function () {
     // });
 });
 
-// File Upload
-Route::post('/file/upload', [FileController::class, 'upload'])->name('file.upload');
