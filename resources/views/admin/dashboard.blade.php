@@ -1,5 +1,6 @@
 @props(['userCount'])
 
+@section('title') {{'Admin Dashboard'}} @endsection
 @extends('layouts.admin')
 
 @section('content')

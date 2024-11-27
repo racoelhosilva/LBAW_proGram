@@ -1,5 +1,5 @@
 @extends('layouts.app')
-
+@section('title') {{'Search'}} @endsection
 @section('content')
     <main id="search-page" class="px-8 grid grid-cols-4 gap-6">
         <section class="card h-min">

@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title', 'Cards')
-
+@section('title') {{'Cards'}} @endsection
 @section('content')
 
 <section id="cards">
