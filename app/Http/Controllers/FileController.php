@@ -81,7 +81,6 @@ class FileController extends Controller
 
     public static function get(string $type, int $userId)
     {
-
         // Validation: upload type
         if (! self::isValidType($type)) {
             return self::defaultAsset($type);
@@ -101,51 +100,52 @@ class FileController extends Controller
 
     public function upload(Request $request)
     {
-
         // Validation: has file
         if (! $request->hasFile('file')) {
-            return redirect()->back()->with('error', 'Error: File not found');
-        }
-
-        // Validation: upload type
-        if (! $this->isValidType($request->type)) {
-            return redirect()->back()->with('error', 'Error: Unsupported upload type');
+            return redirect()->back()->withError('File not found');
         }
 
         // Validation: upload extension
         $file = $request->file('file');
-        $type = $request->type;
+        $type = $request->input('type');
         $extension = $file->extension();
+
         if (! $this->isValidExtension($type, $extension)) {
-            return redirect()->back()->with('error', 'Error: Unsupported upload extension');
+            return redirect()->back()->withError('Unsupported upload extension');
         }
 
         // Prevent existing old files
-        $this->delete($type, $request->id);
+        $this->delete($type, $request->input('id'));
 
         // Generate unique filename
         $fileName = $file->hashName();
 
-        // Validation: model
-        $error = null;
         switch ($request->type) {
             case 'profile':
-                $user = User::findOrFail($request->id);
+                $user = User::find($request->input('id'));
+
                 if ($user) {
+                    $this->authorize('update', $user);
+
                     $user->profile_picture_url = $fileName;
                     $user->save();
                 } else {
-                    $error = 'unknown user';
+                    redirect()->back()->withError('Unknown user');
                 }
+
                 break;
             case 'banner':
-                $user = User::findOrFail($request->id);
+                $user = User::find($request->input('id'));
+
                 if ($user) {
+                    $this->authorize('update', $user);
+
                     $user->banner_image_url = $fileName;
                     $user->save();
                 } else {
-                    $error = 'unknown user';
+                    redirect()->back()->withError('Unknown user');
                 }
+
                 break;
 
             case 'post':
@@ -153,15 +153,11 @@ class FileController extends Controller
                 break;
 
             default:
-                redirect()->back()->with('error', 'Error: Unsupported upload object');
-        }
-
-        if ($error) {
-            redirect()->back()->with('error', `Error: {$error}`);
+                redirect()->back()->withError('Unsupported upload type');
         }
 
         $file->storeAs($type, $fileName, self::$diskName);
 
-        return redirect()->back()->with('success', 'Success: upload completed!');
+        return redirect()->back()->withSuccess('Upload successful!');
     }
 }
