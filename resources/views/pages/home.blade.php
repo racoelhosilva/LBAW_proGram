@@ -1,5 +1,5 @@
 @extends('layouts.app')
-
+@section('title') {{'Home | ProGram'}} @endsection
 @section('content')
     <main id="home-page" class="px-8 grid grid-cols-4 gap-6">
         <section class="card h-min flex flex-col gap-3">
