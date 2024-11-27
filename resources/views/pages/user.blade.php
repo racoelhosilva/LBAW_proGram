@@ -1,5 +1,7 @@
 @extends('layouts.app')
+
 @section('title') {{$user->name . ' | ProGram'}} @endsection
+
 @section('content')
     <main id="profile-page" class="px-8 py-4 grid grid-cols-4 gap-6">
         <section id="banner-section" style="background-image: url('{{ $user->getBannerImage() }}');" class="card h-min col-span-4 grid grid-cols-[auto_1fr] gap-y-16 p-4 bg-cover">

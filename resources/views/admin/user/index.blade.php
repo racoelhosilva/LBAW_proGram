@@ -25,7 +25,7 @@
                         <td>{{ $user->isBanned() ? 'Yes' : 'No' }}</td>
                         <td class="pe-8 flex justify-end gap-2">
                             {{-- TODO: Place user profile --}}
-                            @include('partials.text-button', ['text' => 'View Profile', 'type' => 'secondary', 'anchorUrl' => route('user.show', ['user' => $user])])
+                            @include('partials.text-button', ['text' => 'View Profile', 'type' => 'secondary', 'anchorUrl' => route('user.show', $user->id)])
                             <div class="modal ban-modal">
                                 @include('partials.text-button', ['text' => 'Ban', 'class' => 'open-button', 'type' => 'secondary'])
                                 <div>
