@@ -46,7 +46,7 @@ class PostController extends Controller
 
         $request->validate([
             'title' => 'required|string|max:255',
-            'text' => 'required|string',
+            'text' => 'nullable|string',
             'tags' => 'nullable|array',
             'tags.*' => 'exists:tag,id',
             'is_public' => 'nullable',
