@@ -4,6 +4,7 @@ namespace App\Policies;
 
 use App\Models\Post;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 class PostPolicy
 {
@@ -12,7 +13,7 @@ class PostPolicy
      */
     public function viewAny(User $user): bool
     {
-        //
+        return true;
     }
 
     /**
@@ -26,7 +27,7 @@ class PostPolicy
         }
 
         // Grant access if the user is admin.
-        if (auth()->guard('admin')->check()) {
+        if (Auth::guard('admin')->check()) {
             return true;
         }
 
@@ -44,7 +45,7 @@ class PostPolicy
      */
     public function create(User $user): bool
     {
-        //
+        return Auth::check() || Auth::guard('admin')->check();
     }
 
     /**
@@ -68,19 +69,13 @@ class PostPolicy
     }
 
     /**
-     * Determine whether the user can restore the model.
-     */
-    public function restore(User $user, Post $post): bool
-    {
-        //
-    }
-
-    /**
      * Determine whether the user can permanently delete the model.
      */
     public function forceDelete(User $user, Post $post): bool
     {
-        //
+        $isAdmin = Auth::guard('admin')->check();
+
+        return $isAdmin || $user->id === $post->author->id;
     }
 
     public function like(User $user, Post $post): bool

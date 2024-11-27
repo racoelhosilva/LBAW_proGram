@@ -13,18 +13,9 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Gate;
 
 class PostController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index(): void
-    {
-        //
-    }
-
     /**
      * Show the form for creating a new resource.
      */
@@ -33,6 +24,8 @@ class PostController extends Controller
         if (! Auth::check()) {
             return redirect()->route('login');
         }
+
+        $this->authorize('create', Post::class);
 
         return view('pages/create-post', [
             'tags' => Tag::all(),
@@ -47,6 +40,8 @@ class PostController extends Controller
         if (! Auth::check()) {
             return redirect()->route('login');
         }
+
+        $this->authorize('create', Post::class);
 
         $request->validate([
             'title' => 'required|string|max:255',
@@ -78,24 +73,27 @@ class PostController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Post $post): View
+    public function show(int $id): View
     {
+        $post = Post::findOrFail($id);
+
         $this->authorize('view', $post);
 
-        return view('pages/post',
-            ['post' => $post]);
+        return view('pages/post', ['post' => $post]);
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Post $post): RedirectResponse|View|Factory
+    public function edit(int $id): RedirectResponse|View|Factory
     {
+        $post = Post::findOrFail($id);
+
         if (! Auth::check()) {
             return redirect()->route('login');
         }
 
-        Gate::authorize('update', $post);
+        $this->authorize('update', $post);
 
         return view('pages/edit-post', [
             'post' => $post,
@@ -106,10 +104,12 @@ class PostController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Post $post): Redirector|RedirectResponse
+    public function update(Request $request, int $id): Redirector|RedirectResponse
     {
+        $post = Post::findOrFail($id);
 
-        Gate::authorize('update', $post);
+        $this->authorize('update', $post);
+
         $request->validate([
             'title' => 'nullable|string|max:255',
             'text' => 'nullable|string',
@@ -138,12 +138,11 @@ class PostController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Post $post): RedirectResponse
+    public function destroy(int $id): RedirectResponse
     {
-        if (! Auth::check()) {
-            return redirect()->route('login');
-        }
-        Gate::authorize('delete', $post);
+        $post = Post::findOrFail($id);
+
+        $this->authorize('forceDelete', $post);
 
         try {
             DB::transaction(function () use ($post) {
