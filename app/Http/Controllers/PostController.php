@@ -67,7 +67,7 @@ class PostController extends Controller
             $post->tags()->sync($request->input('tags'));
         });
 
-        return redirect(route('post.show', $post->id));
+        return redirect()->route('post.show', $post->id)->withSuccess('Post created successfully.');
     }
 
     /**
@@ -133,7 +133,7 @@ class PostController extends Controller
             $post->tags()->sync($request->input('tags'));
         });
 
-        return redirect()->route('post.show', $post->id);
+        return redirect()->route('post.show', $post->id)->withSuccess('Post updated successfully.');
     }
 
     /**
