@@ -143,7 +143,7 @@ paths:
                   value: '/register'
           
   /logout:
-    get:
+    post:
       operationId: R205
       summary: 'R205: Logout Action'
       description: 'Process logout action to end user session. Access: USR'
