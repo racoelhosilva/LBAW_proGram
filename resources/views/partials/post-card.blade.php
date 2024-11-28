@@ -24,9 +24,9 @@
             <div class="hidden">
                 <div>
                     @include('partials.dropdown-item', ['icon' => 'message-circle', 'text' => 'See Post', 'anchorUrl' => route('post.show', $post->id)])
-                    @can('update', $post)
+                    @if(Auth::check() && Auth::id() === $post->author->id)
                         @include('partials.dropdown-item', ['icon' => 'pencil', 'text' => 'Edit Post', 'anchorUrl' => route('post.edit', $post->id)])
-                    @endcan
+                    @endif
                 </div>
             </div>
         </div>
@@ -38,7 +38,7 @@
     </div>
     
     <div class="-ms-3 col-span-3 grid grid-cols-[auto_auto_auto_1fr_50%] items-center">
-        @can('like', $post)
+        @if(Auth::check() && Auth::id() !== $post->author->id)
             <button aria-label="Like" class="p-3 .btn-transparent like-button {{ $post->likedBy(Auth::user()) ? 'liked' : '' }}">
                 @include('partials.icon', ['name' => 'heart'])
                 @include('partials.icon', ['name' => 'filled-heart'])
@@ -47,7 +47,7 @@
             <button aria-label="Like" class="p-3 .btn-transparent like-button" disabled>
                 @include('partials.icon', ['name' => 'heart'])
             </button>
-        @endcan
+        @endif
         <p class="me-3 font-medium select-none">{{ $post->likes }}</p>
         @include('partials.icon-button', [
             'iconName' => 'message-square-text',

@@ -140,4 +140,9 @@ class User extends Authenticatable
             ->orderByRaw('CASE WHEN duration = \'00:00:00\' THEN 0 ELSE 1 END, start + duration DESC')
             ->first();
     }
+
+    public function follows(User $user): bool
+    {
+        return $this->following()->where('followed_id', $user->id)->exists();
+    }
 }

@@ -5,13 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\Post;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class SearchController extends Controller
 {
-    public function searchUsers(Request $request)
+    public function searchUsers(string $query)
     {
-        $query = $request->input('query');
-
         $users = User::where('is_public', true)
             ->whereRaw("tsvectors @@ plainto_tsquery('english', ?)", [$query])
             ->orderByRaw("ts_rank(tsvectors, plainto_tsquery('english', ?)) DESC", [$query])
@@ -20,11 +19,9 @@ class SearchController extends Controller
         return $users;
     }
 
-    public function searchPosts(Request $request)
+    public function searchPosts(string $query)
     {
-        $query = $request->input('query');
-
-        $posts = Post::where('is_public', true)
+        $posts = Post::visibleTo(Auth::user())
             ->whereRaw("tsvectors @@ plainto_tsquery('english', ?)", [$query])
             ->orderByRaw("ts_rank(tsvectors, plainto_tsquery('english', ?)) DESC", [$query])
             ->get();
@@ -35,11 +32,12 @@ class SearchController extends Controller
     public function index(Request $request)
     {
         $request->validate([
-            'query' => 'required|string',
+            'query' => 'nullable|string',
         ]);
 
-        $posts = $this->searchPosts($request);
-        $users = $this->searchUsers($request);
+        $query = $request->input('query') ?? '';
+        $posts = $this->searchPosts($query);
+        $users = $this->searchUsers($query);
 
         return view('pages.search', ['posts' => $posts, 'users' => $users]);
     }
