@@ -128,4 +128,3 @@ Route::prefix('api')->group(function () {
     //     Route::get('/user/{id}/post', 'listPosts');
     // });
 });
-
