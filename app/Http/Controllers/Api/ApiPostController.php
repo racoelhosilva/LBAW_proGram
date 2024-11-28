@@ -135,7 +135,7 @@ class ApiPostController extends Controller
             $like->delete();
         });
 
-        return response()->json($like);
+        return response()->json(['message' => "Post unliked successfully"], 200);
     }
 
     public function indexComments($id)
