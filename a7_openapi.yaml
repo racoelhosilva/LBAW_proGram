@@ -783,7 +783,7 @@ paths:
           description: 'Ok. Show admin ban view page UI.'
 
   /admin/ban/{id}/revoke:
-    get:
+    post:
       operationId: R508
       summary: 'R508: Admin Revoke Ban Action'
       description: 'Process revoke ban action to inactive an existing ban. Access: ADM'
