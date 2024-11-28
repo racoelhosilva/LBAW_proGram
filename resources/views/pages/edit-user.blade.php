@@ -5,6 +5,7 @@
         <h1 class="text-4xl font-bold">Edit Profile</h1>
         <form method="post" action="{{ route('user.update', $user->id) }}" class="grid gap-4 justify-self-stretch" id="profile-form"  enctype="multipart/form-data">
             {{ csrf_field() }}
+            <input type="hidden" name="is_public" value="1">
 
             @include('partials.input-field', ['name' => 'name', 'label' => 'Name', 'type' => 'text', 'value' => $user->name, 'placeholder' => 'John Doe', 'required' => true])
             @include('partials.textarea', ['name' => 'description', 'label' => 'Description', 'type' => 'text', 'value' => $user->description, 'placeholder' => 'I am just a chill dev', 'required' => false])

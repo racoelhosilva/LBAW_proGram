@@ -139,7 +139,7 @@ class UserController extends Controller
         }
         $user->save();
 
-        return redirect()->route('user.show', $user->id);
+        return redirect()->route('user.show', $user->id)->withSuccess('Profile updated successfully.');
     }
 
     public function recommendedUsers($currentUser, $visitedUser)
