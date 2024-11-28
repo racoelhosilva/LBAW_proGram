@@ -58,10 +58,10 @@
         <section id="profile-middle" class="h-min col-span-4 lg:col-span-2 grid grid-cols-4 space-y-3">
             <article class="card col-span-4 space-y-3">
                 <h1 class="text-xl font-bold">Posts</h1>
-                @if ($user->posts->count() === 0)
+                @if ($posts->count() === 0)
                     <p>No posts to show</p>
                 @else
-                    @foreach ($user->posts as $post)
+                    @foreach ($posts as $post)
                         @include('partials.post-card', ['post' => $post])
                     @endforeach
                 @endif

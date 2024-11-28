@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -65,5 +66,17 @@ class Post extends Model
     public function hasTag(Tag $tag): bool
     {
         return $this->tags->contains($tag);
+    }
+
+    public function scopeVisibleTo(Builder $query, ?User $user): Builder
+    {
+        $query = $query->where('is_public', true);
+
+        if ($user) {
+            $query = $query->orWhere('author_id', $user->id)
+                ->orWhereIn('author_id', $user->following->pluck('id'));
+        }
+
+        return $query;
     }
 }

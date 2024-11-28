@@ -17,9 +17,7 @@ class HomeController extends Controller
 
         return view('pages.home', [
             'users' => $this->getTopUsers(),
-            'posts' => $this->getHomepagePosts()->filter(function ($post) {
-                return Auth::check() ? Auth::user()->can('view', $post) : $post->is_public;
-            }),
+            'posts' => $this->getHomepagePosts(),
             'tags' => $this->getTrendingTags(),
         ]);
     }
@@ -48,15 +46,15 @@ class HomeController extends Controller
         // as a decay formula to order posts on the homepage so that posts that are more recent
         // and have a higher number of likes are considered more popular and are shown first
         return Post::with(['author', 'tags'])
-            ->when(Auth::check(), function ($query) {
-                $query->where('author_id', '<>', Auth::id());
-            })
+            ->visibleTo(Auth::user())
             ->when(Auth::check() && Auth::user()->following->isNotEmpty(), function ($query) {
                 $followedUserIds = Auth::user()->following->pluck('id');
 
-                $query->orderByRaw('CASE WHEN author_id IN ('.implode(',', array_fill(0, count($followedUserIds), '?')).') THEN 1 ELSE 2 END', $followedUserIds);
+                $query->orWhereIn('author_id', $followedUserIds)
+                    ->orderByRaw('CASE WHEN author_id IN ('.implode(',', array_fill(0, count($followedUserIds), '?')).') THEN 1 ELSE 2 END', $followedUserIds);
             })
             ->orderByRaw('(likes / POW((EXTRACT(EPOCH FROM (NOW() - creation_timestamp)) / 3600) + 2, 1.5)) DESC')
+            ->limit(30)
             ->get();
     }
 

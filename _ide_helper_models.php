@@ -242,6 +242,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Post newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Post newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Post query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Post visibleTo(?\App\Models\User $user)
  * @method static \Illuminate\Database\Eloquent\Builder|Post whereAuthorId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Post whereComments($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Post whereCreationTimestamp($value)

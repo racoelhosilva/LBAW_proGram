@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Language;
+use App\Models\Post;
 use App\Models\Technology;
 use App\Models\TopProject;
 use App\Models\User;
@@ -18,7 +19,14 @@ class UserController extends Controller
         $user = User::findOrFail($id);
 
         $this->authorize('view', $user);
-        $this->authorize('viewAny', User::class);
+        $this->authorize('viewAny', Post::class);
+
+        $posts = $user->posts()
+            ->when(! Auth::user()->follows($user) && Auth::id() !== $id, function ($query) {
+                $query->where('is_public', true);
+            })
+            ->orderBy('likes', 'DESC')
+            ->paginate(10);
 
         $isOwnProfile = Auth::check() && Auth::id() === $user->id;
         $isFollowing = Auth::check() && Auth::user()->following()->where('followed_id', $user->id)->exists();
@@ -26,6 +34,7 @@ class UserController extends Controller
 
         return view('pages.user', [
             'user' => $user,
+            'posts' => $posts,
             'isOwnProfile' => $isOwnProfile,
             'recommendedUsers' => $recommendedUsers,
             'isFollowing' => $isFollowing,
