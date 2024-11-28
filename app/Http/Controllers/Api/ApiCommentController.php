@@ -115,7 +115,7 @@ class ApiCommentController extends Controller
             $like->delete();
         });
 
-        return response()->json(['message' => 'You have unliked the comment.']);
+        return response()->json(['message' => 'Comment unliked successfully'], 200);
     }
 
     public function destroy(Request $request, $id)
@@ -130,6 +130,6 @@ class ApiCommentController extends Controller
             $comment->delete();
         });
 
-        return response()->json(['message' => 'Comment deleted successfully.']);
+        return response()->json(['message' => 'Comment deleted successfully.'], 200);
     }
 }
