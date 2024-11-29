@@ -22,7 +22,7 @@ class UserController extends Controller
         $this->authorize('viewAny', Post::class);
 
         $posts = $user->posts()
-            ->when(! Auth::user()->follows($user) && Auth::id() !== $id, function ($query) {
+            ->when(Auth::check() && ! Auth::user()->follows($user) && Auth::id() !== $id, function ($query) {
                 $query->where('is_public', true);
             })
             ->orderBy('likes', 'DESC')
