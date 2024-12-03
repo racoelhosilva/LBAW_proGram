@@ -13,13 +13,14 @@ const sendDelete = (url) => {
     });
 }
 
-const sendPost = (url) => {
+const sendPost = (url,data) => {
     return fetch(url, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-        }
+        },
+        body: JSON.stringify(data)
     }).then(response => {
         if (!response.ok) {
             throw new Error(response.json.error);
