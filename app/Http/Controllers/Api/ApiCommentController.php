@@ -56,7 +56,6 @@ class ApiCommentController extends Controller
         }
     }
 
-    //WORK IN PROGRESS
     public function update(Request $request, $id)
     {
         $comment = Comment::findOrFail($id);
@@ -64,8 +63,7 @@ class ApiCommentController extends Controller
         $this->authorize('update', $comment);
 
         $request->validate([
-            'content' => 'sometimes|required|string',
-            'likes' => 'sometimes|required|integer',
+            'content' => 'required|string',
         ]);
 
         $comment->update($request->all());

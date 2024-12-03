@@ -29,6 +29,22 @@ const sendPost = (url,data) => {
     });
 }
 
+const sendPatch = (url,data) => {
+    return fetch(url, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        },
+        body: JSON.stringify(data)
+    }).then(response => {
+        if (!response.ok) {
+            throw new Error(response.json.error);
+        }
+        return response.json();
+    });
+}
+
 const fadeToastMessage = (toastMessage) => {
     if (toastMessage.dataset.timeoutId) {
         clearTimeout(toastMessage.dataset.timeoutId);
@@ -65,4 +81,4 @@ const sendToastMessage = (message, type) => {
     fadeToastMessage(toastMessage);
 }
 
-export { sendDelete, sendPost, fadeToastMessage, sendToastMessage };
+export { sendDelete, sendPost, sendPatch, fadeToastMessage, sendToastMessage };
