@@ -112,7 +112,7 @@ Route::prefix('api')->group(function () {
         Route::post('/comment', 'store')->name('api.comment.store');
         // Route::get('/comment/{id}', 'show')->where('id', '[0-9]+')->name('api.comment.show');
         Route::patch('/comment/{id}', 'update')->where('id', '[0-9]+')->name('api.comment.update');
-        // Route::delete('/comment/{id}', 'destroy')->where('id', '[0-9]+')->name('api.comment.destroy');
+        Route::delete('/comment/{id}', 'destroy')->where('id', '[0-9]+')->name('api.comment.destroy');
         Route::post('/comment/{id}/like', 'like')->where('id', '[0-9]+')->name('api.comment.like');
         Route::delete('/comment/{id}/like', 'unlike')->where('id', '[0-9]+')->name('api.comment.unlike');
     });

@@ -1,4 +1,4 @@
-import { sendPost,sendPatch, sendToastMessage } from './utils';
+import { sendPost,sendPatch, sendToastMessage ,sendDelete} from './utils';
 
 const addSubmitCommentListener = () => {
     const form = document.getElementById('comment-submit-form');
@@ -99,8 +99,32 @@ const addEditCommentListener = () => {
     });
 };
 
-// Call the function to initialize the listeners
+const addDeleteCommentListener = () => {
+    const commentSection = document.getElementById('comment-section');
+    if (!commentSection) return;
+
+    const comments = commentSection.querySelectorAll('.comment-card');
+
+    comments.forEach(comment => {
+        const deleteButton = comment.querySelector('.delete-button-container button');
+        
+        if (deleteButton) {
+            deleteButton.addEventListener('click', () => {
+                const commentId = comment.dataset.commentId;
+                console.log('Deleting comment...');
+                sendDelete(`/api/comment/${commentId}`)
+                    .then((_) => {
+                        window.location.reload();
+                    })
+                    .catch((error) => {
+                        sendToastMessage('An error occurred while deleting comment.', 'error');
+                    });
+            });
+        }
+    });
+}
 addEditCommentListener();
+addDeleteCommentListener();
 
 addSubmitCommentListener();
 

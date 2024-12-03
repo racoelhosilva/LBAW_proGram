@@ -55,7 +55,7 @@ class Post extends Model
 
     public function allComments(): HasMany
     {
-        return $this->hasMany(Comment::class, 'post_id')->orderBy('timestamp', 'asc');
+        return $this->hasMany(Comment::class, 'post_id')->orderBy('timestamp', 'desc');
     }
 
     public function attachments(): HasMany
