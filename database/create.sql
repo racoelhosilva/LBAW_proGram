@@ -341,16 +341,16 @@ BEGIN
     UPDATE post
     SET tsvectors = (
         setweight(to_tsvector('english', post.title), 'A') ||
-        setweight(to_tsvector('english', coalesce((
+        setweight(to_tsvector('english', (
             SELECT users.name
             FROM users
             WHERE users.id = post.author_id
-        ), '')), 'A') ||
-        setweight(to_tsvector('english', coalesce((
+        )), 'A') ||
+        setweight(to_tsvector('english', (
             SELECT users.handle
             FROM users
             WHERE users.id = post.author_id
-        ), '')), 'A') ||
+        )), 'A') ||
         setweight(to_tsvector('english', coalesce(post.text, '')), 'B') ||
         setweight(to_tsvector('english', (
             SELECT coalesce(string_agg(comment.content, ' '), '')
@@ -432,8 +432,8 @@ BEGIN
     OR (TG_OP = 'UPDATE' AND (NEW.name <> OLD.name OR NEW.handle <> OLD.handle OR NEW.description <> OLD.description))
     THEN
         NEW.tsvectors = (
-            setweight(to_tsvector('english', coalesce(NEW.name, '')), 'A') ||
-            setweight(to_tsvector('english', coalesce(NEW.handle, '')), 'A') ||
+            setweight(to_tsvector('english', NEW.name), 'A') ||
+            setweight(to_tsvector('english', NEW.handle), 'A') ||
             setweight(to_tsvector('english', coalesce(NEW.description, '')), 'B')
         );
     END IF;
@@ -442,7 +442,7 @@ END;
 $$ LANGUAGE plpgsql;
 
 CREATE TRIGGER user_search_update
-BEFORE INSERT OR UPDATE ON users 
+AFTER INSERT OR UPDATE ON users 
 FOR EACH ROW
 EXECUTE PROCEDURE user_search_update();
 
