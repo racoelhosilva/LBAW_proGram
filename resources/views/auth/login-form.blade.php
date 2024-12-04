@@ -47,6 +47,13 @@
                 'submit' => true,
                 'anchorUrl' => route('github.auth'),
             ])
+            @include('partials.text-button', [
+                'text' => 'Continue with GitLab',
+                'label' => 'GitLab',
+                'type' => 'secondary',
+                'submit' => true,
+                'anchorUrl' => route('gitlab.auth'),
+            ])
 
         </div>
     </form>

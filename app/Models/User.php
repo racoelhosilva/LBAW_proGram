@@ -30,6 +30,8 @@ class User extends Authenticatable
         'email',
         'password',
         'google_id',
+        'github_id',
+        'gitlab_id',
         'register_timestamp',
         'handle',
         'is_public',
