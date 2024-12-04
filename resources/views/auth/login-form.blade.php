@@ -39,6 +39,14 @@
                 'submit' => true,
                 'anchorUrl' => route('google.auth'),
             ])
+            <!-- TODO: when the user is logging in using github after the first time, they get redirected automatically to the home page, but that process takes some time. maybe add a spinning loading indicator?  -->
+            @include('partials.text-button', [
+                'text' => 'Continue with GitHub',
+                'label' => 'GitHub',
+                'type' => 'secondary',
+                'submit' => true,
+                'anchorUrl' => route('github.auth'),
+            ])
 
         </div>
     </form>

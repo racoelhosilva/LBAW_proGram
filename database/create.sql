@@ -43,6 +43,7 @@ CREATE TABLE users (
     email TEXT NOT NULL UNIQUE,
     password TEXT,
 		google_id TEXT,
+		github_id TEXT,
     register_timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     handle TEXT NOT NULL UNIQUE,
     is_public BOOLEAN NOT NULL,
