@@ -18,8 +18,6 @@ class GoogleController extends Controller
         $data['name'] = trim($data['name']);
         $data['name'] = substr($data['name'], 0, 250);
 
-        $data['email'] = filter_var($data['email'], FILTER_SANITIZE_EMAIL);
-
         return $data;
     }
 
@@ -32,20 +30,32 @@ class GoogleController extends Controller
     {
 
         $google_user = Socialite::driver('google')->stateless()->user();
+        $user = User::where('email', $google_user->getEmail())->first();
+
+        // If there is already an existant user with the same email.
+        // NOTE: possible security issue if a user has access to other user's google account.
+        if ($user) {
+            $user->google_id = $google_user->getId();
+            $user->save();
+            Auth::login($user);
+
+            return redirect()->route('home');
+        }
+
         $user = User::where('google_id', $google_user->getId())->first();
-
-        $data = [
-            'name' => $google_user->getName(),
-            'email' => $google_user->getEmail(),
-            'handle' => $google_user->getNickname() ?? $google_user->getName(),
-            'is_public' => true,
-            'google_id' => $google_user->getId(),
-        ];
-
-        $data = $this->sanitizeGoogleData($data);
 
         // If the user does not exist, create one
         if (! $user) {
+
+            $data = [
+                'name' => $google_user->getName(),
+                'email' => $google_user->getEmail(),
+                'handle' => $google_user->getNickname() ?? $google_user->getName(),
+                'is_public' => false,
+                'google_id' => $google_user->getId(),
+            ];
+
+            $data = $this->sanitizeGoogleData($data);
 
             $new_user = new User;
 
