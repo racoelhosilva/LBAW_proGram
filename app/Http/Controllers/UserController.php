@@ -31,6 +31,7 @@ class UserController extends Controller
         $isOwnProfile = Auth::check() && Auth::id() === $user->id;
         $isFollowing = Auth::check() && Auth::user()->following()->where('followed_id', $user->id)->exists();
         $recommendedUsers = Auth::check() ? $this->recommendedUsers(Auth::user(), $user) : null;
+        $followStatus = Auth::check() ? Auth::user()->getFollowRequestStatus($user) : null;
 
         return view('pages.user', [
             'user' => $user,
@@ -38,6 +39,7 @@ class UserController extends Controller
             'isOwnProfile' => $isOwnProfile,
             'recommendedUsers' => $recommendedUsers,
             'isFollowing' => $isFollowing,
+            'followStatus' => $followStatus,
         ]);
     }
 

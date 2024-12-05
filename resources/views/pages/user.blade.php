@@ -13,6 +13,13 @@
             <div class="profile-buttons flex justify-end items-end">
                 @if ($isOwnProfile)
                     @include('partials.text-button', ['text' => 'Edit Profile', 'anchorUrl' => route('user.edit',auth()->id())])
+                @else 
+                    @isset($followStatus)
+                        <p>{{$followStatus}}</p>
+                    @else
+                        <p>Follow</p>
+                    @endisset
+                    
                 @endif
             </div>
         </section>
