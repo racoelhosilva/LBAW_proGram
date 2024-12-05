@@ -37,29 +37,30 @@
         <p class="whitespace-pre-wrap text-pretty break-words">{{ str_replace("\\n", "\n", $post->text) }}</p>
     </div>
     
-    <div class="-ms-3 col-span-3 grid grid-cols-[auto_1fr_50%] items-center">
-        <label class="flex items-center">
+    <div class="-ms-3 col-span-3 grid grid-cols-[auto_auto_1fr_50%] items-center">
+        <div class="flex items-center">
             @if(Auth::check() && Auth::id() !== $post->author->id)
-                <button aria-label="Like" class="p-3 .btn-transparent like-button {{ $post->likedBy(Auth::user()) ? 'liked' : '' }}">
+                <button aria-label="Like" class="p-3 transparent-btn like-button {{ $post->likedBy(Auth::user()) ? 'liked' : '' }}">
                     @include('partials.icon', ['name' => 'heart'])
                     @include('partials.icon', ['name' => 'filled-heart'])
                 </button>
             @else
-                <button aria-label="Like" class="p-3 .btn-transparent like-button" disabled>
+                <button aria-label="Like" class="p-3 transparent-btn like-button" disabled>
                     @include('partials.icon', ['name' => 'heart'])
                 </button>
             @endif
-                <p class="me-3 font-medium select-none">{{ $post->likes }}</p>
-        </label>
-        <a href="{{ $postUrl }}" class="flex items-center">
+            <p class="me-3 font-medium select-none">{{ $post->likes }}</p>
+        </div>
+        <div class="flex items-center">
             @include('partials.icon-button', [
                 'iconName' => 'message-square-text',
                 'label' => 'Comments',
                 'type' => 'transparent',
+                'anchorUrl' => $postUrl,
             ])
             <p class="font-medium select-none">{{ $post->comments }}</p>
-        </a>
-        <div class="select-none text-end break-keep">
+        </div>
+        <div class="select-none text-end break-keep col-start-4">
             @foreach ($post->tags as $tag)
                 {{-- TODO: Add tag search results link --}}
                 <span class="text-sm font-medium text-blue-600 dark:text-blue-400">{{ '#' . $tag->name }}</span>

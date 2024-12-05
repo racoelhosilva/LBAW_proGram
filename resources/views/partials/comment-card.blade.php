@@ -1,3 +1,5 @@
+@props(['comment'])
+
 @php
     $authorUrl = route('user.show', $comment->author->id);
 @endphp
@@ -12,12 +14,12 @@
     </div>
     <div class="flex flex-col items-center">
         @if(Auth::check() && Auth::id() !== $comment->author->id)
-            <button aria-label="Like" class="p-3 .btn-transparent like-button {{ $comment->likedBy(Auth::user()) ? 'liked' : '' }}">
+            <button aria-label="Like" class="p-3 transparent-btn like-button {{ $comment->likedBy(Auth::user()) ? 'liked' : '' }}">
                 @include('partials.icon', ['name' => 'heart'])
                 @include('partials.icon', ['name' => 'filled-heart'])
             </button>
         @else
-            <button aria-label="Like" class="p-3 .btn-transparent like-button" disabled>
+            <button aria-label="Like" class="p-3 transparent-btn like-button" disabled>
                 @include('partials.icon', ['name' => 'heart'])
             </button>
         @endif
