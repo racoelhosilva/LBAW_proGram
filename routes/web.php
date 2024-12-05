@@ -117,14 +117,16 @@ Route::prefix('api')->group(function () {
         Route::delete('/comment/{id}/like', 'unlike')->where('id', '[0-9]+')->name('api.comment.unlike');
     });
 
-    // Route::controller(ApiUserController::class)->group(function () {
-    //     Route::get('/user', 'list');
-    //     Route::get('/user/{id}', 'show');
-    //     Route::post('/user', 'create');
-    //     Route::delete('/user/{id}', 'delete');
-    //     Route::put('/user/{id}', 'update');
-    //     Route::get('/user/{id}/followers', 'listFollowers');
-    //     Route::get('/user/{id}/following', 'listFollowing');
-    //     Route::get('/user/{id}/post', 'listPosts');
-    // });
+    Route::controller(ApiUserController::class)->group(function () {
+        //     Route::get('/user', 'list');
+        //     Route::get('/user/{id}', 'show');
+        //     Route::post('/user', 'create');
+        //     Route::delete('/user/{id}', 'delete');
+        //     Route::put('/user/{id}', 'update');
+        //     Route::get('/user/{id}/followers', 'listFollowers');
+        //     Route::get('/user/{id}/following', 'listFollowing');
+        //     Route::get('/user/{id}/post', 'listPosts');
+        Route::post('/user/{id}/follow', 'follow')->where('id', '[0-9]+')->name('api.user.follow');
+        Route::delete('/user/{id}/follow', 'unfollow')->where('id', '[0-9]+')->name('api.user.unfollow');
+    });
 });

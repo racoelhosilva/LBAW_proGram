@@ -15,12 +15,12 @@
                     @include('partials.text-button', ['text' => 'Edit Profile', 'anchorUrl' => route('user.edit',auth()->id())])
                 @else 
                     @if ($isFollowing)
-                        <p>Following</p>
+                        @include('partials.text-button', ['text' => 'Unfollow', 'anchorUrl' => route('api.user.unfollow', $user->id)])
                     @else
                         @isset($followStatus)
-                            <p>{{ucfirst(strtolower($followStatus))}}</p>
+                            @include('partials.text-button', ['text' => 'Pending', 'type' => 'secondary'])
                         @else
-                            <p>Follow</p>
+                            @include('partials.text-button', ['text' => 'Follow', 'anchorUrl' => route('api.user.follow', $user->id)])
                         @endisset
                     @endif
                 @endif
