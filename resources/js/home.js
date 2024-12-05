@@ -1,10 +1,12 @@
 import { getView } from './utils';
+import { addLikeButtonListeners } from "./post.js";
 
 const loadMorePosts = async (homePosts, page) => {
     const posts = await getView(`/`, { page: page });
 
     if (posts.trim() !== '') {
         homePosts.insertAdjacentHTML('beforeend', posts);
+        addLikeButtonListeners();
         return false;
     } else {
         return true;
