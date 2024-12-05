@@ -62,7 +62,7 @@ const addLikeButtonListeners = () => {
 		const likeButton = postCard.querySelector(".like-button");
 		const likeCount = postCard.querySelector(".like-button + p");
 
-		likeButton.addEventListener("click", () =>	togglePostLike(likeButton, likeCount, postId));
+		likeButton.onclick = () =>	togglePostLike(likeButton, likeCount, postId);
 	});
 
 	const commentCards = document.querySelectorAll(".comment-card");
@@ -72,8 +72,10 @@ const addLikeButtonListeners = () => {
 		const likeButton = commentCard.querySelector(".like-button");
 		const likeCount = commentCard.querySelector(".like-button + p");
 
-        likeButton.addEventListener('click', () => toggleCommentLike(likeButton, likeCount, commentId));
+        likeButton.onclick = () => toggleCommentLike(likeButton, likeCount, commentId);
     });
 };
 
 addLikeButtonListeners();
+
+export { addLikeButtonListeners };
