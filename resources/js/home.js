@@ -15,19 +15,25 @@ const loadMorePosts = async (homePosts, page) => {
 
 const addHomeEventListeners = () => {
     const homePosts = document.querySelector('#home-posts');
-    if (!homePosts) {
+    const homePostsLoading = document.querySelector('#home-posts + div .loading-spinner');
+    if (!homePosts || !homePostsLoading) {
         return;
     }
 
     let loading = false;
     let atEnd = false;
     let page = 1;
+
     document.addEventListener('scroll', async () => {
         if (!atEnd && !loading && window.innerHeight + window.scrollY >= document.body.offsetHeight - 100) {
             loading = true;
+            homePostsLoading.classList.remove('hidden');
+
             page++;
             atEnd = await loadMorePosts(homePosts, page);
+
             loading = false;
+            homePostsLoading.classList.add('hidden');
         }
     });
 }
