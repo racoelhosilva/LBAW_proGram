@@ -42,6 +42,10 @@ Route::middleware('deny.banned')->group(function () {
     // Home
     Route::get('/', [HomeController::class, 'show'])->name('home');
 
+    Route::get('faqs', function () {
+        return view('pages.faqs');
+    })->name('faqs');
+
     // Post
     Route::controller(PostController::class)->group(function () {
         Route::post('/post', 'store')->name('post.store');
