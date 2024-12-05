@@ -49,7 +49,7 @@ class GitLabController extends Controller
                 'name' => $gitlab_user->getName(),
                 'email' => $gitlab_user->getEmail(),
                 'handle' => $gitlab_user->getNickname() ?? $gitlab_user->getName(),
-                'is_public' => false,
+                'is_public' => true,
                 'gitlab_id' => $gitlab_user->getId(),
             ];
 

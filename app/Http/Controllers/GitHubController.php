@@ -49,7 +49,7 @@ class GitHubController extends Controller
                 'name' => $github_user->getName(),
                 'email' => $github_user->getEmail(),
                 'handle' => $github_user->getNickname() ?? $github_user->getName(),
-                'is_public' => false,
+                'is_public' => true,
                 'github_id' => $github_user->getId(),
             ];
 

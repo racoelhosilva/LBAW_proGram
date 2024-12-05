@@ -51,7 +51,7 @@ class GoogleController extends Controller
                 'name' => $google_user->getName(),
                 'email' => $google_user->getEmail(),
                 'handle' => $google_user->getNickname() ?? $google_user->getName(),
-                'is_public' => false,
+                'is_public' => true,
                 'google_id' => $google_user->getId(),
             ];
 
