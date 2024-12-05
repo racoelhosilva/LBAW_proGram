@@ -1,9 +1,24 @@
-const sendDelete = (url) => {
+const getView = (url) => {
     return fetch(url, {
-        method: 'DELETE',
+        method: 'GET',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+        }
+    }).then(response => {
+        if (!response.ok) {
+            throw new Error('Unexpected error occurred');
+        }
+        return response.text();
+    });
+}
+
+const sendPost = (url) => {
+    return fetch(url, {
+        method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+            'X-Requested-With': 'XMLHttpRequest',
         }
     }).then(response => {
         if (!response.ok) {
@@ -13,12 +28,13 @@ const sendDelete = (url) => {
     });
 }
 
-const sendPost = (url) => {
+const sendDelete = (url) => {
     return fetch(url, {
-        method: 'POST',
+        method: 'DELETE',
         headers: {
             'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+            'X-Requested-With': 'XMLHttpRequest',
         }
     }).then(response => {
         if (!response.ok) {
@@ -64,4 +80,4 @@ const sendToastMessage = (message, type) => {
     fadeToastMessage(toastMessage);
 }
 
-export { sendDelete, sendPost, fadeToastMessage, sendToastMessage };
+export { getView, sendDelete, sendPost, fadeToastMessage, sendToastMessage };

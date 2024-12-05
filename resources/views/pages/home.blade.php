@@ -20,7 +20,7 @@
             @endif
         </section>
 
-        <section class="card h-min flex flex-col gap-3 col-span-2">
+        <section id="home-posts" class="card h-min flex flex-col gap-3 col-span-2">
             <h1 class="text-xl font-bold">Recommended Posts</h1>
             @include('partials.post-list', ['posts' => $posts])
         </section>
