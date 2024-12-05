@@ -19,7 +19,7 @@ class HomeController extends Controller
         $posts = $this->getHomepagePosts();
 
         if ($request->ajax()) {
-            return view('partials.post-list', ['posts' => $posts]);
+            return view('partials.post-list', ['posts' => $posts, 'showEmpty' => false]);
         }
 
         return view('pages.home', [

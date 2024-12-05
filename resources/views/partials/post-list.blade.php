@@ -1,7 +1,9 @@
-@props(['posts'])
+@props(['posts', 'showEmpty' => true])
 
 @forelse ($posts as $post)
     @include('partials.post-card', ['post' => $post])
 @empty
-    <p>No posts at the moment</p>
+    @if ($showEmpty)
+        <p>No posts at the moment</p>
+    @endif
 @endforelse
