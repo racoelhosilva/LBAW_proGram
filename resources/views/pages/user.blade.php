@@ -14,12 +14,15 @@
                 @if ($isOwnProfile)
                     @include('partials.text-button', ['text' => 'Edit Profile', 'anchorUrl' => route('user.edit',auth()->id())])
                 @else 
-                    @isset($followStatus)
-                        <p>{{$followStatus}}</p>
+                    @if ($isFollowing)
+                        <p>Following</p>
                     @else
-                        <p>Follow</p>
-                    @endisset
-                    
+                        @isset($followStatus)
+                            <p>{{ucfirst(strtolower($followStatus))}}</p>
+                        @else
+                            <p>Follow</p>
+                        @endisset
+                    @endif
                 @endif
             </div>
         </section>
