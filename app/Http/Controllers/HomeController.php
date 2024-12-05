@@ -57,10 +57,7 @@ class HomeController extends Controller
             ->when(Auth::check() && Auth::user()->following->isNotEmpty(), function ($query) {
                 $followedUserIds = Auth::user()->following->pluck('id');
 
-                if (! empty($followedUserIds)) {
-                    $query->orWhereIn('author_id', $followedUserIds)
-                        ->orderByRaw('CASE WHEN author_id IN ('.implode(',', array_fill(0, count($followedUserIds), '?')).') THEN 1 ELSE 2 END', $followedUserIds);
-                }
+                $query->orderByRaw('CASE WHEN author_id IN ('.implode(',', array_fill(0, count($followedUserIds), '?')).') THEN 1 ELSE 2 END', $followedUserIds);
             })
             ->orderByRaw('(likes / POW((EXTRACT(EPOCH FROM (NOW() - creation_timestamp)) / 3600) + 2, 1.5)) DESC')
             ->simplePaginate(10);
