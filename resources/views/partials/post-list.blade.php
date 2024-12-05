@@ -1,10 +1,7 @@
 @props(['posts'])
 
-@if ($posts)
-    @foreach ($posts as $post)
-        @include('partials.post-card', ['post' => $post])
-    @endforeach
-    <a href="{{ $posts->nextPageUrl() }}">Next posts</a>
-@else
+@forelse ($posts as $post)
+    @include('partials.post-card', ['post' => $post])
+@empty
     <p>No posts at the moment</p>
-@endif
+@endforelse
