@@ -22,12 +22,7 @@
 
         <section class="card h-min flex flex-col gap-3 col-span-2">
             <h1 class="text-xl font-bold">Recommended Posts</h1>
-            @forelse ($posts as $post)
-                @include('partials.post-card', ['post' => $post])
-            @empty
-                <p>No posts at the moment</p>
-            @endforelse
-
+            @include('partials.post-list', ['posts' => $posts])
         </section>
 
         <section class="card h-min flex flex-col gap-3">

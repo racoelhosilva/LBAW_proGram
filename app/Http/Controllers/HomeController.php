@@ -5,19 +5,26 @@ namespace App\Http\Controllers;
 use App\Models\Post;
 use App\Models\Tag;
 use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
 class HomeController extends Controller
 {
-    public function show(): View
+    public function show(Request $request): View
     {
         $this->authorize('viewAny', Post::class);
         $this->authorize('viewAny', User::class);
 
+        $posts = $this->getHomepagePosts();
+
+        if ($request->ajax()) {
+            return view('pages.post-list', ['posts' => $posts]);
+        }
+
         return view('pages.home', [
             'users' => $this->getTopUsers(),
-            'posts' => $this->getHomepagePosts(),
+            'posts' => $posts,
             'tags' => $this->getTrendingTags(),
         ]);
     }
@@ -50,12 +57,13 @@ class HomeController extends Controller
             ->when(Auth::check() && Auth::user()->following->isNotEmpty(), function ($query) {
                 $followedUserIds = Auth::user()->following->pluck('id');
 
-                $query->orWhereIn('author_id', $followedUserIds)
-                    ->orderByRaw('CASE WHEN author_id IN ('.implode(',', array_fill(0, count($followedUserIds), '?')).') THEN 1 ELSE 2 END', $followedUserIds);
+                if (! empty($followedUserIds)) {
+                    $query->orWhereIn('author_id', $followedUserIds)
+                        ->orderByRaw('CASE WHEN author_id IN ('.implode(',', array_fill(0, count($followedUserIds), '?')).') THEN 1 ELSE 2 END', $followedUserIds);
+                }
             })
             ->orderByRaw('(likes / POW((EXTRACT(EPOCH FROM (NOW() - creation_timestamp)) / 3600) + 2, 1.5)) DESC')
-            ->limit(30)
-            ->get();
+            ->simplePaginate(10);
     }
 
     private function getTrendingTags()
