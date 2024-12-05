@@ -1,5 +1,14 @@
-const getView = (url) => {
-    return fetch(url, {
+const encodeParams = (params) => {
+    if (!params) {
+        return '';
+    }
+    return '?' + Object.keys(params).map(key => {
+        return encodeURIComponent(key) + '=' + encodeURIComponent(params[key]);
+    }).join('&');
+}
+
+const getView = (url, params) => {
+    return fetch(url + encodeParams(params), {
         method: 'GET',
         headers: {
             'X-Requested-With': 'XMLHttpRequest',
