@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\ApiPostController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\MailController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\UserController;
@@ -37,6 +38,8 @@ Route::controller(RegisterController::class)->group(function () {
     Route::get('/register', 'show')->name('register');
     Route::post('/register', 'register');
 });
+
+Route::post('/sendemail', [MailController::class, 'send']);
 
 Route::middleware('deny.banned')->group(function () {
     // Home
