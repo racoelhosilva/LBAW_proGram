@@ -15,12 +15,23 @@
                     @include('partials.text-button', ['text' => 'Edit Profile', 'anchorUrl' => route('user.edit',auth()->id())])
                 @else 
                     @if ($isFollowing)
-                        @include('partials.text-button', ['text' => 'Unfollow', 'anchorUrl' => route('api.user.unfollow', $user->id)])
+                        <form action="{{ route('api.user.unfollow', $user->id) }}" method="POST">
+                            @csrf
+                            @method('DELETE')
+                            @include('partials.text-button', ['text' => 'Unfollow'])
+                        </form>
                     @else
                         @isset($followStatus)
-                            @include('partials.text-button', ['text' => 'Pending', 'type' => 'secondary'])
+                            <form action="{{ route('api.user.unfollow', $user->id) }}" method="POST">
+                                @csrf
+                                @method('DELETE')
+                                @include('partials.text-button', ['text' => 'Pending', 'type' => 'secondary'])
+                            </form>
                         @else
-                            @include('partials.text-button', ['text' => 'Follow', 'anchorUrl' => route('api.user.follow', $user->id)])
+                            <form action="{{ route('api.user.follow', $user->id) }}" method="POST">
+                                @csrf
+                                @include('partials.text-button', ['text' => 'Follow'])
+                            </form>
                         @endisset
                     @endif
                 @endif

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Follow;
+use App\Models\FollowRequest;
 use App\Models\User;
 use App\Models\UserStats;
 use Illuminate\Http\Request;
@@ -121,5 +123,66 @@ class ApiUserController extends Controller
 
         return response()->json($user->followRequests);
 
+    }
+
+    public function follow($id)
+    {
+        $targetUser = User::findOrFail($id);
+        $currentUser = Auth()->user();
+
+        // TODO: implement policy @HenriqueSFernandes
+
+        if ($currentUser->follows($targetUser)) {
+            return response()->json(['message' => 'User already followed.'], 200);
+        }
+
+        $requestStatus = $currentUser->getFollowRequestStatus($targetUser);
+        if ($requestStatus === 'accepted' || $requestStatus === 'pending') {
+            return response()->json(['message' => 'Follow request already sent.'], 200);
+        }
+
+        if ($targetUser->is_public) {
+            $follow = new Follow;
+            $follow->follower_id = $currentUser->id;
+            $follow->followed_id = $targetUser->id;
+            $follow->save();
+
+            return response()->json(['message' => 'User followed.'], 200);
+        } else {
+            $followRequest = new FollowRequest;
+            $followRequest->follower_id = $currentUser->id;
+            $followRequest->followed_id = $targetUser->id;
+            $followRequest->save();
+
+            return response()->json(['message' => 'Follow request sent.'], 200);
+        }
+    }
+
+    public function unfollow($id)
+    {
+        $targetUser = User::findOrFail($id);
+        $currentUser = Auth()->user();
+
+        // TODO: implement policy @HenriqueSFernandes
+
+        if ($currentUser->follows($targetUser)) {
+
+            $follow = Follow::where('follower_id', $currentUser->id)
+                ->where('followed_id', $targetUser->id)
+                ->first();
+
+            $follow->delete();
+
+        }
+
+        $request = FollowRequest::where('follower_id', $currentUser->id)
+            ->where('followed_id', $targetUser->id)
+            ->first();
+
+        if ($request) {
+            $request->delete();
+        }
+
+        return response()->json(['message' => 'User unfollowed.'], 200);
     }
 }
