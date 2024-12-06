@@ -73,10 +73,7 @@
     
     <div class="-ms-3 col-span-3 grid grid-cols-[auto_auto_1fr_50%] items-center">
         <div class="flex items-center">
-            <button aria-label="Like" class="p-3 transparent-btn like-button {{ $post->likedBy(Auth::user()) ? 'liked' : '' }} {{ auth()->user()->can('like', $post) }}">
-                @include('partials.icon', ['name' => 'heart'])
-                @include('partials.icon', ['name' => 'filled-heart'])
-            </button>
+            @include('partials.like-button', ['liked' => $post->likedBy(auth()->user()), 'enabled' => auth()->user()->can('like', $post)])
             <p class="me-3 font-medium select-none">{{ $post->likes }}</p>
         </div>
         <div class="flex items-center">
