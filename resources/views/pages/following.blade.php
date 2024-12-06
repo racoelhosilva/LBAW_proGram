@@ -6,13 +6,16 @@
 <article id="users" class="mx-12 card space-y-3">
     <h3 class="text-xl font-bold">Followed by {{$user->name}}</h3>
     @forelse ($user->following as $following)
-        @include('partials.user-card', ['user' => $following])
+
         @if (Auth::check() && Auth::id() == $user->id)
             <form action="{{ route('api.user.unfollow', $following->id) }}" method="POST">
                 @csrf
                 @method('DELETE')
-                @include('partials.text-button', ['text' => 'Unfollow', 'type' => 'secondary'])
+                @include('partials.user-card', ['user' => $following, 'buttonText' => 'Unfollow'])
             </form>
+
+        @else
+            @include('partials.user-card', ['user' => $following])
         @endif
     @empty
         <p>This user does not follow any other user</p>
