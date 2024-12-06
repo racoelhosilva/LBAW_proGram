@@ -32,12 +32,21 @@ class SearchController extends Controller
     {
         $request->validate([
             'query' => 'nullable|string',
+            'search_type' => 'nullable|string',
         ]);
 
         $query = $request->input('query') ?? '';
-        $posts = $this->searchPosts($query);
-        $users = $this->searchUsers($query);
 
-        return view('pages.search', ['posts' => $posts, 'users' => $users]);
+        switch ($request->input('type')) {
+            case 'posts':
+            default:
+                $results = $this->searchPosts($query);
+                break;
+            case 'users':
+                $results = $this->searchUsers($query);
+                break;
+        }
+
+        return view('pages.search', ['type' => $request->input('search_type'), 'results' => $results]);
     }
 }
