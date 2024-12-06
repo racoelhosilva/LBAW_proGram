@@ -25,9 +25,9 @@ class UserController extends Controller
             ->when(Auth::check() && ! Auth::user()->follows($user) && Auth::id() !== $id, function ($query) {
                 $query->where('is_public', true);
             })
-            ->orderBy('likes', 'DESC')
+            ->orderBy('is_announcement', 'DESC')
+            ->orderBy('creation_timestamp', 'DESC')
             ->paginate(10);
-
         $isOwnProfile = Auth::check() && Auth::id() === $user->id;
         $isFollowing = Auth::check() && Auth::user()->following()->where('followed_id', $user->id)->exists();
         $recommendedUsers = Auth::check() ? $this->recommendedUsers(Auth::user(), $user) : null;

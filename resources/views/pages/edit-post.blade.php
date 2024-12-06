@@ -40,6 +40,12 @@
                         <span class="font-medium">Make this post public</span>
                     </label>
                 </section>
+                <section class="flex flex-col">
+                    <label class="mb-2">
+                        <input type="checkbox" name="is_announcement" value="1" {{ $post->is_announcement ? 'checked' : '' }}> 
+                        <span class="font-medium">Make this post an announcement</span>
+                    </label>
+                </section>
                 @include('partials.text-button', ['text' => 'Update Post', 'label' => 'update', 'type' => 'primary', 'submit' => true])
             </form>
             
