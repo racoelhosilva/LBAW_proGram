@@ -442,7 +442,7 @@ END;
 $$ LANGUAGE plpgsql;
 
 CREATE TRIGGER user_search_update
-AFTER INSERT OR UPDATE ON users 
+BEFORE INSERT OR UPDATE ON users
 FOR EACH ROW
 EXECUTE PROCEDURE user_search_update();
 
