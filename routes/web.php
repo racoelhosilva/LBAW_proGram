@@ -133,5 +133,6 @@ Route::prefix('api')->group(function () {
         //     Route::get('/user/{id}/post', 'listPosts');
         Route::post('/user/{id}/follow', 'follow')->where('id', '[0-9]+')->name('api.user.follow');
         Route::delete('/user/{id}/follow', 'unfollow')->where('id', '[0-9]+')->name('api.user.unfollow');
+        Route::delete('/follower/{id}', 'remove')->where('id', '[0-9]+')->name('api.follower.remove');
     });
 });

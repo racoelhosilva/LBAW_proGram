@@ -197,4 +197,42 @@ class ApiUserController extends Controller
 
         return response()->json(['message' => 'User unfollowed.'], 200);
     }
+
+    public function remove($id)
+    {
+        $follower = User::findOrFail($id);
+        $currentUser = Auth()->user();
+
+        // TODO: implement policy @HenriqueSFernandes
+
+        if ($follower->follows($currentUser)) {
+            DB::transaction(function () use ($currentUser, $follower) {
+                $follow = Follow::where('follower_id', $follower->id)
+                    ->where('followed_id', $currentUser->id)
+                    ->first();
+
+                $notification = $currentUser->notifications()
+                    ->where('type', 'follow')
+                    ->where('follow_id', $follow->id)->latest('timestamp')->first();
+
+                $notification->delete();
+
+                $follow = Follow::where('follower_id', $follower->id)
+                    ->where('followed_id', $currentUser->id)
+                    ->first();
+
+                $follow->delete();
+            });
+        }
+
+        $request = FollowRequest::where('follower_id', $follower->id)
+            ->where('followed_id', $currentUser->id)
+            ->first();
+
+        if ($request) {
+            $request->delete();
+        }
+
+        return response()->json(['message' => 'Follower removed.'], 200);
+    }
 }
