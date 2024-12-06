@@ -60,6 +60,7 @@ Route::middleware('deny.banned')->group(function () {
         Route::get('/user/{id}/edit', 'edit')->where('id', '[0-9]+')->name('user.edit');
         Route::get('/user/{id}/followers', 'followers')->where('id', '[0-9]+')->name('user.followers');
         Route::get('/user/{id}/following', 'following')->where('id', '[0-9]+')->name('user.following');
+        Route::get('/user/{id}/requests', 'requests')->where('id', '[0-9]+')->name('user.requests');
     });
 
     // Search

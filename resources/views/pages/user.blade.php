@@ -93,6 +93,9 @@
             <article id="follows" class="card col-span-4 space-y-3">
                 <a href={{'/user/' . $user->id . '/followers'}} class="text-xl font-bold block">Followers: {{ $user->num_followers }}</a>
                 <a href={{'/user/' . $user->id . '/following'}} class="text-xl font-bold block">Following: {{ $user->num_following }}</a>
+                @if($isOwnProfile)
+                    <a href={{'/user/' . $user->id . '/requests'}} class="text-xl font-bold block">Requests: {{ $user->followRequests->count() }}</a>
+                @endif
             </article>
 
             @if ($recommendedUsers !== null && $recommendedUsers->count() > 0)

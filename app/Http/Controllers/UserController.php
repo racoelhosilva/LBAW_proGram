@@ -174,6 +174,9 @@ class UserController extends Controller
     {
         $user = User::findOrFail($id);
 
+        // TODO: Add policy
+        // User should be public, followed by the authenticated user or the user itself
+
         return view('pages.followers', ['user' => $user]);
     }
 
@@ -181,6 +184,19 @@ class UserController extends Controller
     {
         $user = User::findOrFail($id);
 
+        // TODO: Add policy
+        // User should be public, followed by the authenticated user or the user itself
+
         return view('pages.following', ['user' => $user]);
+    }
+
+    public function requests(int $id)
+    {
+        $user = User::findOrFail($id);
+
+        // TODO: Add policy
+        // User should be the authenticated user itself
+
+        return view('pages.requests', ['user' => $user, 'requests' => $user->followRequests]);
     }
 }
