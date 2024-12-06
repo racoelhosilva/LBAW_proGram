@@ -75,6 +75,13 @@ CREATE TABLE user_stats (
     FOREIGN KEY (user_id) REFERENCES users (id) ON UPDATE CASCADE
 );
 
+CREATE TABLE password_reset_tokens (
+    id SERIAL,
+	  email TEXT NOT NULL UNIQUE,
+	  token TEXT NOT NULL,
+	  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
 CREATE TABLE language (
     id SERIAL,
     name TEXT NOT NULL UNIQUE,

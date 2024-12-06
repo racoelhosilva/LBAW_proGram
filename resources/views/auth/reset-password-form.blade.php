@@ -1,8 +1,8 @@
 <article class="card h-min p-10 pt-16 grid gap-12 justify-items-center col-start-2">
     @include('partials.logo', ['size' => 'large'])
 
-    <form method="post" action="{{ route('login') }}" class="grid gap-4 justify-self-stretch">
-        {{ csrf_field() }}
+    <form method="post" action="{{ route('password.update') }}" class="grid gap-4 justify-self-stretch">
+        @csrf
 
         @include('partials.input-field', [
             'name' => 'email',
@@ -20,29 +20,25 @@
             'required' => true,
         ])
 
+        @include('partials.input-field', [
+            'name' => 'password_confirmation',
+            'label' => 'Password Confirmation',
+            'type' => 'password',
+            'placeholder' => 'password123',
+            'required' => true,
+        ])
+
+        <input id="token" name="token" type="hidden" value="{{ $token }}">
+
         <div class="flex flex-col">
-            <div class="flex flex-row justify-between">
-                <a href="{{ route('forgot-password') }}">
-                    <span class="font-medium italic">
-                        Forgot Password?
-                    </span>
-                </a>
-                <label class="mb-2">
-                    <input type="checkbox" name="remember" {{ old('remember') ? 'checked' : '' }}> <span
-                        class="font-medium">Remember Me</span>
-                </label>
-            </div>
 
             @include('partials.text-button', [
-                'text' => 'Login',
-                'label' => 'Login',
+                'text' => 'Reset Password',
+                'label' => 'Reset',
                 'type' => 'primary',
                 'submit' => true,
             ])
         </div>
     </form>
 
-    <p>
-        Don't have an account? <a href="{{ route('register') }}" class="text-blue-600 dark:text-blue-400">Register</a>
-    </p>
 </article>
