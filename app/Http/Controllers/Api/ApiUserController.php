@@ -167,6 +167,7 @@ class ApiUserController extends Controller
         // TODO: implement policy @HenriqueSFernandes
 
         if ($currentUser->follows($targetUser)) {
+
             DB::transaction(function () use ($currentUser, $targetUser) {
                 $follow = Follow::where('follower_id', $currentUser->id)
                     ->where('followed_id', $targetUser->id)
