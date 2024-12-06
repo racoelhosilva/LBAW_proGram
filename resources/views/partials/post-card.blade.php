@@ -73,16 +73,10 @@
     
     <div class="-ms-3 col-span-3 grid grid-cols-[auto_auto_1fr_50%] items-center">
         <div class="flex items-center">
-            @if(Auth::check() && Auth::id() !== $post->author->id)
-                <button aria-label="Like" class="p-3 transparent-btn like-button {{ $post->likedBy(Auth::user()) ? 'liked' : '' }}">
-                    @include('partials.icon', ['name' => 'heart'])
-                    @include('partials.icon', ['name' => 'filled-heart'])
-                </button>
-            @else
-                <button aria-label="Like" class="p-3 transparent-btn like-button" disabled>
-                    @include('partials.icon', ['name' => 'heart'])
-                </button>
-            @endif
+            <button aria-label="Like" class="p-3 transparent-btn like-button {{ $post->likedBy(Auth::user()) ? 'liked' : '' }} {{ auth()->user()->can('like', $post) }}">
+                @include('partials.icon', ['name' => 'heart'])
+                @include('partials.icon', ['name' => 'filled-heart'])
+            </button>
             <p class="me-3 font-medium select-none">{{ $post->likes }}</p>
         </div>
         <div class="flex items-center">
