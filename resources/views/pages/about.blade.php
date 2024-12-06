@@ -2,9 +2,8 @@
 @section('about') {{'About | ProGram'}} @endsection
 @section('content')
     <main id="about-page" class="px-8 ">
-        <section>
             <article class="flex flex-col items-center ">
-                <h1 class="text-4xl font-bold mb-4 text-blue-600">ProGram</h1>
+                <h1 class="text-4xl font-bold mb-4 ">ProGram</h1>
                 <h3 class="text-2xl  mb-4">Where Programmers Build More Than Code</h3>
                 <p class="text-xl text-justify ">
                     Welcome to our platform, a dynamic social network tailored specifically for programmers!
@@ -14,8 +13,8 @@
                 </p>
             </article>
             <article class="flex flex-col items-center mt-16">
-                <h1 class="text-4xl font-bold mb-4 text-blue-600">Main Features</h1>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <h1 class="text-4xl font-bold mb-4 ">Main Features</h1>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     <!-- Card 1 -->
                     <div class="card rounded-lg p-6  col-span-1">
                         <h3 class="text-2xl font-bold mb-4">Discover Public Profiles</h3>
@@ -62,7 +61,7 @@
                 
                 
             </article>
-        </section>
+    </main>
 
 
 @endsection
