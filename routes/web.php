@@ -58,6 +58,8 @@ Route::middleware('deny.banned')->group(function () {
         Route::get('/user/{id}', 'show')->where('id', '[0-9]+')->name('user.show');
         Route::post('/user/{id}', 'update')->where('id', '[0-9]+')->name('user.update');
         Route::get('/user/{id}/edit', 'edit')->where('id', '[0-9]+')->name('user.edit');
+        Route::get('/user/{id}/followers', 'followers')->where('id', '[0-9]+')->name('user.followers');
+        Route::get('/user/{id}/following', 'following')->where('id', '[0-9]+')->name('user.following');
     });
 
     // Search
@@ -118,6 +120,7 @@ Route::prefix('api')->group(function () {
         Route::delete('/comment/{id}/like', 'unlike')->where('id', '[0-9]+')->name('api.comment.unlike');
     });
 
+    // User
     Route::controller(ApiUserController::class)->group(function () {
         //     Route::get('/user', 'list');
         //     Route::get('/user/{id}', 'show');

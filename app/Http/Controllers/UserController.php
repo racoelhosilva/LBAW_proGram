@@ -168,6 +168,19 @@ class UserController extends Controller
                 ->sortByDesc('num_followers')
                 ->values();
         }
+    }
 
+    public function followers(int $id)
+    {
+        $user = User::findOrFail($id);
+
+        return view('pages.followers', ['user' => $user]);
+    }
+
+    public function following(int $id)
+    {
+        $user = User::findOrFail($id);
+
+        return view('pages.following', ['user' => $user]);
     }
 }

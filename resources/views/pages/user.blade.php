@@ -91,8 +91,8 @@
 
         <section id="profile-right" class="h-min col-span-4 lg:col-span-1 grid grid-cols-4 space-y-3">
             <article id="follows" class="card col-span-4 space-y-3">
-                <p class="text-xl font-bold">Followers: {{ $user->num_followers }}</p>
-                <p class="text-xl font-bold">Following: {{ $user->num_following }}</p>
+                <a href={{'/user/' . $user->id . '/followers'}} class="text-xl font-bold block">Followers: {{ $user->num_followers }}</a>
+                <a href={{'/user/' . $user->id . '/following'}} class="text-xl font-bold block">Following: {{ $user->num_following }}</a>
             </article>
 
             @if ($recommendedUsers !== null && $recommendedUsers->count() > 0)
