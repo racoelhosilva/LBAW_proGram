@@ -23,13 +23,16 @@
                     <div class="flex items-center justify-between px-4">
                         <h1 class="text-xl font-bold question">{{ $faq['question'] }}</h1>
                         <div class="arrow-up-icon-container">
-                            @include('partials.icon', ['name' => 'arrow-up', 'class' => 'max-w-10'])
+                            @include('partials.icon', ['name' => 'plus', 'class' => 'max-w-10'])
                         </div>
                         <div class="arrow-down-icon-container hidden">
-                            @include('partials.icon', ['name' => 'arrow-down', 'class' => 'max-w-10'])
+                            @include('partials.icon', ['name' => 'x', 'class' => 'max-w-10'])
                         </div>
                     </div>
-                    <p class="hidden answer mt-4 px-4">{{ $faq['answer'] }}</p>
+                    <p class="max-h-0 overflow-hidden transition-all duration-300 ease-in-out answer  px-4">
+                        {{ $faq['answer'] }}
+                    </p>
+                    
                 </article>
             @endforeach
         </section>
