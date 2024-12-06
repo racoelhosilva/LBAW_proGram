@@ -32,6 +32,7 @@ class UserController extends Controller
         $isFollowing = Auth::check() && Auth::user()->following()->where('followed_id', $user->id)->exists();
         $recommendedUsers = Auth::check() ? $this->recommendedUsers(Auth::user(), $user) : null;
         $followStatus = Auth::check() ? Auth::user()->getFollowRequestStatus($user) : null;
+        $num_requests = Auth::check() ? Auth::user()->followRequests()->where('status', 'pending')->count() : 0;
 
         return view('pages.user', [
             'user' => $user,
@@ -40,6 +41,7 @@ class UserController extends Controller
             'recommendedUsers' => $recommendedUsers,
             'isFollowing' => $isFollowing,
             'followStatus' => $followStatus,
+            'num_requests' => $num_requests,
         ]);
     }
 
@@ -197,6 +199,10 @@ class UserController extends Controller
         // TODO: Add policy
         // User should be the authenticated user itself
 
-        return view('pages.requests', ['user' => $user, 'requests' => $user->followRequests]);
+        $followRequests = $user->followRequests()
+            ->where('status', 'pending')
+            ->get();
+
+        return view('pages.requests', ['user' => $user, 'requests' => $followRequests]);
     }
 }

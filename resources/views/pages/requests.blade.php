@@ -9,8 +9,14 @@
         @forelse ($requests as $request)
             <div class="grid gap-x-4 gap-y-2 grid-cols-[1fr_auto_auto] items-center">
                 @include('partials.user-card', ['user' => $request->follower])
-                @include('partials.text-button', ['text' => 'Accept', 'type' => 'secondary'])
-                @include('partials.text-button', ['text' => 'Reject', 'type' => 'secondary'])
+                <form action="{{ route('api.follow-request.accept', $request->follower) }}" method="POST">
+                    @csrf
+                    @include('partials.text-button', ['text' => 'Accept', 'type' => 'secondary'])
+                </form>
+                <form action="{{ route('api.follow-request.reject', $request->follower) }}" method="POST">
+                    @csrf
+                    @include('partials.text-button', ['text' => 'Reject', 'type' => 'secondary'])
+                </form>
             </div>
         @empty
             <p>This user has no follow requests</p>

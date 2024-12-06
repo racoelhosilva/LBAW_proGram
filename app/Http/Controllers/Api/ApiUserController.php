@@ -198,7 +198,7 @@ class ApiUserController extends Controller
         return response()->json(['message' => 'User unfollowed.'], 200);
     }
 
-    public function remove($id)
+    public function removeFollower($id)
     {
         $follower = User::findOrFail($id);
         $currentUser = Auth()->user();
@@ -234,5 +234,43 @@ class ApiUserController extends Controller
         }
 
         return response()->json(['message' => 'Follower removed.'], 200);
+    }
+
+    public function accept($id)
+    {
+        $targetUser = User::findOrFail($id);
+        $currentUser = Auth()->user();
+
+        $followRequest = FollowRequest::where('follower_id', $targetUser->id)
+            ->where('followed_id', $currentUser->id)
+            ->first();
+
+        if (! $followRequest) {
+            return response()->json(['message' => 'Follow request not found.'], 404);
+        }
+
+        $followRequest->status = 'accepted';
+        $followRequest->save();
+
+        return response()->json(['message' => 'Follow request accepted.'], 200);
+    }
+
+    public function reject($id)
+    {
+        $targetUser = User::findOrFail($id);
+        $currentUser = Auth()->user();
+
+        $followRequest = FollowRequest::where('follower_id', $targetUser->id)
+            ->where('followed_id', $currentUser->id)
+            ->first();
+
+        if (! $followRequest) {
+            return response()->json(['message' => 'Follow request not found.'], 404);
+        }
+
+        $followRequest->status = 'rejected';
+        $followRequest->save();
+
+        return response()->json(['message' => 'Follow request rejected.'], 200);
     }
 }

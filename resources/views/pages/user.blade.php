@@ -94,7 +94,7 @@
                 <a href={{'/user/' . $user->id . '/followers'}} class="text-xl font-bold block">Followers: {{ $user->num_followers }}</a>
                 <a href={{'/user/' . $user->id . '/following'}} class="text-xl font-bold block">Following: {{ $user->num_following }}</a>
                 @if($isOwnProfile)
-                    <a href={{'/user/' . $user->id . '/requests'}} class="text-xl font-bold block">Requests: {{ $user->followRequests->count() }}</a>
+                    <a href={{'/user/' . $user->id . '/requests'}} class="text-xl font-bold block">Requests: {{ $num_requests }}</a>
                 @endif
             </article>
 
