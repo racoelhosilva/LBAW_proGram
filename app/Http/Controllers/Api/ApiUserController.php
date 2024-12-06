@@ -8,6 +8,7 @@ use App\Models\FollowRequest;
 use App\Models\User;
 use App\Models\UserStats;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ApiUserController extends Controller
 {
@@ -166,13 +167,23 @@ class ApiUserController extends Controller
         // TODO: implement policy @HenriqueSFernandes
 
         if ($currentUser->follows($targetUser)) {
+            DB::transaction(function () use ($currentUser, $targetUser) {
+                $follow = Follow::where('follower_id', $currentUser->id)
+                    ->where('followed_id', $targetUser->id)
+                    ->first();
 
-            $follow = Follow::where('follower_id', $currentUser->id)
-                ->where('followed_id', $targetUser->id)
-                ->first();
+                $notification = $targetUser->notifications()
+                    ->where('type', 'follow')
+                    ->where('follow_id', $follow->id)->latest('timestamp')->first();
 
-            $follow->delete();
+                $notification->delete();
 
+                $follow = Follow::where('follower_id', $currentUser->id)
+                    ->where('followed_id', $targetUser->id)
+                    ->first();
+
+                $follow->delete();
+            });
         }
 
         $request = FollowRequest::where('follower_id', $currentUser->id)

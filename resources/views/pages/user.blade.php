@@ -13,7 +13,7 @@
             <div class="profile-buttons flex justify-end items-end">
                 @if ($isOwnProfile)
                     @include('partials.text-button', ['text' => 'Edit Profile', 'anchorUrl' => route('user.edit',auth()->id())])
-                @else 
+                @elseif (Auth::check()) 
                     @if ($isFollowing)
                         <form action="{{ route('api.user.unfollow', $user->id) }}" method="POST">
                             @csrf
