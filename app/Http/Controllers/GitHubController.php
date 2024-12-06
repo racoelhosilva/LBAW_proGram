@@ -12,7 +12,7 @@ class GitHubController extends Controller
 {
     public function sanitizeGitHubData($data)
     {
-        $data['handle'] = preg_replace('/[^a-zA-Z0-9_-]/', '', $data['handle']);
+        $data['handle'] = preg_replace('/\s+/', '', $data['handle']);
         $data['handle'] = substr($data['handle'], 0, 20);
 
         $data['name'] = trim($data['name']);
