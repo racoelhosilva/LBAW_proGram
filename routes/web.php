@@ -44,7 +44,7 @@ Route::middleware('deny.banned')->group(function () {
 
     Route::get('/contactus', function () {
         return view('pages.contactus');
-    });
+    })->name('contactus');
 
     // Post
     Route::controller(PostController::class)->group(function () {
