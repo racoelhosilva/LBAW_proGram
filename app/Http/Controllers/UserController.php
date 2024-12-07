@@ -168,4 +168,82 @@ class UserController extends Controller
         }
 
     }
+
+    public function destroy(Request $request, int $id)
+    {
+
+        $user = User::findOrFail($id);
+
+        $this->authorize('delete', $user);
+
+        DB::transaction(function () use ($id) {
+            // Delete notifications.
+            DB::table('notification')
+                ->where('receiver_id', $id)
+                ->delete();
+            // Delete follow requests.
+            DB::table('follow_request')
+                ->where('follower_id', $id)
+                ->orWhere('followed_id', $id)
+                ->delete();
+            // Delete group join requests.
+            DB::table('group_join_request')
+                ->where('requester_id', $id)
+                ->delete();
+            // Delete group invitations.
+            DB::table('group_invitation')
+                ->where('invitee_id', $id)
+                ->delete();
+            // Delete group memberships.
+            DB::table('group_member')
+                ->where('user_id', $id)
+                ->delete();
+            // Delete bans.
+            DB::table('ban')
+                ->where('user_id', $id)
+                ->delete();
+            // Delete user token.
+            DB::table('token')
+                ->where('user_id', $id)
+                ->delete();
+            // Delete user stats.
+            $userStatsId = DB::table('user_stats')
+                ->where('user_id', $id)
+                ->value('id');
+            DB::table('user_stats_language')
+                ->where('user_stats_id', $userStatsId)
+                ->delete();
+            DB::table('user_stats_technology')
+                ->where('user_stats_id', $userStatsId)
+                ->delete();
+            DB::table('top_project')
+                ->where('user_stats_id', $userStatsId)
+                ->delete();
+            DB::table('user_stats')
+                ->where('user_id', $id)
+                ->delete();
+            // Delete user info.
+            DB::table('users')
+                ->where('id', $id)
+                ->update([
+                    'name' => $id,
+                    'email' => $id,
+                    'password' => $id,
+                    'handle' => $id,
+                    'is_public' => false,
+                    'description' => null,
+                    'profile_picture_url' => null,
+                    'banner_image_url' => null,
+                    'is_deleted' => true,
+                ]);
+
+        });
+
+        // If the user deleted is own account, log out.
+        if (Auth::check() && Auth::id() === $id) {
+            Auth::logout();
+        }
+
+        return redirect()->route('home')->withSuccess('User deleted successfully.');
+    }
 }
