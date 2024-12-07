@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\ApiCommentController;
 use App\Http\Controllers\Api\ApiPostController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\GroupController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\SearchController;
@@ -59,6 +60,17 @@ Route::middleware('deny.banned')->group(function () {
         Route::get('/user/{id}/edit', 'edit')->where('id', '[0-9]+')->name('user.edit');
     });
 
+    // Group
+    Route::controller(GroupController::class)->group(function () {
+        Route::get('/group', 'index')->name('group.index');
+        Route::post('/group', 'store')->name('group.store');
+        Route::get('/group/create', 'create')->name('group.create');
+        Route::get('/group/{id}', 'show')->where('id', '[0-9]+')->name('group.show');
+        Route::get('/group/{id}/members', 'showMembers')->where('id', '[0-9]+')->name('group.members');
+        Route::put('/group/{id}', 'update')->where('id', '[0-9]+')->name('group.update');
+        Route::delete('/group/{id}', 'destroy')->where('id', '[0-9]+')->name('group.destroy');
+        Route::get('/group/{id}/edit', 'edit')->where('id', '[0-9]+')->name('group.edit');
+    });
     // Search
     Route::get('/search', [SearchController::class, 'index'])->name('search');
 });
