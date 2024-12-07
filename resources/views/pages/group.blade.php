@@ -7,12 +7,14 @@
         <section id="banner-section" class="card h-min  grid grid-cols-[auto_1fr_1fr] gap-y-16 p-4 ">
             <div class="col-span-full flex justify-between">
                 <h1 class="text-4xl font-bold">{{ $group->name }}</h1>
-                @if($group->is_public)
-                    @include('partials.icon', ['name' => 'earth'])
+                <div class="min-w-[24px]">
+                    @if($group->is_public)
+                        @include('partials.icon', ['name' => 'earth','type' => 'secondary'])
+                    @else
+                        @include('partials.icon', ['name' => 'lock', 'type' => 'secondary'])
+                    @endif
+                </div>
 
-                @else
-                   @include('partials.icon', ['name' => 'lock'])
-                @endif
             </div>
             <div class="col-span-full flex justify-start items-end">
 
@@ -21,17 +23,20 @@
             </div>
             <div class="col-span-full flex justify-between ">
                 <div class="flex flex-col">
-                    <a href="{{ route('group.members', ['id' => $group->id]) }}" class="text-xl font-bold">{{$group->member_count}} members</a>
+                    @if($isMember || $group->is_public)
+                         <a href="{{ route('group.members', ['id' => $group->id]) }}" class="text-xl font-bold">{{$group->member_count}} members</a>
+                    @endif
                 </div>
 
-                <div class="buttons ">
+                <div class="buttons flex flex-col sm:flex-row gap-2">
                     @if ($isMember && !$isOwner)
                         @include('partials.text-button', ['text' => 'Leave Group'])
-                        @include('partials.text-button', ['text' => 'Create Post', 'url' => route('post.create', ['group_id' => $group->id])])
-                    @elseif (!$isMember)
+                        @include('partials.text-button', ['text' => 'Create Post', 'anchorurl' => route('post.create', ['group_id' => $group->id])])
+                    @elseif (!$isMember && $group->is_public)
                         @include('partials.text-button', ['text' => 'Join Group'])
                     @elseif($isOwner)
                         @include('partials.text-button', ['text' => 'Edit Group', 'anchorUrl' => route('group.edit', ['id' => $group->id])])
+                        @include('partials.text-button', ['text' => 'Manage Members ', 'anchorUrl' => route('group.manage', ['id' => $group->id])])
                     @endif
 
                 </div>

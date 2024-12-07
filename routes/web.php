@@ -70,6 +70,7 @@ Route::middleware('deny.banned')->group(function () {
         Route::put('/group/{id}', 'update')->where('id', '[0-9]+')->name('group.update');
         Route::delete('/group/{id}', 'destroy')->where('id', '[0-9]+')->name('group.destroy');
         Route::get('/group/{id}/edit', 'edit')->where('id', '[0-9]+')->name('group.edit');
+        Route::get('/group/{id}/manage', 'manage')->where('id', '[0-9]+')->name('group.manage');
     });
     // Search
     Route::get('/search', [SearchController::class, 'index'])->name('search');

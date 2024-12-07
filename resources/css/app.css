@@ -114,4 +114,9 @@
     .modal > div > div {
         @apply card col-start-2;
     }
+
+    .manage-selected
+    {
+        @apply bg-blue-400;
+    }
 }
