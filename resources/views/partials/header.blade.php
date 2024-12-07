@@ -11,6 +11,12 @@
                 'type' => 'primary',
                 'anchorUrl' => route('post.create'),
             ])
+            @include('partials.text-button', [
+                'text' => 'Create Group',
+                'id' => 'create-group-button',
+                'type' => 'primary',
+                'anchorUrl' => route('group.create'),
+            ])
         @endif
         @include('partials.icon-button', [
             'iconName' => 'home',
