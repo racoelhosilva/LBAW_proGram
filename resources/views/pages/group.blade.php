@@ -28,12 +28,12 @@
                     @endif
                 </div>
 
-                <div class="buttons flex flex-col sm:flex-row gap-2">
+                <div id="group-buttons-container" class="flex flex-col sm:flex-row gap-2" data-group-id={{$group->id}}>
                     @if ($isMember && !$isOwner)
                         @include('partials.text-button', ['text' => 'Leave Group'])
                         @include('partials.text-button', ['text' => 'Create Post', 'anchorurl' => route('post.create', ['group_id' => $group->id])])
                     @elseif (!$isMember && $group->is_public)
-                        @include('partials.text-button', ['text' => 'Join Group'])
+                        @include('partials.text-button', ['text' => 'Join Group', 'id'=>'join-group-button'])
                     @elseif($isOwner)
                         @include('partials.text-button', ['text' => 'Edit Group', 'anchorUrl' => route('group.edit', ['id' => $group->id])])
                         @include('partials.text-button', ['text' => 'Manage Members ', 'anchorUrl' => route('group.manage', ['id' => $group->id])])

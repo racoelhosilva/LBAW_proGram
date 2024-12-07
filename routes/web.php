@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\AdminPostController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Api\ApiCommentController;
+use App\Http\Controllers\Api\ApiGroupController;
 use App\Http\Controllers\Api\ApiPostController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
@@ -128,6 +129,10 @@ Route::prefix('api')->group(function () {
         // Route::delete('/comment/{id}', 'destroy')->where('id', '[0-9]+')->name('api.comment.destroy');
         Route::post('/comment/{id}/like', 'like')->where('id', '[0-9]+')->name('api.comment.like');
         Route::delete('/comment/{id}/like', 'unlike')->where('id', '[0-9]+')->name('api.comment.unlike');
+    });
+
+    Route::controller(ApiGroupController::class)->group(function () {
+        Route::post('/group/{id}/join', 'join')->where('id', '[0-9]+')->name('api.group.join');
     });
 
     // Route::controller(ApiUserController::class)->group(function () {

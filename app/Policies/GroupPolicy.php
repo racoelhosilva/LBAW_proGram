@@ -19,4 +19,9 @@ class GroupPolicy
     {
         return $user && ! $user->isBanned() && $user->id === $group->owner_id;
     }
+
+    public function join(?User $user, Group $group): bool
+    {
+        return $user && ! $user->isBanned() && ! $group->members()->where('user_id', $user->id)->exists();
+    }
 }
