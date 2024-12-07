@@ -2,11 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Ban;
+use App\Models\FollowRequest;
+use App\Models\GroupInvitation;
+use App\Models\GroupJoinRequest;
+use App\Models\GroupMember;
 use App\Models\Language;
+use App\Models\Notification;
 use App\Models\Post;
 use App\Models\Technology;
+use App\Models\Token;
 use App\Models\TopProject;
 use App\Models\User;
+use App\Models\UserStats;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -178,50 +186,40 @@ class UserController extends Controller
 
         DB::transaction(function () use ($id) {
             // Delete notifications.
-            DB::table('notification')
-                ->where('receiver_id', $id)
+            Notification::where('receiver_id', $id)
                 ->delete();
             // Delete follow requests.
-            DB::table('follow_request')
-                ->where('follower_id', $id)
+            FollowRequest::where('follower_id', $id)
                 ->orWhere('followed_id', $id)
                 ->delete();
             // Delete group join requests.
-            DB::table('group_join_request')
-                ->where('requester_id', $id)
+            GroupJoinRequest::where('requester_id', $id)
                 ->delete();
             // Delete group invitations.
-            DB::table('group_invitation')
-                ->where('invitee_id', $id)
+            GroupInvitation::where('invitee_id', $id)
                 ->delete();
             // Delete group memberships.
-            DB::table('group_member')
-                ->where('user_id', $id)
+            GroupMember::where('user_id', $id)
                 ->delete();
             // Delete bans.
-            DB::table('ban')
-                ->where('user_id', $id)
+            Ban::where('user_id', $id)
                 ->delete();
             // Delete user token.
-            DB::table('token')
-                ->where('user_id', $id)
+            Token::where('user_id', $id)
                 ->delete();
             // Delete user stats.
-            $userStatsId = DB::table('user_stats')
-                ->where('user_id', $id)
-                ->value('id');
+            $userStats = UserStats::where('user_id', $id)->first();
             DB::table('user_stats_language')
-                ->where('user_stats_id', $userStatsId)
+                ->where('user_stats_id', $userStats->id)
                 ->delete();
             DB::table('user_stats_technology')
-                ->where('user_stats_id', $userStatsId)
+                ->where('user_stats_id', $userStats->id)
                 ->delete();
             DB::table('top_project')
-                ->where('user_stats_id', $userStatsId)
+                ->where('user_stats_id', $userStats->id)
                 ->delete();
-            DB::table('user_stats')
-                ->where('user_id', $id)
-                ->delete();
+            $userStats->delete();
+
             // Delete user info.
             DB::table('users')
                 ->where('id', $id)
