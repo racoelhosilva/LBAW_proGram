@@ -82,6 +82,11 @@ class User extends Authenticatable
         return $this->hasMany(GroupInvitation::class, 'invitee_id');
     }
 
+    public function groupJoinRequests(): HasMany
+    {
+        return $this->hasMany(GroupJoinRequest::class, 'requester_id');
+    }
+
     public function followRequests(): HasMany
     {
         return $this->hasMany(FollowRequest::class, 'followed_id');
@@ -131,6 +136,11 @@ class User extends Authenticatable
     public function isBanned(): bool
     {
         return $this->bans()->active()->exists();
+    }
+
+    public function tokens()
+    {
+        return $this->hasMany(Token::class);
     }
 
     public function lastActiveBan(): ?Ban

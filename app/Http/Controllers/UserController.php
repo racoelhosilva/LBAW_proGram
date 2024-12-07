@@ -2,19 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Ban;
-use App\Models\FollowRequest;
-use App\Models\GroupInvitation;
-use App\Models\GroupJoinRequest;
 use App\Models\GroupMember;
 use App\Models\Language;
-use App\Models\Notification;
 use App\Models\Post;
 use App\Models\Technology;
 use App\Models\Token;
 use App\Models\TopProject;
 use App\Models\User;
-use App\Models\UserStats;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -184,31 +178,24 @@ class UserController extends Controller
 
         $this->authorize('delete', $user);
 
-        DB::transaction(function () use ($id) {
+        DB::transaction(function () use ($id, $user) {
             // Delete notifications.
-            Notification::where('receiver_id', $id)
-                ->delete();
+            $user->notifications()->delete();
             // Delete follow requests.
-            FollowRequest::where('follower_id', $id)
-                ->orWhere('followed_id', $id)
-                ->delete();
+            $user->followRequests()->delete();
             // Delete group join requests.
-            GroupJoinRequest::where('requester_id', $id)
-                ->delete();
+            $user->groupJoinRequests()->delete();
             // Delete group invitations.
-            GroupInvitation::where('invitee_id', $id)
-                ->delete();
+            $user->groupInvitations()->delete();
             // Delete group memberships.
             GroupMember::where('user_id', $id)
                 ->delete();
             // Delete bans.
-            Ban::where('user_id', $id)
-                ->delete();
+            $user->bans()->delete();
             // Delete user token.
-            Token::where('user_id', $id)
-                ->delete();
+            $user->tokens()->delete();
             // Delete user stats.
-            $userStats = UserStats::where('user_id', $id)->first();
+            $userStats = $user->stats;
             DB::table('user_stats_language')
                 ->where('user_stats_id', $userStats->id)
                 ->delete();
@@ -221,19 +208,17 @@ class UserController extends Controller
             $userStats->delete();
 
             // Delete user info.
-            DB::table('users')
-                ->where('id', $id)
-                ->update([
-                    'name' => $id,
-                    'email' => $id,
-                    'password' => $id,
-                    'handle' => $id,
-                    'is_public' => false,
-                    'description' => null,
-                    'profile_picture_url' => null,
-                    'banner_image_url' => null,
-                    'is_deleted' => true,
-                ]);
+            $user->update([
+                'name' => $id,
+                'email' => $id,
+                'password' => $id,
+                'handle' => $id,
+                'is_public' => false,
+                'description' => null,
+                'profile_picture_url' => null,
+                'banner_image_url' => null,
+                'is_deleted' => true,
+            ]);
 
         });
 
