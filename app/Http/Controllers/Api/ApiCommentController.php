@@ -5,10 +5,8 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Comment;
 use App\Models\CommentLike;
-use App\Models\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 
 class ApiCommentController extends Controller
 {
@@ -109,11 +107,7 @@ class ApiCommentController extends Controller
             return response()->json(['error' => 'You have not liked this comment'], 400);
         }
 
-        DB::transaction(function () use ($like) {
-            Notification::where('comment_like_id', $like->id)->delete();
-
-            $like->delete();
-        });
+        $like->delete();
 
         return response()->json(['message' => 'Comment unliked successfully'], 200);
     }
@@ -124,11 +118,7 @@ class ApiCommentController extends Controller
 
         $this->authorize('delete', $comment);
 
-        DB::transaction(function () use ($comment) {
-            Notification::where('comment_id', $comment->id)->delete();
-            $comment->allLikes()->delete();
-            $comment->delete();
-        });
+        $comment->delete();
 
         return response()->json(['message' => 'Comment deleted successfully.'], 200);
     }
