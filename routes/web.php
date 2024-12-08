@@ -80,6 +80,7 @@ Route::prefix('admin')->group(function () {
         // Admin users
         Route::get('/user', [AdminUserController::class, 'index'])->name('admin.user.index');
         Route::post('/user/{id}/ban', [AdminUserController::class, 'banUser'])->where('id', '[0-9]+')->name('admin.user.ban');
+				Route::delete('/user/{id}', 'deleteUser')->where('id', '[0-9]+')->name('admin.user.destroy');
 
         // Admin bans
         Route::get('/ban', [AdminBanController::class, 'index'])->name('admin.ban.index');
