@@ -20,7 +20,7 @@
             'required' => true,
         ])
 
-        <div class="flex flex-col">
+        <div class="flex flex-col space-y-4">
             <div class="flex flex-row justify-between">
                 <a href="{{ route('forgot-password') }}">
                     <span class="font-medium italic">
@@ -39,6 +39,29 @@
                 'type' => 'primary',
                 'submit' => true,
             ])
+            @include('partials.text-button', [
+                'text' => 'Continue with Google',
+                'label' => 'Google',
+                'type' => 'secondary',
+                'submit' => true,
+                'anchorUrl' => route('google.auth'),
+            ])
+            <!-- TODO: when the user is logging in using github after the first time, they get redirected automatically to the home page, but that process takes some time. maybe add a spinning loading indicator?  -->
+            @include('partials.text-button', [
+                'text' => 'Continue with GitHub',
+                'label' => 'GitHub',
+                'type' => 'secondary',
+                'submit' => true,
+                'anchorUrl' => route('github.auth'),
+            ])
+            @include('partials.text-button', [
+                'text' => 'Continue with GitLab',
+                'label' => 'GitLab',
+                'type' => 'secondary',
+                'submit' => true,
+                'anchorUrl' => route('gitlab.auth'),
+            ])
+
         </div>
     </form>
 

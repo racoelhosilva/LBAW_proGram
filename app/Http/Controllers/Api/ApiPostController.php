@@ -4,13 +4,10 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Comment;
-use App\Models\GroupPost;
-use App\Models\Notification;
 use App\Models\Post;
 use App\Models\PostLike;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 
 class ApiPostController extends Controller
 {
@@ -130,10 +127,7 @@ class ApiPostController extends Controller
             return response()->json(['error' => 'You have not liked this post.'], 400);
         }
 
-        DB::transaction(function () use ($like) {
-            Notification::where('post_like_id', $like->id)->delete();
-            $like->delete();
-        });
+        $like->delete();
 
         return response()->json(['message' => 'Post unliked successfully'], 200);
     }
@@ -191,44 +185,7 @@ class ApiPostController extends Controller
         $this->authorize('forceDelete', $post);
 
         try {
-            DB::transaction(function () use ($post) {
-                $postId = $post->id;
-
-                Notification::where('post_id', $postId)
-                    ->orWhereIn('comment_id', function ($query) use ($postId) {
-                        $query->select('id')
-                            ->from('comment')
-                            ->where('post_id', $postId);
-                    })
-                    ->orWhereIn('post_like_id', function ($query) use ($postId) {
-                        $query->select('id')
-                            ->from('post_like')
-                            ->where('post_id', $postId);
-                    })
-                    ->orWhereIn('comment_like_id', function ($query) use ($postId) {
-                        $query->select('comment_like.id')
-                            ->from('comment_like')
-                            ->join('comment', 'comment_like.comment_id', '=', 'comment.id')
-                            ->where('comment.post_id', $postId);
-                    })
-                    ->delete();
-
-                foreach ($post->allComments as $comment) {
-                    $comment->allLikes()->delete();
-                    $comment->delete();
-                }
-
-                $post->allLikes()->delete();
-
-                $post->tags()->detach();
-
-                $post->attachments()->delete();
-
-                GroupPost::where('post_id', $postId)->delete();
-
-                $post->delete();
-
-            });
+            $post->delete();
 
             return response()->json(['message' => 'Post deleted successfully.'], 200);
         } catch (\Exception $e) {
