@@ -64,6 +64,11 @@
                         'text' => 'FAQs',
                         'anchorUrl' => route('faqs'),
                     ])
+                    @include('partials.dropdown-item', [
+                        'icon' => 'mail',
+                        'text' => 'Contact Us',
+                        'anchorUrl' => route('contactus'),
+                    ])
                 </div>
             </div>
         </article>
