@@ -579,7 +579,7 @@ CREATE FUNCTION handle_group_invitation_acceptance()
 RETURNS TRIGGER AS $$
 BEGIN
     IF NEW.status = 'accepted' AND OLD.status <> 'accepted' THEN
-        INSERT INTO group_member (user_id, group_id, joined_at) 
+        INSERT INTO group_member (user_id, group_id, join_timestamp) 
         VALUES (NEW.user_id, NEW.group_id, CURRENT_TIMESTAMP);
     END IF;
 
@@ -597,7 +597,7 @@ CREATE FUNCTION handle_group_join_request_acceptance()
 RETURNS TRIGGER AS $$
 BEGIN
     IF NEW.status = 'accepted' AND OLD.status <> 'accepted' THEN
-        INSERT INTO group_member (user_id, group_id, joined_at) 
+        INSERT INTO group_member (user_id, group_id, join_timestamp) 
         VALUES (NEW.requester_id, NEW.group_id, CURRENT_TIMESTAMP);
     END IF;
 
