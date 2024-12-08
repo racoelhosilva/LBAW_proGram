@@ -60,6 +60,11 @@
                         ])
                     @endif
                     @include('partials.dropdown-item', [
+                        'icon' => 'info',
+                        'text' => 'About',
+                        'anchorUrl' => route('about'),
+                    ])
+                    @include('partials.dropdown-item', [
                         'icon' => 'message-circle-question',
                         'text' => 'FAQs',
                         'anchorUrl' => route('faqs'),
