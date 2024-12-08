@@ -114,4 +114,5 @@
     .modal > div > div {
         @apply card col-start-2;
     }
+
 }
