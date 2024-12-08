@@ -42,6 +42,10 @@ Route::middleware('deny.banned')->group(function () {
     // Home
     Route::get('/', [HomeController::class, 'show'])->name('home');
 
+    Route::get('faqs', function () {
+        return view('pages.faqs');
+    })->name('faqs');
+
     Route::get('/contactus', function () {
         return view('pages.contactus');
     })->name('contactus');
