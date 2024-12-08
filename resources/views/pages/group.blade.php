@@ -33,7 +33,7 @@
                         @include('partials.text-button', ['text' => 'Leave Group', 'id'=>'leave-group-button'])
                         @include('partials.text-button', ['text' => 'Create Post', 'anchorurl' => route('post.create', ['group_id' => $group->id])])
                     @elseif (!$isMember )
-                        @if( $group->pendingJoinRequests->contains('id', $user->id))
+                        @if( $group->pendingJoinRequests->where('id', Auth::id())->count() > 0)
                             @include('partials.text-button', ['text' => 'Request Pending'])
                         @else
                             @include('partials.text-button', ['text' => 'Join Group', 'id'=>'join-group-button'])

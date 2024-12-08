@@ -56,7 +56,7 @@ class ApiGroupController extends Controller
     {
         $group = Group::findOrFail($group_id);
         $this->authorize('acceptRequest', $group);
-        $groupJoinRequest = GroupJoinRequest::where('group_id', $group_id)->where('requester_id', $requester_id)->firstOrFail();
+        $groupJoinRequest = GroupJoinRequest::where('group_id', $group_id)->where('requester_id', $requester_id)->where('status', 'pending')->firstOrFail();
         $groupJoinRequest->status = 'accepted';
         $groupJoinRequest->save();
 
@@ -67,7 +67,7 @@ class ApiGroupController extends Controller
     {
         $group = Group::findOrFail($group_id);
         $this->authorize('rejectRequest', $group);
-        $groupJoinRequest = GroupJoinRequest::where('group_id', $group_id)->where('requester_id', $requester_id)->firstOrFail();
+        $groupJoinRequest = GroupJoinRequest::where('group_id', $group_id)->where('requester_id', $requester_id)->where('status', 'pending')->firstOrFail();
         $groupJoinRequest->status = 'rejected';
         $groupJoinRequest->save();
 

@@ -52,7 +52,7 @@ const removeMemberListener = () => {
             const userId = btn.closest('.manage-member-container').getAttribute('data-user-id');
             
             if (!userId) return;
-            sendDelete(`/api/group/${groupId}/request/${userId}/reject`)
+            sendDelete(`/api/group/${groupId}/remove/${userId}`)
                 .then(() => {
                     window.location.reload();
                 })
@@ -96,14 +96,14 @@ const rejectRequestListener = () => {
     const manageGroupPage = document.querySelector('#manage-group-page');
     const groupId = manageGroupPage.getAttribute('data-group-id');
 
-    const rejectRequestBtns = document.querySelectorAll('.reject-request-button');
+    const rejectRequestBtns = document.querySelectorAll('.decline-request-button');
     rejectRequestBtns.forEach(btn => {
         btn.addEventListener('click', async (event) => {
             console.log('Rejecting request...');
             event.preventDefault();
-            const userId = btn.closest('.manage-member-container').getAttribute('data-user-id');
+            const userId = btn.closest('.manage-request-container').getAttribute('data-user-id');
             if (!userId) return;
-            sendDelete(`/api/group/${groupId}/reject/${userId}`)
+            sendDelete(`/api/group/${groupId}/request/${userId}/reject`)
                 .then(() => {
                     window.location.reload();
                 })
