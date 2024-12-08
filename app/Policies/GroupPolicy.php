@@ -24,4 +24,9 @@ class GroupPolicy
     {
         return $user && ! $user->isBanned() && ! $group->members()->where('user_id', $user->id)->exists();
     }
+
+    public function leave(?User $user, Group $group): bool
+    {
+        return $user && ! $user->isBanned() && $group->members()->where('user_id', $user->id)->exists();
+    }
 }

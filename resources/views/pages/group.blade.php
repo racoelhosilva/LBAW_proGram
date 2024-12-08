@@ -30,7 +30,7 @@
 
                 <div id="group-buttons-container" class="flex flex-col sm:flex-row gap-2" data-group-id={{$group->id}}>
                     @if ($isMember && !$isOwner)
-                        @include('partials.text-button', ['text' => 'Leave Group'])
+                        @include('partials.text-button', ['text' => 'Leave Group', 'id'=>'leave-group-button'])
                         @include('partials.text-button', ['text' => 'Create Post', 'anchorurl' => route('post.create', ['group_id' => $group->id])])
                     @elseif (!$isMember && $group->is_public)
                         @include('partials.text-button', ['text' => 'Join Group', 'id'=>'join-group-button'])

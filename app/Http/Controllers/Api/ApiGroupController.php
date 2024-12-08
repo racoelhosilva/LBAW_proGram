@@ -32,4 +32,14 @@ class ApiGroupController extends Controller
 
         return response()->json(['message' => 'You have joined the group.']);
     }
+
+    public function leave(Request $request, int $group_id)
+    {
+        $group = Group::findOrFail($group_id);
+        $this->authorize('leave', $group);
+        $user = Auth::user();
+        GroupMember::where('group_id', $group_id)->where('user_id', $user->id)->delete();
+
+        return response()->json(['message' => 'You have left the group.']);
+    }
 }

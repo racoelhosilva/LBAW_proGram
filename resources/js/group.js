@@ -20,4 +20,24 @@ const addJoinRequestListener = () => {
     });
 }
 
+const addLeaveGroupListener = () => {
+    const btnGroupContainer = document.getElementById('group-buttons-container');
+    const groupId = btnGroupContainer.getAttribute('data-group-id');
+    
+    if (!btnGroupContainer) return;
+    const leaveGroupBtn = document.getElementById('leave-group-button');
+    if (!leaveGroupBtn) return;
+    leaveGroupBtn.addEventListener('click', async (event) => {
+        event.preventDefault();
+        console.log('Leaving group...');
+        sendDelete(`/api/group/${groupId}/leave`)
+            .then(() => {
+                window.location.reload();
+            })
+            .catch((error) => {
+                sendToastMessage('An error occurred while leaving the group.', 'error');
+            });
+    });
+}
 addJoinRequestListener();
+addLeaveGroupListener();

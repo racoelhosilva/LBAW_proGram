@@ -133,6 +133,7 @@ Route::prefix('api')->group(function () {
 
     Route::controller(ApiGroupController::class)->group(function () {
         Route::post('/group/{id}/join', 'join')->where('id', '[0-9]+')->name('api.group.join');
+        Route::delete('/group/{id}/leave', 'leave')->where('id', '[0-9]+')->name('api.group.leave');
     });
 
     // Route::controller(ApiUserController::class)->group(function () {
