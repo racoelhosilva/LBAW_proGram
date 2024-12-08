@@ -134,6 +134,9 @@ Route::prefix('api')->group(function () {
     Route::controller(ApiGroupController::class)->group(function () {
         Route::post('/group/{id}/join', 'join')->where('id', '[0-9]+')->name('api.group.join');
         Route::delete('/group/{id}/leave', 'leave')->where('id', '[0-9]+')->name('api.group.leave');
+        Route::delete('/group/{id}/remove/{user_id}', 'remove')->where('id', '[0-9]+')->where('user_id', '[0-9]+')->name('api.group.remove');
+        Route::post('/group/{id}/request/{user_id}/accept', 'acceptRequest')->where('id', '[0-9]+')->where('user_id', '[0-9]+')->name('api.group.request.accept');
+        Route::delete('/group/{id}/request/{user_id}/reject', 'rejectRequest')->where('id', '[0-9]+')->where('user_id', '[0-9]+')->name('api.group.request.reject');
     });
 
     // Route::controller(ApiUserController::class)->group(function () {

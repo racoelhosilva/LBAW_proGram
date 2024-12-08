@@ -29,4 +29,19 @@ class GroupPolicy
     {
         return $user && ! $user->isBanned() && $group->members()->where('user_id', $user->id)->exists();
     }
+
+    public function remove(?User $user, Group $group): bool
+    {
+        return $user && ! $user->isBanned() && $user->id === $group->owner_id;
+    }
+
+    public function acceptRequest(?User $user, Group $group): bool
+    {
+        return $user && ! $user->isBanned() && $user->id === $group->owner_id;
+    }
+
+    public function rejectRequest(?User $user, Group $group): bool
+    {
+        return $user && ! $user->isBanned() && $user->id === $group->owner_id;
+    }
 }

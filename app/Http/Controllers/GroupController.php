@@ -56,8 +56,9 @@ class GroupController extends Controller
         $posts = $group->posts()->paginate(10);
         $isOwner = Auth::check() && Auth::id() === $group->owner_id;
         $isMember = Auth::check() && $group->members()->where('user_id', Auth::id())->exists();
+        $user = Auth::user();
 
-        return view('pages.group', ['group' => $group, 'posts' => $posts, 'isOwner' => $isOwner, 'isMember' => $isMember]);
+        return view('pages.group', ['group' => $group, 'posts' => $posts, 'isOwner' => $isOwner, 'isMember' => $isMember, 'user' => $user]);
     }
 
     public function showMembers(int $id)
@@ -122,8 +123,7 @@ class GroupController extends Controller
         }
 
         $this->authorize('update', $group);
-
-        $usersWhoWantToJoin = $group->joinRequests()->paginate(10);
+        $usersWhoWantToJoin = $group->joinRequests()->where('status', 'pending')->paginate(10);
 
         return view('pages.manage-group', ['group' => $group, 'usersWhoWantToJoin' => $usersWhoWantToJoin]);
     }

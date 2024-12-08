@@ -1,8 +1,8 @@
-@props(['user'])
+@props(['user', 'class' => ''])
 
 @php($userUrl = route('user.show', $user->id))
 
-<article class="card px-6 flex items-center">
+<article class="card px-6 flex items-center . {{$class}}">
     <a href="{{ $userUrl }}">
         <img src="{{ $user->getProfilePicture() }}" alt="{{ $user->name }}"
             class="w-12 h-12 me-4 rounded-full object-cover">

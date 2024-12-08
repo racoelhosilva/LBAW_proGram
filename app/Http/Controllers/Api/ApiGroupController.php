@@ -42,4 +42,35 @@ class ApiGroupController extends Controller
 
         return response()->json(['message' => 'You have left the group.']);
     }
+
+    public function remove(Request $request, int $group_id, int $user_id)
+    {
+        $group = Group::findOrFail($group_id);
+        $this->authorize('remove', $group);
+        GroupMember::where('group_id', $group_id)->where('user_id', $user_id)->delete();
+
+        return response()->json(['message' => 'User removed from group.']);
+    }
+
+    public function acceptRequest(Request $request, int $group_id, int $requester_id)
+    {
+        $group = Group::findOrFail($group_id);
+        $this->authorize('acceptRequest', $group);
+        $groupJoinRequest = GroupJoinRequest::where('group_id', $group_id)->where('requester_id', $requester_id)->firstOrFail();
+        $groupJoinRequest->status = 'accepted';
+        $groupJoinRequest->save();
+
+        return response()->json(['message' => 'Request accepted.']);
+    }
+
+    public function rejectRequest(Request $request, int $group_id, int $requester_id)
+    {
+        $group = Group::findOrFail($group_id);
+        $this->authorize('rejectRequest', $group);
+        $groupJoinRequest = GroupJoinRequest::where('group_id', $group_id)->where('requester_id', $requester_id)->firstOrFail();
+        $groupJoinRequest->status = 'rejected';
+        $groupJoinRequest->save();
+
+        return response()->json(['message' => 'Request rejected.']);
+    }
 }

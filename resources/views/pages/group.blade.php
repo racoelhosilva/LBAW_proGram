@@ -32,8 +32,12 @@
                     @if ($isMember && !$isOwner)
                         @include('partials.text-button', ['text' => 'Leave Group', 'id'=>'leave-group-button'])
                         @include('partials.text-button', ['text' => 'Create Post', 'anchorurl' => route('post.create', ['group_id' => $group->id])])
-                    @elseif (!$isMember && $group->is_public)
-                        @include('partials.text-button', ['text' => 'Join Group', 'id'=>'join-group-button'])
+                    @elseif (!$isMember )
+                        @if( $group->pendingJoinRequests->contains('id', $user->id))
+                            @include('partials.text-button', ['text' => 'Request Pending'])
+                        @else
+                            @include('partials.text-button', ['text' => 'Join Group', 'id'=>'join-group-button'])
+                        @endif
                     @elseif($isOwner)
                         @include('partials.text-button', ['text' => 'Edit Group', 'anchorUrl' => route('group.edit', ['id' => $group->id])])
                         @include('partials.text-button', ['text' => 'Manage Members ', 'anchorUrl' => route('group.manage', ['id' => $group->id])])
