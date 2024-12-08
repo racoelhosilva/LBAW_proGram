@@ -23,17 +23,20 @@ class AdminUserController extends Controller
 
         $this->authorize('viewAny', User::class);
 
-        $users = User::query();
+        $users = User::query()
+            ->where('is_deleted', false);
 
         if (! empty($request->input('query'))) {
             $pattern = '%'.str_replace(['\\', '%', '_'], ['\\\\', '\\%', '\\_'], $request->input('query')).'%';
-            $users = User::where('name', 'ILIKE', $pattern)
-                ->orWhere('email', 'ILIKE', $pattern)
-                ->orWhere('handle', 'ILIKE', $pattern);
+            $users = $users->where(function ($query) use ($pattern, $request) {
+                $query->where('name', 'ILIKE', $pattern)
+                    ->orWhere('email', 'ILIKE', $pattern)
+                    ->orWhere('handle', 'ILIKE', $pattern);
 
-            if (is_numeric($request->input('query'))) {
-                $users = $users->orWhere('id', $request->input('query'));
-            }
+                if (is_numeric($request->input('query'))) {
+                    $query->orWhere('id', $request->input('query'));
+                }
+            });
         }
 
         $users = $users->orderBy('id')->paginate(20);

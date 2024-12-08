@@ -61,7 +61,7 @@ class UserPolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, User $model): bool
+    public function delete(?User $user, User $model): bool
     {
         if ($user && ! $user->isBanned() && $user->id === $model->id) {
             return true;

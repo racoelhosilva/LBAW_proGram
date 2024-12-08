@@ -56,7 +56,7 @@ Route::controller(GitLabController::class)->group(function () {
     Route::get('auth/gitlab/call-back', 'callbackGitLab')->name('gitlab.callback');
 });
 
-Route::middleware('deny.banned')->group(function () {
+Route::middleware(['deny.banned', 'deny.deleted'])->group(function () {
     // Home
     Route::get('/', [HomeController::class, 'show'])->name('home');
 
@@ -110,7 +110,7 @@ Route::prefix('admin')->group(function () {
         // Admin users
         Route::get('/user', [AdminUserController::class, 'index'])->name('admin.user.index');
         Route::post('/user/{id}/ban', [AdminUserController::class, 'banUser'])->where('id', '[0-9]+')->name('admin.user.ban');
-				Route::delete('/user/{id}', 'deleteUser')->where('id', '[0-9]+')->name('admin.user.destroy');
+        Route::delete('/user/{id}', [AdminUserController::class, 'deleteUser'])->where('id', '[0-9]+')->name('admin.user.destroy');
 
         // Admin bans
         Route::get('/ban', [AdminBanController::class, 'index'])->name('admin.ban.index');
