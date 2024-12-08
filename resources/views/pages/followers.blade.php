@@ -7,15 +7,7 @@
     <h3 class="text-xl font-bold">Followers of {{$user->name}}</h3>
     <div class="grid gap-x-4 gap-y-2 grid-cols-3">
         @forelse ($user->followers as $follower)
-            @if (Auth::check() && Auth::id() == $user->id)
-                <form action="{{ route('api.follower.remove', $follower->id) }}" method="POST">
-                    @csrf
-                    @method('DELETE')
-                    @include('partials.user-card', ['user' => $follower, 'buttonText' => 'Remove'])
-                </form>
-            @else
-                @include('partials.user-card', ['user' => $follower])
-            @endif
+            @include('partials.user-card', ['user' => $follower, 'remove' => $isOwnFollowers])
         @empty
             <p>This user has no followers</p>
         @endforelse

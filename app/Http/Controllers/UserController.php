@@ -179,7 +179,7 @@ class UserController extends Controller
         // TODO: Add policy
         // User should be public, followed by the authenticated user or the user itself
 
-        return view('pages.followers', ['user' => $user]);
+        return view('pages.followers', ['user' => $user, 'isOwnFollowers' => Auth::check() && Auth::id() == $user->id]);
     }
 
     public function following(int $id)

@@ -1,4 +1,4 @@
-@props(['user', 'buttonText' => null, 'buttonId' => null, 'buttonAnchorUrl' => null])
+@props(['user', 'remove' => false])
 
 @php($userUrl = route('user.show', $user->id))
 
@@ -16,10 +16,42 @@
         </div>
     </div>
 
-    @if($buttonText)
-        <div class="self-end">
-            @include('partials.text-button', ['text' => $buttonText, 'type' => 'secondary', 'id' => $buttonId, 'anchorUrl' => $buttonAnchorUrl])
-        </div>
+    @if(auth()->check() && auth()->id() !== $user->id)
+        @if($remove)
+            <form action="{{ route('api.follower.remove', $user->id) }}" method="POST">
+                @csrf
+                @method('DELETE')
+                @include('partials.icon-button', [
+                    'iconName' => 'remove', 
+                    'label' => 'Remove',
+                    'type' => 'secondary',
+                    'submit' => true,
+                    ])
+            </form>
+        @else
+            @if(auth()->user()->follows($user))
+                <form action="{{ route('api.user.unfollow', $user->id) }}" method="POST">
+                    @csrf
+                    @method('DELETE')
+                    @include('partials.icon-button', [
+                        'iconName' => 'unfollow', 
+                        'label' => 'Unfollow',
+                        'type' => 'secondary',
+                        'submit' => true,
+                        ])
+                </form>
+            @else
+                <form action="{{ route('api.user.follow', $user->id) }}" method="POST">
+                    @csrf
+                    @include('partials.icon-button', [
+                        'iconName' => 'follow', 
+                        'label' => 'Follow',
+                        'type' => 'secondary',
+                        'submit' => true,
+                        ])
+                </form>
+            @endif
+        @endif
     @endif
 
 </article>
