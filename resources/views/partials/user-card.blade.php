@@ -40,7 +40,18 @@
                         'submit' => true,
                         ])
                 </form>
-            @else
+            @elseif(auth()->user()->getFollowRequestStatus($user) === 'pending')
+                <form action="{{ route('api.user.unfollow', $user->id) }}" method="POST">
+                    @csrf
+                    @method('DELETE')
+                    @include('partials.icon-button', [
+                        'iconName' => 'pending', 
+                        'label' => 'Pending',
+                        'type' => 'secondary',
+                        'submit' => true,
+                        ])
+                </form>
+            @else 
                 <form action="{{ route('api.user.follow', $user->id) }}" method="POST">
                     @csrf
                     @include('partials.icon-button', [
