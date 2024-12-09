@@ -14,7 +14,7 @@
                 @if ($isOwnProfile)
                     @include('partials.text-button', ['text' => 'Edit Profile', 'anchorUrl' => route('user.edit',auth()->id())])
                 @elseif (Auth::check()) 
-                    <button aria-label="FollowProfile" class="px-4 py-3 text-center font-medium follow-profile-button {{  $isFollowing ? "following primary-btn" : ($followStatus ? "pending secondary-btn" : "unfollowing primary-btn") }}" data-user-id="{{ $user->id }}">
+                    <button aria-label="FollowProfile" class="px-4 py-3 text-center font-medium follow-profile-button {{  Auth::user()->follows($user) ? "following primary-btn" : (Auth::user()->getFollowRequestStatus($user) ? "pending secondary-btn" : "unfollowing primary-btn") }}" data-user-id="{{ $user->id }}">
                         <span class="follow">Follow</span>
                         <span class="pending">Pending</span>
                         <span class="unfollow">Unfollow</span>

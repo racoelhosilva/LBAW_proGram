@@ -29,9 +29,7 @@ class UserController extends Controller
             ->paginate(10);
 
         $isOwnProfile = Auth::check() && Auth::id() === $user->id;
-        $isFollowing = Auth::check() && Auth::user()->following()->where('followed_id', $user->id)->exists();
         $recommendedUsers = Auth::check() ? $this->recommendedUsers(Auth::user(), $user) : null;
-        $followStatus = Auth::check() ? Auth::user()->getFollowRequestStatus($user) : null;
         $num_requests = Auth::check() ? Auth::user()->followRequests()->where('status', 'pending')->count() : 0;
 
         return view('pages.user', [
@@ -39,8 +37,6 @@ class UserController extends Controller
             'posts' => $posts,
             'isOwnProfile' => $isOwnProfile,
             'recommendedUsers' => $recommendedUsers,
-            'isFollowing' => $isFollowing,
-            'followStatus' => $followStatus,
             'num_requests' => $num_requests,
         ]);
     }

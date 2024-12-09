@@ -29,7 +29,7 @@
                     ])
             </form>
         @else
-            @if(auth()->user()->follows($user))
+            @if(Auth::user()->follows($user))
                 <form action="{{ route('api.user.unfollow', $user->id) }}" method="POST">
                     @csrf
                     @method('DELETE')
@@ -40,7 +40,7 @@
                         'submit' => true,
                         ])
                 </form>
-            @elseif(auth()->user()->getFollowRequestStatus($user) === 'pending')
+            @elseif(Auth::user()->getFollowRequestStatus($user) === 'pending')
                 <form action="{{ route('api.user.unfollow', $user->id) }}" method="POST">
                     @csrf
                     @method('DELETE')
