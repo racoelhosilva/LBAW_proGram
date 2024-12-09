@@ -233,3 +233,34 @@ const addUserCardFollowListeners = () => {
 };
 
 addUserCardFollowListeners();
+
+/** Remove Follower Button **/
+
+const handleRemoveFollower = (button, userId) => {
+    button.disabled = true;
+    sendDelete(`/api/follower/${userId}`)
+        .then((_) => {
+            button.disabled = false;
+            parent = button.parentElement;
+            if (parent) {
+                parent.remove();
+            }
+            sendToastMessage('Follower removed successfully.', 'success');
+        })
+        .catch((error) => {
+            button.disabled = false;
+            sendToastMessage('An error occurred while removing follower.', 'error');
+    });
+};
+
+const addRemoveFollowerListeners = () => {
+	const removeFollowButton = document.querySelectorAll(".remove-follower-button");
+
+    removeFollowButton.forEach((button) => {
+        const userId = button.dataset.userId;
+
+        button.addEventListener("click", () => handleRemoveFollower(button, userId));
+    });
+};
+
+addRemoveFollowerListeners();
