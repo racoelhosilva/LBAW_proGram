@@ -264,3 +264,59 @@ const addRemoveFollowerListeners = () => {
 };
 
 addRemoveFollowerListeners();
+
+/** Handle Request Button **/
+
+const acceptRequest = (button, userId) => {
+    button.disabled = true;
+    sendPost(`/api/follow-request/${userId}/accept`)
+        .then((_) => {
+            button.disabled = false;
+            parent = button.parentElement.parentElement;
+            if (parent) {
+                parent.remove();
+            }
+            sendToastMessage('Follow request accepted.', 'success');
+        })
+        .catch((error) => {
+            button.disabled = false;
+            sendToastMessage('An error occurred while accepting request.', 'error');
+    });
+};
+
+const rejectRequest = (button, userId) => {
+    button.disabled = true;
+    sendPost(`/api/follow-request/${userId}/reject`)
+        .then((_) => {
+            button.disabled = false;
+            parent = button.parentElement.parentElement;
+            if (parent) {
+                parent.remove();
+            }
+            sendToastMessage('Follow request rejected.', 'success');
+        })
+        .catch((error) => {
+            button.disabled = false;
+            sendToastMessage('An error occurred while rejecting request.', 'error');
+    });
+};
+
+const addHandleRequestListeners = () => {
+	const acceptButtons = document.querySelectorAll(".accept-request-button");
+
+    acceptButtons.forEach((button) => {
+        const userId = button.dataset.userId;
+
+        button.addEventListener("click", () => acceptRequest(button, userId));
+    });
+
+    const rejectButtons = document.querySelectorAll(".reject-request-button");
+
+    rejectButtons.forEach((button) => {
+        const userId = button.dataset.userId;
+
+        button.addEventListener("click", () => rejectRequest(button, userId));
+    });
+};
+
+addHandleRequestListeners();
