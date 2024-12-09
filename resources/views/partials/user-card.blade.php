@@ -29,39 +29,11 @@
                     ])
             </form>
         @else
-            @if(Auth::user()->follows($user))
-                <form action="{{ route('api.user.unfollow', $user->id) }}" method="POST">
-                    @csrf
-                    @method('DELETE')
-                    @include('partials.icon-button', [
-                        'iconName' => 'unfollow', 
-                        'label' => 'Unfollow',
-                        'type' => 'secondary',
-                        'submit' => true,
-                        ])
-                </form>
-            @elseif(Auth::user()->getFollowRequestStatus($user) === 'pending')
-                <form action="{{ route('api.user.unfollow', $user->id) }}" method="POST">
-                    @csrf
-                    @method('DELETE')
-                    @include('partials.icon-button', [
-                        'iconName' => 'pending', 
-                        'label' => 'Pending',
-                        'type' => 'secondary',
-                        'submit' => true,
-                        ])
-                </form>
-            @else 
-                <form action="{{ route('api.user.follow', $user->id) }}" method="POST">
-                    @csrf
-                    @include('partials.icon-button', [
-                        'iconName' => 'follow', 
-                        'label' => 'Follow',
-                        'type' => 'secondary',
-                        'submit' => true,
-                        ])
-                </form>
-            @endif
+            <button aria-label="FollowCard" class="p-3 secondary-btn follow-card-button {{ Auth::user()->follows($user) ? "following" : (Auth::user()->getFollowRequestStatus($user) ? "pending" : "unfollowing") }}" data-user-id="{{ $user->id }}">
+                @include('partials.icon', ['name' => 'follow'])
+                @include('partials.icon', ['name' => 'pending'])
+                @include('partials.icon', ['name' => 'unfollow'])
+            </button>
         @endif
     @endif
 
