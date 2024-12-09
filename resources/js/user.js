@@ -1,3 +1,5 @@
+import { sendDelete, sendPost, sendToastMessage } from "./utils";
+
 let projectCounter = 1;
 
 const addUserNewProjectListeners = () => {
@@ -91,3 +93,73 @@ const addRemoveButtonEventListeners = () => {
 
 addRemoveButtonEventListeners();
 addUserNewProjectListeners();
+
+/** User Profile Follow Button **/
+
+const handleFollowProfile = (button, userId) => {
+    button.disabled = true;
+    if (button.classList.contains('following')) {
+        sendDelete(`/api/user/${userId}/follow`)
+            .then((_) => {
+                button.classList.remove('following');
+                button.classList.add("unfollowing");
+                button.disabled = false;
+                sendToastMessage('User unfollowed successfully.', 'success');
+            })
+            .catch((error) => {
+                button.disabled = false;
+                sendToastMessage('An error occurred while unfollowing.', 'error');
+            });
+    }
+    else if (button.classList.contains('pending')) {
+        sendDelete(`/api/user/${userId}/follow`)
+            .then((_) => {
+                button.classList.remove('pending', 'secondary-btn');
+                button.classList.add('unfollowing', 'primary-btn');
+                button.disabled = false;
+                sendToastMessage('Request canceled successfully.', 'success');
+            })
+            .catch((error) => {
+                button.disabled = false;
+                sendToastMessage('An error occurred while removing request.', 'error');
+            });
+    }
+    else if (button.classList.contains('unfollowing')) {
+        sendPost(`/api/user/${userId}/follow`)
+            .then((data) => {
+                button.disabled = false;
+                if (data.action === 'follow') {
+                    button.classList.remove('unfollowing');
+                    button.classList.add("following");
+                    button.disabled = false;
+                    sendToastMessage(data.message, 'success');
+                } 
+                else if (data.action === 'request') {
+                    button.classList.remove('unfollowing', 'primary-btn');
+                    button.classList.add('pending', 'secondary-btn');
+                    button.disabled = false;
+                    sendToastMessage(data.message, 'success');
+                }
+                else if (data.action === 'none') {
+                    button.disabled = false;
+                    sendToastMessage(data.message, 'error');
+                }
+            })
+            .catch((error) => {
+                button.disabled = false;
+                sendToastMessage('An error occurred while following.', 'error');
+            });
+    }
+};
+
+const addUserProfileFollowListeners = () => {
+	const followProfileButton = document.querySelectorAll(".follow-profile-button");
+
+    followProfileButton.forEach((button) => {
+        const userId = button.dataset.userId;
+
+        button.addEventListener("click", () => handleFollowProfile(button, userId));
+    });
+};
+
+addUserProfileFollowListeners();

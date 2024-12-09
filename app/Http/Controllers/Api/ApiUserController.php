@@ -134,12 +134,18 @@ class ApiUserController extends Controller
         // TODO: implement policy @HenriqueSFernandes
 
         if ($currentUser->follows($targetUser)) {
-            return response()->json(['message' => 'User already followed.'], 200);
+            return response()->json([
+                'action' => 'none',
+                'message' => 'User already followed.',
+            ], 409);
         }
 
         $requestStatus = $currentUser->getFollowRequestStatus($targetUser);
         if ($requestStatus === 'accepted' || $requestStatus === 'pending') {
-            return response()->json(['message' => 'Follow request already sent.'], 200);
+            return response()->json([
+                'action' => 'none',
+                'message' => 'Follow request already sent.',
+            ], 409);
         }
 
         if ($targetUser->is_public) {
@@ -148,14 +154,20 @@ class ApiUserController extends Controller
             $follow->followed_id = $targetUser->id;
             $follow->save();
 
-            return response()->json(['message' => 'User followed.'], 200);
+            return response()->json([
+                'action' => 'follow',
+                'message' => 'User followed successfully.',
+            ], 200);
         } else {
             $followRequest = new FollowRequest;
             $followRequest->follower_id = $currentUser->id;
             $followRequest->followed_id = $targetUser->id;
             $followRequest->save();
 
-            return response()->json(['message' => 'Follow request sent.'], 200);
+            return response()->json([
+                'action' => 'request',
+                'message' => 'Follow request sent.',
+            ], 200);
         }
     }
 
@@ -163,6 +175,7 @@ class ApiUserController extends Controller
     {
         $targetUser = User::findOrFail($id);
         $currentUser = Auth()->user();
+        $message = '';
 
         // TODO: implement policy @HenriqueSFernandes
 
@@ -185,6 +198,7 @@ class ApiUserController extends Controller
 
                 $follow->delete();
             });
+            $message = 'User unfollowed.';
         }
 
         $request = FollowRequest::where('follower_id', $currentUser->id)
@@ -193,9 +207,14 @@ class ApiUserController extends Controller
 
         if ($request) {
             $request->delete();
+            if ($message !== '') {
+                $message = 'Follow request cancelled.';
+            }
         }
 
-        return response()->json(['message' => 'User unfollowed.'], 200);
+        return response()->json([
+            'message' => $message,
+        ], 200);
     }
 
     public function removeFollower($id)

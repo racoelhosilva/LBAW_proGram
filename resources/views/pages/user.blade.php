@@ -14,26 +14,11 @@
                 @if ($isOwnProfile)
                     @include('partials.text-button', ['text' => 'Edit Profile', 'anchorUrl' => route('user.edit',auth()->id())])
                 @elseif (Auth::check()) 
-                    @if ($isFollowing)
-                        <form action="{{ route('api.user.unfollow', $user->id) }}" method="POST">
-                            @csrf
-                            @method('DELETE')
-                            @include('partials.text-button', ['text' => 'Unfollow'])
-                        </form>
-                    @else
-                        @isset($followStatus)
-                            <form action="{{ route('api.user.unfollow', $user->id) }}" method="POST">
-                                @csrf
-                                @method('DELETE')
-                                @include('partials.text-button', ['text' => 'Pending', 'type' => 'secondary'])
-                            </form>
-                        @else
-                            <form action="{{ route('api.user.follow', $user->id) }}" method="POST">
-                                @csrf
-                                @include('partials.text-button', ['text' => 'Follow'])
-                            </form>
-                        @endisset
-                    @endif
+                    <button aria-label="FollowProfile" class="px-4 py-3 text-center font-medium follow-profile-button {{  $isFollowing ? "following primary-btn" : ($followStatus ? "pending secondary-btn" : "unfollowing primary-btn") }}" data-user-id="{{ $user->id }}">
+                        <span class="follow">Follow</span>
+                        <span class="pending">Pending</span>
+                        <span class="unfollow">Unfollow</span>
+                    </button>
                 @endif
             </div>
         </section>
