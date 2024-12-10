@@ -13,7 +13,10 @@
         <p class="whitespace-pre-wrap">{{ str_replace("\\n", "\n", $comment->content) }}</p>
     </div>
     <div class="flex flex-col items-center">
-        @include('partials.like-button', ['liked' => $comment->likedBy(auth()->user()), 'enabled' => auth()->user()->can('like', $comment)])
+        @include('partials.like-button', [
+            'liked' => auth()->user() && $comment->likedBy(auth()->user()),
+            'enabled' => auth()->user() && auth()->user()->can('like', $comment),
+        ])
         <p class="font-medium">{{ $comment->likes }}</p>
     </div>
 </article>
