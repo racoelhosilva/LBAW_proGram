@@ -76,6 +76,9 @@ const sendToastMessage = (message, type) => {
         case 'error':
             toast = 'error-toast';
             break;
+        case 'info':
+            toast = 'info-toast';
+            break;
         default:
             return;
     }
