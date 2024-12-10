@@ -92,4 +92,37 @@ const sendToastMessage = (message, type) => {
     fadeToastMessage(toastMessage);
 }
 
-export { getView, sendDelete, sendPost, fadeToastMessage, sendToastMessage };
+const loadMoreElements = async (container, endpoint, params = {}, page) => {
+    const posts = await getView(endpoint, { ...params, page: page });
+
+    if (posts.trim() !== '') {
+        container.insertAdjacentHTML('beforeend', posts);
+        return false;
+    } else {
+        return true;
+    }
+}
+
+const addLazyLoading = (container, containerLoading, endpoint, params, callback) => {
+    let loading = false;
+    let atEnd = false;
+    let page = 1;
+
+    document.addEventListener('scroll', async () => {
+        if (!atEnd && !loading && window.innerHeight + window.scrollY >= document.body.offsetHeight - 100) {
+            loading = true;
+            containerLoading.classList.remove('hidden');
+
+            page++;
+            atEnd = await loadMoreElements(container, endpoint, params, page);
+            if (callback) {
+                callback();
+            }
+
+            loading = false;
+            containerLoading.classList.add('hidden');
+        }
+    });
+}
+
+export { getView, sendDelete, sendPost, fadeToastMessage, sendToastMessage, addLazyLoading };
