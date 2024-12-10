@@ -59,20 +59,22 @@ const addLikeButtonListeners = () => {
 
 	postCards.forEach((postCard) => {
 		const postId = postCard.dataset.postId;
-		const likeButton = postCard.querySelector(".like-button");
+		const likeButton = postCard.querySelector(".like-button.enabled");
 		const likeCount = postCard.querySelector(".like-button + p");
 
-		likeButton.onclick = () =>	togglePostLike(likeButton, likeCount, postId);
+		if (likeButton)
+			likeButton.onclick = () =>	togglePostLike(likeButton, likeCount, postId);
 	});
 
 	const commentCards = document.querySelectorAll(".comment-card");
 
 	commentCards.forEach((commentCard) => {
 		const commentId = commentCard.dataset.commentId;
-		const likeButton = commentCard.querySelector(".like-button");
+		const likeButton = commentCard.querySelector(".like-button.enabled");
 		const likeCount = commentCard.querySelector(".like-button + p");
 
-        likeButton.onclick = () => toggleCommentLike(likeButton, likeCount, commentId);
+		if (likeButton)
+        	likeButton.onclick = () => toggleCommentLike(likeButton, likeCount, commentId);
     });
 };
 
