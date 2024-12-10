@@ -59,22 +59,30 @@ const addLikeButtonListeners = () => {
 
 	postCards.forEach((postCard) => {
 		const postId = postCard.dataset.postId;
-		const likeButton = postCard.querySelector(".like-button.enabled");
+		const likeButton = postCard.querySelector(".like-button");
 		const likeCount = postCard.querySelector(".like-button + p");
 
-		if (likeButton)
-			likeButton.onclick = () =>	togglePostLike(likeButton, likeCount, postId);
+		likeButton.onclick = () =>	{
+			if (likeButton.classList.contains('enabled'))
+				togglePostLike(likeButton, likeCount, postId);
+			else
+				sendToastMessage('You must be logged in to like a post.', 'info');
+		}
 	});
 
 	const commentCards = document.querySelectorAll(".comment-card");
 
 	commentCards.forEach((commentCard) => {
 		const commentId = commentCard.dataset.commentId;
-		const likeButton = commentCard.querySelector(".like-button.enabled");
+		const likeButton = commentCard.querySelector(".like-button");
 		const likeCount = commentCard.querySelector(".like-button + p");
 
-		if (likeButton)
-        	likeButton.onclick = () => toggleCommentLike(likeButton, likeCount, commentId);
+		likeButton.onclick = () =>	{
+			if (likeButton.classList.contains('enabled'))
+				toggleCommentLike(likeButton, likeCount, commentId);
+			else
+				sendToastMessage('You must be logged in to like a comment.', 'info');
+		}
     });
 };
 
