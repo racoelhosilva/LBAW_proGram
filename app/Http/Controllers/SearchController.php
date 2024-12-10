@@ -38,7 +38,7 @@ class SearchController extends Controller
 
         $query = $request->input('query') ?? '';
 
-        switch ($request->input('type')) {
+        switch ($request->input('search_type')) {
             case 'posts':
             default:
                 $results = $this->searchPosts($query);
