@@ -1,47 +1,24 @@
-const seeUserResults = (seePostsButton, seeUsersButton, postResults, userResults) => {
-    userResults.classList.remove('hidden');
-    userResults.classList.add('flex');
-
-    postResults.classList.add('hidden');
-    postResults.classList.remove('flex');
-
-    seePostsButton.classList.remove('font-bold');
-    seePostsButton.classList.add('font-medium');
-
-    seeUsersButton.classList.remove('font-medium');
-    seeUsersButton.classList.add('font-bold');
-}
-
-const seePostResults = (seePostsButton, seeUsersButton, postResults, userResults) => {
-    userResults.classList.add('hidden');
-    userResults.classList.remove('flex');
-
-    postResults.classList.remove('hidden');
-    postResults.classList.add('flex');
-
-    seeUsersButton.classList.remove('font-bold');
-    seeUsersButton.classList.add('font-medium');
-    
-    seePostsButton.classList.remove('font-medium');
-    seePostsButton.classList.add('font-bold');
-}
+import {addLikeButtonListeners} from "./post.js";
+import {addLazyLoading} from "./utils.js";
 
 const addSearchListeners = () => {
-    const seePostsButton = document.getElementById('see-posts-button');
-    const seeUsersButton = document.getElementById('see-users-button');
-    const userResults = document.getElementById('user-results');
-    const postResults = document.getElementById('post-results');
+    const searchPosts = document.getElementById('search-posts');
+    const searchUsers = document.getElementById('search-users');
+    const searchLoadingSpinner = document.querySelector('#results > div:last-child > .loading-spinner');
 
-    if (!seePostsButton || !seeUsersButton || !userResults || !postResults) {
+    if (!searchLoadingSpinner) {
         return;
     }
 
-    seePostsButton.addEventListener('click', () => {
-        seePostResults(seePostsButton, seeUsersButton, postResults, userResults);
-    });
-    seeUsersButton.addEventListener('click', () => {
-        seeUserResults(seePostsButton, seeUsersButton, postResults, userResults);
-    });
+    const urlParams = new URLSearchParams(window.location.search);
+    if (searchPosts) {
+        addLazyLoading(searchPosts, searchLoadingSpinner, '/search',
+            { search_type: 'posts', query: urlParams.get('query') }, addLikeButtonListeners);
+    }
+    if (searchUsers) {
+        addLazyLoading(searchUsers, searchLoadingSpinner, '/search',
+            { search_type: 'users', query: urlParams.get('query') });
+    }
 }
 
 addSearchListeners();
