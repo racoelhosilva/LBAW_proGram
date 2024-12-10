@@ -73,10 +73,7 @@
     
     <div class="-ms-3 col-span-3 grid grid-cols-[auto_auto_1fr_50%] items-center">
         <div class="flex items-center">
-            @include('partials.like-button', [
-                'liked' => auth()->check() && $post->likedBy(auth()->user()),
-                'enabled' => auth()->check() && auth()->user()->can('like', $post),
-            ])
+            @include('partials.like-button', ['model' => $post])
             <p class="me-3 font-medium select-none">{{ $post->likes }}</p>
         </div>
         <div class="flex items-center">
