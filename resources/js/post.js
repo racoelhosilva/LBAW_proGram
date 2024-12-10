@@ -4,23 +4,23 @@ const togglePostLike = (likeButton, likeCount, postId) => {
 	likeButton.disabled = true;
 	if (likeButton.classList.contains("liked")) {
 		sendDelete(`/api/post/${postId}/like`)
-			.then((_) => {
+			.then(_ => {
 				likeButton.classList.remove("liked");
 				likeCount.innerHTML = parseInt(likeCount.innerHTML) - 1;
 				likeButton.disabled = false;
 			})
-			.catch((error) => {
+			.catch(_ => {
 				likeButton.disable = false;
 				sendToastMessage('An error occurred while unliking.', 'error');
 			});
 	} else {
 		sendPost(`/api/post/${postId}/like`)
-			.then((_) => {
+			.then(_ => {
 				likeButton.classList.add("liked");
 				likeCount.innerHTML = parseInt(likeCount.innerHTML) + 1;
 				likeButton.disabled = false;
 			})
-			.catch((error) => {
+			.catch(_ => {
 				likeButton.disabled = false;
 				sendToastMessage('An error occurred while liking.', 'error');
 			});
@@ -31,23 +31,23 @@ const toggleCommentLike = (likeButton, likeCount, commentId) => {
 	likeButton.disabled = true;
 	if (likeButton.classList.contains("liked")) {
 		sendDelete(`/api/comment/${commentId}/like`)
-			.then((_) => {
+			.then(_ => {
 				likeButton.classList.remove("liked");
 				likeCount.innerHTML = parseInt(likeCount.innerHTML) - 1;
 				likeButton.disabled = false;
 			})
-			.catch((error) => {
+			.catch(_ => {
 				likeButton.disabled = false;
 				sendToastMessage('An error occurred while unliking.', 'error');
 			});
 	} else {
 		sendPost(`/api/comment/${commentId}/like`)
-			.then((_) => {
+			.then(_ => {
 				likeButton.classList.add("liked");
 				likeCount.innerHTML = parseInt(likeCount.innerHTML) + 1;
 				likeButton.disabled = false;
 			})
-			.catch((error) => {
+			.catch(_ => {
 				likeButton.disabled = false;
 				sendToastMessage('An error occurred while liking.', 'error');
 			});

@@ -1,4 +1,4 @@
-@props(['type', 'results'])
+@props(['type', 'results', 'numResults'])
 
 @extends('layouts.app')
 @section('title') {{'Search | Program'}} @endsection
@@ -15,28 +15,29 @@
         <section id="results" class="flex flex-col col-span-3 gap-3">
             @switch($type)
                 @case('posts')
-                    @if (count($results) > 0)
-                        <h1 class="text-xl font-semibold">Found {{ count($results) . (count($results) === 1 ? ' post' : ' posts') }}</h1>
-                        @foreach ($results as $post)
-                            @include('partials.post-card', ['post' => $post])
-                        @endforeach
-                        @break
+                    @if ($numResults > 0)
+                        <h1 class="text-xl font-semibold">Found {{ $numResults . ($numResults === 1 ? ' post' : ' posts') }}</h1>
+                        <div id="search-posts" class="space-y-3">
+                            @include('partials.post-list', ['posts' => $results])
+                        </div>
                     @else
                         <h1 class="text-xl font-semibold">No posts found</h1>
                     @endif
                     @break
                 @case('users')
-                    @if (count($results) > 0)
-                        <h1 class="text-xl font-semibold">Found {{ count($results) . (count($results) === 1 ? ' user' : ' users') }}</h1>
-                        @foreach ($results as $user)
-                            @include('partials.user-card', ['user' => $user])
-                        @endforeach
-                        @break
+                    @if ($numResults > 0)
+                        <h1 class="text-xl font-semibold">Found {{ $numResults . ($numResults === 1 ? ' user' : ' users') }}</h1>
+                        <div id="search-users" class="space-y-3">
+                            @include('partials.user-list', ['users' => $results])
+                        </div>
                     @else
                         <h1 class="text-xl font-semibold">No users found</h1>
                     @endif
                     @break
             @endswitch
+            <div class="flex flex-col items-center">
+                @include('partials.loading-spinner')
+            </div>
         </section>
     </main>
 @endsection
