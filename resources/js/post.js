@@ -63,10 +63,21 @@ const addLikeButtonListeners = () => {
 		const likeCount = postCard.querySelector(".like-button + p");
 
 		likeButton.onclick = () =>	{
-			if (likeButton.classList.contains('enabled'))
+			if (likeButton.classList.contains('enabled')) {
 				togglePostLike(likeButton, likeCount, postId);
-			else
-				sendToastMessage('You must be logged in to like a post.', 'info');
+			} else {
+				switch (likeButton.dataset.disabledReason) {
+					case 'not-logged-in':
+						sendToastMessage('You must be logged in to like a post.', 'info');
+						break;
+					case 'is-owner':
+						sendToastMessage('You cannot like your own post.', 'info');
+						break;
+					default:
+						sendToastMessage('You are not authorized to like this post.', 'info');
+						break;
+				}
+			}
 		}
 	});
 
@@ -78,10 +89,21 @@ const addLikeButtonListeners = () => {
 		const likeCount = commentCard.querySelector(".like-button + p");
 
 		likeButton.onclick = () =>	{
-			if (likeButton.classList.contains('enabled'))
+			if (likeButton.classList.contains('enabled')) {
 				toggleCommentLike(likeButton, likeCount, commentId);
-			else
-				sendToastMessage('You must be logged in to like a comment.', 'info');
+			} else {
+				switch (likeButton.dataset.disabledReason) {
+					case 'not-logged-in':
+						sendToastMessage('You must be logged in to like a comment.', 'info');
+						break;
+					case 'is-owner':
+						sendToastMessage('You cannot like your own comment.', 'info');
+						break;
+					default:
+						sendToastMessage('You are not authorized to like this comment.', 'info');
+						break;
+				}
+			}
 		}
     });
 };
