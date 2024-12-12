@@ -1,12 +1,17 @@
 @extends('layouts.app')
-@section('title') {{'Create Post on '. $group->name . '  | ProGram'}} @endsection
+
+@section('title') {{'Create Post on '. $group->name . ' | ProGram'}} @endsection
+
 @section('content')
     <main id="create-post-page" class="grid grid-cols-3 items-center">
         <article class="card h-min p-10 pt-16 grid gap-12 justify-items-center col-start-2">
             <h1 class="text-xl font-bold">Create a New Post</h1>
-            <form action="{{ route('group.post.store', ['group_id' => $group->id]) }}" method="POST" class="grid gap-4 justify-self-stretch">
+            <form id="create-post-form" class="grid gap-4 justify-self-stretch">
                 @csrf
                 
+                <!-- Hidden input for group_id -->
+                <input type="hidden" id="group_id" name="group_id" value="{{ $group->id }}">
+
                 @include('partials.input-field', [
                     'name' => 'title',
                     'label' => 'Post Title',
@@ -45,4 +50,3 @@
         </article>
     </main>
 @endsection
-    

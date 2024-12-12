@@ -111,7 +111,7 @@ Route::prefix('api')->group(function () {
     // Post
     Route::controller(ApiPostController::class)->group(function () {
         // Route::get('/post', 'index')->name('api.post.index');
-        // Route::post('/post', 'store')->name('api.post.store');
+        Route::post('/post', 'store')->name('api.post.store');
         // Route::get('/post/{id}', 'show')->where('id', '[0-9]+')->name('api.post.show');
         // Route::put('/post/{id}', 'update')->where('id', '[0-9]+')->name('api.post.update');
         // Route::delete('/post/{id}', 'destroy')->where('id', '[0-9]+')->name('api.post.destroy');
@@ -140,6 +140,7 @@ Route::prefix('api')->group(function () {
         Route::delete('/group/{id}/remove/{user_id}', 'remove')->where('id', '[0-9]+')->where('user_id', '[0-9]+')->name('api.group.remove');
         Route::post('/group/{id}/request/{user_id}/accept', 'acceptRequest')->where('id', '[0-9]+')->where('user_id', '[0-9]+')->name('api.group.request.accept');
         Route::delete('/group/{id}/request/{user_id}/reject', 'rejectRequest')->where('id', '[0-9]+')->where('user_id', '[0-9]+')->name('api.group.request.reject');
+        Route::post('/group/{id}/post/{post_id}', 'addPostToGroup')->where('id', '[0-9]+')->where('post_id', '[0-9]+')->name('api.group.post.add');
     });
 
     // Route::controller(ApiUserController::class)->group(function () {

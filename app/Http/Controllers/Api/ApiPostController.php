@@ -44,7 +44,6 @@ class ApiPostController extends Controller
     public function store(Request $request)
     {
         $this->authorize('create', Post::class);
-
         $request->validate([
             'title' => 'required|string|max:255',
             'text' => 'required|string',

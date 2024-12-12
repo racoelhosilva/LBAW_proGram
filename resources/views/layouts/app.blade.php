@@ -26,7 +26,7 @@
         </script>
 
         <!-- Styles & Scripts -->
-        @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/header.js', 'resources/js/search.js', 'resources/js/user.js', 'resources/js/post.js', 'resources/js/group.js','resources/js/manage-group.js'])
+        @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/header.js', 'resources/js/search.js', 'resources/js/user.js', 'resources/js/post.js', 'resources/js/group.js','resources/js/manage-group.js', 'resources/js/create-post-group.js'])
     </head>
     <body class="bg-white dark:bg-slate-800 text-black dark:text-white">
         @include('partials.header')
