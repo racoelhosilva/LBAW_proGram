@@ -9,6 +9,9 @@ use App\Http\Controllers\Api\ApiCommentController;
 use App\Http\Controllers\Api\ApiPostController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\GitHubController;
+use App\Http\Controllers\GitLabController;
+use App\Http\Controllers\GoogleController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\SearchController;
@@ -38,9 +41,36 @@ Route::controller(RegisterController::class)->group(function () {
     Route::post('/register', 'register');
 });
 
+Route::controller(GoogleController::class)->group(function () {
+    Route::get('auth/google', 'redirect')->name('google.auth');
+    Route::get('auth/google/call-back', 'callbackGoogle')->name('google.callback');
+});
+
+Route::controller(GitHubController::class)->group(function () {
+    Route::get('auth/github', 'redirect')->name('github.auth');
+    Route::get('auth/github/call-back', 'callbackGitHub')->name('github.callback');
+});
+
+Route::controller(GitLabController::class)->group(function () {
+    Route::get('auth/gitlab', 'redirect')->name('gitlab.auth');
+    Route::get('auth/gitlab/call-back', 'callbackGitLab')->name('gitlab.callback');
+});
+
 Route::middleware('deny.banned')->group(function () {
     // Home
     Route::get('/', [HomeController::class, 'show'])->name('home');
+
+    Route::get('/about', function () {
+        return view('pages.about');
+    })->name('about');
+
+    Route::get('faqs', function () {
+        return view('pages.faqs');
+    })->name('faqs');
+
+    Route::get('/contactus', function () {
+        return view('pages.contactus');
+    })->name('contactus');
 
     // Post
     Route::controller(PostController::class)->group(function () {
