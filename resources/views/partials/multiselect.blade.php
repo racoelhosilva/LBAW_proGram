@@ -1,6 +1,6 @@
 @props(['name', 'label', 'options', 'selected' => [], 'form'])
 
-<div class="multiselect">
+<div class="multiselect closed">
     <button>
         {{ $label }}
         <div>@include('partials.icon', ['name' => 'chevron-down'])</div>
