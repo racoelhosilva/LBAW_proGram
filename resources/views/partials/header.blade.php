@@ -59,6 +59,8 @@
                             'anchorUrl' => route('register'),
                         ])
                     @endif
+                </div>
+                <div>
                     @include('partials.dropdown-item', [
                         'icon' => 'info',
                         'text' => 'About',

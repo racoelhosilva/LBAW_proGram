@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
+use App\Models\Tag;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -71,6 +72,7 @@ class SearchController extends Controller
                 'type' => $request->input('search_type'),
                 'results' => $results,
                 'numResults' => $numResults,
+                'tags' => Tag::all(),
             ]);
         }
     }

@@ -10,6 +10,14 @@
                 @include('partials.search-type-button', ['optionType' => 'posts', 'searchType' => $type, 'icon' => 'message-circle', 'text' => 'Posts'])
                 @include('partials.search-type-button', ['optionType' => 'users', 'searchType' => $type, 'icon' => 'user-round', 'text' => 'Users'])
             </div>
+            <div class="pb-4 text-lg font-semibold">Search Filters</div>
+            @include('partials.multiselect', [
+                'name' => 'tags[]',
+                'label' => 'Tags',
+                'options' => $tags,
+                'selected' => request('tags'),
+                'form' => 'search-field'
+            ])
         </section>
         
         <section id="results" class="flex flex-col col-span-3 gap-3">
