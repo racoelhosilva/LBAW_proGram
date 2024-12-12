@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Events\PostLikeEvent;
 use App\Http\Controllers\Controller;
 use App\Models\Comment;
 use App\Models\Post;
@@ -102,6 +103,8 @@ class ApiPostController extends Controller
         if (PostLike::where('post_id', $id)->where('liker_id', Auth::id())->exists()) {
             return response()->json(['error' => 'You have already liked this post.'], 400);
         }
+
+        event(new PostLikeEvent($id, $post->author_id));
 
         $like = new PostLike;
 

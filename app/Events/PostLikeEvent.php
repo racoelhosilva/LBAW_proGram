@@ -1,0 +1,36 @@
+<?php
+
+namespace App\Events;
+
+use Illuminate\Broadcasting\InteractsWithSockets;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Queue\SerializesModels;
+
+class PostLikeEvent implements ShouldBroadcast
+{
+    use Dispatchable, InteractsWithSockets, SerializesModels;
+
+    public $message;
+
+    public $post_id;
+
+    public $user_id;
+
+    public function __construct($post_id, $user_id)
+    {
+        $this->post_id = $post_id;
+        $this->user_id = $user_id;
+        $this->message = 'User '.auth()->id().' liked your post '.$post_id;
+    }
+
+    public function broadcastOn()
+    {
+        return 'user.'.$this->user_id;
+    }
+
+    public function broadcastAs()
+    {
+        return 'notification-postlike';
+    }
+}

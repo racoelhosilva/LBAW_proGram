@@ -21,6 +21,14 @@
         ])
         @include('partials.theme-button')
         @if (Auth::check())
+            @include('partials.icon-button', [
+                'iconName' => 'notification',
+                'id' => 'notification-button',
+                'label' => 'Notification',
+                'type' => 'secondary',
+                'dataAttributes' => ['broadcast-channel' => 'user.' . auth()->id()],
+            ])
+
             <a href="{{ route('user.show', auth()->id()) }}">
                 <img src="{{ auth()->user()->getProfilePicture() }}" alt="Profile photo" class="h-[49.5px] w-[49.5px] rounded-full object-cover">
             </a>

@@ -25,8 +25,12 @@
             // See: http://stackoverflow.com/questions/18943276/html-5-autofocus-messes-up-css-loading/18945951#18945951
         </script>
 
+        <!-- Pusher (Notifications) -->
+        <script src="https://js.pusher.com/7.0/pusher.min.js" defer></script>
+
         <!-- Styles & Scripts -->
-        @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/header.js', 'resources/js/search.js', 'resources/js/user.js', 'resources/js/post.js', 'resources/js/faq.js'])
+        @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/header.js', 'resources/js/search.js', 'resources/js/user.js', 'resources/js/post.js', 'resources/js/faq.js', 'resources/js/notifications.js'])
+
     </head>
     <body class="bg-white dark:bg-slate-800 text-black dark:text-white">
         @include('partials.header')
