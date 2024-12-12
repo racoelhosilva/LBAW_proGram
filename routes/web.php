@@ -52,6 +52,7 @@ Route::middleware('deny.banned')->group(function () {
         Route::put('/post/{id}', 'update')->where('id', '[0-9]+')->name('post.update');
         Route::delete('/post/{id}', 'destroy')->where('id', '[0-9]+')->name('post.destroy');
         Route::get('/post/{id}/edit', 'edit')->where('id', '[0-9]+')->name('post.edit');
+        Route::post('post/{id}/group/{group_id}', 'addToGroup')->where('id', '[0-9]+')->where('group_id', '[0-9]+')->name('post.group.add');
     });
 
     // User
