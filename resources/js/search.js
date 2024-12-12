@@ -13,13 +13,15 @@ const addSearchListeners = () => {
     }
 
     const urlParams = new URLSearchParams(window.location.search);
+    const searchParams = {
+        query: urlParams.get('query'),
+        tags: urlParams.getAll('tags[]'),
+    };
     if (searchPosts) {
-        addLazyLoading(searchPosts, searchLoadingSpinner, '/search',
-            { search_type: 'posts', query: urlParams.get('query') }, addLikeButtonListeners);
+        addLazyLoading(searchPosts, searchLoadingSpinner, '/search', { ...searchParams, search_type: 'posts' }, addLikeButtonListeners);
     }
     if (searchUsers) {
-        addLazyLoading(searchUsers, searchLoadingSpinner, '/search',
-            { search_type: 'users', query: urlParams.get('query') });
+        addLazyLoading(searchUsers, searchLoadingSpinner, '/search', { ...searchParams, search_type: 'users' });
     }
 
     searchFilters.forEach(searchFilter => searchFilter.addEventListener('keypress', event => {
