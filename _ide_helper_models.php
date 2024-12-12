@@ -324,6 +324,7 @@ namespace App\Models{
  * @property int|null $administrator_id
  * @property \Illuminate\Support\Carbon $creation_timestamp
  * @property \Illuminate\Support\Carbon $validity_timestamp
+ * @property-read \App\Models\User|null $account
  * @method static \Illuminate\Database\Eloquent\Builder|Token newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Token newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Token query()

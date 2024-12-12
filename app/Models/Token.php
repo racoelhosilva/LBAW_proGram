@@ -22,5 +22,13 @@ class Token extends Model
         'validity_timestamp' => 'datetime',
     ];
 
-    // TODO: get user or admin?
+    public function isValid(): bool
+    {
+        return $this->validity_timestamp->isFuture();
+    }
+
+    public function account()
+    {
+        return $this->belongsTo(User::class) ?? $this->belongsTo(Administrator::class);
+    }
 }
