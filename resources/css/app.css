@@ -120,7 +120,7 @@
     }
 
     .multiselect > button {
-        @apply w-full px-4 py-3 secondary-btn rounded-lg flex gap-0.5;
+        @apply w-full px-4 py-3 secondary-btn rounded-lg flex justify-between;
     }
 
     .multiselect:not(.closed) > button > div:nth-of-type(1) {

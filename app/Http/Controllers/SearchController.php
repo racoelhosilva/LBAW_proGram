@@ -19,9 +19,14 @@ class SearchController extends Controller
         return $includeTotal ? [$users->simplePaginate(10), $users->count()] : $users->simplePaginate(10);
     }
 
-    public function searchPosts(string $query, bool $includeTotal = false)
+    public function searchPosts(string $query, ?array $tags, bool $includeTotal = false)
     {
         $posts = Post::visibleTo(Auth::user())
+            ->when($tags, function ($query, $tags) {
+                $query->whereHas('tags', function ($query) use ($tags) {
+                    $query->whereIn('id', $tags);
+                });
+            })
             ->whereRaw("tsvectors @@ plainto_tsquery('english', ?)", [$query])
             ->orderByRaw("ts_rank(tsvectors, plainto_tsquery('english', ?)) DESC", [$query]);
 
@@ -32,6 +37,8 @@ class SearchController extends Controller
     {
         $request->validate([
             'query' => 'nullable|string',
+            'tags' => 'nullable|array',
+            'tags.*' => 'exists:tag,id',
             'search_type' => 'nullable|string',
         ]);
 
@@ -42,7 +49,7 @@ class SearchController extends Controller
                 case 'posts':
                 default:
                     $this->authorize('viewAny', Post::class);
-                    $results = $this->searchPosts($query);
+                    $results = $this->searchPosts($query, $request->input('tags'));
                     if ($request->ajax()) {
                         return view('partials.post-list', ['posts' => $results, 'showEmpty' => false]);
                     }
@@ -60,7 +67,7 @@ class SearchController extends Controller
                 case 'posts':
                 default:
                     $this->authorize('viewAny', Post::class);
-                    [$results, $numResults] = $this->searchPosts($query, true);
+                    [$results, $numResults] = $this->searchPosts($query, $request->input('tags'), true);
                     break;
                 case 'users':
                     $this->authorize('viewAny', User::class);
