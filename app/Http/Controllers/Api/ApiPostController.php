@@ -235,40 +235,4 @@ class ApiPostController extends Controller
             return response()->json(['error' => 'An error occurred while deleting the post.'], 500);
         }
     }
-
-    public function addToGroup(Request $request, $postId, $groupId)
-    {
-        $post = Post::findOrFail($postId);
-
-        $this->authorize('addToGroup', $post);
-
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'text' => 'required|string',
-            'tags' => 'nullable|array',
-            'tags.*' => 'exists:tag,id',
-            'is_public' => 'nullable|boolean',
-            'is_announcement' => 'nullable|boolean',
-        ]);
-
-        try {
-            $post = Post::create([
-                'title' => $request->input('title'),
-                'text' => $request->input('text'),
-                'author_id' => auth()->id(),
-                'is_public' => $request->input('is_public', true),
-                'is_announcement' => $request->input('is_announcement', false),
-                'likes' => 0,
-            ]);
-
-            $post->tags()->sync($request->input('tags'));
-            $group->
-
-            return response()->json($post, 201);
-        } catch (\Exception $e) {
-            return response()->json([
-                'error' => 'Failed to create post.',
-            ], 500);
-        }
-    }
 }

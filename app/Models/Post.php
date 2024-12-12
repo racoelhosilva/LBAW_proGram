@@ -79,4 +79,9 @@ class Post extends Model
 
         return $query;
     }
+
+    public function group(): ?Group
+    {
+        return $this->belongsToMany(Group::class, 'group_post', 'post_id', 'group_id')->first();
+    }
 }

@@ -31,8 +31,7 @@
                 <div id="group-buttons-container" class="flex flex-col sm:flex-row gap-2" data-group-id={{$group->id}}>
                     @if ($isMember && !$isOwner)
                         @include('partials.text-button', ['text' => 'Leave Group', 'id'=>'leave-group-button'])
-                        @include('partials.text-button', ['text' => 'Create Post', 'anchorurl' => route('post.create', ['group_id' => $group->id])])
-                        @include('partials.text-button', ['text' => 'Post to Group'])
+                        @include('partials.text-button', ['text' => 'Post to Group', 'anchorUrl' => route('group.post.create', ['group_id' => $group->id])])
                     @elseif (!$isMember )
                         @if( $group->pendingJoinRequests->where('id', Auth::id())->count() > 0)
                             @include('partials.text-button', ['text' => 'Request Pending'])
@@ -42,7 +41,7 @@
                     @elseif($isOwner)
                         @include('partials.text-button', ['text' => 'Edit Group', 'anchorUrl' => route('group.edit', ['id' => $group->id])])
                         @include('partials.text-button', ['text' => 'Manage Members ', 'anchorUrl' => route('group.manage', ['id' => $group->id])])
-                        @include('partials.text-button', ['text' => 'Post to Group'])
+                        @include('partials.text-button', ['text' => 'Post to Group', 'anchorUrl' => route('group.post.create', ['group_id' => $group->id])])
                     @endif
 
                 </div>

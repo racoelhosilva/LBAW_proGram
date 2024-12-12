@@ -52,7 +52,6 @@ Route::middleware('deny.banned')->group(function () {
         Route::put('/post/{id}', 'update')->where('id', '[0-9]+')->name('post.update');
         Route::delete('/post/{id}', 'destroy')->where('id', '[0-9]+')->name('post.destroy');
         Route::get('/post/{id}/edit', 'edit')->where('id', '[0-9]+')->name('post.edit');
-        Route::post('post/{id}/group/{group_id}', 'addToGroup')->where('id', '[0-9]+')->where('group_id', '[0-9]+')->name('post.group.add');
     });
 
     // User
@@ -73,6 +72,9 @@ Route::middleware('deny.banned')->group(function () {
         Route::delete('/group/{id}', 'destroy')->where('id', '[0-9]+')->name('group.destroy');
         Route::get('/group/{id}/edit', 'edit')->where('id', '[0-9]+')->name('group.edit');
         Route::get('/group/{id}/manage', 'manage')->where('id', '[0-9]+')->name('group.manage');
+        Route::get('/group/{group_id}/post/create', [GroupController::class, 'showCreatePostForm'])->where('group_id', '[0-9]+')->name('group.post.create');
+        Route::post('/group/{group_id}/post', [GroupController::class, 'createPost'])->where('group_id', '[0-9]+')->name('group.post.store');
+
     });
     // Search
     Route::get('/search', [SearchController::class, 'index'])->name('search');

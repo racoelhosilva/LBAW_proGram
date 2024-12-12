@@ -36,8 +36,16 @@
 
                 <section class="flex flex-col">
                     <label class="mb-2">
-                        <input type="checkbox" name="is_public" value="1" {{ $post->is_public ? 'checked' : '' }}> 
-                        <span class="font-medium">Make this post public</span>
+                        @if($post->group())
+                            @if($post->group()->is_public)
+                                <input type="checkbox" name="is_public" value="1" checked hidden>
+                            @else
+                                <input type="checkbox" name="is_public" value="1" hidden>
+                            @endif
+                        @else
+                            <input type="checkbox" name="is_public" value="1" {{ $post->is_public ? 'checked' : '' }}> 
+                            <span class="font-medium">Make this post public</span>
+                        @endif
                     </label>
                 </section>
                 @include('partials.text-button', ['text' => 'Update Post', 'label' => 'update', 'type' => 'primary', 'submit' => true])
