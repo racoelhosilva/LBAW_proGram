@@ -11,7 +11,13 @@ if (channel) {
     const pusherChannel = pusher.subscribe(channel);
 
     pusherChannel.bind('notification-postlike', function(data) {
-        console.log(`New notification: ${data.message}`);
+        console.log(`New postlike notification: ${data.message}`);
+
+        sendToastMessage(data.message, 'success');
+    });
+
+    pusherChannel.bind('notification-commentlike', function(data) {
+        console.log(`New commentlike notification: ${data.message}`);
 
         sendToastMessage(data.message, 'success');
     });

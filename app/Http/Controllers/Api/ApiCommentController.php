@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Events\CommentLikeEvent;
 use App\Http\Controllers\Controller;
 use App\Models\Comment;
 use App\Models\CommentLike;
@@ -82,6 +83,8 @@ class ApiCommentController extends Controller
         if (CommentLike::where('comment_id', $id)->where('liker_id', Auth::id())->exists()) {
             return response()->json(['error' => 'You have already liked this comment'], 400);
         }
+
+        event(new CommentLikeEvent($id, $comment->post_id, $comment->author_id));
 
         $like = new CommentLike;
 

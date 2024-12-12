@@ -7,7 +7,7 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class PostLikeEvent implements ShouldBroadcast
+class CommentLikeEvent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -15,10 +15,10 @@ class PostLikeEvent implements ShouldBroadcast
 
     public $user_id;
 
-    public function __construct($post_id, $user_id)
+    public function __construct($comment_id, $post_id, $user_id)
     {
         $this->user_id = $user_id;
-        $this->message = 'User '.auth()->id().' liked your post '.$post_id;
+        $this->message = 'User '.auth()->id().' liked your comment '.$comment_id.' on post '.$post_id;
     }
 
     public function broadcastOn()
@@ -28,6 +28,6 @@ class PostLikeEvent implements ShouldBroadcast
 
     public function broadcastAs()
     {
-        return 'notification-postlike';
+        return 'notification-commentlike';
     }
 }
