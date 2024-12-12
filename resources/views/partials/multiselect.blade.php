@@ -1,11 +1,11 @@
 @props(['name', 'label', 'options', 'selected' => [], 'form'])
 
-<div class="relative">
-    <button type="button" class="p-3" aria-label="Open multiselect">
+<div class="multiselect">
+    <button>
         {{ $label }}
-        @include('partials.icon', ['name' => 'chevron-down'])
+        <div>@include('partials.icon', ['name' => 'chevron-down'])</div>
     </button>
-    <div class="card absolute flex flex-col">
+    <div>
         @foreach ($options as $option)
             @include('partials.multiselect-option', [
                 'name' => $name,

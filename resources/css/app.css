@@ -115,4 +115,27 @@
         @apply card col-start-2;
     }
 
+    .multiselect {
+        @apply relative w-full;
+    }
+
+    .multiselect > button {
+        @apply w-full py-3 secondary-btn rounded-lg;
+    }
+
+    .multiselect > div {
+        @apply max-h-80 rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 shadow flex flex-col absolute right-0 left-0 top-14 overflow-y-auto;
+    }
+
+    .multiselect-option > span {
+        @apply ps-2 py-1 w-full text-gray-500 dark:text-gray-400 block;
+    }
+
+    .multiselect-option > input:checked + span, .multiselect-option > span:hover {
+        @apply text-black dark:text-white bg-slate-50 dark:bg-slate-750;
+    }
+
+    .multiselect-option > input {
+        @apply hidden;
+    }
 }

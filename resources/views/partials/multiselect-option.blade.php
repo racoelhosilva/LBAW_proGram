@@ -1,6 +1,6 @@
 @props(['name', 'option', 'form', 'selected' => false])
 
-<label>
+<label class="multiselect-option">
     <input type="checkbox" name="{{ $name }}" value="{{ $option->id }}" form="{{ $form }}" @checked($selected)>
-    {{ $option->name }}
+    <span>{{ $option->name }}</span>
 </label>
