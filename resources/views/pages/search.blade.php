@@ -12,16 +12,18 @@
             </div>
         </section>
 
-        <section id="search-filters" class="card h-min row-start-2">
-            <h1 class="pb-4 text-xl font-semibold">Search Filters</h1>
-            @include('partials.multiselect', [
-                'name' => 'tags[]',
-                'label' => 'Tags',
-                'options' => $tags,
-                'selected' => request('tags'),
-                'form' => 'search-field'
-            ])
-        </section>
+        @if($type === 'posts')
+            <section id="search-filters" class="card h-min row-start-2">
+                <h1 class="pb-4 text-xl font-semibold">Search Filters</h1>
+                @include('partials.multiselect', [
+                    'name' => 'tags[]',
+                    'label' => 'Tags',
+                    'options' => $tags,
+                    'selected' => request('tags'),
+                    'form' => 'search-field'
+                ])
+            </section>
+        @endif
         
         <section id="search-results" class="flex flex-col col-span-3 row-span-2 gap-3">
             @switch($type)
