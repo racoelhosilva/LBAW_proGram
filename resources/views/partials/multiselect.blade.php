@@ -4,6 +4,7 @@
     <button>
         {{ $label }}
         <div>@include('partials.icon', ['name' => 'chevron-down'])</div>
+        <div>@include('partials.icon', ['name' => 'chevron-up'])</div>
     </button>
     <div>
         @foreach ($options as $option)
