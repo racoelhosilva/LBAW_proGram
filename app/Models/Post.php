@@ -72,16 +72,22 @@ class Post extends Model
     {
         $query = $query->where('is_public', true);
 
-        if ($user) {
+        // Check if the post is a group post
+        $isGroupPost = $query->getQuery()->joins && $query->getQuery()->joins[0]->table === 'group_posts';
+
+        if ($user && ! $isGroupPost) {
             $query = $query->orWhere('author_id', $user->id)
                 ->orWhereIn('author_id', $user->following->pluck('id'));
         }
 
-        return $query;
-    }
+        if ($user && $isGroupPost) {
+            $query = $query->orWhere(function ($subQuery) use ($user) {
+                $subQuery->join('groups', 'groups.id', '=', 'group_posts.group_id')
+                    ->join('group_members', 'group_members.group_id', '=', 'groups.id')
+                    ->where('group_members.user_id', $user->id);
+            });
+        }
 
-    public function group(): ?Group
-    {
-        return $this->belongsToMany(Group::class, 'group_post', 'post_id', 'group_id')->first();
+        return $query;
     }
 }

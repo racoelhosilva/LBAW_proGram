@@ -55,7 +55,7 @@ class GroupController extends Controller
     public function show(int $id)
     {
         $group = Group::findOrFail($id);
-        $posts = $group->posts()->paginate(10);
+        $posts = $group->posts()->visibleTo(Auth::user())->paginate(10);
         $isOwner = Auth::check() && Auth::id() === $group->owner_id;
         $isMember = Auth::check() && $group->members()->where('user_id', Auth::id())->exists();
         $user = Auth::user();
