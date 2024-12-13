@@ -67,5 +67,6 @@ class Kernel extends HttpKernel
         'auth.admin' => \App\Http\Middleware\AdminMiddleware::class,
         'deny.banned' => \App\Http\Middleware\DenyBannedAccess::class,
         'deny.deleted' => \App\Http\Middleware\DenyDeletedAccess::class,
+        'api.token' => \App\Http\Middleware\VerifyApiToken::class,
     ];
 }

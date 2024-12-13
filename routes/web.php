@@ -173,7 +173,7 @@ Route::prefix('admin')->group(function () {
 });
 
 // API
-Route::prefix('api')->group(function () {
+Route::prefix('api')->middleware('api.token')->group(function () {
     // Post
     Route::controller(ApiPostController::class)->group(function () {
         // Route::get('/post', 'index')->name('api.post.index');
