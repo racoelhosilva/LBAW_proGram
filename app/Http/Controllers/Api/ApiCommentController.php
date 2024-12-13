@@ -84,14 +84,14 @@ class ApiCommentController extends Controller
             return response()->json(['error' => 'You have already liked this comment'], 400);
         }
 
-        event(new CommentLikeEvent($id, $comment->post_id, $comment->author_id));
-
         $like = new CommentLike;
 
         $like->liker_id = Auth::id();
         $like->comment_id = $id;
 
-        $like->save();
+        if ($like->save()) {
+            event(new CommentLikeEvent($id, $comment->post_id, $comment->author_id));
+        }
 
         return response()->json($like, 201);
     }

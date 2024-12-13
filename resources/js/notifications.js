@@ -1,7 +1,10 @@
 import { sendToastMessage } from './utils'
 
-const pusher = new Pusher(/*pusherAppKey*/, {
-    cluster: /*pusherCluster*/,
+const PUSHER_APP_KEY = '0a98b979e256005ecb2f';
+const PUSHER_CLUSTER = 'eu';
+
+const pusher = new Pusher(PUSHER_APP_KEY, {
+    cluster: PUSHER_CLUSTER,
     encrypted: true
 });
 

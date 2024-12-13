@@ -87,6 +87,7 @@ Route::middleware('deny.banned')->group(function () {
         Route::get('/user/{id}', 'show')->where('id', '[0-9]+')->name('user.show');
         Route::post('/user/{id}', 'update')->where('id', '[0-9]+')->name('user.update');
         Route::get('/user/{id}/edit', 'edit')->where('id', '[0-9]+')->name('user.edit');
+        Route::get('/user/{id}/notifications', 'notifications')->where('id', '[0-9]+')->name('user.notifications');
     });
 
     // Search

@@ -166,6 +166,19 @@ class UserController extends Controller
                 ->sortByDesc('num_followers')
                 ->values();
         }
+    }
 
+    public function notifications(int $id)
+    {
+        $user = User::findOrFail($id);
+
+        $this->authorize('view', $user);
+
+        $notifications = $user->notifications;
+
+        return view('pages.notifications', [
+            'user' => $user,
+            'notifications' => $notifications,
+        ]);
     }
 }

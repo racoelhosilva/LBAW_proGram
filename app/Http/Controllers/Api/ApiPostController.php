@@ -104,14 +104,14 @@ class ApiPostController extends Controller
             return response()->json(['error' => 'You have already liked this post.'], 400);
         }
 
-        event(new PostLikeEvent($id, $post->author_id));
-
         $like = new PostLike;
 
         $like->liker_id = Auth::id();
         $like->post_id = $post->id;
 
-        $like->save();
+        if ($like->save()) {
+            event(new PostLikeEvent($id, $post->author_id));
+        }
 
         return response()->json($like, 201);
     }
