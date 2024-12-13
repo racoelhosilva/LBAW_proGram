@@ -32,7 +32,7 @@ class TokenController extends Controller
 
         $token->save();
 
-        return redirect()->route('user.edit', ['user' => auth()->user()])
+        return redirect()->route('user.edit', ['id' => auth()->id()])
             ->withSuccess('Token created successfully.');
     }
 

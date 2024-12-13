@@ -128,6 +128,12 @@ Route::middleware(['deny.banned', 'deny.deleted'])->group(function () {
     });
     // Search
     Route::get('/search', [SearchController::class, 'index'])->name('search');
+
+    // Token
+    Route::controller(TokenController::class)->group(function () {
+        Route::post('/token', 'store')->name('token.store');
+        Route::delete('/token/{id}', 'destroy')->where('id', '[0-9]+')->name('token.destroy');
+    });
 });
 
 // Admin
