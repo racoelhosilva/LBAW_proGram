@@ -409,7 +409,9 @@ RETURNS TRIGGER AS $$
 BEGIN
     IF TG_OP = 'UPDATE' AND (OLD.name <> NEW.name OR OLD.handle <> NEW.handle)
     THEN 
-        PERFORM calculate_post_tsvectors(NEW.id);
+        PERFORM calculate_post_tsvectors(id)
+        FROM post
+        WHERE author_id = NEW.id;
     END IF;
     RETURN NEW;
 END;
