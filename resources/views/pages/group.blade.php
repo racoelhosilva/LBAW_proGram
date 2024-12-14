@@ -57,17 +57,44 @@
             </div>  
 
         </section>
-        <section class="grid gap-4" >
-            @if ($posts->count() === 0)
-                    <p>No posts to show</p>
-                @else
-                    @foreach ($posts as $post)
-                        @include('partials.post-card', ['post' => $post])
-                    @endforeach
-                @endif
+        <section class="grid gap-4">
+            <div class="flex  gap-10">
+                <button id="group-chat-tab" class="tab-button text-2xl font-bold py-2 border-b-2" data-tab="group-chat">
+                    Group Chat
+                </button>
+                <button id="board-tab" class="tab-button text-2xl font-bold py-2 text-gray-500" data-tab="board">
+                    Board
+                </button>
+            </div>
 
+            <div id="group-chat-content" class="tab-content grid gap-4">
+                <article class="grid gap-4">
+                    @if ($posts->count() === 0)
+                        <p>No posts to show</p>
+                    @else
+                        @foreach ($posts as $post)
+                            @include('partials.post-card', ['post' => $post])
+                        @endforeach
+                    @endif
+                </article>  
+            </div>
+        
+            <div id="board-content" class="tab-content hidden grid gap-4">
+
+                <article class="grid gap-4">
+                    @if ($announcements->count() === 0)
+                        <p>No posts to show</p>
+                    @else
+                        @foreach ($announcements as $announcement)
+                            @include('partials.post-card', ['post' => $announcement])
+                        @endforeach
+                    @endif
+                </article>
+            </div>
         </section>
 
        
     </main>
+
+
 @endsection
