@@ -2,7 +2,7 @@
 
 @php($userUrl = route('user.show', $user->id))
 
-<article class="card px-6 flex justify-between w-full {{ $class }}">
+<article class="card px-6 flex flex-col sm:flex-row justify-between w-full {{ $class }}">
     <div class="flex items-center">
         <a href="{{ $userUrl }}">
             <img src="{{ $user->getProfilePicture() }}" alt="{{ $user->name }}"
