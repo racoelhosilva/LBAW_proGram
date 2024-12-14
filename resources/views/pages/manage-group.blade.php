@@ -21,8 +21,11 @@
         <section id="members">
             @forelse ($group->members->where('id', '!=', $group->owner->id) as $user)
                 <div class="manage-member-container flex flex-row w-full gap-4" data-user-id={{$user->id}}>
-                    @include('partials.user-card', ['user' => $user, 'class' => 'w-full'])
-                    @include('partials.text-button', ['text' => 'Remove',  'class' => 'w-40 rounded-lg remove-member-button'])
+                    @php
+                        $removeButton = view('partials.text-button', ['text' => 'Remove', 'class' => 'w-40 rounded-lg remove-member-button'])->render();
+                        $buttons = $removeButton;
+                    @endphp
+                    @include('partials.user-card', ['user' => $user, 'class' => 'w-full ', 'buttons' => $buttons])
                 </div>
 
             @empty
@@ -34,9 +37,15 @@
             <section id="requests" class="hidden flex flex-col w-full gap-4 " >
                 @forelse ($usersWhoWantToJoin as $user)
                     <div class="manage-request-container flex flex-row gap-4" data-user-id={{$user->id}}>
-                    @include('partials.user-card', ['user' => $user , 'class' => 'w-full'])
-                    @include('partials.text-button', ['text' => 'Accept', 'class' => 'w-40 rounded-lg accept-request-button'])
-                    @include('partials.text-button', ['text' => 'Decline', 'class' => 'w-40 rounded-lg decline-request-button']) 
+                        @php
+                        $acceptButton = view('partials.text-button', ['text' => 'Accept', 'class' => 'w-40 rounded-lg accept-request-button'])->render();
+                        $declineButton = view('partials.text-button', ['text' => 'Decline', 'class' => 'w-40 rounded-lg decline-request-button'])->render();
+                        $buttons = $acceptButton . $declineButton;
+                    @endphp
+                    
+                    @include('partials.user-card', ['user' => $user, 'class' => 'w-full', 'buttons' => $buttons])
+                    
+                    
                     </div>    
                 @empty  
                     <p>No requests yet.</p>
