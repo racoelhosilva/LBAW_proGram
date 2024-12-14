@@ -50,7 +50,7 @@ class Group extends Model
 
     public function invitedUsers()
     {
-        return $this->belongsToMany(User::class, 'group_invitation', 'group_id', 'invitee_id')->withPivot('creation_timestamp');
+        return $this->belongsToMany(User::class, 'group_invitation', 'group_id', 'invitee_id')->withPivot('creation_timestamp')->where('status', 'pending');
     }
 
     public function posts(): BelongsToMany

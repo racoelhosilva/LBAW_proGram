@@ -9,7 +9,7 @@
             @forelse ($group->members->where('id', '!=', $group->owner->id) as $user)
                 <div class="manage-member-container flex flex-row w-full mb-4" data-user-id={{$user->id}}>
                     @php
-                        $removeButton = view('partials.text-button', ['text' => 'Remove', 'class' => 'w-40 rounded-lg remove-member-button'])->render();
+                        $removeButton = view('partials.text-button', ['text' => 'Remove', 'class' => 'w-40 remove-member-button'])->render();
                         if($group->owner->id == Auth::id()){
                             $buttons = $removeButton;
                         }

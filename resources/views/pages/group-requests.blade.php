@@ -9,8 +9,8 @@
             @forelse ($usersWhoWantToJoin as $user)
                 <div class="manage-request-container flex flex-row gap-4" data-user-id={{$user->id}}>
                     @php
-                    $acceptButton = view('partials.text-button', ['text' => 'Accept', 'class' => 'w-40 rounded-lg accept-request-button'])->render();
-                    $declineButton = view('partials.text-button', ['text' => 'Decline', 'class' => 'w-40 rounded-lg decline-request-button'])->render();
+                    $acceptButton = view('partials.text-button', ['text' => 'Accept', 'class' => 'w-40  accept-request-button'])->render();
+                    $declineButton = view('partials.text-button', ['text' => 'Decline', 'class' => 'w-40 decline-request-button'])->render();
                     $buttons = $acceptButton . $declineButton;
                 @endphp
                 

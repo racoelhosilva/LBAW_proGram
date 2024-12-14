@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Group;
+use App\Models\GroupInvitation;
 use App\Models\GroupJoinRequest;
 use App\Models\GroupMember;
 use Illuminate\Http\Request;
@@ -79,7 +80,7 @@ class ApiGroupController extends Controller
         $group = Group::findOrFail($group_id);
         $this->authorize('manage', $group);
 
-        $invitation = GroupInvitation::updateOrCreate(
+        $invitation = GroupInvitation::create(
             [
                 'group_id' => $group_id,
                 'invitee_id' => $invitee_id,
