@@ -70,24 +70,35 @@ class Post extends Model
 
     public function scopeVisibleTo(Builder $query, ?User $user): Builder
     {
-        $query = $query->where('is_public', true);
+        return $query->where(function ($subQuery) use ($user) {
+            $subQuery->where('is_public', true); // Public posts
 
-        // Check if the post is a group post
-        $isGroupPost = $query->getQuery()->joins && $query->getQuery()->joins[0]->table === 'group_posts';
+            if ($user) {
+                // User's own posts
+                $subQuery->orWhere('author_id', $user->id);
 
-        if ($user && ! $isGroupPost) {
-            $query = $query->orWhere('author_id', $user->id)
-                ->orWhereIn('author_id', $user->following->pluck('id'));
-        }
+                // Posts from followed users (excluding group posts)
+                $followedUserIds = $user->following->pluck('id');
+                if ($followedUserIds->isNotEmpty()) {
+                    $subQuery->orWhere(function ($followQuery) use ($followedUserIds) {
+                        $followQuery->whereIn('author_id', $followedUserIds)
+                            ->whereNotExists(function ($groupCheck) {
+                                $groupCheck->selectRaw(1)
+                                    ->from('group_post')
+                                    ->whereColumn('id', 'group_post.post_id');
+                            });
+                    });
+                }
 
-        if ($user && $isGroupPost) {
-            $query = $query->orWhere(function ($subQuery) use ($user) {
-                $subQuery->join('groups', 'groups.id', '=', 'group_posts.group_id')
-                    ->join('group_members', 'group_members.group_id', '=', 'groups.id')
-                    ->where('group_members.user_id', $user->id);
-            });
-        }
-
-        return $query;
+                // Group posts where the user is a member
+                $subQuery->orWhereExists(function ($groupQuery) use ($user) {
+                    $groupQuery->selectRaw(1)
+                        ->from('group_post')
+                        ->join('group_member', 'group_member.group_id', '=', 'group_post.group_id')
+                        ->whereColumn('group_post.post_id', 'id')
+                        ->where('group_member.user_id', $user->id);
+                });
+            }
+        });
     }
 }

@@ -87,6 +87,12 @@ class GroupController extends Controller
             'is_public' => 'boolean',
             'owner_id' => 'required|integer',
         ]);
+        if ($group->is_public != $request->filled('is_public')) {
+            foreach ($group->posts as $post) {
+                $post->is_public = $request->filled('is_public');
+                $post->save();
+            }
+        }
 
         $group->name = $request->input('name');
         $group->description = $request->input('description');
