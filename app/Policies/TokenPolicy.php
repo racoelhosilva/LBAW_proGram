@@ -20,7 +20,7 @@ class TokenPolicy
      */
     public function view(?User $user, Token $token): bool
     {
-        return $user && ! $user->isBanned() && $user->id === $token->account->id;
+        return $user && $token->account && ! $user->isBanned() && $user->id === $token->account->id;
     }
 
     /**
@@ -36,6 +36,8 @@ class TokenPolicy
      */
     public function forceDelete(?User $user, Token $token): bool
     {
-        return $user && ! $user->isBanned() && $user->id === $token->account->id;
+        $tokenAccount = $token->account;
+
+        return $user && $tokenAccount && ! $user->isBanned() && $user->id === $tokenAccount->id;
     }
 }

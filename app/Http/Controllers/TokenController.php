@@ -18,9 +18,14 @@ class TokenController extends Controller
             'duration' => 'required|string|in:day,week,month,year',
         ]);
 
+        $token = auth()->user()->token();
+        if ($token) {
+            $token->delete();
+        }
+
         $token = new Token;
 
-        $token->account()->associate(auth()->user());
+        $token->user_id = auth()->id();
         $token->value = uuid_create();
         $token->creation_timestamp = now();
         $token->validity_timestamp = match ($request->input('duration')) {
@@ -39,13 +44,15 @@ class TokenController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Token $token)
+    public function destroy(int $id)
     {
+        $token = Token::findOrFail($id);
+
         $this->authorize('forceDelete', $token);
 
         $token->delete();
 
-        return redirect()->route('user.edit', ['user' => auth()->user()])
+        return redirect()->route('user.edit', ['id' => auth()->id()])
             ->withSuccess('Token deleted successfully.');
     }
 }

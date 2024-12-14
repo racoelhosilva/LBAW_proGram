@@ -11,7 +11,11 @@ class Token extends Model
 
     protected $table = 'token';
 
+    public $timestamps = false;
+
     protected $fillable = [
+        'user_id',
+        'administrator_id',
         'value',
         'creation_timestamp',
         'validity_timestamp',
@@ -29,6 +33,7 @@ class Token extends Model
 
     public function account()
     {
-        return $this->belongsTo(User::class) ?? $this->belongsTo(Administrator::class);
+        return $this->belongsTo(User::class, 'user_id')
+            ?? $this->belongsTo(Administrator::class, 'administrator_id');
     }
 }

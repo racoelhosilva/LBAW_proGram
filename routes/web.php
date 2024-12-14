@@ -24,6 +24,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MailController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\SearchController;
+use App\Http\Controllers\TokenController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
