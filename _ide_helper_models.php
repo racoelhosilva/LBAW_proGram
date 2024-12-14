@@ -147,6 +147,8 @@ namespace App\Models{
  * @property bool $is_public
  * @property int $member_count
  * @property string|null $tsvectors
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\User> $invitedUsers
+ * @property-read int|null $invited_users_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\User> $joinRequests
  * @property-read int|null $join_requests_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\User> $members

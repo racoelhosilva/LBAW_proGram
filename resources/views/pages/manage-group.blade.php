@@ -10,17 +10,17 @@
             <header class="grid grid-cols-[auto_auto_auto] gap-0 w-full">
         @endif
             <a href="#members" 
-               class="text-xl border text-center font-bold p-4 hover:border">Members</a>
+               class="text-xl border rounded text-center font-bold p-4 hover:border">Members</a>
             @if(!$group->is_public)
                 <a href="#requests" 
-                class="text-xl border border-transparent text-center font-bold p-4  hover:border">Join Requests</a>
+                class="text-xl border rounded border-transparent text-center font-bold p-4  hover:border">Join Requests</a>
             @endif
             <a href="#invites" 
-               class="text-xl border border-transparent text-center font-bold p-4 hover:border">Invites</a>
+               class="text-xl border rounded border-transparent text-center font-bold p-4 hover:border">Invites</a>
         </header>
         <section id="members">
             @forelse ($group->members->where('id', '!=', $group->owner->id) as $user)
-                <div class="manage-member-container flex flex-row w-full gap-4" data-user-id={{$user->id}}>
+                <div class="manage-member-container flex flex-row w-full mb-4" data-user-id={{$user->id}}>
                     @php
                         $removeButton = view('partials.text-button', ['text' => 'Remove', 'class' => 'w-40 rounded-lg remove-member-button'])->render();
                         $buttons = $removeButton;
@@ -53,6 +53,12 @@
             </section>
         @endif
         <section id="invites" class="hidden">
+            @include('partials.search-field', ['class' => 'w-full mb-4'])
+            <div id="invite-results" class="flex flex-col gap-4">
+                @foreach ($usersSearched as $user)
+                    @include('partials.user-card', ['user' => $user, 'class' => 'w-full '])
+                @endforeach
+            </div>
         </section>
     </main>
 @endsection

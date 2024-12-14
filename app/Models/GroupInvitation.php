@@ -13,6 +13,8 @@ class GroupInvitation extends Model
     protected $table = 'group_invitation';
 
     protected $fillable = [
+        'group_id',
+        'invitee_id',
         'creation_timestamp',
         'status',
     ];

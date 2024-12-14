@@ -40,7 +40,16 @@
                         @endif
                     @elseif($isOwner)
                         @include('partials.text-button', ['text' => 'Edit Group', 'anchorUrl' => route('group.edit', ['id' => $group->id])])
-                        @include('partials.text-button', ['text' => 'Manage Members ', 'anchorUrl' => route('group.manage', ['id' => $group->id])])
+                        <article class="dropdown">
+                            @include('partials.text-button', ['text' => 'Manage Members', 'id'=>'manage-group-button'])
+                            <div class="hidden">
+                                <div>
+                                    @include('partials.dropdown-item', ['icon' => 'user-round', 'text' => 'Manage Members', 'anchorUrl' => route('group.members', ['id' => $group->id])])
+                                    @include('partials.dropdown-item', ['icon' => 'inbox', 'text' => 'Manage Requests', 'anchorUrl' => route('group.requests', ['id' => $group->id])])
+                                    @include('partials.dropdown-item', ['icon' => 'invite', 'text' => 'Manage Invites', 'anchorUrl' => route('group.invites', ['id' => $group->id])])
+                                </div>
+                            </div>
+                        </article>
                         @include('partials.text-button', ['text' => 'Post to Group', 'anchorUrl' => route('group.post.create', ['group_id' => $group->id])])
                     @endif
 

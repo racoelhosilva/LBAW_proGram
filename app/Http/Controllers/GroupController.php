@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Group;
 use App\Models\Post;
 use App\Models\Tag;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class GroupController extends Controller
 {
@@ -63,12 +65,36 @@ class GroupController extends Controller
         return view('pages.group', ['group' => $group, 'posts' => $posts, 'isOwner' => $isOwner, 'isMember' => $isMember, 'user' => $user]);
     }
 
-    public function showMembers(int $id)
+    public function showMembers(int $groupId)
     {
-        $group = Group::findOrFail($id);
-        $members = $group->members()->paginate(10);
+        $group = Group::findOrFail($groupId);
+        $members = $group->members->where('id', '!=', $group->owner->id); // Exclude the owner
 
         return view('pages.group-members', ['group' => $group, 'members' => $members]);
+    }
+
+    public function showRequests($groupId)
+    {
+        $group = Group::findOrFail($groupId);
+        $usersWhoWantToJoin = $group->joinRequests()->where('status', 'pending')->paginate(10);
+
+        return view('pages.group-requests', ['group' => $group, 'usersWhoWantToJoin' => $usersWhoWantToJoin]);
+    }
+
+    public function showInvites($groupId)
+    {
+        $group = Group::findOrFail($groupId);
+
+        $userIds = request()->query('users');
+        if ($userIds) {
+            $userIdsArray = explode(',', $userIds);
+            Log::info($userIdsArray);
+            $usersSearched = User::whereIn('users.id', $userIdsArray)->get();
+        } else {
+            $usersSearched = $group->invitedUsers;
+        }
+
+        return view('pages.group-invites', ['group' => $group, 'usersSearched' => $usersSearched]);
     }
 
     public function update(Request $request, int $id)
@@ -133,7 +159,16 @@ class GroupController extends Controller
         $this->authorize('update', $group);
         $usersWhoWantToJoin = $group->joinRequests()->where('status', 'pending')->paginate(10);
 
-        return view('pages.manage-group', ['group' => $group, 'usersWhoWantToJoin' => $usersWhoWantToJoin]);
+        $userIds = request()->query('users');
+        if ($userIds) {
+            $userIdsArray = explode(',', $userIds);
+            $usersSearched = $group->invitedUsers()->whereIn('id', $userIdsArray)->get();
+        } else {
+            $usersSearched = $group->invitedUsers;
+        }
+        Log::info($usersSearched);
+
+        return view('pages.manage-group', ['group' => $group, 'usersWhoWantToJoin' => $usersWhoWantToJoin, 'usersSearched' => $usersSearched]);
     }
 
     public function showCreatePostForm(Request $request, int $groupId)

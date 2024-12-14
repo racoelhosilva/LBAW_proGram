@@ -74,6 +74,9 @@ Route::middleware('deny.banned')->group(function () {
         Route::get('/group/{id}/manage', 'manage')->where('id', '[0-9]+')->name('group.manage');
         Route::get('/group/{group_id}/post/create', [GroupController::class, 'showCreatePostForm'])->where('group_id', '[0-9]+')->name('group.post.create');
         Route::post('/group/{group_id}/post', [GroupController::class, 'createPost'])->where('group_id', '[0-9]+')->name('group.post.store');
+        Route::get('/group/{id}/members', [GroupController::class, 'showMembers'])->name('group.members');
+        Route::get('/group/{id}/requests', [GroupController::class, 'showRequests'])->name('group.requests');
+        Route::get('/group/{id}/invites', [GroupController::class, 'showInvites'])->name('group.invites');
 
     });
     // Search

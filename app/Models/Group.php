@@ -48,6 +48,11 @@ class Group extends Model
         return $this->joinRequests()->wherePivot('status', 'pending');
     }
 
+    public function invitedUsers()
+    {
+        return $this->belongsToMany(User::class, 'group_invitation', 'group_id', 'invitee_id')->withPivot('creation_timestamp');
+    }
+
     public function posts(): BelongsToMany
     {
         return $this->belongsToMany(Post::class, 'group_post', 'group_id', 'post_id');
