@@ -22,11 +22,9 @@ class UserController extends Controller
         $this->authorize('viewAny', Post::class);
 
         $posts = $user->posts()
-            ->when(Auth::check() && ! Auth::user()->follows($user) && Auth::id() !== $id, function ($query) {
-                $query->where('is_public', true);
-            })
+            ->visibleTo(Auth::user())
             ->orderBy('likes', 'DESC')
-            ->paginate(10);
+            ->get();
 
         $isOwnProfile = Auth::check() && Auth::id() === $user->id;
         $isFollowing = Auth::check() && Auth::user()->following()->where('followed_id', $user->id)->exists();
