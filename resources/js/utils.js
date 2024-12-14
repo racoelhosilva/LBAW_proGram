@@ -1,3 +1,17 @@
+const sendGet = (url) => {
+    return fetch(url, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        }
+    }).then(response => {
+        if (!response.ok) {
+            throw new Error(response.json.error);
+        }
+        return response.json();
+    });
+}
 const sendDelete = (url) => {
     return fetch(url, {
         method: 'DELETE',
@@ -81,4 +95,4 @@ const sendToastMessage = (message, type) => {
     fadeToastMessage(toastMessage);
 }
 
-export { sendDelete, sendPost, sendPatch, fadeToastMessage, sendToastMessage };
+export {sendGet, sendDelete, sendPost, sendPatch, fadeToastMessage, sendToastMessage };

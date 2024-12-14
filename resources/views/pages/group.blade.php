@@ -41,7 +41,7 @@
                     @elseif($isOwner)
                         @include('partials.text-button', ['text' => 'Edit Group', 'anchorUrl' => route('group.edit', ['id' => $group->id])])
                         <article class="dropdown">
-                            @include('partials.text-button', ['text' => 'Manage Members', 'id'=>'manage-group-button'])
+                            @include('partials.text-button', ['text' => 'Manage Group', 'id'=>'manage-group-button'])
                             <div class="hidden">
                                 <div>
                                     @include('partials.dropdown-item', ['icon' => 'user-round', 'text' => 'Manage Members', 'anchorUrl' => route('group.members', ['id' => $group->id])])

@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Api\ApiCommentController;
 use App\Http\Controllers\Api\ApiGroupController;
 use App\Http\Controllers\Api\ApiPostController;
+use App\Http\Controllers\Api\ApiSearchController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\GroupController;
@@ -156,4 +157,9 @@ Route::prefix('api')->group(function () {
     //     Route::get('/user/{id}/following', 'listFollowing');
     //     Route::get('/user/{id}/post', 'listPosts');
     // });
+
+    Route::controller(ApiSearchController::class)->group(function () {
+        Route::get('/search/users', 'searchUsers')->name('api.users.search');
+    });
+
 });
