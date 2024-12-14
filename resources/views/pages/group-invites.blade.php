@@ -9,7 +9,17 @@
             @include('partials.search-field', ['class' => 'w-full mb-4'])
             <div id="invite-results" class="flex flex-col gap-4">
                 @foreach ($usersSearched as $user)
-                    @include('partials.user-card', ['user' => $user, 'class' => 'w-full '])
+                    @php
+                    if($group->isUserInvited($user)){
+
+                        $inviteButton = view('partials.text-button', ['text' => 'Unsend', 'class' => 'w-40 rounded-lg invite-button'])->render();
+                    }else {
+                        $inviteButton = view('partials.text-button', ['text' => 'Send', 'class' => 'w-40 rounded-lg invite-button'])->render();
+                            
+                    }
+                    $buttons = $inviteButton;
+                    @endphp
+                    @include('partials.user-card', ['user' => $user, 'class' => 'w-full ', 'buttons' => $buttons])
                 @endforeach
             </div>
         </section>

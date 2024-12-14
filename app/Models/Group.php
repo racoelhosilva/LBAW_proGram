@@ -57,4 +57,9 @@ class Group extends Model
     {
         return $this->belongsToMany(Post::class, 'group_post', 'group_id', 'post_id');
     }
+
+    public function isUserInvited(User $user): bool
+    {
+        return $this->invitedUsers()->where('invitee_id', $user->id)->exists();
+    }
 }

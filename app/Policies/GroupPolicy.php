@@ -35,12 +35,7 @@ class GroupPolicy
         return $user && ! $user->isBanned() && $user->id === $group->owner_id;
     }
 
-    public function acceptRequest(?User $user, Group $group): bool
-    {
-        return $user && ! $user->isBanned() && $user->id === $group->owner_id;
-    }
-
-    public function rejectRequest(?User $user, Group $group): bool
+    public function manage(?User $user, Group $group): bool
     {
         return $user && ! $user->isBanned() && $user->id === $group->owner_id;
     }
@@ -48,5 +43,10 @@ class GroupPolicy
     public function addPostToGroup(?User $user, Group $group): bool
     {
         return $user && ! $user->isBanned() && $group->members()->where('user_id', $user->id)->exists();
+    }
+
+    public function isInvited(?User $user, Group $group): bool
+    {
+        return $user && ! $user->isBanned() && $group->invitations()->where('invitee_id', $user->id)->exists();
     }
 }

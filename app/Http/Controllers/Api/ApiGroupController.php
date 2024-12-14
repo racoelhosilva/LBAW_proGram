@@ -55,7 +55,7 @@ class ApiGroupController extends Controller
     public function acceptRequest(Request $request, int $group_id, int $requester_id)
     {
         $group = Group::findOrFail($group_id);
-        $this->authorize('acceptRequest', $group);
+        $this->authorize('manage', $group);
         $groupJoinRequest = GroupJoinRequest::where('group_id', $group_id)->where('requester_id', $requester_id)->where('status', 'pending')->firstOrFail();
         $groupJoinRequest->status = 'accepted';
         $groupJoinRequest->save();
@@ -66,12 +66,96 @@ class ApiGroupController extends Controller
     public function rejectRequest(Request $request, int $group_id, int $requester_id)
     {
         $group = Group::findOrFail($group_id);
-        $this->authorize('rejectRequest', $group);
+        $this->authorize('manage', $group);
         $groupJoinRequest = GroupJoinRequest::where('group_id', $group_id)->where('requester_id', $requester_id)->where('status', 'pending')->firstOrFail();
         $groupJoinRequest->status = 'rejected';
         $groupJoinRequest->save();
 
         return response()->json(['message' => 'Request rejected.']);
+    }
+
+    public function invite(Request $request, int $group_id, int $invitee_id)
+    {
+        $group = Group::findOrFail($group_id);
+        $this->authorize('manage', $group);
+
+        $invitation = GroupInvitation::updateOrCreate(
+            [
+                'group_id' => $group_id,
+                'invitee_id' => $invitee_id,
+            ],
+            [
+                'status' => 'pending',
+                'creation_timestamp' => now(),
+            ]
+        );
+
+        return response()->json(['message' => 'User invited to group.']);
+    }
+
+    public function uninvite(Request $request, int $group_id, int $invitee_id)
+    {
+        $group = Group::findOrFail($group_id);
+        $this->authorize('manage', $group);
+
+        GroupInvitation::where('group_id', $group_id)
+            ->where('invitee_id', $invitee_id)
+            ->where('status', 'pending')
+            ->delete();
+
+        return response()->json(['message' => 'User uninvited from group.']);
+    }
+
+    public function acceptInvite(Request $request, int $group_id)
+    {
+        $group = Group::findOrFail($group_id);
+        $this->authorize('isInvited', $group);
+
+        $user = Auth::user();
+
+        $invitations = GroupInvitation::where('group_id', $group_id)
+            ->where('invitee_id', $user->id)
+            ->where('status', 'pending')
+            ->get();
+
+        if ($invitations->isEmpty()) {
+            return response()->json(['message' => 'No pending invitation found.'], 404);
+        }
+
+        foreach ($invitations as $invitation) {
+            $invitation->update(['status' => 'accepted']);
+        }
+
+        $groupMember = new GroupMember;
+        $groupMember->group_id = $group_id;
+        $groupMember->user_id = $user->id;
+        $groupMember->join_timestamp = now();
+        $groupMember->save();
+
+        return response()->json(['message' => 'You have joined the group.']);
+    }
+
+    public function rejectInvite(Request $request, int $group_id)
+    {
+        $group = Group::findOrFail($group_id);
+        $this->authorize('isInvited', $group);
+
+        $user = Auth::user();
+
+        $invitations = GroupInvitation::where('group_id', $group_id)
+            ->where('invitee_id', $user->id)
+            ->where('status', 'pending')
+            ->get();
+
+        if ($invitations->isEmpty()) {
+            return response()->json(['message' => 'No pending invitation found.'], 404);
+        }
+
+        foreach ($invitations as $invitation) {
+            $invitation->update(['status' => 'rejected']);
+        }
+
+        return response()->json(['message' => 'You have rejected the invitation.']);
     }
 
     public function addPostToGroup(Request $request, int $group_id, int $post_id)
