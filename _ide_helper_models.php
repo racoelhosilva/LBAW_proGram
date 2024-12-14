@@ -362,10 +362,7 @@ namespace App\Models{
  * @property int $id
  * @property string $name
  * @property string $email
- * @property mixed|null $password
- * @property string|null $google_id
- * @property string|null $github_id
- * @property string|null $gitlab_id
+ * @property mixed $password
  * @property \Illuminate\Support\Carbon $register_timestamp
  * @property string $handle
  * @property bool $is_public
@@ -403,9 +400,6 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|User whereBannerImageUrl($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereDescription($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereEmail($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereGithubId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereGitlabId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|User whereGoogleId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereHandle($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereIsDeleted($value)

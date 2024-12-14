@@ -16,8 +16,7 @@ class ApiSearchController extends Controller
 
         $query = $request->input('query') ?? '';
 
-        $users = User::where('is_public', true)
-            ->whereRaw("tsvectors @@ plainto_tsquery('english', ?)", [$query])
+        $users = User::WhereRaw("tsvectors @@ plainto_tsquery('english', ?)", [$query])
             ->orderByRaw("ts_rank(tsvectors, plainto_tsquery('english', ?)) DESC", [$query])
             ->get();
 
