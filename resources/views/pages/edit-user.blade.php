@@ -152,7 +152,7 @@
             <h2 class="text-2xl font-bold">API Token</h2>
             <div class="py-2 flex justify-between items-center gap-4">
                 @isset($user->token)
-                    @include('partials.copy-field', ['value' => $user->token->value])
+                    @include('partials.copy-button', ['value' => $user->token->value])
                     <form method="post" action="{{ route('token.destroy', $user->token->id) }}">
                         {{ csrf_field() }}
                         {{ method_field('DELETE') }}
