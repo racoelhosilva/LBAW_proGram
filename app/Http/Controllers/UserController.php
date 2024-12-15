@@ -178,7 +178,7 @@ class UserController extends Controller
 
         $this->authorize('view', $user);
 
-        $notifications = $user->notifications()->orderBy('timestamp', 'desc')->get();
+        $notifications = $user->notifications()->where('is_read', false)->orderBy('timestamp', 'desc')->paginate(10);
 
         foreach ($notifications as $notification) {
             switch ($notification->type) {

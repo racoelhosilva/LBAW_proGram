@@ -9,7 +9,6 @@ const pusher = new Pusher(PUSHER_APP_KEY, {
 });
 
 const channel = document.querySelector('meta[name="broadcast-channel"]').getAttribute('content');
-console.log(`User channel: ${channel}`);
 
 if (channel) {
     const pusherChannel = pusher.subscribe(channel);
