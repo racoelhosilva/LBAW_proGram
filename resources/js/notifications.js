@@ -11,24 +11,38 @@ const pusher = new Pusher(PUSHER_APP_KEY, {
 const channel = document.querySelector('meta[name="broadcast-channel"]').getAttribute('content');
 const counter = document.querySelector('#notification-count');
 
+const increaseCounter = () => {
+    if (counter) {
+        counter.classList.remove('hidden');
+        counter.textContent = parseInt(counter.textContent) + 1;
+    }
+}
+
+const decreaseCounter = () => {
+    if (counter) {
+        counter.textContent = parseInt(counter.textContent) - 1;
+        if (parseInt(counter.textContent) === 0) {
+            counter.classList.add('hidden');
+        }
+    }
+}
+
 if (channel) {
     const pusherChannel = pusher.subscribe(channel);
 
     pusherChannel.bind('notification-postlike', function(data) {
         console.log(`New postlike notification: ${data.message}`);
-        if (counter) {
-            counter.textContent = parseInt(counter.textContent) + 1;
-        }
-
+        increaseCounter();
         sendToastMessage(data.message, 'success');
     });
 
     pusherChannel.bind('notification-commentlike', function(data) {
         console.log(`New commentlike notification: ${data.message}`);
-        if (counter) {
-            counter.textContent = parseInt(counter.textContent) + 1;
-        }
-
+        increaseCounter();
         sendToastMessage(data.message, 'success');
+    });
+
+    pusherChannel.bind('notification-unlike', function(data) {
+        decreaseCounter();
     });
 }
