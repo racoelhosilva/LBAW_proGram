@@ -2,11 +2,14 @@
 
 @php($groupUrl = route('group.show', $group->id))
 
-<article class="card px-6 flex flex-col sm:flex-row justify-between w-full {{ $class }}">
+<article class="card px-6 flex flex-col sm:flex-row justify-between w-full min-h-20 {{ $class }}">
     <div class="flex items-center">
  
         <div>
             <p class="text-base/4 font-medium"><a href="{{ $groupUrl }}">{{ $group->name}}</a></p>
+            <p class="text-xs/3 mt-1 font-medium text-gray-500 dark:text-gray-400 select-none">
+                <a href="{{ $groupUrl }}">{{ \Illuminate\Support\Str::words($group->description, 10, '...') }}</a>
+                {{ ' • ' . $group->members->count(). ' members' }}
         </div>
     </div>
     @if($buttons)
