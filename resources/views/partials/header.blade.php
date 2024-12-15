@@ -26,7 +26,7 @@
                 'id' => 'notification-button',
                 'label' => 'Notification',
                 'type' => 'secondary',
-                'dataAttributes' => ['broadcast-channel' => 'user.' . auth()->id()],
+                'anchorUrl' => route('user.notifications', auth()->id()),
             ])
 
             <a href="{{ route('user.show', auth()->id()) }}">

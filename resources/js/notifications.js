@@ -8,7 +8,8 @@ const pusher = new Pusher(PUSHER_APP_KEY, {
     encrypted: true
 });
 
-const channel = document.querySelector('#notification-button').dataset.broadcastChannel;
+const channel = document.querySelector('meta[name="broadcast-channel"]').getAttribute('content');
+console.log(`User channel: ${channel}`);
 
 if (channel) {
     const pusherChannel = pusher.subscribe(channel);

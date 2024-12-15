@@ -8,6 +8,11 @@
         <!-- CSRF Token -->
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
+        <!-- Notification Channel Broadcast -->
+        @isset (auth()->user()->id)
+            <meta name="broadcast-channel" content="user.{{ auth()->user()->id }}">
+        @endisset
+
         <title>@yield('title')</title>
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -25,7 +30,7 @@
             // See: http://stackoverflow.com/questions/18943276/html-5-autofocus-messes-up-css-loading/18945951#18945951
         </script>
 
-        <!-- Pusher (Notifications) -->
+        <!-- Pusher script (Notifications) -->
         <script src="https://js.pusher.com/7.0/pusher.min.js" defer></script>
 
         <!-- Styles & Scripts -->
