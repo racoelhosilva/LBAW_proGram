@@ -53,6 +53,15 @@ class SearchController extends Controller
         return $includeTotal ? [$posts->simplePaginate(10), $posts->count()] : $posts->simplePaginate(10);
     }
 
+    public function searchGroup(string $query, ?array $tags, bool $includeTotal = false)
+    {
+        $groups = Group::where('is_public', true)
+            ->whereRaw("tsvectors @@ plainto_tsquery('english', ?)", [$query])
+            ->orderByRaw("ts_rank(tsvectors, plainto_tsquery('english', ?)) DESC", [$query]);
+
+        return $includeTotal ? [$groups->simplePaginate(10), $groups->count()] : $groups->simplePaginate(10);
+    }
+
     public function index(Request $request)
     {
         $request->validate([
@@ -83,11 +92,20 @@ class SearchController extends Controller
                         return view('partials.post-list', ['posts' => $results, 'showEmpty' => false]);
                     }
                     break;
+
                 case 'users':
                     $this->authorize('viewAny', User::class);
                     $results = $this->searchUsers($query);
                     if ($request->ajax()) {
                         return view('partials.user-list', ['users' => $results, 'showEmpty' => false]);
+                    }
+                    break;
+
+                case 'groups':
+                    $this->authorize('viewAny', Group::class);
+                    $results = $this->searchGroup($query, $request->input('tags'));
+                    if ($request->ajax()) {
+                        return view('partials.group-list', ['groups' => $results, 'showEmpty' => false]);
                     }
                     break;
             }
@@ -105,9 +123,15 @@ class SearchController extends Controller
                             break;
                     }
                     break;
+
                 case 'users':
                     $this->authorize('viewAny', User::class);
                     [$results, $numResults] = $this->searchUsers($query, true);
+                    break;
+
+                case 'groups':
+                    $this->authorize('viewAny', Group::class);
+                    [$results, $numResults] = $this->searchGroup($query, $request->input('tags'), true);
                     break;
             }
 
