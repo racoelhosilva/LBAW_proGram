@@ -22,7 +22,7 @@
                     'selected' => request('tags'),
                     'form' => 'search-field'
                 ])
-                <select name="search-attr" id="search-attr" class="card" form="search-field">
+                <select name="search_attr" id="search-attr" class="card" form="search-field">
                     <option value="all">All</option>
                     <option value="author">Post Author</option>
                     <option value="group">Post Group</option>

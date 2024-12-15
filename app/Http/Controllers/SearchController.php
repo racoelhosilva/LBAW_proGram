@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Post;
 use App\Models\Tag;
 use App\Models\User;
+use Illuminate\Database\Query\JoinClause;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -33,6 +34,25 @@ class SearchController extends Controller
         return $includeTotal ? [$posts->simplePaginate(10), $posts->count()] : $posts->simplePaginate(10);
     }
 
+    public function searchPostsByAuthor(string $query, ?array $tags, bool $includeTotal = false)
+    {
+        $users = User::whereRaw("tsvectors @@ plainto_tsquery('english', ?)", [$query])
+            ->orderByRaw("ts_rank(tsvectors, plainto_tsquery('english', ?)) DESC", [$query]);
+
+        $posts = Post::visibleTo(Auth::user())
+            ->when($tags, function ($query, $tags) {
+                $query->whereHas('tags', function ($query) use ($tags) {
+                    $query->whereIn('id', $tags);
+                });
+            })
+            ->joinSub($users, 'users', function (JoinClause $join) {
+                $join->on('post.author_id', '=', 'users.id');
+            })
+            ->orderByRaw("ts_rank(users.tsvectors, plainto_tsquery('english', ?)) DESC", [$query]);
+
+        return $includeTotal ? [$posts->simplePaginate(10), $posts->count()] : $posts->simplePaginate(10);
+    }
+
     public function index(Request $request)
     {
         $request->validate([
@@ -40,6 +60,7 @@ class SearchController extends Controller
             'tags' => 'nullable|array',
             'tags.*' => 'exists:tag,id',
             'search_type' => 'nullable|string',
+            'search_attr' => 'nullable|string',
         ]);
 
         $query = $request->input('query') ?? '';
@@ -49,7 +70,15 @@ class SearchController extends Controller
                 case 'posts':
                 default:
                     $this->authorize('viewAny', Post::class);
-                    $results = $this->searchPosts($query, $request->input('tags'));
+                    switch ($request->input('search_attr')) {
+                        case 'author':
+                            $results = $this->searchPostsByAuthor($query, $request->input('tags'));
+                            break;
+                        default:
+                            $results = $this->searchPosts($query, $request->input('tags'));
+                            break;
+                    }
+
                     if ($request->ajax()) {
                         return view('partials.post-list', ['posts' => $results, 'showEmpty' => false]);
                     }
@@ -67,7 +96,14 @@ class SearchController extends Controller
                 case 'posts':
                 default:
                     $this->authorize('viewAny', Post::class);
-                    [$results, $numResults] = $this->searchPosts($query, $request->input('tags'), true);
+                    switch ($request->input('search_attr')) {
+                        case 'author':
+                            [$results, $numResults] = $this->searchPostsByAuthor($query, $request->input('tags'), true);
+                            break;
+                        default:
+                            [$results, $numResults] = $this->searchPosts($query, $request->input('tags'), true);
+                            break;
+                    }
                     break;
                 case 'users':
                     $this->authorize('viewAny', User::class);
