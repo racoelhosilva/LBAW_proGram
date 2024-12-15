@@ -57,26 +57,26 @@ const addToastMessageListeners = () => {
     });
 };
 
-const toggleMultiSelect = (multiSelect, event) => {
+const toggleSelect = (multiSelect, event) => {
     multiSelect.classList.toggle('closed');
     event.stopPropagation();
 };
 
-const closeMultiSelect = (multiSelect, event) => {
+const closeSelect = (multiSelect, event) => {
     multiSelect.classList.add('closed');
     event.stopPropagation();
 }
 
-const addMultiSelectListeners = () => {
-    const multiSelects = document.querySelectorAll('.multiselect');
+const addSelectListeners = () => {
+    const selects = document.querySelectorAll('.select');
 
-    multiSelects.forEach(multiSelect => {
-        multiSelect.addEventListener('click', event => toggleMultiSelect(multiSelect, event));
-        document.addEventListener('click', event => closeMultiSelect(multiSelect, event));
+    selects.forEach(select => {
+        select.addEventListener('click', event => toggleSelect(select, event));
+        document.addEventListener('click', event => closeSelect(select, event));
     });
 }
 
 addDropdownListeners();
 addModalListeners();
 addToastMessageListeners();
-addMultiSelectListeners();
+addSelectListeners();

@@ -55,7 +55,7 @@ class SearchController extends Controller
                 $join->on('post.author_id', '=', 'users.id');
             })
             ->when($queryStr, function ($query, $queryStr) {
-                orderByRaw("ts_rank(users.tsvectors, plainto_tsquery('english', ?)) DESC", [$queryStr]);
+                $query->orderByRaw("ts_rank(users.tsvectors, plainto_tsquery('english', ?)) DESC", [$queryStr]);
             });
 
         return $includeTotal ? [$posts->simplePaginate(10), $posts->count()] : $posts->simplePaginate(10);
@@ -65,8 +65,7 @@ class SearchController extends Controller
     {
         $groups = Group::where('is_public', true)
             ->when($queryStr, function ($query, $queryStr) {
-                $query->whereRaw("tsvectors @@ plainto_tsquery('english', ?)", [$queryStr])
-                    ->orderByRaw("ts_rank(tsvectors, plainto_tsquery('english', ?)) DESC", [$queryStr]);
+                $query->whereRaw("tsvectors @@ plainto_tsquery('english', ?)", [$queryStr]);
             });
 
         $posts = Post::visibleTo(Auth::user())

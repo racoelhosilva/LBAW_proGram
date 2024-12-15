@@ -115,39 +115,39 @@
         @apply card col-start-2;
     }
 
-    .multiselect {
+    .select {
         @apply relative w-full;
     }
 
-    .multiselect > button {
+    .select > button {
         @apply w-full px-4 py-3 secondary-btn rounded-lg flex justify-between;
     }
 
-    .multiselect:not(.closed) > button > div:nth-of-type(1) {
+    .select:not(.closed) > button > div:nth-of-type(1) {
         @apply hidden;
     }
 
-    .multiselect > div {
-        @apply max-h-80 rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 shadow flex flex-col absolute right-0 left-0 top-14 overflow-y-auto opacity-100 transition-all;
+    .select > div {
+        @apply max-h-80 rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 shadow flex flex-col absolute right-0 left-0 z-10 top-14 overflow-y-auto opacity-100 transition-all;
     }
 
-    .multiselect.closed > div {
+    .select.closed > div {
         @apply invisible top-16 opacity-0;
     }
 
-    .multiselect.closed > button > div:nth-of-type(2) {
+    .select.closed > button > div:nth-of-type(2) {
         @apply hidden;
     }
 
-    .multiselect-option > span {
+    .select-option > span {
         @apply ps-2 py-1 w-full text-gray-500 dark:text-gray-400 block;
     }
 
-    .multiselect-option > input:checked + span, .multiselect-option > span:hover {
+    .select-option > input:checked + span, .select-option > span:hover {
         @apply text-black dark:text-white bg-slate-50 dark:bg-slate-750;
     }
 
-    .multiselect-option > input {
+    .select-option > input {
         @apply hidden;
     }
 }

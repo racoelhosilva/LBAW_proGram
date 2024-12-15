@@ -1,6 +1,6 @@
-@props(['name', 'label', 'options', 'selected' => [], 'form'])
+@props(['name', 'label', 'options', 'multi' => false, 'selected' => [], 'form'])
 
-<div class="multiselect closed" tabindex="0">
+<div class="select closed" tabindex="0">
     <button>
         {{ $label }}
         <div>@include('partials.icon', ['name' => 'chevron-down'])</div>
@@ -8,11 +8,12 @@
     </button>
     <div>
         @foreach ($options as $option)
-            @include('partials.multiselect-option', [
+            @include('partials.select-option', [
                 'name' => $name,
                 'option' => $option,
                 'form' => $form,
-                'selected' => in_array($option->id, $selected),
+                '$multi' => $multi,
+                'selected' => $multi ? in_array($option->id, $selected) : $option->id == $selected,
             ])
         @endforeach
     </div>
