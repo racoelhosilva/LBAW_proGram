@@ -10,7 +10,7 @@
         </div>
     </div>
     @if($buttons)
-    <div class="flex gap-x-4 justify-end">
+    <div class="flex  justify-end">
              {!! $buttons !!}
     </div>
     @endif

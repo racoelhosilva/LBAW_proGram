@@ -9,14 +9,17 @@
         @forelse ($user->groups as $group)
             @if($user->id= Auth::id())
                 @php
-                    $buttons = view('partials.text-button', ['text' => 'Delete', 'class' => 'w-40 delete-group-button'])->render();
+                 $buttons = view('partials.icon-button', ['iconName' => 'eye', 'id' => '','class'=>'reject-invite-button', 'label' => 'reject', 'type' => 'transparent'])->render();
+                    $buttons .= view('partials.icon-button', ['iconName' => 'check', 'id' => '','class'=>'accept-invite-button', 'label' => 'accept', 'type' => 'transparent'])->render();
+                    $buttons .= view('partials.icon-button', ['iconName' => 'x', 'id' => '','class'=>'reject-invite-button', 'label' => 'reject', 'type' => 'transparent'])->render();
+                   
                 @endphp
             @else
                 @php
                     $buttons = view('partials.text-button', ['text' => 'View', 'class' => 'w-40 delete-group-button'])->render();
                 @endphp
             @endif
-            @include('partials.group-card', ['group' => $group])
+            @include('partials.group-card', ['group' => $group, 'buttons' => $buttons])
         @empty
             <p>This user does not follow any other user</p>
         @endforelse
