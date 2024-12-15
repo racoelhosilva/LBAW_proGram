@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Group;
 use App\Models\Post;
 use App\Models\Tag;
 use App\Models\User;
