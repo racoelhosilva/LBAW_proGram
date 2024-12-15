@@ -9,6 +9,7 @@
             <div class="border-t border-slate-300 dark:border-slate-600 grid justify-stretch">
                 @include('partials.search-type-button', ['optionType' => 'posts', 'searchType' => $type, 'icon' => 'message-circle', 'text' => 'Posts'])
                 @include('partials.search-type-button', ['optionType' => 'users', 'searchType' => $type, 'icon' => 'user-round', 'text' => 'Users'])
+                @include('partials.search-type-button', ['optionType' => 'groups', 'searchType' => $type, 'icon' => 'users-round', 'text' => 'Groups'])
             </div>
         </section>
 
@@ -50,6 +51,16 @@
                         </div>
                     @else
                         <h1 class="text-xl font-semibold">No users found</h1>
+                    @endif
+                    @break
+                @case('groups')
+                    @if ($numResults > 0)
+                        <h1 class="text-xl font-semibold">Found {{ $numResults . ($numResults === 1 ? ' group' : ' groups') }}</h1>
+                        <div id="search-groups" class="space-y-3">
+                            @include('partials.group-list', ['groups' => $results])
+                        </div>
+                    @else
+                        <h1 class="text-xl font-semibold">No groups found</h1>
                     @endif
                     @break
             @endswitch
