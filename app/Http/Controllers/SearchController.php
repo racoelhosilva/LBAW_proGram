@@ -61,6 +61,36 @@ class SearchController extends Controller
         return $includeTotal ? [$posts->simplePaginate(10), $posts->count()] : $posts->simplePaginate(10);
     }
 
+    public function searchPostsByGroup(?string $queryStr, ?array $tags, bool $includeTotal = false)
+    {
+        $groups = Group::where('is_public', true)
+            ->when($queryStr, function ($query, $queryStr) {
+                $query->whereRaw("tsvectors @@ plainto_tsquery('english', ?)", [$queryStr])
+                    ->orderByRaw("ts_rank(tsvectors, plainto_tsquery('english', ?)) DESC", [$queryStr]);
+            });
+
+        $posts = Post::visibleTo(Auth::user())
+            ->when($tags, function ($query, $tags) {
+                $query->whereHas('tags', function ($query) use ($tags) {
+                    $query->whereIn('id', $tags);
+                });
+            })
+            ->joinSub($groups, 'groups', function (JoinClause $join) {
+                // TODO: Refactor this
+                $join->whereExists(function ($query) {
+                    $query->select('group_post.post_id')
+                        ->from('group_post')
+                        ->whereColumn('group_post.post_id', 'post.id')
+                        ->whereColumn('group_post.group_id', 'groups.id');
+                });
+            })
+            ->when($queryStr, function ($query, $queryStr) {
+                $query->orderByRaw("ts_rank(groups.tsvectors, plainto_tsquery('english', ?)) DESC", [$queryStr]);
+            });
+
+        return $includeTotal ? [$posts->simplePaginate(10), $posts->count()] : $posts->simplePaginate(10);
+    }
+
     public function searchGroup(?string $queryStr, bool $includeTotal = false)
     {
         $groups = Group::where('is_public', true)
@@ -90,6 +120,9 @@ class SearchController extends Controller
                     switch ($request->input('search_attr')) {
                         case 'author':
                             $results = $this->searchPostsByAuthor($request->input('query'), $request->input('tags'));
+                            break;
+                        case 'group':
+                            $results = $this->searchPostsByGroup($request->input('query'), $request->input('tags'));
                             break;
                         default:
                             $results = $this->searchPosts($request->input('query'), $request->input('tags'));
@@ -125,6 +158,9 @@ class SearchController extends Controller
                     switch ($request->input('search_attr')) {
                         case 'author':
                             [$results, $numResults] = $this->searchPostsByAuthor($request->input('query'), $request->input('tags'), true);
+                            break;
+                        case 'group':
+                            [$results, $numResults] = $this->searchPostsByGroup($request->input('query'), $request->input('tags'), true);
                             break;
                         default:
                             [$results, $numResults] = $this->searchPosts($request->input('query'), $request->input('tags'), true);
