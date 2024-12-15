@@ -176,9 +176,9 @@ class UserController extends Controller
     {
         $user = User::findOrFail($id);
 
-        $this->authorize('view', $user);
+        // TODO: Check policies @HenriqueSFernandes
 
-        $notifications = $user->notifications()->where('is_read', false)->orderBy('timestamp', 'desc')->paginate(10);
+        $notifications = $user->notifications()->orderBy('timestamp', 'desc')->paginate(10);
 
         foreach ($notifications as $notification) {
             switch ($notification->type) {

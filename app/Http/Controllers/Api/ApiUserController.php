@@ -122,4 +122,33 @@ class ApiUserController extends Controller
         return response()->json($user->followRequests);
 
     }
+
+    public function readAllNotifications($id)
+    {
+        $user = User::findOrFail($id);
+
+        // TODO: Check policies @HenriqueSFernandes
+
+        $user->notifications()->update(['is_read' => true]);
+
+        return response()->json(['message' => 'All notifications read']);
+    }
+
+    public function readNotification($userId, $notificationId)
+    {
+        $user = User::findOrFail($userId);
+
+        $notification = $user->notifications()->where('id', $notificationId)->first();
+
+        if (! $notification) {
+            return response()->json(['message' => 'Notification not found'], 404);
+        }
+
+        // TODO: Check policies @HenriqueSFernandes
+
+        $notification->is_read = true;
+        $notification->save();
+
+        return response()->json($notification);
+    }
 }

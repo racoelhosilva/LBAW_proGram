@@ -90,9 +90,14 @@ class User extends Authenticatable
         return $this->hasMany(FollowRequest::class, 'followed_id');
     }
 
-    public function notifications(): HasMany
+    public function allNotifications(): HasMany
     {
         return $this->hasMany(Notification::class, 'receiver_id');
+    }
+
+    public function notifications(): HasMany
+    {
+        return $this->hasMany(Notification::class, 'receiver_id')->where('is_read', false);
     }
 
     public function followers(): BelongsToMany

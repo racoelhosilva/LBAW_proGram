@@ -8,9 +8,9 @@
         <!-- CSRF Token -->
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <!-- Notification Channel Broadcast -->
+        <!-- ID of current user if set -->
         @isset (auth()->user()->id)
-            <meta name="broadcast-channel" content="user.{{ auth()->user()->id }}">
+            <meta name="user-id" content="{{ auth()->user()->id }}">
         @endisset
 
         <title>@yield('title')</title>

@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Api\ApiCommentController;
 use App\Http\Controllers\Api\ApiPostController;
+use App\Http\Controllers\Api\ApiUserController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\GitHubController;
@@ -148,14 +149,16 @@ Route::prefix('api')->group(function () {
         Route::delete('/comment/{id}/like', 'unlike')->where('id', '[0-9]+')->name('api.comment.unlike');
     });
 
-    // Route::controller(ApiUserController::class)->group(function () {
-    //     Route::get('/user', 'list');
-    //     Route::get('/user/{id}', 'show');
-    //     Route::post('/user', 'create');
-    //     Route::delete('/user/{id}', 'delete');
-    //     Route::put('/user/{id}', 'update');
-    //     Route::get('/user/{id}/followers', 'listFollowers');
-    //     Route::get('/user/{id}/following', 'listFollowing');
-    //     Route::get('/user/{id}/post', 'listPosts');
-    // });
+    Route::controller(ApiUserController::class)->group(function () {
+        //     Route::get('/user', 'list');
+        //     Route::get('/user/{id}', 'show');
+        //     Route::post('/user', 'create');
+        //     Route::delete('/user/{id}', 'delete');
+        //     Route::put('/user/{id}', 'update');
+        //     Route::get('/user/{id}/followers', 'listFollowers');
+        //     Route::get('/user/{id}/following', 'listFollowing');
+        //     Route::get('/user/{id}/post', 'listPosts');
+        Route::post('/user/{id}/notifications/read', 'readAllNotifications')->where('id', '[0-9]+')->name('api.user.notifications.read');
+        Route::post('/user/{userId}/notification/{notificationId}/read', 'readNotification')->where('userId', '[0-9]+')->where('notificationId', '[0-9]+')->name('api.user.notification.read');
+    });
 });

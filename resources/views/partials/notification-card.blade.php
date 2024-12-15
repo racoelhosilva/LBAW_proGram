@@ -2,7 +2,7 @@
 
 @php($userUrl = route('user.show', $notification->user->id))
 
-<article class="card px-6 flex items-center justify-between">
+<article class="notification-card card px-6 flex items-center justify-between" data-notification-id="{{ $notification->id }}">
     <div class="flex items-center">
         <a href="{{ $userUrl }}">
             <img src="{{ $notification->user->getProfilePicture() }}" alt="{{ $notification->user->name }}"
@@ -36,8 +36,5 @@
         'text' => 'Mark as read',
         'id' => 'read-notification-button',
         'type' => 'secondary',
-        'data' => [
-            'notificationId' => $notification->id,
-        ],
     ])
 </article>
