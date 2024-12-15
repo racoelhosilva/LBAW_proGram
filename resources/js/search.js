@@ -5,7 +5,7 @@ const addSearchListeners = () => {
     const searchPosts = document.getElementById('search-posts');
     const searchUsers = document.getElementById('search-users');
     const searchLoadingSpinner = document.querySelector('#search-results > div:last-child > .loading-spinner');
-    const searchFilters = document.querySelectorAll('#search-filters .multiselect');
+    const searchFilters = document.querySelectorAll('#search-filters .select');
     const searchField = document.getElementById('search-field');
 
     if (!searchLoadingSpinner || !searchField || !searchFilters) {

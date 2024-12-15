@@ -67,10 +67,21 @@ const closeSelect = (select, event) => {
     event.stopPropagation();
 }
 
+const updateSelect = (select, selectedOptionsText) => {
+    const selectedOptions = select.querySelectorAll(':scope label:has(input:checked) span');
+
+    selectedOptionsText.textContent = Array.from(selectedOptions)
+        .map(option => option.textContent)
+        .join(", ");
+};
+
 const addSelectListeners = () => {
     const selects = document.querySelectorAll('.select');
 
     selects.forEach(select => {
+        const selectDropdown = select.querySelector(':scope > div');
+        const selectedOptionsText = select.querySelector(':scope .selected-options');
+
         select.addEventListener('click', event => {
             toggleSelect(select, event);
             selects.forEach(otherSelect => {
@@ -78,6 +89,8 @@ const addSelectListeners = () => {
                     closeSelect(otherSelect, event)
             });
         });
+
+        selectDropdown.addEventListener('click', () => updateSelect(select, selectedOptionsText))
         document.addEventListener('click', event => closeSelect(select, event));
     });
 }

@@ -1,4 +1,13 @@
-@props(['type', 'results', 'numResults'])
+@props(['type', 'results', 'numResults', 'tags'])
+
+@php
+    $tagOptions = array_map(function ($tag) {
+        return ['name' => $tag->name, 'value' => $tag->id];
+    }, $tags->all());
+    uasort($tagOptions, function ($option) {
+        return $option['name'];
+    });
+@endphp
 
 @extends('layouts.app')
 @section('title')
@@ -21,9 +30,7 @@
                 @include('partials.select', [
                     'name' => 'tags[]',
                     'label' => 'Filter by Tags',
-                    'options' => array_map(function ($tag) {
-                        return ['name' => $tag->name, 'value' => $tag->id];
-                    }, $tags->all()),
+                    'options' => $tagOptions,
                     'multi' => true,
                     'selected' => request('tags'),
                     'form' => 'search-field'
@@ -32,7 +39,7 @@
                     'name' => 'search_attr',
                     'label' => 'Search By',
                     'options' => [
-                        ['name' => 'All', 'value' => 'all'],
+                        ['name' => 'All', 'value' => null],
                         ['name' => 'Post Author', 'value' => 'author'],
                         ['name' => 'Post Group', 'value' => 'group'],
                     ],
