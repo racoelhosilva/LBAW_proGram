@@ -3,7 +3,7 @@
 @section('content')
 <main id="home-page" class="px-8 py-4">
     @foreach($notifications as $notification)
-        {{ $notification }}
+        @include('partials.notification-card', ['notification' => $notification])
     @endforeach
 </main>
 @endsection
