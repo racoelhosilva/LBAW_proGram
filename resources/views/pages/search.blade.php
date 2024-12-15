@@ -23,9 +23,9 @@
                     'form' => 'search-field'
                 ])
                 <select name="search-attr" id="search-attr" class="card" form="search-field">
-                    <option value="all" {{ request('search-attr') === 'all' ? 'selected' : '' }}>All</option>
-                    <option value="author" {{ request('search-attr') === 'title' ? 'selected' : '' }}>Post Author</option>
-                    <option value="group" {{ request('search-attr') === 'content' ? 'selected' : '' }}>Post Group</option>
+                    <option value="all">All</option>
+                    <option value="author">Post Author</option>
+                    <option value="group">Post Group</option>
                 </select>
             </section>
         @endif
