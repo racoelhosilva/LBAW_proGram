@@ -12,16 +12,18 @@ use Illuminate\Support\Facades\Auth;
 
 class SearchController extends Controller
 {
-    public function searchUsers(string $query, bool $includeTotal = false)
+    public function searchUsers(?string $queryStr, bool $includeTotal = false)
     {
         $users = User::where('is_public', true)
-            ->whereRaw("tsvectors @@ plainto_tsquery('english', ?)", [$query])
-            ->orderByRaw("ts_rank(tsvectors, plainto_tsquery('english', ?)) DESC", [$query]);
+            ->when($queryStr, function ($query, $queryStr) {
+                $query->whereRaw("tsvectors @@ plainto_tsquery('english', ?)", [$queryStr])
+                    ->orderByRaw("ts_rank(tsvectors, plainto_tsquery('english', ?)) DESC", [$queryStr]);
+            });
 
         return $includeTotal ? [$users->simplePaginate(10), $users->count()] : $users->simplePaginate(10);
     }
 
-    public function searchPosts(string $query, ?array $tags, bool $includeTotal = false)
+    public function searchPosts(?string $queryStr, ?array $tags, bool $includeTotal = false)
     {
         $posts = Post::visibleTo(Auth::user())
             ->when($tags, function ($query, $tags) {
@@ -29,16 +31,19 @@ class SearchController extends Controller
                     $query->whereIn('id', $tags);
                 });
             })
-            ->whereRaw("tsvectors @@ plainto_tsquery('english', ?)", [$query])
-            ->orderByRaw("ts_rank(tsvectors, plainto_tsquery('english', ?)) DESC", [$query]);
+            ->when($queryStr, function ($query, $queryStr) {
+                $query->whereRaw("tsvectors @@ plainto_tsquery('english', ?)", [$queryStr])
+                    ->orderByRaw("ts_rank(tsvectors, plainto_tsquery('english', ?)) DESC", [$queryStr]);
+            });
 
         return $includeTotal ? [$posts->simplePaginate(10), $posts->count()] : $posts->simplePaginate(10);
     }
 
-    public function searchPostsByAuthor(string $query, ?array $tags, bool $includeTotal = false)
+    public function searchPostsByAuthor(?string $queryStr, ?array $tags, bool $includeTotal = false)
     {
-        $users = User::whereRaw("tsvectors @@ plainto_tsquery('english', ?)", [$query])
-            ->orderByRaw("ts_rank(tsvectors, plainto_tsquery('english', ?)) DESC", [$query]);
+        $users = User::when($queryStr, function ($query, $queryStr) {
+            $query->whereRaw("tsvectors @@ plainto_tsquery('english', ?)", [$queryStr]);
+        });
 
         $posts = Post::visibleTo(Auth::user())
             ->when($tags, function ($query, $tags) {
@@ -49,16 +54,20 @@ class SearchController extends Controller
             ->joinSub($users, 'users', function (JoinClause $join) {
                 $join->on('post.author_id', '=', 'users.id');
             })
-            ->orderByRaw("ts_rank(users.tsvectors, plainto_tsquery('english', ?)) DESC", [$query]);
+            ->when($queryStr, function ($query, $queryStr) {
+                orderByRaw("ts_rank(users.tsvectors, plainto_tsquery('english', ?)) DESC", [$queryStr]);
+            });
 
         return $includeTotal ? [$posts->simplePaginate(10), $posts->count()] : $posts->simplePaginate(10);
     }
 
-    public function searchGroup(string $query, ?array $tags, bool $includeTotal = false)
+    public function searchGroup(?string $queryStr, bool $includeTotal = false)
     {
         $groups = Group::where('is_public', true)
-            ->whereRaw("tsvectors @@ plainto_tsquery('english', ?)", [$query])
-            ->orderByRaw("ts_rank(tsvectors, plainto_tsquery('english', ?)) DESC", [$query]);
+            ->when($queryStr, function ($query, $queryStr) {
+                $query->whereRaw("tsvectors @@ plainto_tsquery('english', ?)", [$queryStr])
+                    ->orderByRaw("ts_rank(tsvectors, plainto_tsquery('english', ?)) DESC", [$queryStr]);
+            });
 
         return $includeTotal ? [$groups->simplePaginate(10), $groups->count()] : $groups->simplePaginate(10);
     }
@@ -73,8 +82,6 @@ class SearchController extends Controller
             'search_attr' => 'nullable|string',
         ]);
 
-        $query = $request->input('query') ?? '';
-
         if ($request->ajax()) {
             switch ($request->input('search_type')) {
                 case 'posts':
@@ -82,10 +89,10 @@ class SearchController extends Controller
                     $this->authorize('viewAny', Post::class);
                     switch ($request->input('search_attr')) {
                         case 'author':
-                            $results = $this->searchPostsByAuthor($query, $request->input('tags'));
+                            $results = $this->searchPostsByAuthor($request->input('query'), $request->input('tags'));
                             break;
                         default:
-                            $results = $this->searchPosts($query, $request->input('tags'));
+                            $results = $this->searchPosts($request->input('query'), $request->input('tags'));
                             break;
                     }
 
@@ -96,7 +103,7 @@ class SearchController extends Controller
 
                 case 'users':
                     $this->authorize('viewAny', User::class);
-                    $results = $this->searchUsers($query);
+                    $results = $this->searchUsers($request->input('query'));
                     if ($request->ajax()) {
                         return view('partials.user-list', ['users' => $results, 'showEmpty' => false]);
                     }
@@ -104,7 +111,7 @@ class SearchController extends Controller
 
                 case 'groups':
                     $this->authorize('viewAny', Group::class);
-                    $results = $this->searchGroup($query, $request->input('tags'));
+                    $results = $this->searchGroup($request->input('query'), $request->input('tags'));
                     if ($request->ajax()) {
                         return view('partials.group-list', ['groups' => $results, 'showEmpty' => false]);
                     }
@@ -117,22 +124,22 @@ class SearchController extends Controller
                     $this->authorize('viewAny', Post::class);
                     switch ($request->input('search_attr')) {
                         case 'author':
-                            [$results, $numResults] = $this->searchPostsByAuthor($query, $request->input('tags'), true);
+                            [$results, $numResults] = $this->searchPostsByAuthor($request->input('query'), $request->input('tags'), true);
                             break;
                         default:
-                            [$results, $numResults] = $this->searchPosts($query, $request->input('tags'), true);
+                            [$results, $numResults] = $this->searchPosts($request->input('query'), $request->input('tags'), true);
                             break;
                     }
                     break;
 
                 case 'users':
                     $this->authorize('viewAny', User::class);
-                    [$results, $numResults] = $this->searchUsers($query, true);
+                    [$results, $numResults] = $this->searchUsers($request->input('query'), true);
                     break;
 
                 case 'groups':
                     $this->authorize('viewAny', Group::class);
-                    [$results, $numResults] = $this->searchGroup($query, $request->input('tags'), true);
+                    [$results, $numResults] = $this->searchGroup($request->input('query'), true);
                     break;
             }
 
