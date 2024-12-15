@@ -20,8 +20,10 @@
                 <h1 class="text-xl font-semibold">Search Filters</h1>
                 @include('partials.select', [
                     'name' => 'tags[]',
-                    'label' => 'Tags',
-                    'options' => $tags,
+                    'label' => 'Filter by Tags',
+                    'options' => array_map(function ($tag) {
+                        return ['name' => $tag->name, 'value' => $tag->id];
+                    }, $tags->all()),
                     'multi' => true,
                     'selected' => request('tags'),
                     'form' => 'search-field'
@@ -30,9 +32,9 @@
                     'name' => 'search_attr',
                     'label' => 'Search By',
                     'options' => [
-                        (object) ['id' => null, 'name' => 'All'],
-                        (object) ['id' => 'author', 'name' => 'Post Author'],
-                        (object) ['id' => 'group', 'name' => 'Post Group'],
+                        ['name' => 'All', 'value' => 'all'],
+                        ['name' => 'Post Author', 'value' => 'author'],
+                        ['name' => 'Post Group', 'value' => 'group'],
                     ],
                     'selected' => request('search_attr'),
                     'form' => 'search-field'

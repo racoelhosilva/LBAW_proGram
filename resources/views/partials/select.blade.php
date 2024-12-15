@@ -13,7 +13,7 @@
                 'option' => $option,
                 'form' => $form,
                 '$multi' => $multi,
-                'selected' => $multi ? in_array($option->id, $selected) : $option->id == $selected,
+                'selected' => $multi ? in_array($option['value'], $selected) : $option['value'] == $selected,
             ])
         @endforeach
     </div>
