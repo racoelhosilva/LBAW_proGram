@@ -69,6 +69,11 @@ class Post extends Model
         return $this->tags->contains($tag);
     }
 
+    public function group(): ?Group
+    {
+        return $this->belongsToMany(Group::class, 'group_post', 'post_id', 'group_id')->first();
+    }
+
     public function scopeVisibleTo(Builder $query, ?User $user): Builder
     {
         return $query->where(function ($subQuery) use ($user) {

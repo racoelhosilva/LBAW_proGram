@@ -52,7 +52,6 @@ class ApiPostController extends Controller
             'is_public' => 'nullable|boolean',
             'is_announcement' => 'nullable|boolean',
         ]);
-
         try {
             $post = Post::create([
                 'title' => $request->input('title'),

@@ -88,6 +88,7 @@ class PostController extends Controller
      */
     public function edit(int $id): RedirectResponse|View|Factory
     {
+
         $post = Post::findOrFail($id);
 
         if (! Auth::check()) {
@@ -95,6 +96,7 @@ class PostController extends Controller
         }
 
         $this->authorize('update', $post);
+        session(['previous_url' => url()->previous()]);
 
         return view('pages.edit-post', [
             'post' => $post,
@@ -119,7 +121,6 @@ class PostController extends Controller
             'is_public' => 'nullable|boolean',
             'is_announcement' => 'nullable|boolean',
         ]);
-
         $post = Post::findOrFail($id);
 
         DB::transaction(function () use ($post, $request) {
@@ -132,6 +133,10 @@ class PostController extends Controller
 
             $post->tags()->sync($request->input('tags'));
         });
+
+        if (url()->previous() === route('post.edit', $post->id)) {
+            return redirect(session('previous_url'))->with('Post updated successfully.');
+        }
 
         return redirect()->route('post.show', $post->id)->withSuccess('Post updated successfully.');
     }
@@ -180,7 +185,7 @@ class PostController extends Controller
         });
 
         if (url()->previous() === route('post.edit', $post->id)) {
-            return redirect()->route('user.show', $post->author->id)->withSuccess('Post deleted successfully.');
+            return redirect(session('previous_url'))->with('Post deleted successfully.');
         }
 
         return redirect()->back()->withSuccess('Post deleted successfully.');

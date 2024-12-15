@@ -9,7 +9,7 @@
         @forelse ($user->groups as $group)
             @php
                 if($user->id == Auth::id()){
-                    $buttons = view('partials.icon-button', ['iconName' => 'x', 'id' => '','class'=>'reject-invite-button', 'label' => 'reject', 'type' => 'transparent'])->render();
+                    $buttons = view('partials.icon-button', ['iconName' => 'x', 'id' => '','class'=>'leave-button', 'label' => 'reject', 'type' => 'transparent'])->render();
                 }
                 else
                 {

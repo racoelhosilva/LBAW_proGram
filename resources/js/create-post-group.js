@@ -13,7 +13,8 @@ const submitPostForm = () => {
             title: formData.get('title'),
             text: formData.get('text'),
             tags: formData.getAll('tags[]'),
-            is_public: formData.has('is_public') ? 1 : 0
+            is_public: formData.has('is_public') ? 1 : 0,
+            is_announcement: formData.has('is_announcement') ? 1 : 0
         };
 
         sendPost("/api/post", data)
