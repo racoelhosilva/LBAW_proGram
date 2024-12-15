@@ -42,7 +42,15 @@ if (channel) {
         sendToastMessage(data.message, 'success');
     });
 
-    pusherChannel.bind('notification-unlike', function(data) {
+    pusherChannel.bind('notification-postunlike', function(data) {
+        console.log(`New unlike notification: ${data.message}`);
         decreaseCounter();
+        sendToastMessage(data.message, 'success');
+    });
+
+    pusherChannel.bind('notification-commentunlike', function(data) {
+        console.log(`New commentunlike notification: ${data.message}`);
+        decreaseCounter();
+        sendToastMessage(data.message, 'success');
     });
 }
