@@ -55,6 +55,22 @@ class UserController extends Controller
         ]);
     }
 
+    public function showInvites(int $id)
+    {
+        $user = User::findOrFail($id);
+
+        $this->authorize('view', $user);
+
+        $invites = $user->groupsInvitedTo()
+            ->orderBy('name', 'ASC')
+            ->get();
+
+        return view('pages.user-group-invites', [
+            'user' => $user,
+            'invites' => $invites,
+        ]);
+    }
+
     public function edit(int $id)
     {
         $user = User::findOrFail($id);

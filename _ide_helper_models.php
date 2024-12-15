@@ -386,6 +386,8 @@ namespace App\Models{
  * @property-read int|null $group_invitations_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Group> $groups
  * @property-read int|null $groups_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Group> $groupsInvitedTo
+ * @property-read int|null $groups_invited_to_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Notification> $notifications
  * @property-read int|null $notifications_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Post> $posts
