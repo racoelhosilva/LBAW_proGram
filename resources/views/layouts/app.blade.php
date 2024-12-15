@@ -30,7 +30,9 @@
     </head>
     <body class="bg-white dark:bg-slate-800 text-black dark:text-white">
         @include('partials.header')
-        @yield('content')
+        <main class="flex-grow">
+            @yield('content')
+        </main>
         @include('partials.footer')
         @include('partials.toast-messages')
     </body>

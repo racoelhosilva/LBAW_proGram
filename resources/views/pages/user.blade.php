@@ -4,7 +4,7 @@
 
 @section('content')
     <main id="profile-page" class="px-8 py-4 grid grid-cols-4 gap-6">
-        <section id="banner-section" style="background-image: url('{{ $user->getBannerImage() }}');" class="card h-min col-span-4 grid grid-cols-[auto_1fr] gap-y-16 p-4 bg-cover">
+        <section id="banner-section" style="background-image: url('{{ $user->getBannerImage() }}');" class="card h-min col-span-4 grid  grid-rows-[auto_auto] sm:grid-cols-[auto_1fr] gap-y-16 p-4 bg-cover">
             <div class="col-span-full">
                 <h1 class="text-4xl font-bold">{{ $user->name }}</h1>
                 <h2 class="text-2xl">{{ '@' . $user->handle }}</h2>
@@ -72,6 +72,9 @@
             <article id="follows" class="card col-span-4 space-y-3">
                 <p class="text-xl font-bold">Followers: {{ $user->num_followers }}</p>
                 <p class="text-xl font-bold">Following: {{ $user->num_following }}</p>
+            </article>
+            <article id="groups" class="card col-span-4 space-y-3">
+                <a href={{'/user/' . $user->id . '/groups'}} class="text-xl font-bold">Groups: {{ $user->groups->count() }}</a>
             </article>
 
             @if ($recommendedUsers !== null && $recommendedUsers->count() > 0)

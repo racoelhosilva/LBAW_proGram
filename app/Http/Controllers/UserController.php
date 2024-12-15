@@ -39,6 +39,22 @@ class UserController extends Controller
         ]);
     }
 
+    public function showGroups(int $id)
+    {
+        $user = User::findOrFail($id);
+
+        $this->authorize('view', $user);
+
+        $groups = $user->groups()
+            ->orderBy('name', 'ASC')
+            ->get();
+
+        return view('pages.user-groups', [
+            'user' => $user,
+            'groups' => $groups,
+        ]);
+    }
+
     public function edit(int $id)
     {
         $user = User::findOrFail($id);
