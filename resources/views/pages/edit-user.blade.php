@@ -19,7 +19,7 @@
                     'value' => $user->name,
                     'placeholder' => 'John Doe',
                     'required' => true,
-                    'tooltip' => 'The name that will be displayed on your profile, posts, and comments',
+                    'help' => 'The name that will be displayed on your profile, posts, and comments',
 
                 ])
                 @include('partials.textarea', [
@@ -29,7 +29,7 @@
                     'value' => $user->description,
                     'placeholder' => 'I am just a chill dev',
                     'required' => false,
-                    'tooltip' => 'A short description of yourself that will be displayed on your profile',
+                    'help' => 'A short description of yourself that will be displayed on your profile',
                 ])
                 @include('partials.input-field', [
                     'name' => 'handle',
@@ -38,8 +38,9 @@
                     'value' => $user->handle,
                     'placeholder' => 'john_doe',
                     'required' => true,
-                    'tooltip' => 'A unique handle that will be used to identify you on the platform',
+                    'help' => 'A unique handle that will be used to identify you on the platform',
                 ])
+
                 <div class="flex items-center mt-4">
                     <input type="checkbox" id="is_public" name="is_public" value="1"
                         class="w-5 h-5 mr-2 text-blue-600 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
@@ -48,7 +49,6 @@
                         Make profile public
                     </label>
                 </div>
-
 
                 @include('partials.input-field', [
                     'name' => 'github_url',
