@@ -23,7 +23,7 @@
                 </div>
 
             @empty
-                <p>No users at the moment</p>
+                <p>No members at the moment</p>
             @endforelse
 
         </section>  
