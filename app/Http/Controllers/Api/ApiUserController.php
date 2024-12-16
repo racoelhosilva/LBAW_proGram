@@ -131,8 +131,6 @@ class ApiUserController extends Controller
         $targetUser = User::findOrFail($id);
         $currentUser = Auth()->user();
 
-        // TODO: implement policy @HenriqueSFernandes
-
         if ($currentUser->follows($targetUser)) {
             return response()->json([
                 'action' => 'none',
@@ -177,8 +175,6 @@ class ApiUserController extends Controller
         $currentUser = Auth()->user();
         $message = '';
 
-        // TODO: implement policy @HenriqueSFernandes
-
         if ($currentUser->follows($targetUser)) {
 
             DB::transaction(function () use ($currentUser, $targetUser) {
@@ -221,8 +217,6 @@ class ApiUserController extends Controller
     {
         $follower = User::findOrFail($id);
         $currentUser = Auth()->user()->id;
-
-        // TODO: implement policy @HenriqueSFernandes
 
         if ($follower->follows($currentUser)) {
             DB::transaction(function () use ($currentUser, $follower) {
