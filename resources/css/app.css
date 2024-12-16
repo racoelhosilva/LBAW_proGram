@@ -161,6 +161,8 @@
     }
 
     .select-option > input {
+        @apply hidden;
+    }
 
     .follow-profile-button.following .follow,
     .follow-profile-button.following .pending,
