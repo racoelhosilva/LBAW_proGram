@@ -2,6 +2,9 @@ import { sendPost,sendPatch, sendToastMessage ,sendDelete} from './utils';
 
 const addSubmitCommentListener = () => {
     const form = document.getElementById('comment-submit-form');
+    if (!form)
+        return;
+
     form.addEventListener('submit', (event) => {
         event.preventDefault();
         const formData = new FormData(form);

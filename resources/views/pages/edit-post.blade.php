@@ -3,10 +3,10 @@
     {{ 'Edit ' . $post->title . ' | ProGram' }}
 @endsection
 @section('content')
-    <main id="create-post-page" class="grid grid-cols-3 items-center">
-        <article class="card h-min p-10 pt-16 grid justify-items-center col-start-2">
+    <main id="create-post-page" class="grid items-center">
+        <article class="card h-min p-10 pt-16 grid justify-items-center">
             <h1 class="mb-12 text-xl font-bold">Edit Post</h1>
-            <form action="{{ route('post.update', $post->id) }}" method="POST" class="mb-4 grid gap-4 justify-self-stretch">
+            <form id="quill-form" action="{{ route('post.update', $post->id) }}" method="POST" class="mb-4 grid gap-4 justify-self-stretch" data-quill-field="text">
                 @csrf
 
                 @method('PUT')
@@ -19,10 +19,9 @@
                     'required' => true,
                 ])
 
-                @include('partials.textarea', [
+                @include('partials.quill-editor', [
                     'name' => 'text',
                     'label' => 'Post Content',
-                    'placeholder' => 'Write your post here...',
                     'value' => $post->text,
                     'required' => false,
                 ])

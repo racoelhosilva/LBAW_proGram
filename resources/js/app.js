@@ -1,5 +1,7 @@
 import './bootstrap';
 import { fadeToastMessage } from './utils'
+import Quill from "quill";
+import "quill/dist/quill.core.css";
 
 const toggleDropdown = (dropdownContent, event) => {
     dropdownContent.classList.toggle('hidden');
@@ -48,7 +50,6 @@ const addModalListeners = () => {
     });
 }
 
-
 const addToastMessageListeners = () => {
     document.addEventListener('DOMContentLoaded', () => {
         const toastMessages = document.querySelectorAll('.toast-message:not(.hidden)');
@@ -57,6 +58,23 @@ const addToastMessageListeners = () => {
     });
 };
 
+const activateQuill = () => {
+    const form = document.querySelector('#quill-form');
+
+    if (form) {
+        const field = form.querySelector(`input[name="${form.dataset.quillField}"]`);
+        const quill = new Quill('#quill-editor', {
+            theme: 'snow'
+        });
+        quill.clipboard.dangerouslyPasteHTML(field.value, "silent");
+
+        form.onsubmit = () => {
+            field.value = quill.root.innerHTML;
+        };
+    }
+};
+
 addDropdownListeners();
 addModalListeners();
 addToastMessageListeners();
+activateQuill();
