@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Ban;
+use App\Models\GroupMember;
 use App\Models\User;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
@@ -22,17 +23,20 @@ class AdminUserController extends Controller
 
         $this->authorize('viewAny', User::class);
 
-        $users = User::query();
+        $users = User::query()
+            ->where('is_deleted', false);
 
         if (! empty($request->input('query'))) {
             $pattern = '%'.str_replace(['\\', '%', '_'], ['\\\\', '\\%', '\\_'], $request->input('query')).'%';
-            $users = User::where('name', 'ILIKE', $pattern)
-                ->orWhere('email', 'ILIKE', $pattern)
-                ->orWhere('handle', 'ILIKE', $pattern);
+            $users = $users->where(function ($query) use ($pattern, $request) {
+                $query->where('name', 'ILIKE', $pattern)
+                    ->orWhere('email', 'ILIKE', $pattern)
+                    ->orWhere('handle', 'ILIKE', $pattern);
 
-            if (is_numeric($request->input('query'))) {
-                $users = $users->orWhere('id', $request->input('query'));
-            }
+                if (is_numeric($request->input('query'))) {
+                    $query->orWhere('id', $request->input('query'));
+                }
+            });
         }
 
         $users = $users->orderBy('id')->paginate(20);
@@ -65,5 +69,58 @@ class AdminUserController extends Controller
         $ban->save();
 
         return redirect()->route('admin.user.index')->withSuccess('User banned successfully');
+    }
+
+    public function deleteUser(Request $request, int $id)
+    {
+        $user = User::findOrFail($id);
+
+        $this->authorize('delete', $user);
+
+        DB::transaction(function () use ($id, $user) {
+            // Delete notifications.
+            $user->notifications()->delete();
+            // Delete follow requests.
+            $user->followRequests()->delete();
+            // Delete group join requests.
+            $user->groupJoinRequests()->delete();
+            // Delete group invitations.
+            $user->groupInvitations()->delete();
+            // Delete group memberships.
+            GroupMember::where('user_id', $id)
+                ->delete();
+            // Delete bans.
+            $user->bans()->delete();
+            // Delete user token.
+            $user->tokens()->delete();
+            // Delete user stats.
+            $userStats = $user->stats;
+            DB::table('user_stats_language')
+                ->where('user_stats_id', $userStats->id)
+                ->delete();
+            DB::table('user_stats_technology')
+                ->where('user_stats_id', $userStats->id)
+                ->delete();
+            DB::table('top_project')
+                ->where('user_stats_id', $userStats->id)
+                ->delete();
+            $userStats->delete();
+
+            // Delete user info.
+            $user->update([
+                'name' => $id,
+                'email' => $id,
+                'password' => $id,
+                'handle' => $id,
+                'is_public' => false,
+                'description' => null,
+                'profile_picture_url' => null,
+                'banner_image_url' => null,
+                'is_deleted' => true,
+            ]);
+
+        });
+
+        return redirect()->route('admin.user.index')->withSuccess('User deleted successfully.');
     }
 }

@@ -22,6 +22,9 @@ class UserPolicy
      */
     public function view(?User $user, User $model): bool
     {
+        if ($model->is_deleted) {
+            return abort(404);
+        }
         $isBanned = $user && $user->isBanned();
 
         return ! $isBanned;
@@ -60,12 +63,34 @@ class UserPolicy
     }
 
     /**
+     * Determine whether the user can delete the model.
+     */
+    public function delete(?User $user, User $model): bool
+    {
+        if ($user && ! $user->isBanned() && $user->id === $model->id) {
+            return true;
+        }
+
+        if (Auth::guard('admin')->check()) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Determine whether the user can restore the model.
+     */
+    public function restore(User $user, User $model): bool
+    {
+        //
+    }
+
+    /**
      * Determine whether the user can permanently delete the model.
      */
     public function forceDelete(?User $user, User $model): bool
     {
-        $isAdmin = Auth::guard('admin')->check();
-
-        return $isAdmin || ($user && ! $user->isBanned() && $user->id === $model->id);
+        //
     }
 }

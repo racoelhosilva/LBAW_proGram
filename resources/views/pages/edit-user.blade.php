@@ -3,7 +3,7 @@
     {{ 'Edit ' . $user->name . ' | ProGram' }}
 @endsection
 @section('content')
-    <main class="card h-min p-10 pt-16 grid gap-12 justify-items-center col-start-2 m-6 md:m-16 lg:m-32">
+    <main class="card h-min p-10 pt-16 grid gap-6 justify-items-center col-start-2 m-6 md:m-16 lg:m-32">
         <h1 class="text-4xl font-bold">Edit Profile</h1>
         <form method="post" action="{{ route('user.update', $user->id) }}" class="grid gap-4 justify-self-stretch"
             id="profile-form" enctype="multipart/form-data">
@@ -108,6 +108,16 @@
                     'submit' => true,
                 ])
             </div>
+        </form>
+
+        <form method="post" action="{{ route('user.destroy', $user->id) }}" class="w-full flex flex-col">
+            @csrf
+            @method('DELETE')
+            @include('partials.text-button', [
+                'text' => 'Delete Account',
+                'type' => 'primary',
+                'submit' => true,
+            ])
         </form>
     </main>
 @endsection

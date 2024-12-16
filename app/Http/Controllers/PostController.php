@@ -73,7 +73,7 @@ class PostController extends Controller
      */
     public function show(int $id): View
     {
-        $post = Post::findOrFail($id);
+        $post = Post::with('author')->findOrFail($id);
 
         $this->authorize('view', $post);
         $this->authorize('viewAny', Comment::class);
