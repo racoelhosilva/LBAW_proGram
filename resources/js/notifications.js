@@ -60,6 +60,12 @@ if (userId) {
         increaseCounter(counter);
         sendToastMessage(data.message, 'success');
     });
+
+    pusherChannel.bind('notification-follow', function(data) {
+        console.log(`New follow notification: ${data.message}`);
+        increaseCounter(counter);
+        sendToastMessage(data.message, 'success');
+    });
 }
 
 /** Notification Page **/

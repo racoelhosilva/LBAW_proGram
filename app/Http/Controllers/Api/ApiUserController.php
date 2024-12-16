@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Events\FollowEvent;
 use App\Http\Controllers\Controller;
 use App\Models\Follow;
 use App\Models\FollowRequest;
@@ -180,6 +181,8 @@ class ApiUserController extends Controller
             $follow->follower_id = $currentUser->id;
             $follow->followed_id = $targetUser->id;
             $follow->save();
+
+            event(new FollowEvent($targetUser->id));
 
             return response()->json([
                 'action' => 'follow',
