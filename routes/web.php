@@ -7,12 +7,14 @@ use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Api\ApiCommentController;
 use App\Http\Controllers\Api\ApiPostController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\GitHubController;
 use App\Http\Controllers\GitLabController;
 use App\Http\Controllers\GoogleController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\MailController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\UserController;
@@ -55,6 +57,15 @@ Route::controller(GitLabController::class)->group(function () {
     Route::get('auth/gitlab', 'redirect')->name('gitlab.auth');
     Route::get('auth/gitlab/call-back', 'callbackGitLab')->name('gitlab.callback');
 });
+
+Route::controller(ForgotPasswordController::class)->group(function () {
+    Route::get('/forgot-password', 'show')->name('forgot-password');
+    Route::post('/forgot-password', 'forgotPassword');
+    Route::get('/reset-password/{token}', 'showResetPassword')->name('password.reset');
+    Route::post('/reset-password', 'resetPassword')->name('password.update');
+});
+
+Route::post('/sendemail', [MailController::class, 'send']);
 
 Route::middleware('deny.banned')->group(function () {
     // Home
