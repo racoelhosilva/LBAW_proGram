@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title') {{'Followed by ' . $user->name . ' | ProGram'}} @endsection
+@section('title') {{'Groups of ' . $user->name . ' | ProGram'}} @endsection
 
 @section('content')
 <article id="users" class="mx-12 card space-y-3 min-h-[50rem]">
