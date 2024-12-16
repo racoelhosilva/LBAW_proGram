@@ -54,6 +54,12 @@ if (userId) {
         decreaseCounter(counter);
         sendToastMessage(data.message, 'success');
     });
+
+    pusherChannel.bind('notification-comment', function(data) {
+        console.log(`New comment notification: ${data.message}`);
+        increaseCounter(counter);
+        sendToastMessage(data.message, 'success');
+    });
 }
 
 /** Notification Page **/

@@ -502,7 +502,7 @@ CREATE FUNCTION notify_user_on_comment()
 RETURNS TRIGGER AS $$
 BEGIN
     INSERT INTO notification (receiver_id, timestamp, is_read, type, comment_id) 
-    VALUES (NEW.author_id, CURRENT_TIMESTAMP, FALSE, 'comment', NEW.id);
+    VALUES ((SELECT author_id FROM post WHERE id = NEW.post_id), CURRENT_TIMESTAMP, FALSE, 'comment', NEW.id);
 
     RETURN NEW;
 END;

@@ -197,8 +197,7 @@ class UserController extends Controller
                     break;
                 case 'comment':
                     $notification->comment = Comment::findOrFail($notification->comment_id);
-                    // TODO: Fix comment author
-                    $notification->user = $notification->comment->post->author;
+                    $notification->user = $notification->comment->author;
                     $notification->post = $notification->comment->post;
                     break;
                 case 'follow':
