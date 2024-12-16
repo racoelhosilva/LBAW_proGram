@@ -47,7 +47,9 @@ const inviteSendListener = () => {
                 if (!userId || !groupId) return;
                 sendPost(`/api/group/${groupId}/invite/${userId}`)
                     .then(() => {
-                        window.location.reload();
+                        btn.classList.add('hidden');
+                        const uninvitebtn = btn.closest('.manage-invite-container').querySelector('.uninvite-button');
+                        uninvitebtn.classList.remove('hidden');
                     })
                     .catch((error) => {
                         console.error('Error inviting user:', error);
@@ -69,7 +71,9 @@ const inviteUnSendListener = () => {
                 if (!userId || !groupId) return;
                 sendDelete(`/api/group/${groupId}/uninvite/${userId}`)
                     .then(() => {
-                        window.location.reload();
+                        btn.classList.add('hidden');
+                        const invitebtn = btn.closest('.manage-invite-container').querySelector('.invite-button');
+                        invitebtn.classList.remove('hidden');
                     })
                     .catch((error) => {
                         console.error('Error uninviting user:', error);

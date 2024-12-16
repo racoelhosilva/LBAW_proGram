@@ -8,7 +8,7 @@ const addLeaveGroupListeners = () => {
             const groupId = btn.closest('.group-buttons-container').getAttribute('data-group-id');
             sendDelete(`/api/group/${groupId}/leave`)
                 .then(() => {
-                   btn.closest('.group-buttons-container').remove();
+                   btn.closest('.group-buttons-container').parentNode.remove();
                 })
                 .catch((error) => {
                     sendToastMessage('An error occurred while leaving the group.', 'error');
