@@ -32,6 +32,9 @@
                             @isset($user->stats->github_url)
                                 @include('partials.icon-button', ['iconName' => 'github', 'label' => 'GitHub', 'type' => 'transparent', 'anchorUrl' => '//' . $user->stats->github_url])
                             @endisset
+                            @isset($user->stats->gitlab_url)
+                                @include('partials.icon-button', ['iconName' => 'gitlab', 'label' => 'GitLab', 'type' => 'transparent', 'anchorUrl' => '//' . $user->stats->gitlab_url])
+                            @endisset
                             @isset($user->stats->linkedin_url)
                                 @include('partials.icon-button', ['iconName' => 'linkedin', 'label' => 'LinkedIn', 'type' => 'transparent', 'anchorUrl' => '//' . $user->stats->linkedin_url])
                             @endisset
