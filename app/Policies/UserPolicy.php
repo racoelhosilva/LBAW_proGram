@@ -27,14 +27,18 @@ class UserPolicy
         return ! $isBanned;
     }
 
+    /**
+     * Allows viewing the content of a user profile if the user is an admin, follows the user, is the user themselves or is a public profile.
+     */
     public function viewContent(?User $user, User $model): bool
     {
         $isAdmin = Auth::guard('admin')->check();
         $followsUser = $user && $user->following->contains('id', $model->id);
         $isSelf = $user && $user->id === $model->id;
         $isBanned = $user && $user->isBanned();
+        $isPublic = $model->is_public;
 
-        return ! $isBanned && ($isAdmin || $followsUser || $isSelf);
+        return ! $isBanned && ($isAdmin || $followsUser || $isSelf || $isPublic);
     }
 
     /**

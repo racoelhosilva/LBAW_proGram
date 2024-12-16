@@ -11,8 +11,7 @@ class SearchController extends Controller
 {
     public function searchUsers(string $query)
     {
-        $users = User::where('is_public', true)
-            ->whereRaw("tsvectors @@ plainto_tsquery('english', ?)", [$query])
+        $users = User::whereRaw("tsvectors @@ plainto_tsquery('english', ?)", [$query])
             ->orderByRaw("ts_rank(tsvectors, plainto_tsquery('english', ?)) DESC", [$query])
             ->get();
 
