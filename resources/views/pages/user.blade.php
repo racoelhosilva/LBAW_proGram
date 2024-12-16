@@ -65,17 +65,6 @@
                 @endif
             </article>
         </section>
-        <section>
-            <form method="POST" action="/sendemail">
-                @csrf
-                <label for="name">Your name</label>
-                <input class="bg-black text-white" id="name" type="text" name="name" placeholder="Name" required>
-                <label for="email">Your email</label>
-                <input class="bg-black text-white" id="email" type="email" name="email" placeholder="Email" required>
-                <button type="submit">Send</button>
-            </form>
-
-        </section>
 
         <section id="profile-middle" class="h-min col-span-4 lg:col-span-2 grid grid-cols-4 space-y-3">
             <article class="card col-span-4 space-y-3">
