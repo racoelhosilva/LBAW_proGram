@@ -6,8 +6,9 @@
     <main id="group-invites-page" class="px-8 py-4 flex flex-col gap-6" data-group-id={{$group->id}}>
         <section id="invites" >
             <h1 class="text-4xl text-center font-medium m-4">Invites</h1>
-            @include('partials.search-field', ['class' => 'w-full mb-4'])
+            @include('partials.search-field', ['class' => 'w-full mb-4','routeName' => 'group.invites', 'routeParams' => ['id' => $group->id]])
             <div id="invite-results" class="flex flex-col gap-4">
+                
                 @foreach ($usersSearched as $user)
                     <div class="manage-invite-container flex flex-row w-full " data-user-id={{$user->id}}>
                         @php

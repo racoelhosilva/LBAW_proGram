@@ -91,24 +91,35 @@ class GroupController extends Controller
     public function showInvites($groupId)
     {
         $group = Group::findOrFail($groupId);
+
+        // Ensure the user is authenticated
         if (! Auth::check()) {
             return redirect()->route('login');
         }
 
+        // Authorization: ensure the user can update the group
         $this->authorize('update', $group);
 
-        $userIds = request()->query('users');
-        if ($userIds) {
-            $userIdsArray = explode(',', $userIds);
-            $ownerId = $group->owner->id;
-            $usersSearched = User::whereIn('users.id', $userIdsArray)
-                ->where('users.id', '!=', $ownerId)
+        // Fetch the search query
+        $searchQuery = request()->query('query');
+        $ownerId = $group->owner->id;
+
+        // If query exists, perform a search
+        if ($searchQuery) {
+            $usersSearched = User::where('id', '!=', $ownerId)
+                ->whereRaw("tsvectors @@ plainto_tsquery('english', ?)", [$searchQuery])
+                ->orderByRaw("ts_rank(tsvectors, plainto_tsquery('english', ?)) DESC", [$searchQuery])
                 ->get();
         } else {
+            // Otherwise, fetch invited users
             $usersSearched = $group->invitedUsers;
         }
 
-        return view('pages.group-invites', ['group' => $group, 'usersSearched' => $usersSearched]);
+        // Return the view with the group and searched users
+        return view('pages.group-invites', [
+            'group' => $group,
+            'usersSearched' => $usersSearched,
+        ]);
     }
 
     public function update(Request $request, int $id)

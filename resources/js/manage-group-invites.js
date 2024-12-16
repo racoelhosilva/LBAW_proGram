@@ -1,40 +1,5 @@
 import { sendDelete, sendGet , sendPost} from './utils.js';
 
-const updateUserSearch = () => {
-    const invitesPage = document.querySelector('#group-invites-page');
-    
-    if (invitesPage) {
-        const searchForm = invitesPage.querySelector('form');
-        const searchInput = searchForm ? searchForm.querySelector('input[type="search"]') : null;
-
-        if (searchForm && searchInput) {
-            searchForm.addEventListener('submit', (event) => {
-                event.preventDefault(); 
-                
-                const query = searchInput.value;
-                
-                if (!query.trim()) {
-                    const groupId = invitesPage.dataset.groupId;
-                    window.location.href = `/group/${groupId}/invites`;
-                    return;
-                }
-
-                sendGet('/api/search/users?query=' + query)
-                    .then(response => {   
-                        const userIds = response.map(user => user.id);
-                        const groupId = invitesPage.dataset.groupId;
-                        const newUrl = `/group/${groupId}/invites?users=${userIds.join(',')}`;
-                        window.location.href = newUrl;
-                    })
-                    .catch(error => {
-                        console.error('Error fetching search results:', error);
-                    });
-            });
-        }
-    }
-};
-
-
 const inviteSendListener = () => {
     const invitesPage = document.querySelector('#group-invites-page');
     if (invitesPage) {
@@ -85,4 +50,4 @@ const inviteUnSendListener = () => {
 
 inviteSendListener();
 inviteUnSendListener();
-updateUserSearch();
+
