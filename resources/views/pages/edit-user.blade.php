@@ -19,6 +19,8 @@
                     'value' => $user->name,
                     'placeholder' => 'John Doe',
                     'required' => true,
+                    'tooltip' => 'The name that will be displayed on your profile, posts, and comments',
+
                 ])
                 @include('partials.textarea', [
                     'name' => 'description',
@@ -27,6 +29,7 @@
                     'value' => $user->description,
                     'placeholder' => 'I am just a chill dev',
                     'required' => false,
+                    'tooltip' => 'A short description of yourself that will be displayed on your profile',
                 ])
                 @include('partials.input-field', [
                     'name' => 'handle',
@@ -35,6 +38,7 @@
                     'value' => $user->handle,
                     'placeholder' => 'john_doe',
                     'required' => true,
+                    'tooltip' => 'A unique handle that will be used to identify you on the platform',
                 ])
                 <div class="flex items-center mt-4">
                     <input type="checkbox" id="is_public" name="is_public" value="1"

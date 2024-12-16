@@ -1,4 +1,4 @@
-@props(['type' => 'text', 'name', 'label', 'value', 'placeholder', 'required' => false])
+@props(['type' => 'text', 'name', 'label', 'value', 'placeholder', 'required' => false, 'tooltip'])
 
 <div class="relative group">
     <label for="{{ $name }}" class="font-medium">{{ $label }}</label>
@@ -6,5 +6,7 @@
     @if ($errors->has($name))
         <p class="text-red-600 dark:text-red-400 text-sm font-medium">{{ $errors->first($name) }}</p>
     @endif
-    @include('partials.tooltip', ['text' => 'Tooltip'])
+    @isset($tooltip)
+        @include('partials.tooltip', ['text' => $tooltip])
+    @endisset
 </div>
