@@ -14,14 +14,14 @@ class ApiUserController extends Controller
 {
     public function list()
     {
-        $users = User::all();
+        $users = User::where('is_deleted', false)->get();
 
         return response()->json($users);
     }
 
     public function show($id)
     {
-        $user = User::findOrFail($id);
+        $user = User::where('id', $id)->where('is_deleted', false)->firstOrFail();
 
         return response()->json($user);
     }
@@ -60,7 +60,7 @@ class ApiUserController extends Controller
 
     public function update(Request $request, $id)
     {
-        $user = User::findOrFail($id);
+        $user = User::where('id', $id)->where('is_deleted', false)->firstOrFail();
 
         $request->validate([
             'name' => 'string|max:255',
@@ -99,28 +99,28 @@ class ApiUserController extends Controller
 
     public function listFollowers($id)
     {
-        $user = User::findOrFail($id);
+        $user = User::where('id', $id)->where('is_deleted', false)->firstOrFail();
 
         return response()->json($user->followers);
     }
 
     public function listFollowing($id)
     {
-        $user = User::findOrFail($id);
+        $user = User::where('id', $id)->where('is_deleted', false)->firstOrFail();
 
         return response()->json($user->following);
     }
 
     public function listPosts($id)
     {
-        $user = User::findOrFail($id);
+        $user = User::where('id', $id)->where('is_deleted', false)->firstOrFail();
 
         return response()->json($user->posts);
     }
 
     public function listFollowRequests($id)
     {
-        $user = User::findOrFail($id);
+        $user = User::where('id', $id)->where('is_deleted', false)->firstOrFail();
 
         return response()->json($user->followRequests);
 

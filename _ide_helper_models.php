@@ -387,6 +387,8 @@ namespace App\Models{
  * @property-read int|null $following_requests_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\GroupInvitation> $groupInvitations
  * @property-read int|null $group_invitations_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\GroupJoinRequest> $groupJoinRequests
+ * @property-read int|null $group_join_requests_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Group> $groups
  * @property-read int|null $groups_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Notification> $notifications
@@ -394,7 +396,7 @@ namespace App\Models{
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Post> $posts
  * @property-read int|null $posts_count
  * @property-read \App\Models\UserStats|null $stats
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \Laravel\Sanctum\PersonalAccessToken> $tokens
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Token> $tokens
  * @property-read int|null $tokens_count
  * @method static \Database\Factories\UserFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder|User newModelQuery()
