@@ -64,6 +64,15 @@ const activateQuill = () => {
     if (form) {
         const field = form.querySelector(`input[name="${form.dataset.quillField}"]`);
         const quill = new Quill('#quill-editor', {
+            modules: {
+                toolbar: [
+                    ['bold', 'italic', 'underline', 'code'],
+                    [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                    [{ 'script': 'sub' }, { 'script': 'super' }],
+                    ['link', 'image', 'video'],
+                    ['clean']
+                ]
+            },
             theme: 'snow'
         });
         quill.clipboard.dangerouslyPasteHTML(field.value, "silent");
