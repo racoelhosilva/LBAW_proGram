@@ -29,7 +29,10 @@
                     <div class="grid grid-cols-[auto_1fr_auto] items-start">
                         <h1 class="text-xl font-bold">User Info</h1>
                         <div class="col-start-3 flex">
-                            @if($user->stats->linkedin_url)
+                            @isset($user->stats->github_url)
+                                @include('partials.icon-button', ['iconName' => 'github', 'label' => 'GitHub', 'type' => 'transparent', 'anchorUrl' => '//' . $user->stats->github_url])
+                            @endisset
+                            @isset($user->stats->linkedin_url)
                                 @include('partials.icon-button', ['iconName' => 'linkedin', 'label' => 'LinkedIn', 'type' => 'transparent', 'anchorUrl' => '//' . $user->stats->linkedin_url])
                             @endisset
                         </div>
