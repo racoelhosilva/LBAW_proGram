@@ -73,8 +73,11 @@
                 <p class="text-xl font-bold">Followers: {{ $user->num_followers }}</p>
                 <p class="text-xl font-bold">Following: {{ $user->num_following }}</p>
             </article>
-            <article id="groups" class="card col-span-4 space-y-3">
+            <article id="groups" class="card col-span-4 space-y-3 flex flex-col">
                 <a href={{'/user/' . $user->id . '/groups'}} class="text-xl font-bold">Groups: {{ $user->groups->count() }}</a>
+                @if($user->id == Auth::id())
+                    <a href={{'/user/' . $user->id . '/invites'}} class="text-xl font-bold">Invites: {{ $user->groupsInvitedTo()->count() }}</a>
+                @endif
             </article>
 
             @if ($recommendedUsers !== null && $recommendedUsers->count() > 0)

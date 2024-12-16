@@ -13,7 +13,7 @@
         </div>
     </div>
     @if($buttons)
-    <div class="flex  justify-end">
+    <div class="flex  justify-end group-buttons-container " data-group-id={{$group->id}}>
              {!! $buttons !!}
     </div>
     @endif

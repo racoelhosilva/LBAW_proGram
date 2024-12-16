@@ -82,7 +82,7 @@ class User extends Authenticatable
         return $this->hasMany(GroupInvitation::class, 'invitee_id');
     }
 
-    public function groupsInvitedTo(): BelongsToMany
+    public function groupsInvitedTo()
     {
         return $this->belongsToMany(Group::class, 'group_invitation', 'invitee_id', 'group_id')->withPivot('creation_timestamp')->where('status', 'pending');
     }

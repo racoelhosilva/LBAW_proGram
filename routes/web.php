@@ -149,6 +149,8 @@ Route::prefix('api')->group(function () {
         Route::post('/group/{id}/post/{post_id}', 'addPostToGroup')->where('id', '[0-9]+')->where('post_id', '[0-9]+')->name('api.group.post.add');
         Route::post('/group/{id}/invite/{user_id}', 'invite')->where('id', '[0-9]+')->where('user_id', '[0-9]+')->name('api.group.invite');
         Route::delete('/group/{id}/uninvite/{user_id}', 'uninvite')->where('id', '[0-9]+')->where('user_id', '[0-9]+')->name('api.group.uninvite');
+        Route::post('/group/{id}/acceptInvite', 'acceptInvite')->where('id', '[0-9]+')->name('api.group.invite.accept');
+        Route::delete('/group/{id}/rejectInvite', 'rejectInvite')->where('id', '[0-9]+')->name('api.group.invite.reject');
     });
 
     // Route::controller(ApiUserController::class)->group(function () {

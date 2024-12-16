@@ -26,12 +26,7 @@
                         <span class="font-medium">Make this group public</span>
                     </label>
                 </section>
-                <section class="flex flex-col">
-                    <label class="mb-2">
-                        <input type="checkbox" name="is_announcement" value="1" {{ old('is_announcement', true) ? 'checked' : '' }}> 
-                        <span class="font-medium">Make this post an announcement</span>
-                    </label>
-                </section>
+                
                 <input type="hidden" name="owner_id" value="{{ auth()->id() }}">
                             
                 @include('partials.text-button', ['text' => 'Create group', 'label' => 'create', 'type' => 'primary', 'submit' => true])

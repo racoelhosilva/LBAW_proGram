@@ -36,8 +36,8 @@
 
                 <section class="flex flex-col">
                     <label class="mb-2">
-                        @if($post->group())
-                            @if($post->group()->is_public)
+                        @if($post->group()->first())
+                            @if($post->group()->first()->is_public)
                                 <input type="checkbox" name="is_public" value="1" checked hidden>
                             @else
                                 <input type="checkbox" name="is_public" value="1" hidden>

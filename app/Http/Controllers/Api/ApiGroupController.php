@@ -127,12 +127,6 @@ class ApiGroupController extends Controller
             $invitation->update(['status' => 'accepted']);
         }
 
-        $groupMember = new GroupMember;
-        $groupMember->group_id = $group_id;
-        $groupMember->user_id = $user->id;
-        $groupMember->join_timestamp = now();
-        $groupMember->save();
-
         return response()->json(['message' => 'You have joined the group.']);
     }
 

@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Models\Group;
 use App\Models\Post;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
@@ -37,9 +38,13 @@ class PostPolicy
         if (Auth::guard('admin')->check()) {
             return true;
         }
-
+        //dd($post->group()->id);
         // Grant access if the user is following the author.
-        if ($user && $user->following->contains('id', $post->author->id)) {
+        if (! $post->group()->first() && $user && $user->following->contains('id', $post->author->id)) {
+            return true;
+        }
+
+        if ($post->group()->first() && $user && $post->group->first()->members->contains('id', $user->id)) {
             return true;
         }
 

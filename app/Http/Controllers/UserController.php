@@ -61,9 +61,7 @@ class UserController extends Controller
 
         $this->authorize('view', $user);
 
-        $invites = $user->groupsInvitedTo()
-            ->orderBy('name', 'ASC')
-            ->get();
+        $invites = $user->groupsInvitedTo()->orderBy('name', 'ASC')->get();
 
         return view('pages.user-group-invites', [
             'user' => $user,

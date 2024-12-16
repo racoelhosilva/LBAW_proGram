@@ -8,8 +8,8 @@
     <div class="grid gap-x-4 gap-y-2 sm:grid-cols-2 md:grid-cols-3">
         @forelse ($user->groups as $group)
             @php
-                if($user->id == Auth::id()){
-                    $buttons = view('partials.icon-button', ['iconName' => 'x', 'id' => '','class'=>'leave-button', 'label' => 'reject', 'type' => 'transparent'])->render();
+                if($user->id == Auth::id() && $group->owner_id != Auth::id()){
+                    $buttons = view('partials.icon-button', ['iconName' => 'x', 'id' => '','class'=>'leave-group-button', 'label' => 'reject', 'type' => 'transparent'])->render();
                 }
                 else
                 {

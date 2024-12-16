@@ -27,7 +27,7 @@ class GroupPolicy
 
     public function leave(?User $user, Group $group): bool
     {
-        return $user && ! $user->isBanned() && $group->members()->where('user_id', $user->id)->exists();
+        return $user && ! $user->isBanned() && $group->members()->where('user_id', $user->id)->exists() && $user->id !== $group->owner_id;
     }
 
     public function remove(?User $user, Group $group): bool
@@ -47,6 +47,7 @@ class GroupPolicy
 
     public function isInvited(?User $user, Group $group): bool
     {
-        return $user && ! $user->isBanned() && $group->invitations()->where('invitee_id', $user->id)->exists();
+
+        return $user && ! $user->isBanned() && $group->invitedUsers()->where('users.id', $user->id)->exists();
     }
 }

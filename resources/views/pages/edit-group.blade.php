@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('title') {{'Edit ' . $group->name . ' | ProGram'}} @endsection
 @section('content')
-    <main id="create-post-page" class="grid grid-cols-3 items-center">
+    <main id="create-post-page" class="grid grid-cols-[1fr_auto_1fr] sm:grid-cols-3 items-center">
         <article class="card h-min p-10 pt-16 grid gap-12 justify-items-center col-start-2">
             <h1 class="text-xl font-bold">Edit {{$group->name}}</h1>
             <form action="{{ route('group.update',$group->id) }}" method="POST" class="grid gap-4 justify-self-stretch">

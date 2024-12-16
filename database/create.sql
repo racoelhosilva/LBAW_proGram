@@ -580,7 +580,7 @@ RETURNS TRIGGER AS $$
 BEGIN
     IF NEW.status = 'accepted' AND OLD.status <> 'accepted' THEN
         INSERT INTO group_member (user_id, group_id, join_timestamp ) 
-        VALUES (NEW.user_id, NEW.group_id, CURRENT_TIMESTAMP);
+        VALUES (NEW.invitee_id, NEW.group_id, CURRENT_TIMESTAMP);
     END IF;
 
     RETURN NEW;
