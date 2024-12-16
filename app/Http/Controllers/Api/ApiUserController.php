@@ -220,7 +220,7 @@ class ApiUserController extends Controller
     public function removeFollower($id)
     {
         $follower = User::findOrFail($id);
-        $currentUser = Auth()->user();
+        $currentUser = Auth()->user()->id;
 
         // TODO: implement policy @HenriqueSFernandes
 
