@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Api\ApiCommentController;
 use App\Http\Controllers\Api\ApiPostController;
+use App\Http\Controllers\Api\ApiUserController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
@@ -98,6 +99,9 @@ Route::middleware(['deny.banned', 'deny.deleted'])->group(function () {
         Route::get('/user/{id}', 'show')->where('id', '[0-9]+')->name('user.show');
         Route::put('/user/{id}', 'update')->where('id', '[0-9]+')->name('user.update');
         Route::get('/user/{id}/edit', 'edit')->where('id', '[0-9]+')->name('user.edit');
+        Route::get('/user/{id}/followers', 'followers')->where('id', '[0-9]+')->name('user.followers');
+        Route::get('/user/{id}/following', 'following')->where('id', '[0-9]+')->name('user.following');
+        Route::get('/user/{id}/requests', 'requests')->where('id', '[0-9]+')->name('user.requests');
         Route::delete('/user/{id}', 'destroy')->where('id', '[0-9]+')->name('user.destroy');
     });
 
@@ -160,14 +164,20 @@ Route::prefix('api')->group(function () {
         Route::delete('/comment/{id}/like', 'unlike')->where('id', '[0-9]+')->name('api.comment.unlike');
     });
 
-    // Route::controller(ApiUserController::class)->group(function () {
-    //     Route::get('/user', 'list');
-    //     Route::get('/user/{id}', 'show');
-    //     Route::post('/user', 'create');
-    //     Route::delete('/user/{id}', 'delete');
-    //     Route::put('/user/{id}', 'update');
-    //     Route::get('/user/{id}/followers', 'listFollowers');
-    //     Route::get('/user/{id}/following', 'listFollowing');
-    //     Route::get('/user/{id}/post', 'listPosts');
-    // });
+    // User
+    Route::controller(ApiUserController::class)->group(function () {
+        //     Route::get('/user', 'list');
+        //     Route::get('/user/{id}', 'show');
+        //     Route::post('/user', 'create');
+        //     Route::delete('/user/{id}', 'delete');
+        //     Route::put('/user/{id}', 'update');
+        //     Route::get('/user/{id}/followers', 'listFollowers');
+        //     Route::get('/user/{id}/following', 'listFollowing');
+        //     Route::get('/user/{id}/post', 'listPosts');
+        Route::post('/user/{id}/follow', 'follow')->where('id', '[0-9]+')->name('api.user.follow');
+        Route::delete('/user/{id}/follow', 'unfollow')->where('id', '[0-9]+')->name('api.user.unfollow');
+        Route::delete('/follower/{id}', 'removeFollower')->where('id', '[0-9]+')->name('api.follower.remove');
+        Route::post('/follow-request/{id}/accept', 'accept')->where('id', '[0-9]+')->name('api.follow-request.accept');
+        Route::post('/follow-request/{id}/reject', 'reject')->where('id', '[0-9]+')->name('api.follow-request.reject');
+    });
 });

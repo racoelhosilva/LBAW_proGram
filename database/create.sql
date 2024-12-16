@@ -800,7 +800,7 @@ END;
 $$ LANGUAGE plpgsql;
 
 CREATE TRIGGER update_follow_counts
-BEFORE INSERT OR DELETE ON follow
+AFTER INSERT OR DELETE ON follow
 FOR EACH ROW
 EXECUTE FUNCTION update_follow_counts();
 
