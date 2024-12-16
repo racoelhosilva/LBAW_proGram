@@ -69,6 +69,7 @@ class GroupController extends Controller
     public function showMembers(int $groupId)
     {
         $group = Group::findOrFail($groupId);
+
         $members = $group->members->where('id', '!=', $group->owner->id); // Exclude the owner
 
         return view('pages.group-members', ['group' => $group, 'members' => $members]);
@@ -77,6 +78,11 @@ class GroupController extends Controller
     public function showRequests($groupId)
     {
         $group = Group::findOrFail($groupId);
+        if (! Auth::check()) {
+            return redirect()->route('login');
+        }
+
+        $this->authorize('update', $group);
         $usersWhoWantToJoin = $group->joinRequests()->where('status', 'pending')->paginate(10);
 
         return view('pages.group-requests', ['group' => $group, 'usersWhoWantToJoin' => $usersWhoWantToJoin]);
@@ -85,6 +91,11 @@ class GroupController extends Controller
     public function showInvites($groupId)
     {
         $group = Group::findOrFail($groupId);
+        if (! Auth::check()) {
+            return redirect()->route('login');
+        }
+
+        $this->authorize('update', $group);
 
         $userIds = request()->query('users');
         if ($userIds) {

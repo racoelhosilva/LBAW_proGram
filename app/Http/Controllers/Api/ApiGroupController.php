@@ -60,6 +60,7 @@ class ApiGroupController extends Controller
         $groupJoinRequest = GroupJoinRequest::where('group_id', $group_id)->where('requester_id', $requester_id)->where('status', 'pending')->firstOrFail();
         $groupJoinRequest->status = 'accepted';
         $groupJoinRequest->save();
+        GroupInvitation::where('group_id', $group_id)->where('invitee_id', $user->id)->where('status', 'pending')->delete();
 
         return response()->json(['message' => 'Request accepted.']);
     }
@@ -126,6 +127,8 @@ class ApiGroupController extends Controller
         foreach ($invitations as $invitation) {
             $invitation->update(['status' => 'accepted']);
         }
+
+        GroupJoinRequest::where('group_id', $group_id)->where('requester_id', $requester_id)->where('status', 'pending')->delete();
 
         return response()->json(['message' => 'You have joined the group.']);
     }
