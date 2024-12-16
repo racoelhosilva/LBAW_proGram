@@ -1,12 +1,11 @@
 import { sendPost, sendDelete, sendToastMessage } from './utils.js';  
+
 const addInviteAcceptListeners =  () =>{
     const inviteContainers = document.querySelectorAll('.group-invite-container');
-    console.log(inviteContainers);
     inviteContainers.forEach(inviteContainer => {
         const acceptButton = inviteContainer.querySelector('.accept-invite-button');
         acceptButton.addEventListener('click', async (event) => {
             event.preventDefault();
-            console.log(inviteContainer)
             const groupId = inviteContainer.getAttribute('data-group-id');
             sendPost(`/api/group/${groupId}/acceptInvite`)
                 .then(() => {

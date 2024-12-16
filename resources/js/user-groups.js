@@ -1,9 +1,7 @@
 import { sendDelete, sendToastMessage } from './utils'
 
-console.log('User groups js loaded');
 const addLeaveGroupListeners = () => {
     const leaveGroupButtons = document.querySelectorAll('.leave-group-button');
-    console.log(leaveGroupButtons);
     leaveGroupButtons.forEach(btn => {
         btn.addEventListener('click', async (event) => {
             event.preventDefault();
