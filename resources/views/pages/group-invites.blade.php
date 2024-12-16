@@ -20,7 +20,7 @@
                         }
                         $buttons = $inviteButton;
                         @endphp
-                        @include('partials.user-card', ['user' => $user, 'class' => 'w-full ', 'buttons' => $buttons])
+                        @include('partials.user-card-custom', ['user' => $user, 'class' => 'w-full ', 'buttons' => $buttons])
                     </div>
                 @endforeach
             </div>

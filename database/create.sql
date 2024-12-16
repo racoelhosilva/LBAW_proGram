@@ -41,7 +41,10 @@ CREATE TABLE users (
     id SERIAL,
     name TEXT NOT NULL,
     email TEXT NOT NULL UNIQUE,
-    password TEXT NOT NULL,
+    password TEXT,
+		google_id TEXT,
+		github_id TEXT,
+		gitlab_id TEXT,
     register_timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     handle TEXT NOT NULL UNIQUE,
     is_public BOOLEAN NOT NULL,
@@ -72,7 +75,14 @@ CREATE TABLE user_stats (
     gitlab_url TEXT,
     linkedin_url TEXT,
     PRIMARY KEY (id),
-    FOREIGN KEY (user_id) REFERENCES users (id) ON UPDATE CASCADE
+    FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE TABLE password_reset_tokens (
+    id SERIAL,
+	  email TEXT NOT NULL UNIQUE,
+	  token TEXT NOT NULL,
+	  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE language (
@@ -85,8 +95,8 @@ CREATE TABLE user_stats_language (
     user_stats_id INTEGER, 
     language_id INTEGER,
     PRIMARY KEY (user_stats_id, language_id),
-    FOREIGN KEY (user_stats_id) REFERENCES user_stats (id) ON UPDATE CASCADE,
-    FOREIGN KEY (language_id) REFERENCES language (id) ON UPDATE CASCADE
+    FOREIGN KEY (user_stats_id) REFERENCES user_stats (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (language_id) REFERENCES language (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE technology (
@@ -99,8 +109,8 @@ CREATE TABLE user_stats_technology (
     user_stats_id INTEGER NOT NULL,
     technology_id INTEGER NOT NULL,
     PRIMARY KEY (user_stats_id,technology_id),
-    FOREIGN KEY (user_stats_id) REFERENCES user_stats (id) ON UPDATE CASCADE,
-    FOREIGN KEY (technology_id) REFERENCES technology (id) ON UPDATE CASCADE
+    FOREIGN KEY (user_stats_id) REFERENCES user_stats (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (technology_id) REFERENCES technology (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE top_project (
@@ -109,7 +119,7 @@ CREATE TABLE top_project (
     name TEXT NOT NULL,
     url TEXT NOT NULL,
     PRIMARY KEY (id),
-    FOREIGN KEY (user_stats_id) REFERENCES user_stats (id) ON UPDATE CASCADE
+    FOREIGN KEY (user_stats_id) REFERENCES user_stats (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE post (
@@ -123,7 +133,7 @@ CREATE TABLE post (
     likes INTEGER NOT NULL DEFAULT 0,
     comments INTEGER NOT NULL DEFAULT 0,
     PRIMARY KEY (id),
-    FOREIGN KEY (author_id) REFERENCES users (id) ON UPDATE CASCADE
+    FOREIGN KEY (author_id) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE post_like (
@@ -133,8 +143,8 @@ CREATE TABLE post_like (
     timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id),
     UNIQUE (liker_id, post_id),
-    FOREIGN KEY (liker_id) REFERENCES users (id) ON UPDATE CASCADE,
-    FOREIGN KEY (post_id) REFERENCES post (id) ON UPDATE CASCADE
+    FOREIGN KEY (liker_id) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (post_id) REFERENCES post (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE post_attachment (
@@ -143,7 +153,7 @@ CREATE TABLE post_attachment (
     url TEXT NOT NULL,
     type attachment_type NOT NULL,
     PRIMARY KEY (id),
-    FOREIGN KEY (post_id) REFERENCES post (id) ON UPDATE CASCADE
+    FOREIGN KEY (post_id) REFERENCES post (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE tag (
@@ -156,8 +166,8 @@ CREATE TABLE post_tag (
     post_id INTEGER NOT NULL,
     tag_id INTEGER NOT NULL,
     PRIMARY KEY (post_id, tag_id),
-    FOREIGN KEY (post_id) REFERENCES post (id) ON UPDATE CASCADE,
-    FOREIGN KEY (tag_id) REFERENCES tag (id) ON UPDATE CASCADE
+    FOREIGN KEY (post_id) REFERENCES post (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (tag_id) REFERENCES tag (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE comment (
@@ -168,8 +178,8 @@ CREATE TABLE comment (
     likes INTEGER NOT NULL DEFAULT 0,
     timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id),
-    FOREIGN KEY (post_id) REFERENCES post (id) ON UPDATE CASCADE,
-    FOREIGN KEY (author_id) REFERENCES users (id) ON UPDATE CASCADE
+    FOREIGN KEY (post_id) REFERENCES post (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (author_id) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE comment_like (
@@ -179,8 +189,8 @@ CREATE TABLE comment_like (
     timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id),
     UNIQUE (liker_id, comment_id),
-    FOREIGN KEY (comment_id) REFERENCES comment (id) ON UPDATE CASCADE,
-    FOREIGN KEY (liker_id) REFERENCES users (id) ON UPDATE CASCADE
+    FOREIGN KEY (comment_id) REFERENCES comment (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (liker_id) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE follow (
@@ -190,8 +200,8 @@ CREATE TABLE follow (
     timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id),
     UNIQUE (follower_id, followed_id),
-    FOREIGN KEY (follower_id) REFERENCES users (id) ON UPDATE CASCADE,
-    FOREIGN KEY (followed_id) REFERENCES users (id) ON UPDATE CASCADE,
+    FOREIGN KEY (follower_id) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (followed_id) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT not_self_follow CHECK (follower_id <> followed_id)
 );
 
@@ -202,8 +212,8 @@ CREATE TABLE follow_request (
     creation_timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     status status_values NOT NULL DEFAULT 'pending',
     PRIMARY KEY (id),
-    FOREIGN KEY (follower_id) REFERENCES users (id) ON UPDATE CASCADE,
-    FOREIGN KEY (followed_id) REFERENCES users (id) ON UPDATE CASCADE,
+    FOREIGN KEY (follower_id) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (followed_id) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT not_self_follow CHECK (follower_id <> followed_id)
 );
 
@@ -216,8 +226,8 @@ CREATE TABLE ban (
     duration INTERVAL NOT NULL,
     is_active BOOLEAN NOT NULL DEFAULT TRUE,
     PRIMARY KEY (id),
-    FOREIGN KEY (user_id) REFERENCES users (id) ON UPDATE CASCADE,
-    FOREIGN KEY (administrator_id) REFERENCES administrator (id) ON UPDATE CASCADE
+    FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (administrator_id) REFERENCES administrator (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE token (
@@ -230,8 +240,8 @@ CREATE TABLE token (
     PRIMARY KEY (id),
     UNIQUE (user_id),
     UNIQUE (administrator_id),
-    FOREIGN KEY (user_id) REFERENCES users (id) ON UPDATE CASCADE,
-    FOREIGN KEY (administrator_id) REFERENCES administrator (id) ON UPDATE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (administrator_id) REFERENCES administrator (id) ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT account_fk_not_null CHECK ((user_id IS NULL) <> (administrator_id IS NULL)),
     CONSTRAINT validity_after_creation CHECK (validity_timestamp > creation_timestamp)
 );
@@ -254,16 +264,16 @@ CREATE TABLE group_member (
     group_id INTEGER NOT NULL,
     join_timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (user_id, group_id),
-    FOREIGN KEY (user_id) REFERENCES users (id),
-    FOREIGN KEY (group_id) REFERENCES groups (id)
+    FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (group_id) REFERENCES groups (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE group_post (
     post_id INTEGER,
     group_id INTEGER NOT NULL,
     PRIMARY KEY (post_id),
-    FOREIGN KEY (post_id) REFERENCES post (id) ON UPDATE CASCADE,
-    FOREIGN KEY (group_id) REFERENCES groups (id) ON UPDATE CASCADE
+    FOREIGN KEY (post_id) REFERENCES post (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (group_id) REFERENCES groups (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE group_join_request (
@@ -273,8 +283,8 @@ CREATE TABLE group_join_request (
     creation_timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     status status_values NOT NULL DEFAULT 'pending',
     PRIMARY KEY (id),
-    FOREIGN KEY (group_id) REFERENCES groups (id) ON UPDATE CASCADE,
-    FOREIGN KEY (requester_id) REFERENCES users (id) ON UPDATE CASCADE
+    FOREIGN KEY (group_id) REFERENCES groups (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (requester_id) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE group_invitation (
@@ -284,8 +294,8 @@ CREATE TABLE group_invitation (
     creation_timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     status status_values NOT NULL DEFAULT 'pending',
     PRIMARY KEY (id),
-    FOREIGN KEY (group_id) REFERENCES groups (id) ON UPDATE CASCADE,
-    FOREIGN KEY (invitee_id) REFERENCES users (id) ON UPDATE CASCADE
+    FOREIGN KEY (group_id) REFERENCES groups (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (invitee_id) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE notification (
@@ -300,12 +310,12 @@ CREATE TABLE notification (
     post_like_id INTEGER,
     comment_like_id INTEGER,
     PRIMARY KEY (id),
-    FOREIGN KEY (receiver_id) REFERENCES users (id) ON UPDATE CASCADE,
-    FOREIGN KEY (follow_id) REFERENCES follow (id) ON UPDATE CASCADE,
-    FOREIGN KEY (post_id) REFERENCES post (id) ON UPDATE CASCADE,
-    FOREIGN KEY (comment_id) REFERENCES comment (id) ON UPDATE CASCADE,
-    FOREIGN KEY (post_like_id) REFERENCES post_like (id) ON UPDATE CASCADE,
-    FOREIGN KEY (comment_like_id) REFERENCES comment_like (id) ON UPDATE CASCADE,
+    FOREIGN KEY (receiver_id) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (follow_id) REFERENCES follow (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (post_id) REFERENCES post (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (comment_id) REFERENCES comment (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (post_like_id) REFERENCES post_like (id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (comment_like_id) REFERENCES comment_like (id) ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT notification_type_fk CHECK (
         ((type = 'follow' OR type = 'post_mention') AND follow_id IS NOT NULL AND post_id IS NULL AND comment_id IS NULL AND post_like_id IS NULL AND comment_like_id IS NULL)
         OR ((type = 'comment' OR type = 'comment_mention') AND follow_id IS NULL AND post_id IS NULL AND comment_id IS NOT NULL AND post_like_id IS NULL AND comment_like_id IS NULL)
@@ -341,16 +351,16 @@ BEGIN
     UPDATE post
     SET tsvectors = (
         setweight(to_tsvector('english', post.title), 'A') ||
-        setweight(to_tsvector('english', coalesce((
+        setweight(to_tsvector('english', (
             SELECT users.name
             FROM users
             WHERE users.id = post.author_id
-        ), '')), 'A') ||
-        setweight(to_tsvector('english', coalesce((
+        )), 'A') ||
+        setweight(to_tsvector('english', (
             SELECT users.handle
             FROM users
             WHERE users.id = post.author_id
-        ), '')), 'A') ||
+        )), 'A') ||
         setweight(to_tsvector('english', coalesce(post.text, '')), 'B') ||
         setweight(to_tsvector('english', (
             SELECT coalesce(string_agg(comment.content, ' '), '')
@@ -406,7 +416,9 @@ RETURNS TRIGGER AS $$
 BEGIN
     IF TG_OP = 'UPDATE' AND (OLD.name <> NEW.name OR OLD.handle <> NEW.handle)
     THEN 
-        PERFORM calculate_post_tsvectors(NEW.id);
+        PERFORM calculate_post_tsvectors(id)
+        FROM post
+        WHERE author_id = NEW.id;
     END IF;
     RETURN NEW;
 END;
@@ -432,8 +444,8 @@ BEGIN
     OR (TG_OP = 'UPDATE' AND (NEW.name <> OLD.name OR NEW.handle <> OLD.handle OR NEW.description <> OLD.description))
     THEN
         NEW.tsvectors = (
-            setweight(to_tsvector('english', coalesce(NEW.name, '')), 'A') ||
-            setweight(to_tsvector('english', coalesce(NEW.handle, '')), 'A') ||
+            setweight(to_tsvector('english', NEW.name), 'A') ||
+            setweight(to_tsvector('english', NEW.handle), 'A') ||
             setweight(to_tsvector('english', coalesce(NEW.description, '')), 'B')
         );
     END IF;
@@ -442,7 +454,7 @@ END;
 $$ LANGUAGE plpgsql;
 
 CREATE TRIGGER user_search_update
-BEFORE INSERT OR UPDATE ON users 
+BEFORE INSERT OR UPDATE ON users
 FOR EACH ROW
 EXECUTE PROCEDURE user_search_update();
 
@@ -597,7 +609,7 @@ CREATE FUNCTION handle_group_join_request_acceptance()
 RETURNS TRIGGER AS $$
 BEGIN
     IF NEW.status = 'accepted' AND OLD.status <> 'accepted' THEN
-        INSERT INTO group_member (user_id, group_id, join_timestamp ) 
+        INSERT INTO group_member (user_id, group_id, join_timestamp) 
         VALUES (NEW.requester_id, NEW.group_id, CURRENT_TIMESTAMP);
     END IF;
 
@@ -788,7 +800,7 @@ END;
 $$ LANGUAGE plpgsql;
 
 CREATE TRIGGER update_follow_counts
-BEFORE INSERT OR DELETE ON follow
+AFTER INSERT OR DELETE ON follow
 FOR EACH ROW
 EXECUTE FUNCTION update_follow_counts();
 

@@ -65,6 +65,21 @@
                             'anchorUrl' => route('register'),
                         ])
                     @endif
+                    @include('partials.dropdown-item', [
+                        'icon' => 'info',
+                        'text' => 'About',
+                        'anchorUrl' => route('about'),
+                    ])
+                    @include('partials.dropdown-item', [
+                        'icon' => 'message-circle-question',
+                        'text' => 'FAQs',
+                        'anchorUrl' => route('faqs'),
+                    ])
+                    @include('partials.dropdown-item', [
+                        'icon' => 'mail',
+                        'text' => 'Contact Us',
+                        'anchorUrl' => route('contactus'),
+                    ])
                 </div>
             </div>
         </article>

@@ -36,6 +36,13 @@ class LoginController extends Controller
 
         if (Auth::attempt($credentials, $request->filled('remember'))) {
             $request->session()->regenerate();
+            if (Auth::user()->is_deleted) {
+                Auth::logout();
+
+                return back()->withErrors([
+                    'email' => 'That account has been deleted.',
+                ])->onlyInput('email');
+            }
 
             return redirect()->intended()->withSuccess('You have successfully logged in!');
         }

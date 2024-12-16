@@ -48,6 +48,14 @@ class CommentPolicy
     }
 
     /**
+     * Determine whether the user can delete the model.
+     */
+    public function delete(?User $user, Comment $comment): bool
+    {
+        return $user && ! $user->isBanned() && $user->id === $comment->author_id;
+    }
+
+    /**
      * Determine whether the user can permanently delete the model.
      */
     public function forceDelete(?User $user, Comment $comment): bool

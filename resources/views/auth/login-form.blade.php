@@ -1,18 +1,67 @@
 <article class="card h-min p-10 pt-16 grid gap-12 justify-items-center col-start-2">
     @include('partials.logo', ['size' => 'large'])
-    
+
     <form method="post" action="{{ route('login') }}" class="grid gap-4 justify-self-stretch">
         {{ csrf_field() }}
 
-        @include('partials.input-field', ['name' => 'email', 'label' => 'E-mail', 'type' => 'email', 'value' => old('email'), 'placeholder' => 'johndoe@password.com', 'required' => true])
-        @include('partials.input-field', ['name' => 'password', 'label' => 'Password', 'type' => 'password', 'placeholder' => 'password123', 'required' => true])
+        @include('partials.input-field', [
+            'name' => 'email',
+            'label' => 'E-mail',
+            'type' => 'email',
+            'value' => old('email'),
+            'placeholder' => 'johndoe@password.com',
+            'required' => true,
+        ])
+        @include('partials.input-field', [
+            'name' => 'password',
+            'label' => 'Password',
+            'type' => 'password',
+            'placeholder' => 'password123',
+            'required' => true,
+        ])
 
-        <div class="flex flex-col">
-            <label class="mb-2">
-                <input type="checkbox" name="remember" {{ old('remember') ? 'checked' : '' }}> <span class="font-medium">Remember Me</span>
-            </label>
+        <div class="flex flex-col space-y-4">
+            <div class="flex flex-row justify-between">
+                <a href="{{ route('forgot-password') }}">
+                    <span class="font-medium italic">
+                        Forgot Password?
+                    </span>
+                </a>
+                <label class="mb-2">
+                    <input type="checkbox" name="remember" {{ old('remember') ? 'checked' : '' }}> <span
+                        class="font-medium">Remember Me</span>
+                </label>
+            </div>
 
-            @include('partials.text-button', ['text' => 'Login', 'label' => 'Login', 'type' => 'primary', 'submit' => true])
+            @include('partials.text-button', [
+                'text' => 'Login',
+                'label' => 'Login',
+                'type' => 'primary',
+                'submit' => true,
+            ])
+            @include('partials.text-button', [
+                'text' => 'Continue with Google',
+                'label' => 'Google',
+                'type' => 'secondary',
+                'submit' => true,
+                'anchorUrl' => route('google.auth'),
+            ])
+            <!-- TODO: when the user is logging in using github after the first time, they get redirected automatically to the home page, but that process takes some time. maybe add a spinning loading indicator?  -->
+            @include('partials.text-button', [
+                'text' => 'Continue with GitHub',
+                'label' => 'GitHub',
+                'type' => 'secondary',
+                'submit' => true,
+                'anchorUrl' => route('github.auth'),
+            ])
+            @include('partials.text-button', [
+                'text' => 'Continue with GitLab',
+                'label' => 'GitLab',
+                'type' => 'secondary',
+                'submit' => true,
+                'anchorUrl' => route('gitlab.auth'),
+            ])
+
         </div>
     </form>
 

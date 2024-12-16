@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\GroupMember;
 use App\Models\Language;
 use App\Models\Post;
 use App\Models\Technology;
+use App\Models\Token;
 use App\Models\TopProject;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -27,15 +29,15 @@ class UserController extends Controller
             ->get();
 
         $isOwnProfile = Auth::check() && Auth::id() === $user->id;
-        $isFollowing = Auth::check() && Auth::user()->following()->where('followed_id', $user->id)->exists();
         $recommendedUsers = Auth::check() ? $this->recommendedUsers(Auth::user(), $user) : null;
+        $num_requests = Auth::check() ? Auth::user()->followRequests()->where('status', 'pending')->count() : 0;
 
         return view('pages.user', [
             'user' => $user,
             'posts' => $posts,
             'isOwnProfile' => $isOwnProfile,
             'recommendedUsers' => $recommendedUsers,
-            'isFollowing' => $isFollowing,
+            'num_requests' => $num_requests,
         ]);
     }
 
@@ -194,6 +196,95 @@ class UserController extends Controller
                 ->sortByDesc('num_followers')
                 ->values();
         }
+    }
 
+    public function followers(int $id)
+    {
+        $user = User::findOrFail($id);
+
+        $this->authorize('viewContent', $user);
+
+        return view('pages.followers', ['user' => $user, 'isOwnFollowers' => Auth::check() && Auth::id() == $user->id]);
+    }
+
+    public function following(int $id)
+    {
+        $user = User::findOrFail($id);
+
+        $this->authorize('viewContent', $user);
+
+        return view('pages.following', ['user' => $user]);
+    }
+
+    public function requests(int $id)
+    {
+        $user = User::findOrFail($id);
+
+        $this->authorize('delete', $user);
+
+        $followRequests = $user->followRequests()
+            ->where('status', 'pending')
+            ->get();
+
+        return view('pages.requests', ['user' => $user, 'requests' => $followRequests]);
+    }
+
+    public function destroy(Request $request, int $id)
+    {
+
+        $user = User::findOrFail($id);
+
+        $this->authorize('delete', $user);
+
+        DB::transaction(function () use ($id, $user) {
+            // Delete notifications.
+            $user->notifications()->delete();
+            // Delete follow requests.
+            $user->followRequests()->delete();
+            // Delete group join requests.
+            $user->groupJoinRequests()->delete();
+            // Delete group invitations.
+            $user->groupInvitations()->delete();
+            // Delete group memberships.
+            GroupMember::where('user_id', $id)
+                ->delete();
+            // Delete bans.
+            $user->bans()->delete();
+            // Delete user token.
+            $user->tokens()->delete();
+            // Delete user stats.
+            $userStats = $user->stats;
+            DB::table('user_stats_language')
+                ->where('user_stats_id', $userStats->id)
+                ->delete();
+            DB::table('user_stats_technology')
+                ->where('user_stats_id', $userStats->id)
+                ->delete();
+            DB::table('top_project')
+                ->where('user_stats_id', $userStats->id)
+                ->delete();
+            $userStats->delete();
+
+            // Delete user info.
+            $user->update([
+                'name' => $id,
+                'email' => $id,
+                'password' => $id,
+                'handle' => $id,
+                'is_public' => false,
+                'description' => null,
+                'profile_picture_url' => null,
+                'banner_image_url' => null,
+                'is_deleted' => true,
+            ]);
+
+        });
+
+        // If the user deleted is own account, log out.
+        if (Auth::check() && Auth::id() === $id) {
+            Auth::logout();
+        }
+
+        return redirect()->route('home')->withSuccess('User deleted successfully.');
     }
 }

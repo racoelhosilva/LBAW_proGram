@@ -3,8 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Comment;
-use App\Models\GroupPost;
-use App\Models\Notification;
 use App\Models\Post;
 use App\Models\Tag;
 use Illuminate\Contracts\View\Factory;
@@ -75,7 +73,7 @@ class PostController extends Controller
      */
     public function show(int $id): View
     {
-        $post = Post::findOrFail($id);
+        $post = Post::with('author')->findOrFail($id);
 
         $this->authorize('view', $post);
         $this->authorize('viewAny', Comment::class);
@@ -150,39 +148,7 @@ class PostController extends Controller
 
         $this->authorize('forceDelete', $post);
 
-        DB::transaction(function () use ($post) {
-            Notification::where('post_id', $post->id)
-                ->orWhereIn('comment_id', function ($query) use ($post) {
-                    $query->select('id')
-                        ->from('comment')
-                        ->where('post_id', $post->id);
-                })
-                ->orWhereIn('post_like_id', function ($query) use ($post) {
-                    $query->select('id')
-                        ->from('post_like')
-                        ->where('post_id', $post->id);
-                })
-                ->orWhereIn('comment_like_id', function ($query) use ($post) {
-                    $query->select('comment_like.id')
-                        ->from('comment_like')
-                        ->join('comment', 'comment_like.comment_id', '=', 'comment.id')
-                        ->where('comment.post_id', $post->id);
-                })
-                ->delete();
-
-            foreach ($post->allComments as $comment) {
-                $comment->allLikes()->delete();
-                $comment->delete();
-            }
-
-            $post->allLikes()->delete();
-            $post->tags()->detach();
-            $post->attachments()->delete();
-
-            GroupPost::where('post_id', $post->id)->delete();
-
-            $post->delete();
-        });
+        $post->delete();
 
         if (url()->previous() === route('post.edit', $post->id)) {
             return redirect(session('previous_url'))->with('Post deleted successfully.');

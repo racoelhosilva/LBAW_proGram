@@ -79,6 +79,11 @@
          @apply p-2 border-t border-slate-300 dark:border-slate-600;
     }
 
+    .edit-textarea {
+        @apply w-full px-5 py-3 rounded-lg bg-white dark:bg-slate-700 text-gray-600 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 border border-slate-300 dark:border-slate-600 focus:border-blue-600 outline-none resize-none min-h-32;
+    }
+    
+
     .pagination {
         @apply w-fit border rounded-lg border-slate-300 dark:border-slate-700 flex overflow-hidden;
     }
@@ -113,6 +118,24 @@
 
     .modal > div > div {
         @apply card col-start-2;
+    }
+
+    .follow-profile-button.following .follow,
+    .follow-profile-button.following .pending,
+    .follow-profile-button.pending .follow,
+    .follow-profile-button.pending .unfollow,
+    .follow-profile-button.unfollowing .pending,
+    .follow-profile-button.unfollowing .unfollow {
+        @apply hidden;
+    }
+
+    .follow-card-button.following .lucide-follow,
+    .follow-card-button.following .lucide-pending,
+    .follow-card-button.pending .lucide-follow,
+    .follow-card-button.pending .lucide-unfollow,
+    .follow-card-button.unfollowing .lucide-pending,
+    .follow-card-button.unfollowing .lucide-unfollow {
+        @apply hidden;
     }
 
     .manage-selected
