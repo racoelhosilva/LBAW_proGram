@@ -2,6 +2,7 @@
 
 namespace App\Events;
 
+use App\Models\Post;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
@@ -18,7 +19,8 @@ class CommentEvent implements ShouldBroadcast
     public function __construct($post_id, $user_id)
     {
         $this->user_id = $user_id;
-        $this->message = 'User '.auth()->id().' commented on your post '.$post_id;
+        $post = Post::find($post_id);
+        $this->message = auth()->user()->name.' commented on your post '.$post->title;
     }
 
     public function broadcastOn()

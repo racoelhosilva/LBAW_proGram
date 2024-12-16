@@ -18,7 +18,7 @@ class FollowEvent implements ShouldBroadcast
     public function __construct($user_id)
     {
         $this->user_id = $user_id;
-        $this->message = 'User '.auth()->id().' started following you';
+        $this->message = auth()->user()->name.' started following you';
     }
 
     public function broadcastOn()

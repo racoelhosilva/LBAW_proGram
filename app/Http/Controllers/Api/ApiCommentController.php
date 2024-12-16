@@ -90,7 +90,7 @@ class ApiCommentController extends Controller
         $like->comment_id = $id;
 
         if ($like->save()) {
-            event(new CommentLikeEvent($id, $comment->post_id, $comment->author_id));
+            event(new CommentLikeEvent($comment->post_id, $comment->author_id));
         }
 
         return response()->json($like, 201);

@@ -2,6 +2,7 @@
 
 namespace App\Events;
 
+use App\Models\Post;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
@@ -15,10 +16,11 @@ class CommentLikeEvent implements ShouldBroadcast
 
     public $user_id;
 
-    public function __construct($comment_id, $post_id, $user_id)
+    public function __construct($post_id, $user_id)
     {
         $this->user_id = $user_id;
-        $this->message = 'User '.auth()->id().' liked your comment '.$comment_id.' on post '.$post_id;
+        $post = Post::find($post_id);
+        $this->message = auth()->user()->name.' liked your comment on post '.$post->title;
     }
 
     public function broadcastOn()
