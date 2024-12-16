@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api;
 
 use App\Events\CommentEvent;
 use App\Events\CommentLikeEvent;
-use App\Events\CommentUnlikeEvent;
 use App\Http\Controllers\Controller;
 use App\Models\Comment;
 use App\Models\CommentLike;
@@ -111,9 +110,7 @@ class ApiCommentController extends Controller
             return response()->json(['error' => 'You have not liked this comment'], 400);
         }
 
-        if ($like->delete()) {
-            event(new CommentUnlikeEvent($id, $comment->post_id, $comment->author_id));
-        }
+        $like->delete();
 
         return response()->json(['message' => 'Comment unliked successfully'], 200);
     }

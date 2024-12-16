@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Api;
 
 use App\Events\PostLikeEvent;
-use App\Events\PostUnlikeEvent;
 use App\Http\Controllers\Controller;
 use App\Models\Comment;
 use App\Models\Post;
@@ -131,9 +130,7 @@ class ApiPostController extends Controller
             return response()->json(['error' => 'You have not liked this post.'], 400);
         }
 
-        if ($like->delete()) {
-            event(new PostUnlikeEvent($id, $post->author_id));
-        }
+        $like->delete();
 
         return response()->json(['message' => 'Post unliked successfully'], 200);
     }
