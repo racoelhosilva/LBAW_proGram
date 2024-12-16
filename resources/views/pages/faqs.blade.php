@@ -19,9 +19,9 @@
         </header>
         <section>
             @foreach ($faqs as $faq)
-                <article class="card faq-container h-min mt-4 mb-4 p-4">
+                <article class="card faq-container h-min mt-4 mb-4 p-4 cursor-pointer ">
                     <div class="flex items-center justify-between px-4">
-                        <h1 class="text-xl font-bold question">{{ $faq['question'] }}</h1>
+                        <h1 class="text-xl font-bold question ">{{ $faq['question'] }}</h1>
                         <div class="arrow-up-icon-container">
                             @include('partials.icon', ['name' => 'plus', 'class' => 'max-w-10'])
                         </div>
