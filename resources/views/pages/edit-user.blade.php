@@ -7,8 +7,8 @@
         <h1 class="text-4xl font-bold">Edit Profile</h1>
         <form method="post" action="{{ route('user.update', $user->id) }}" class="grid gap-4 justify-self-stretch"
             id="profile-form" enctype="multipart/form-data">
-            {{ csrf_field() }}
-            <input type="hidden" name="is_public" value="1">
+            @csrf
+            @method('PUT')
 
             @include('partials.input-field', [
                 'name' => 'name',
@@ -34,7 +34,14 @@
                 'placeholder' => 'john_doe',
                 'required' => true,
             ])
-
+            <div class="flex items-center mt-4">
+                <input type="checkbox" id="is_public" name="is_public" value="1"
+                    class="w-5 h-5 mr-2 text-blue-600 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+                    {{ $user->is_public ? 'checked' : '' }}>
+                <label for="is_public" class="font-medium text-gray-700 dark:text-gray-200">
+                    Make profile public
+                </label>
+            </div>
             <section id="languages-section" class="flex flex-col">
                 <label for="languages" class="font-medium">Languages</label>
                 <select name="languages[]" id="languages" multiple class="card overflow-auto">

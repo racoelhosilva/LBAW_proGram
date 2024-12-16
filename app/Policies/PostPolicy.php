@@ -43,6 +43,11 @@ class PostPolicy
             return true;
         }
 
+        // Deny access if the user is private and the post is private.
+        if (! $post->author->is_public && ! $post->is_public) {
+            return false;
+        }
+
         // Grant access if the user is the author.
         return $user && $user->id === $post->author->id;
     }
