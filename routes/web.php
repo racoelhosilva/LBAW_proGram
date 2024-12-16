@@ -8,12 +8,14 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Api\ApiCommentController;
 use App\Http\Controllers\Api\ApiPostController;
 use App\Http\Controllers\Api\ApiUserController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\GitHubController;
 use App\Http\Controllers\GitLabController;
 use App\Http\Controllers\GoogleController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\MailController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\UserController;
@@ -57,7 +59,16 @@ Route::controller(GitLabController::class)->group(function () {
     Route::get('auth/gitlab/call-back', 'callbackGitLab')->name('gitlab.callback');
 });
 
-Route::middleware('deny.banned')->group(function () {
+Route::controller(ForgotPasswordController::class)->group(function () {
+    Route::get('/forgot-password', 'show')->name('forgot-password');
+    Route::post('/forgot-password', 'forgotPassword');
+    Route::get('/reset-password/{token}', 'showResetPassword')->name('password.reset');
+    Route::post('/reset-password', 'resetPassword')->name('password.update');
+});
+
+Route::post('/sendemail', [MailController::class, 'send']);
+
+Route::middleware(['deny.banned', 'deny.deleted'])->group(function () {
     // Home
     Route::get('/', [HomeController::class, 'show'])->name('home');
 
@@ -86,9 +97,13 @@ Route::middleware('deny.banned')->group(function () {
     // User
     Route::controller(UserController::class)->group(function () {
         Route::get('/user/{id}', 'show')->where('id', '[0-9]+')->name('user.show');
-        Route::post('/user/{id}', 'update')->where('id', '[0-9]+')->name('user.update');
+        Route::put('/user/{id}', 'update')->where('id', '[0-9]+')->name('user.update');
         Route::get('/user/{id}/edit', 'edit')->where('id', '[0-9]+')->name('user.edit');
         Route::get('/user/{id}/notifications', 'notifications')->where('id', '[0-9]+')->name('user.notifications');
+        Route::get('/user/{id}/followers', 'followers')->where('id', '[0-9]+')->name('user.followers');
+        Route::get('/user/{id}/following', 'following')->where('id', '[0-9]+')->name('user.following');
+        Route::get('/user/{id}/requests', 'requests')->where('id', '[0-9]+')->name('user.requests');
+        Route::delete('/user/{id}', 'destroy')->where('id', '[0-9]+')->name('user.destroy');
     });
 
     // Search
@@ -111,6 +126,7 @@ Route::prefix('admin')->group(function () {
         // Admin users
         Route::get('/user', [AdminUserController::class, 'index'])->name('admin.user.index');
         Route::post('/user/{id}/ban', [AdminUserController::class, 'banUser'])->where('id', '[0-9]+')->name('admin.user.ban');
+        Route::delete('/user/{id}', [AdminUserController::class, 'deleteUser'])->where('id', '[0-9]+')->name('admin.user.destroy');
 
         // Admin bans
         Route::get('/ban', [AdminBanController::class, 'index'])->name('admin.ban.index');
@@ -141,14 +157,15 @@ Route::prefix('api')->group(function () {
     // Comment
     Route::controller(ApiCommentController::class)->group(function () {
         // Route::get('/comment', 'index')->name('api.comment.index');
-        // Route::post('/comment', 'store')->name('api.comment.store');
+        Route::post('/comment', 'store')->name('api.comment.store');
         // Route::get('/comment/{id}', 'show')->where('id', '[0-9]+')->name('api.comment.show');
-        // Route::put('/comment/{id}', 'update')->where('id', '[0-9]+')->name('api.comment.update');
-        // Route::delete('/comment/{id}', 'destroy')->where('id', '[0-9]+')->name('api.comment.destroy');
+        Route::patch('/comment/{id}', 'update')->where('id', '[0-9]+')->name('api.comment.update');
+        Route::delete('/comment/{id}', 'destroy')->where('id', '[0-9]+')->name('api.comment.destroy');
         Route::post('/comment/{id}/like', 'like')->where('id', '[0-9]+')->name('api.comment.like');
         Route::delete('/comment/{id}/like', 'unlike')->where('id', '[0-9]+')->name('api.comment.unlike');
     });
 
+    // User
     Route::controller(ApiUserController::class)->group(function () {
         //     Route::get('/user', 'list');
         //     Route::get('/user/{id}', 'show');
@@ -160,5 +177,10 @@ Route::prefix('api')->group(function () {
         //     Route::get('/user/{id}/post', 'listPosts');
         Route::post('/user/{id}/notifications/read', 'readAllNotifications')->where('id', '[0-9]+')->name('api.user.notifications.read');
         Route::post('/user/{userId}/notification/{notificationId}/read', 'readNotification')->where('userId', '[0-9]+')->where('notificationId', '[0-9]+')->name('api.user.notification.read');
+        Route::post('/user/{id}/follow', 'follow')->where('id', '[0-9]+')->name('api.user.follow');
+        Route::delete('/user/{id}/follow', 'unfollow')->where('id', '[0-9]+')->name('api.user.unfollow');
+        Route::delete('/follower/{id}', 'removeFollower')->where('id', '[0-9]+')->name('api.follower.remove');
+        Route::post('/follow-request/{id}/accept', 'accept')->where('id', '[0-9]+')->name('api.follow-request.accept');
+        Route::post('/follow-request/{id}/reject', 'reject')->where('id', '[0-9]+')->name('api.follow-request.reject');
     });
 });

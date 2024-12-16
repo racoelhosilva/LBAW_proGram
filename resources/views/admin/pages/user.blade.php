@@ -1,5 +1,7 @@
 @extends('layouts.admin')
-@section('title') {{'Admin User Search | ProGram'}} @endsection
+@section('title')
+    {{ 'Admin User Search | ProGram' }}
+@endsection
 @section('content')
     <main class="px-4 flex flex-col gap-4">
         @include('admin.partials.search-field', ['route' => 'admin.user.index'])
@@ -24,25 +26,63 @@
                         <td>{{ $user->handle }}</td>
                         <td>{{ $user->isBanned() ? 'Yes' : 'No' }}</td>
                         <td class="pe-8 flex justify-end gap-2">
-                            @include('partials.text-button', ['text' => 'View Profile', 'type' => 'secondary', 'anchorUrl' => route('user.show', $user->id)])
+                            @include('partials.text-button', [
+                                'text' => 'View Profile',
+                                'type' => 'secondary',
+                                'anchorUrl' => route('user.show', $user->id),
+                            ])
                             <div class="modal ban-modal">
-                                @include('partials.text-button', ['text' => 'Ban', 'class' => 'open-button', 'type' => 'secondary'])
+                                @include('partials.text-button', [
+                                    'text' => 'Ban',
+                                    'class' => 'open-button',
+                                    'type' => 'secondary',
+                                ])
                                 <div>
                                     <div>
                                         <div class="mb-4 flex justify-between items-center">
                                             <h1 class="text-2xl font-bold">Ban User</h1>
-                                            @include('partials.icon-button', ['iconName' => 'x', 'class' => 'close-button', 'label' => 'Close', 'type' => 'transparent'])
+                                            @include('partials.icon-button', [
+                                                'iconName' => 'x',
+                                                'class' => 'close-button',
+                                                'label' => 'Close',
+                                                'type' => 'transparent',
+                                            ])
                                         </div>
-                                        <form method="post" action="{{ route('admin.user.ban', $user->id) }}" class="grid gap-4">
+                                        <form method="post" action="{{ route('admin.user.ban', $user->id) }}"
+                                            class="grid gap-4">
                                             @csrf
-                                            @include('partials.input-field', ['name' => 'reason', 'label' => 'Reason for ban', 'placeholder' => 'Inappropriate behavior', 'required' => true])
-                                            @include('partials.input-field', ['name' => 'duration', 'type' => 'number', 'label' => 'Duration (days)', 'placeholder' => '15', 'required' => true])
+                                            @include('partials.input-field', [
+                                                'name' => 'reason',
+                                                'label' => 'Reason for ban',
+                                                'placeholder' => 'Inappropriate behavior',
+                                                'required' => true,
+                                            ])
+                                            @include('partials.input-field', [
+                                                'name' => 'duration',
+                                                'type' => 'number',
+                                                'label' => 'Duration (days)',
+                                                'placeholder' => '15',
+                                                'required' => true,
+                                            ])
                                             <label><input type="checkbox" name="permanent"> Permanent</label>
-                                            @include('partials.text-button', ['text' => 'Ban User', 'type' => 'primary', 'submit' => true])
+                                            @include('partials.text-button', [
+                                                'text' => 'Ban User',
+                                                'type' => 'primary',
+                                                'submit' => true,
+                                            ])
                                         </form>
                                     </div>
                                 </div>
                             </div>
+                            <form method="post" action="{{ route('admin.user.destroy', $user->id) }}">
+                                @csrf
+                                @method('DELETE')
+                                @include('partials.text-button', [
+                                    'text' => 'Delete Account',
+                                    'type' => 'secondary',
+                                    'submit' => true,
+                                ])
+                            </form>
                         </td>
                     </tr>
                 @empty

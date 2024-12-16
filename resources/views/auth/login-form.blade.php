@@ -20,11 +20,18 @@
             'required' => true,
         ])
 
-        <div class="flex flex-col">
-            <label class="mb-2">
-                <input type="checkbox" name="remember" {{ old('remember') ? 'checked' : '' }}> <span
-                    class="font-medium">Remember Me</span>
-            </label>
+        <div class="flex flex-col space-y-4">
+            <div class="flex flex-row justify-between">
+                <a href="{{ route('forgot-password') }}">
+                    <span class="font-medium italic">
+                        Forgot Password?
+                    </span>
+                </a>
+                <label class="mb-2">
+                    <input type="checkbox" name="remember" {{ old('remember') ? 'checked' : '' }}> <span
+                        class="font-medium">Remember Me</span>
+                </label>
+            </div>
 
             @include('partials.text-button', [
                 'text' => 'Login',

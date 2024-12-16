@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Http\Controllers\FileController;
+use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -15,7 +16,7 @@ use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use CanResetPassword, HasApiTokens, HasFactory, Notifiable;
 
     // Don't add create and update timestamps in database.
     public $timestamps = false;
@@ -85,9 +86,19 @@ class User extends Authenticatable
         return $this->hasMany(GroupInvitation::class, 'invitee_id');
     }
 
+    public function groupJoinRequests(): HasMany
+    {
+        return $this->hasMany(GroupJoinRequest::class, 'requester_id');
+    }
+
     public function followRequests(): HasMany
     {
         return $this->hasMany(FollowRequest::class, 'followed_id');
+    }
+
+    public function followingRequests(): HasMany
+    {
+        return $this->hasMany(FollowRequest::class, 'follower_id');
     }
 
     public function allNotifications(): HasMany
@@ -141,6 +152,11 @@ class User extends Authenticatable
         return $this->bans()->active()->exists();
     }
 
+    public function tokens()
+    {
+        return $this->hasMany(Token::class);
+    }
+
     public function lastActiveBan(): ?Ban
     {
         return $this->bans()
@@ -152,5 +168,13 @@ class User extends Authenticatable
     public function follows(User $user): bool
     {
         return $this->following()->where('followed_id', $user->id)->exists();
+    }
+
+    public function getFollowRequestStatus(User $followed)
+    {
+        $followRequest = $this->followingRequests()
+            ->where('followed_id', $followed->id)->latest('creation_timestamp')->first();
+
+        return $followRequest?->status;
     }
 }

@@ -3,22 +3,25 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Follow;
+use App\Models\FollowRequest;
 use App\Models\User;
 use App\Models\UserStats;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ApiUserController extends Controller
 {
     public function list()
     {
-        $users = User::all();
+        $users = User::where('is_deleted', false)->get();
 
         return response()->json($users);
     }
 
     public function show($id)
     {
-        $user = User::findOrFail($id);
+        $user = User::where('id', $id)->where('is_deleted', false)->firstOrFail();
 
         return response()->json($user);
     }
@@ -57,7 +60,7 @@ class ApiUserController extends Controller
 
     public function update(Request $request, $id)
     {
-        $user = User::findOrFail($id);
+        $user = User::where('id', $id)->where('is_deleted', false)->firstOrFail();
 
         $request->validate([
             'name' => 'string|max:255',
@@ -96,28 +99,28 @@ class ApiUserController extends Controller
 
     public function listFollowers($id)
     {
-        $user = User::findOrFail($id);
+        $user = User::where('id', $id)->where('is_deleted', false)->firstOrFail();
 
         return response()->json($user->followers);
     }
 
     public function listFollowing($id)
     {
-        $user = User::findOrFail($id);
+        $user = User::where('id', $id)->where('is_deleted', false)->firstOrFail();
 
         return response()->json($user->following);
     }
 
     public function listPosts($id)
     {
-        $user = User::findOrFail($id);
+        $user = User::where('id', $id)->where('is_deleted', false)->firstOrFail();
 
         return response()->json($user->posts);
     }
 
     public function listFollowRequests($id)
     {
-        $user = User::findOrFail($id);
+        $user = User::where('id', $id)->where('is_deleted', false)->firstOrFail();
 
         return response()->json($user->followRequests);
 
@@ -150,5 +153,166 @@ class ApiUserController extends Controller
         $notification->save();
 
         return response()->json($notification);
+    }
+
+    public function follow($id)
+    {
+        $targetUser = User::findOrFail($id);
+        $currentUser = Auth()->user();
+
+        if ($currentUser->follows($targetUser)) {
+            return response()->json([
+                'action' => 'none',
+                'message' => 'User already followed.',
+            ], 409);
+        }
+
+        $requestStatus = $currentUser->getFollowRequestStatus($targetUser);
+        if ($requestStatus === 'accepted' || $requestStatus === 'pending') {
+            return response()->json([
+                'action' => 'none',
+                'message' => 'Follow request already sent.',
+            ], 409);
+        }
+
+        if ($targetUser->is_public) {
+            $follow = new Follow;
+            $follow->follower_id = $currentUser->id;
+            $follow->followed_id = $targetUser->id;
+            $follow->save();
+
+            return response()->json([
+                'action' => 'follow',
+                'message' => 'User followed successfully.',
+            ], 200);
+        } else {
+            $followRequest = new FollowRequest;
+            $followRequest->follower_id = $currentUser->id;
+            $followRequest->followed_id = $targetUser->id;
+            $followRequest->save();
+
+            return response()->json([
+                'action' => 'request',
+                'message' => 'Follow request sent.',
+            ], 200);
+        }
+    }
+
+    public function unfollow($id)
+    {
+        $targetUser = User::findOrFail($id);
+        $currentUser = Auth()->user();
+        $message = '';
+
+        if ($currentUser->follows($targetUser)) {
+
+            DB::transaction(function () use ($currentUser, $targetUser) {
+                $follow = Follow::where('follower_id', $currentUser->id)
+                    ->where('followed_id', $targetUser->id)
+                    ->first();
+
+                $notification = $targetUser->notifications()
+                    ->where('type', 'follow')
+                    ->where('follow_id', $follow->id)->latest('timestamp')->first();
+
+                $notification->delete();
+
+                $follow = Follow::where('follower_id', $currentUser->id)
+                    ->where('followed_id', $targetUser->id)
+                    ->first();
+
+                $follow->delete();
+            });
+            $message = 'User unfollowed.';
+        }
+
+        $request = FollowRequest::where('follower_id', $currentUser->id)
+            ->where('followed_id', $targetUser->id)
+            ->first();
+
+        if ($request) {
+            $request->delete();
+            if ($message !== '') {
+                $message = 'Follow request cancelled.';
+            }
+        }
+
+        return response()->json([
+            'message' => $message,
+        ], 200);
+    }
+
+    public function removeFollower($id)
+    {
+        $follower = User::findOrFail($id);
+        $currentUser = Auth()->user()->id;
+
+        if ($follower->follows($currentUser)) {
+            DB::transaction(function () use ($currentUser, $follower) {
+                $follow = Follow::where('follower_id', $follower->id)
+                    ->where('followed_id', $currentUser->id)
+                    ->first();
+
+                $notification = $currentUser->notifications()
+                    ->where('type', 'follow')
+                    ->where('follow_id', $follow->id)->latest('timestamp')->first();
+
+                $notification->delete();
+
+                $follow = Follow::where('follower_id', $follower->id)
+                    ->where('followed_id', $currentUser->id)
+                    ->first();
+
+                $follow->delete();
+            });
+        }
+
+        $request = FollowRequest::where('follower_id', $follower->id)
+            ->where('followed_id', $currentUser->id)
+            ->first();
+
+        if ($request) {
+            $request->delete();
+        }
+
+        return response()->json(['message' => 'Follower removed.'], 200);
+    }
+
+    public function accept($id)
+    {
+        $targetUser = User::findOrFail($id);
+        $currentUser = Auth()->user();
+
+        $followRequest = FollowRequest::where('follower_id', $targetUser->id)
+            ->where('followed_id', $currentUser->id)
+            ->first();
+
+        if (! $followRequest) {
+            return response()->json(['message' => 'Follow request not found.'], 404);
+        }
+
+        $followRequest->status = 'accepted';
+        $followRequest->save();
+
+        return response()->json(['message' => 'Follow request accepted.'], 200);
+    }
+
+    public function reject($id)
+    {
+        $targetUser = User::findOrFail($id);
+        $currentUser = Auth()->user();
+
+        $followRequest = FollowRequest::where('follower_id', $targetUser->id)
+            ->where('followed_id', $currentUser->id)
+            ->first();
+
+        if (! $followRequest) {
+            return response()->json(['message' => 'Follow request not found.'], 404);
+        }
+
+        $followRequest->status = 'rejected';
+        $followRequest->save();
+
+        return response()->json(['message' => 'Follow request rejected.'], 200);
     }
 }
