@@ -55,7 +55,7 @@ class Group extends Model
 
     public function posts(): BelongsToMany
     {
-        return $this->belongsToMany(Post::class, 'group_post', 'group_id', 'post_id');
+        return $this->belongsToMany(Post::class, 'group_post', 'group_id', 'post_id')->orderby('creation_timestamp', 'desc');
     }
 
     public function isUserInvited(User $user): bool
