@@ -1,10 +1,13 @@
 @extends('layouts.app')
 
-@section('title') {{$user->name . ' | ProGram'}} @endsection
+@section('title')
+    {{ $user->name . ' | ProGram' }}
+@endsection
 
 @section('content')
     <main id="profile-page" class="px-8 py-4 grid grid-cols-4 gap-6">
-        <section id="banner-section" style="background-image: url('{{ $user->getBannerImage() }}');" class="card h-min col-span-4 grid grid-cols-[auto_1fr] gap-y-16 p-4 bg-cover">
+        <section id="banner-section" style="background-image: url('{{ $user->getBannerImage() }}');"
+            class="card h-min col-span-4 grid grid-cols-[auto_1fr] gap-y-16 p-4 bg-cover">
             <div class="col-span-full">
                 <h1 class="text-4xl font-bold">{{ $user->name }}</h1>
                 <h2 class="text-2xl">{{ '@' . $user->handle }}</h2>
@@ -12,7 +15,10 @@
             <img src="{{ $user->getProfilePicture() }}" class="w-52 h-52 rounded-full object-cover">
             <div class="profile-buttons flex justify-end items-end">
                 @if ($isOwnProfile)
-                    @include('partials.text-button', ['text' => 'Edit Profile', 'anchorUrl' => route('user.edit',auth()->id())])
+                    @include('partials.text-button', [
+                        'text' => 'Edit Profile',
+                        'anchorUrl' => route('user.edit', auth()->id()),
+                    ])
                 @endif
             </div>
         </section>
@@ -20,19 +26,24 @@
         <section id="profile-left" class="h-min col-span-4 lg:col-span-1 grid grid-cols-4 space-y-3">
             <article id="user-info" class="card col-span-4 space-y-3">
                 <h1 class="text-xl font-bold">User Info</h1>
-                <p>{{$user->description}}</p>
-                <p><span class="font-bold">Joined at: </span>{{ \Carbon\Carbon::parse($user->register_timestamp)->format('Y-m-d') }}</p>
+                <p>{{ $user->description }}</p>
+                <p><span class="font-bold">Joined at:
+                    </span>{{ \Carbon\Carbon::parse($user->register_timestamp)->format('Y-m-d') }}</p>
                 @if ($user->stats->languages->count() > 0)
                     <p><span class="font-bold">Top Languages: </span>
-                        @foreach($user->stats->languages as $language)
-                            {{ $language->name }}@if(!$loop->last), @endif
+                        @foreach ($user->stats->languages as $language)
+                            {{ $language->name }}@if (!$loop->last)
+                                ,
+                            @endif
                         @endforeach
                     </p>
                 @endif
                 @if ($user->stats->technologies->count() > 0)
                     <p><span class="font-bold">Technologies: </span>
-                        @foreach($user->stats->technologies as $technology)
-                            {{ $technology->name }}@if(!$loop->last), @endif
+                        @foreach ($user->stats->technologies as $technology)
+                            {{ $technology->name }}@if (!$loop->last)
+                                ,
+                            @endif
                         @endforeach
                     </p>
                 @endif
@@ -80,7 +91,7 @@
                     @foreach ($recommendedUsers as $recommendedUser)
                         @include('partials.user-card', ['user' => $recommendedUser])
                     @endforeach
-                </article>     
+                </article>
             @endif
         </section>
 
