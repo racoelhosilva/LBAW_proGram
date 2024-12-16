@@ -100,8 +100,10 @@ class GroupController extends Controller
         $userIds = request()->query('users');
         if ($userIds) {
             $userIdsArray = explode(',', $userIds);
-            Log::info($userIdsArray);
-            $usersSearched = User::whereIn('users.id', $userIdsArray)->get();
+            $ownerId = $group->owner->id;
+            $usersSearched = User::whereIn('users.id', $userIdsArray)
+                ->where('users.id', '!=', $ownerId)
+                ->get();
         } else {
             $usersSearched = $group->invitedUsers;
         }
