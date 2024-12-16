@@ -9,12 +9,12 @@
             @forelse ($usersWhoWantToJoin as $user)
                 <div class="manage-request-container flex flex-row gap-4" data-user-id={{$user->id}}>
                     @php
-                    $acceptButton = view('partials.text-button', ['text' => 'Accept', 'class' => 'w-40  accept-request-button'])->render();
-                    $declineButton = view('partials.text-button', ['text' => 'Decline', 'class' => 'w-40 decline-request-button'])->render();
+                    $acceptButton = view('partials.text-button', ['text' => 'Accept', 'class' => 'w-40  accept-group-request-button'])->render();
+                    $declineButton = view('partials.text-button', ['text' => 'Decline', 'class' => 'w-40 decline-group-request-button'])->render();
                     $buttons = $acceptButton . $declineButton;
                 @endphp
                 
-                @include('partials.user-card', ['user' => $user, 'class' => 'w-full', 'buttons' => $buttons])
+                @include('partials.user-card-custom', ['user' => $user, 'class' => 'w-full', 'buttons' => $buttons])
                 
                 
                 </div>    
