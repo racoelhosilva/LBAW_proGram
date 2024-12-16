@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Comment;
+use App\Models\CommentLike;
+use App\Models\Follow;
 use App\Models\GroupMember;
 use App\Models\Language;
 use App\Models\Post;
+use App\Models\PostLike;
 use App\Models\Technology;
 use App\Models\Token;
 use App\Models\TopProject;
@@ -168,6 +172,47 @@ class UserController extends Controller
                 ->sortByDesc('num_followers')
                 ->values();
         }
+    }
+
+    public function notifications(int $id)
+    {
+        $user = User::findOrFail($id);
+
+        // TODO: Check policies @HenriqueSFernandes
+
+        $notifications = $user->notifications()->orderBy('timestamp', 'desc')->paginate(10);
+
+        foreach ($notifications as $notification) {
+            switch ($notification->type) {
+                case 'post_like':
+                    $postLike = PostLike::findOrFail($notification->post_like_id);
+                    $notification->user = $postLike->liker;
+                    $notification->post = $postLike->post;
+                    break;
+                case 'comment_like':
+                    $commentLike = CommentLike::findOrFail($notification->comment_like_id);
+                    $notification->user = $commentLike->user;
+                    $notification->comment = $commentLike->comment;
+                    $notification->post = $commentLike->comment->post;
+                    break;
+                case 'comment':
+                    $notification->comment = Comment::findOrFail($notification->comment_id);
+                    $notification->user = $notification->comment->author;
+                    $notification->post = $notification->comment->post;
+                    break;
+                case 'follow':
+                    $follow = Follow::findOrFail($notification->follow_id);
+                    $notification->user = $follow->follower;
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        return view('pages.notifications', [
+            'user' => $user,
+            'notifications' => $notifications,
+        ]);
     }
 
     public function followers(int $id)

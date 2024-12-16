@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Events\PostLikeEvent;
 use App\Http\Controllers\Controller;
 use App\Models\Comment;
 use App\Models\Post;
@@ -108,7 +109,9 @@ class ApiPostController extends Controller
         $like->liker_id = Auth::id();
         $like->post_id = $post->id;
 
-        $like->save();
+        if ($like->save()) {
+            event(new PostLikeEvent($id, $post->author_id));
+        }
 
         return response()->json($like, 201);
     }
