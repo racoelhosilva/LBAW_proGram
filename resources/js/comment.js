@@ -10,6 +10,7 @@ const addSubmitCommentListener = () => {
         data.author_id = parseInt(data.author_id,10);
         res = sendPost('/api/comment', data)
         .then((_) => {
+            form.reset();
             window.location.reload();
         })
         .catch((error) => {
