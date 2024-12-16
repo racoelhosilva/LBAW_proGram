@@ -161,6 +161,22 @@
     }
 
     .select-option > input {
+
+    .follow-profile-button.following .follow,
+    .follow-profile-button.following .pending,
+    .follow-profile-button.pending .follow,
+    .follow-profile-button.pending .unfollow,
+    .follow-profile-button.unfollowing .pending,
+    .follow-profile-button.unfollowing .unfollow {
+        @apply hidden;
+    }
+
+    .follow-card-button.following .lucide-follow,
+    .follow-card-button.following .lucide-pending,
+    .follow-card-button.pending .lucide-follow,
+    .follow-card-button.pending .lucide-unfollow,
+    .follow-card-button.unfollowing .lucide-pending,
+    .follow-card-button.unfollowing .lucide-unfollow {
         @apply hidden;
     }
 }

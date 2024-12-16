@@ -96,6 +96,11 @@ class User extends Authenticatable
         return $this->hasMany(FollowRequest::class, 'followed_id');
     }
 
+    public function followingRequests(): HasMany
+    {
+        return $this->hasMany(FollowRequest::class, 'follower_id');
+    }
+
     public function notifications(): HasMany
     {
         return $this->hasMany(Notification::class, 'receiver_id');
@@ -158,5 +163,13 @@ class User extends Authenticatable
     public function follows(User $user): bool
     {
         return $this->following()->where('followed_id', $user->id)->exists();
+    }
+
+    public function getFollowRequestStatus(User $followed)
+    {
+        $followRequest = $this->followingRequests()
+            ->where('followed_id', $followed->id)->latest('creation_timestamp')->first();
+
+        return $followRequest?->status;
     }
 }

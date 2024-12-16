@@ -383,6 +383,8 @@ namespace App\Models{
  * @property-read int|null $followers_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, User> $following
  * @property-read int|null $following_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\FollowRequest> $followingRequests
+ * @property-read int|null $following_requests_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\GroupInvitation> $groupInvitations
  * @property-read int|null $group_invitations_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\GroupJoinRequest> $groupJoinRequests

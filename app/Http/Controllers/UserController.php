@@ -31,15 +31,15 @@ class UserController extends Controller
             ->paginate(10);
 
         $isOwnProfile = Auth::check() && Auth::id() === $user->id;
-        $isFollowing = Auth::check() && Auth::user()->following()->where('followed_id', $user->id)->exists();
         $recommendedUsers = Auth::check() ? $this->recommendedUsers(Auth::user(), $user) : null;
+        $num_requests = Auth::check() ? Auth::user()->followRequests()->where('status', 'pending')->count() : 0;
 
         return view('pages.user', [
             'user' => $user,
             'posts' => $posts,
             'isOwnProfile' => $isOwnProfile,
             'recommendedUsers' => $recommendedUsers,
-            'isFollowing' => $isFollowing,
+            'num_requests' => $num_requests,
         ]);
     }
 
@@ -168,7 +168,37 @@ class UserController extends Controller
                 ->sortByDesc('num_followers')
                 ->values();
         }
+    }
 
+    public function followers(int $id)
+    {
+        $user = User::findOrFail($id);
+
+        $this->authorize('viewContent', $user);
+
+        return view('pages.followers', ['user' => $user, 'isOwnFollowers' => Auth::check() && Auth::id() == $user->id]);
+    }
+
+    public function following(int $id)
+    {
+        $user = User::findOrFail($id);
+
+        $this->authorize('viewContent', $user);
+
+        return view('pages.following', ['user' => $user]);
+    }
+
+    public function requests(int $id)
+    {
+        $user = User::findOrFail($id);
+
+        $this->authorize('delete', $user);
+
+        $followRequests = $user->followRequests()
+            ->where('status', 'pending')
+            ->get();
+
+        return view('pages.requests', ['user' => $user, 'requests' => $followRequests]);
     }
 
     public function destroy(Request $request, int $id)
