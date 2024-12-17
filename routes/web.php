@@ -126,6 +126,8 @@ Route::middleware(['deny.banned', 'deny.deleted'])->group(function () {
         Route::get('/group/{id}/members', [GroupController::class, 'showMembers'])->name('group.members');
         Route::get('/group/{id}/requests', [GroupController::class, 'showRequests'])->name('group.requests');
         Route::get('/group/{id}/invites', [GroupController::class, 'showInvites'])->name('group.invites');
+        Route::post('/group/{id}/join', [GroupController::class, 'join'])->name('group.join');
+        Route::post('/group/{id}/leave', [GroupController::class, 'leave'])->name('group.leave');
 
     });
     // Search

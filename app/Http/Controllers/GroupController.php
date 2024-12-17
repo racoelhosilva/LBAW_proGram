@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Group;
+use App\Models\GroupJoinRequest;
+use App\Models\GroupMember;
 use App\Models\Post;
 use App\Models\Tag;
 use App\Models\User;
@@ -91,31 +93,22 @@ class GroupController extends Controller
     public function showInvites($groupId)
     {
         $group = Group::findOrFail($groupId);
-
-        // Ensure the user is authenticated
         if (! Auth::check()) {
             return redirect()->route('login');
         }
-
-        // Authorization: ensure the user can update the group
         $this->authorize('update', $group);
-
-        // Fetch the search query
         $searchQuery = request()->query('query');
         $ownerId = $group->owner->id;
 
-        // If query exists, perform a search
         if ($searchQuery) {
             $usersSearched = User::where('id', '!=', $ownerId)
                 ->whereRaw("tsvectors @@ plainto_tsquery('english', ?)", [$searchQuery])
                 ->orderByRaw("ts_rank(tsvectors, plainto_tsquery('english', ?)) DESC", [$searchQuery])
                 ->get();
         } else {
-            // Otherwise, fetch invited users
             $usersSearched = $group->invitedUsers;
         }
 
-        // Return the view with the group and searched users
         return view('pages.group-invites', [
             'group' => $group,
             'usersSearched' => $usersSearched,
@@ -243,5 +236,42 @@ class GroupController extends Controller
         } catch (\Exception $e) {
             return redirect()->route('group.show', $group->id)->withError('Failed to create post.');
         }
+    }
+
+    public function join(Request $request, int $group_id)
+    {
+        $group = Group::findOrFail($group_id);
+        $this->authorize('join', $group);
+        $user = Auth::user();
+
+        if ($group->is_public) {
+            $groupMember = new GroupMember;
+            $groupMember->group_id = $group_id;
+            $groupMember->user_id = $user->id;
+            $groupMember->join_timestamp = now();
+            $groupMember->save();
+        } else {
+            $groupJoinRequest = new GroupJoinRequest;
+            $groupJoinRequest->status = 'pending';
+            $groupJoinRequest->group_id = $group_id;
+            $groupJoinRequest->requester_id = $user->id;
+            $groupJoinRequest->save();
+        }
+
+        return redirect()->route('group.show', ['id' => $group_id])
+            ->with('status', 'You have joined the group.');
+    }
+
+    public function leave(Request $request, int $group_id)
+    {
+        $group = Group::findOrFail($group_id);
+
+        $this->authorize('leave', $group);
+        $user = Auth::user();
+
+        GroupMember::where('group_id', $group_id)->where('user_id', $user->id)->delete();
+
+        return redirect()->route('group.show', ['id' => $group_id])
+            ->with('status', 'You have left the group.');
     }
 }

@@ -9,7 +9,7 @@ const addInviteAcceptListeners =  () =>{
             const groupId = inviteContainer.getAttribute('data-group-id');
             sendPost(`/api/group/${groupId}/acceptInvite`)
                 .then(() => {
-                    window.location.reload();
+                    inviteContainer.remove();
                 })
                 .catch((error) => {
                     sendToastMessage('An error occurred while accepting the invite.', 'error');
@@ -27,7 +27,7 @@ const addInviteRejectListeners = () =>{
             const groupId = inviteContainer.getAttribute('data-group-id');
             sendDelete(`/api/group/${groupId}/rejectInvite`)
                 .then(() => {
-                    window.location.reload();
+                    inviteContainer.remove();
                 })
                 .catch((error) => {
                     sendToastMessage('An error occurred while rejecting the invite.', 'error');
