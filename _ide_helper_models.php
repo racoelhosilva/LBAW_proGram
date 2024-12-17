@@ -360,7 +360,10 @@ namespace App\Models{
  * @property int $id
  * @property string $name
  * @property string $email
- * @property mixed $password
+ * @property mixed|null $password
+ * @property string|null $google_id
+ * @property string|null $github_id
+ * @property string|null $gitlab_id
  * @property \Illuminate\Support\Carbon $register_timestamp
  * @property string $handle
  * @property bool $is_public
@@ -372,6 +375,8 @@ namespace App\Models{
  * @property int $num_following
  * @property string|null $remember_token
  * @property string|null $tsvectors
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Notification> $allNotifications
+ * @property-read int|null $all_notifications_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Ban> $bans
  * @property-read int|null $bans_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\FollowRequest> $followRequests
@@ -380,8 +385,12 @@ namespace App\Models{
  * @property-read int|null $followers_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, User> $following
  * @property-read int|null $following_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\FollowRequest> $followingRequests
+ * @property-read int|null $following_requests_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\GroupInvitation> $groupInvitations
  * @property-read int|null $group_invitations_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\GroupJoinRequest> $groupJoinRequests
+ * @property-read int|null $group_join_requests_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Group> $groups
  * @property-read int|null $groups_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Notification> $notifications
@@ -389,7 +398,7 @@ namespace App\Models{
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Post> $posts
  * @property-read int|null $posts_count
  * @property-read \App\Models\UserStats|null $stats
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \Laravel\Sanctum\PersonalAccessToken> $tokens
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Token> $tokens
  * @property-read int|null $tokens_count
  * @method static \Database\Factories\UserFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder|User newModelQuery()
@@ -398,6 +407,9 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|User whereBannerImageUrl($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereDescription($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereEmail($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereGithubId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereGitlabId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereGoogleId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereHandle($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereIsDeleted($value)

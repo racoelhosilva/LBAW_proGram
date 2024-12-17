@@ -78,6 +78,13 @@ CREATE TABLE user_stats (
     FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
+CREATE TABLE password_reset_tokens (
+    id SERIAL,
+	  email TEXT NOT NULL UNIQUE,
+	  token TEXT NOT NULL,
+	  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
 CREATE TABLE language (
     id SERIAL,
     name TEXT NOT NULL UNIQUE,
@@ -409,7 +416,9 @@ RETURNS TRIGGER AS $$
 BEGIN
     IF TG_OP = 'UPDATE' AND (OLD.name <> NEW.name OR OLD.handle <> NEW.handle)
     THEN 
-        PERFORM calculate_post_tsvectors(NEW.id);
+        PERFORM calculate_post_tsvectors(id)
+        FROM post
+        WHERE author_id = NEW.id;
     END IF;
     RETURN NEW;
 END;
@@ -493,7 +502,7 @@ CREATE FUNCTION notify_user_on_comment()
 RETURNS TRIGGER AS $$
 BEGIN
     INSERT INTO notification (receiver_id, timestamp, is_read, type, comment_id) 
-    VALUES (NEW.author_id, CURRENT_TIMESTAMP, FALSE, 'comment', NEW.id);
+    VALUES ((SELECT author_id FROM post WHERE id = NEW.post_id), CURRENT_TIMESTAMP, FALSE, 'comment', NEW.id);
 
     RETURN NEW;
 END;
@@ -791,7 +800,7 @@ END;
 $$ LANGUAGE plpgsql;
 
 CREATE TRIGGER update_follow_counts
-BEFORE INSERT OR DELETE ON follow
+AFTER INSERT OR DELETE ON follow
 FOR EACH ROW
 EXECUTE FUNCTION update_follow_counts();
 

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Events\CommentEvent;
+use App\Events\CommentLikeEvent;
 use App\Http\Controllers\Controller;
 use App\Models\Comment;
 use App\Models\CommentLike;
@@ -41,22 +43,22 @@ class ApiCommentController extends Controller
         ]);
 
         try {
-            // Create comment with the provided or default author_id
             $comment = Comment::create([
                 'content' => $request->input('content'),
                 'post_id' => $request->input('post_id'),
                 'author_id' => $request->input('author_id'),
             ]);
 
+            event(new CommentEvent($comment->post_id, $comment->post->author_id));
+
             return response()->json($comment, 201);
         } catch (\Exception $e) {
             return response()->json([
-                'error' => 'Failed to create comment.',
+                'error' => 'Failed to create comment.'.$e,
             ], 500);
         }
     }
 
-    //WORK IN PROGRESS
     public function update(Request $request, $id)
     {
         $comment = Comment::findOrFail($id);
@@ -64,8 +66,7 @@ class ApiCommentController extends Controller
         $this->authorize('update', $comment);
 
         $request->validate([
-            'content' => 'sometimes|required|string',
-            'likes' => 'sometimes|required|integer',
+            'content' => 'required|string',
         ]);
 
         $comment->update($request->all());
@@ -88,7 +89,9 @@ class ApiCommentController extends Controller
         $like->liker_id = Auth::id();
         $like->comment_id = $id;
 
-        $like->save();
+        if ($like->save()) {
+            event(new CommentLikeEvent($comment->post_id, $comment->author_id));
+        }
 
         return response()->json($like, 201);
     }

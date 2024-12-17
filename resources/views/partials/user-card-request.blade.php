@@ -1,4 +1,4 @@
-@props(['user', 'remove' => false])
+@props(['user', 'reverse' => false])
 
 @php($userUrl = route('user.show', $user->id))
 
@@ -17,17 +17,14 @@
     </div>
 
     @if(auth()->check() && auth()->id() !== $user->id)
-        @if($remove)
-            <button aria-label="RemoveFollower" class="p-3 secondary-btn remove-follower-button" data-user-id="{{ $user->id }}">
+        <div class="flex gap-x-4 items-center">
+            <button aria-label="Accept" class="p-3 secondary-btn accept-request-button" data-user-id="{{ $user->id }}">
+                @include('partials.icon', ['name' => 'accept'])
+            </button>
+            <button aria-label="Reject" class="p-3 secondary-btn reject-request-button" data-user-id="{{ $user->id }}">
                 @include('partials.icon', ['name' => 'remove'])
             </button>
-        @else
-            <button aria-label="FollowCard" class="p-3 secondary-btn follow-card-button {{ Auth::user()->follows($user) ? "following" : (Auth::user()->getFollowRequestStatus($user) ? "pending" : "unfollowing") }}" data-user-id="{{ $user->id }}">
-                @include('partials.icon', ['name' => 'follow'])
-                @include('partials.icon', ['name' => 'pending'])
-                @include('partials.icon', ['name' => 'unfollow'])
-            </button>
-        @endif
+        </div>      
     @endif
 
 </article>
