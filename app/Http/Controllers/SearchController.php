@@ -30,7 +30,7 @@ class SearchController extends Controller
     {
         $request->validate([
             'query' => 'nullable|string',
-            'search_type' => 'nullable|string',
+            'search_type' => 'nullable|string|in:posts,users,groups',
         ]);
 
         $query = $request->input('query') ?? '';
@@ -38,7 +38,6 @@ class SearchController extends Controller
         if ($request->ajax()) {
             switch ($request->input('search_type')) {
                 case 'posts':
-                default:
                     $this->authorize('viewAny', Post::class);
                     $results = $this->searchPosts($query);
                     if ($request->ajax()) {
@@ -56,7 +55,6 @@ class SearchController extends Controller
         } else {
             switch ($request->input('search_type')) {
                 case 'posts':
-                default:
                     $this->authorize('viewAny', Post::class);
                     [$results, $numResults] = $this->searchPosts($query, true);
                     break;
