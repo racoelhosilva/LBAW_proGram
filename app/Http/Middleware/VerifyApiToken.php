@@ -40,7 +40,7 @@ class VerifyApiToken
     public function findApiToken(Request $request): ?Token
     {
         $authToken = $request->header('Authorization');
-        if (! isset($authToken) || ! preg_match('/Bearer ([A-Za-z0-9]+)/', $authToken, $matches)) {
+        if (! isset($authToken) || ! preg_match('/Bearer ([A-Za-z0-9\-]+)/', $authToken, $matches)) {
             return null;
         }
 
