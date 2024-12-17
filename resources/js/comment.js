@@ -10,8 +10,8 @@ const addSubmitCommentListener = () => {
         const params = Object.fromEntries(formData.entries());
         const comment = await getView(form.action, params, 'POST');
         commentSection.insertAdjacentHTML('afterbegin', comment);
-        addDropdownListeners();
         form.reset();
+        addDropdownListeners();
         
     });
 };
