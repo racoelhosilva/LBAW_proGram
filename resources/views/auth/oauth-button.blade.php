@@ -25,6 +25,9 @@
     }
 @endphp
 
-<a href="{{ $route }}" aria-label="{{ $label }}" class="h-12 bg-white border border-slate-300 rounded-lg flex items-center justify-center">
-    <img src="{{ url($svgPath) }}" alt="{{ $alt }}" class="h-8 w-8">
-</a>
+<div class="oauth-button flex justify-center">
+    <a href="{{ $route }}" aria-label="{{ $label }}" class="h-12 w-full bg-white border border-slate-300 rounded-lg flex items-center justify-center">
+        <img src="{{ url($svgPath) }}" alt="{{ $alt }}" class="h-8 w-8">
+    </a>
+    @include('partials.loading-spinner', ['hidden' => true])
+</div>

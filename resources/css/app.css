@@ -35,7 +35,7 @@
     }
 
     .dropdown > div {
-        @apply absolute right-0 rounded-lg overflow-hidden w-60 mt-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 flex-col shadow;
+        @apply absolute right-0 rounded-lg overflow-hidden w-60 mt-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 flex-col shadow z-10;
     }
 
     .dropdown > div:not(.hidden) {
