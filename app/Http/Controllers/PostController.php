@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\DB;
 
 class PostController extends Controller
 {
-    const ALLOWED_TAGS = '<p><strong><em><u><code><ol><ul><li><span><a><img><iframe>';
+    const ALLOWED_TAGS = '<p><br><strong><em><u><code><ol><ul><li><span><a><img><iframe>';
 
     /**
      * Show the form for creating a new resource.
