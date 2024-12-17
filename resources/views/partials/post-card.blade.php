@@ -87,8 +87,7 @@
         </div>
         <div class="select-none text-end break-keep col-start-4">
             @foreach ($post->tags as $tag)
-                {{-- TODO: Add tag search results link --}}
-                <span class="text-sm font-medium text-blue-600 dark:text-blue-400">{{ '#' . $tag->name }}</span>
+                @include('partials.tag', ['tag' => $tag, 'small' => true])
             @endforeach
         </div>
     </div>

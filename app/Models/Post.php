@@ -70,7 +70,7 @@ class Post extends Model
 
     public function scopeVisibleTo(Builder $query, ?User $user): Builder
     {
-        $query = $query->where('is_public', true);
+        $query = $query->where('post.is_public', true);
 
         if ($user) {
             $query = $query->orWhere('author_id', $user->id)

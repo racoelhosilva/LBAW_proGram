@@ -4,21 +4,34 @@ import {addLazyLoading} from "./utils.js";
 const addSearchListeners = () => {
     const searchPosts = document.getElementById('search-posts');
     const searchUsers = document.getElementById('search-users');
-    const searchLoadingSpinner = document.querySelector('#results > div:last-child > .loading-spinner');
+    const searchLoadingSpinner = document.querySelector('#search-results > div:last-child > .loading-spinner');
+    const searchFilters = document.querySelectorAll('#search-filters .select');
+    const searchField = document.getElementById('search-field');
 
-    if (!searchLoadingSpinner) {
+    if (!searchLoadingSpinner || !searchField || !searchFilters) {
         return;
     }
 
     const urlParams = new URLSearchParams(window.location.search);
+    const searchParams = {
+        query: urlParams.get('query'),
+        tags: urlParams.getAll('tags[]'),
+        search_attr: urlParams.get('search_attr'),
+        order_by: urlParams.get('order_by'),
+    };
     if (searchPosts) {
-        addLazyLoading(searchPosts, searchLoadingSpinner, '/search',
-            { search_type: 'posts', query: urlParams.get('query') }, addLikeButtonListeners);
+        addLazyLoading(searchPosts, searchLoadingSpinner, '/search', { ...searchParams, search_type: 'posts' }, addLikeButtonListeners);
     }
     if (searchUsers) {
-        addLazyLoading(searchUsers, searchLoadingSpinner, '/search',
-            { search_type: 'users', query: urlParams.get('query') });
+        addLazyLoading(searchUsers, searchLoadingSpinner, '/search', { ...searchParams, search_type: 'users' });
     }
+
+    searchFilters.forEach(searchFilter => searchFilter.addEventListener('keypress', event => {
+        if (event.key === 'Enter') {
+            searchField.submit();
+            event.stopPropagation();
+        }
+    }));
 }
 
 addSearchListeners();

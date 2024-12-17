@@ -3,7 +3,9 @@ const encodeParams = (params) => {
         return '';
     }
     return '?' + Object.keys(params).map(key => {
-        return encodeURIComponent(key) + '=' + encodeURIComponent(params[key]);
+        return !Array.isArray(params[key])
+            ? encodeURIComponent(key) + '=' + encodeURIComponent(params[key])
+            : params[key].map(value => encodeURIComponent(key) + '[]=' + encodeURIComponent(value)).join('&');
     }).join('&');
 }
 
@@ -12,7 +14,7 @@ const getView = (url, params) => {
         method: 'GET',
         headers: {
             'X-Requested-With': 'XMLHttpRequest',
-        }
+        },
     }).then(response => {
         if (!response.ok) {
             throw new Error('Unexpected error occurred');
