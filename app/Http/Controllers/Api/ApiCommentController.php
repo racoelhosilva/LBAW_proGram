@@ -47,8 +47,11 @@ class ApiCommentController extends Controller
                 'post_id' => $request->input('post_id'),
                 'author_id' => $request->input('author_id'),
             ]);
-
-            return view('partials.comment-card', ['comment' => $comment]);
+            if ($request->ajax()) {
+                return view('partials.comment-card', ['comment' => $comment]);
+            } else {
+                return response()->json($comment, 201);
+            }
         } catch (\Exception $e) {
             return response('Failed to create comment.', 500);
         }
@@ -65,8 +68,11 @@ class ApiCommentController extends Controller
         ]);
 
         $comment->update($request->all());
-
-        return response()->json($comment);
+        if ($request->ajax()) {
+            return view('partials.comment-card', ['comment' => $comment]);
+        } else {
+            return response()->json($comment);
+        }
     }
 
     public function like(Request $request, $id)

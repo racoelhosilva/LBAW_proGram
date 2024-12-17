@@ -31,6 +31,14 @@
     <div class="mt-4 content-container">
         <p class="whitespace-pre-wrap">{{ str_replace("\\n", "\n", $comment->content) }}</p>
     </div>
+      <div class="edit-content-container hidden">
+        <form class="edit-comment-form">
+            @csrf
+            @method('PUT')
+            <textarea name="content" class="edit-textarea">{{ str_replace("\\n", "\n", $comment->content) }}</textarea>
+            <button type="submit" class="primary-btn p-2 w-full mt-2 update-button">Save</button>
+        </form>
+    </div>
     <div class="flex flex-col items-center">
         @include('partials.like-button', ['model' => $comment])
         <p class="font-medium">{{ $comment->likes }}</p>
