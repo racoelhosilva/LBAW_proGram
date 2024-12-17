@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Events\FollowEvent;
 use App\Http\Controllers\Controller;
 use App\Models\Follow;
 use App\Models\FollowRequest;
@@ -126,6 +127,35 @@ class ApiUserController extends Controller
 
     }
 
+    public function readAllNotifications($id)
+    {
+        $user = User::findOrFail($id);
+
+        // TODO: Check policies @HenriqueSFernandes
+
+        $user->notifications()->update(['is_read' => true]);
+
+        return response()->json(['message' => 'All notifications read']);
+    }
+
+    public function readNotification($userId, $notificationId)
+    {
+        $user = User::findOrFail($userId);
+
+        $notification = $user->notifications()->where('id', $notificationId)->first();
+
+        if (! $notification) {
+            return response()->json(['message' => 'Notification not found'], 404);
+        }
+
+        // TODO: Check policies @HenriqueSFernandes
+
+        $notification->is_read = true;
+        $notification->save();
+
+        return response()->json($notification);
+    }
+
     public function follow($id)
     {
         $targetUser = User::findOrFail($id);
@@ -151,6 +181,8 @@ class ApiUserController extends Controller
             $follow->follower_id = $currentUser->id;
             $follow->followed_id = $targetUser->id;
             $follow->save();
+
+            event(new FollowEvent($targetUser->id));
 
             return response()->json([
                 'action' => 'follow',

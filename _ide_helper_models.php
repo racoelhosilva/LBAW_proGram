@@ -379,6 +379,8 @@ namespace App\Models{
  * @property int $num_following
  * @property string|null $remember_token
  * @property string|null $tsvectors
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Notification> $allNotifications
+ * @property-read int|null $all_notifications_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Ban> $bans
  * @property-read int|null $bans_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\FollowRequest> $followRequests

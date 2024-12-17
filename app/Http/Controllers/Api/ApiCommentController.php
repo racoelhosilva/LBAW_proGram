@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Events\CommentEvent;
+use App\Events\CommentLikeEvent;
 use App\Http\Controllers\Controller;
 use App\Models\Comment;
 use App\Models\CommentLike;
@@ -39,12 +41,15 @@ class ApiCommentController extends Controller
             'post_id' => 'required|integer|exists:post,id',
             'author_id' => 'nullable|exists:users,id',
         ]);
+
         try {
             $comment = Comment::create([
                 'content' => $request->input('content'),
                 'post_id' => $request->input('post_id'),
                 'author_id' => $request->input('author_id'),
             ]);
+
+            event(new CommentEvent($comment->post_id, $comment->post->author_id));
 
             return response()->json($comment, 201);
         } catch (\Exception $e) {
@@ -84,7 +89,9 @@ class ApiCommentController extends Controller
         $like->liker_id = Auth::id();
         $like->comment_id = $id;
 
-        $like->save();
+        if ($like->save()) {
+            event(new CommentLikeEvent($comment->post_id, $comment->author_id));
+        }
 
         return response()->json($like, 201);
     }

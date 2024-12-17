@@ -102,6 +102,7 @@ Route::middleware(['deny.banned', 'deny.deleted'])->group(function () {
         Route::get('/user/{id}', 'show')->where('id', '[0-9]+')->name('user.show');
         Route::put('/user/{id}', 'update')->where('id', '[0-9]+')->name('user.update');
         Route::get('/user/{id}/edit', 'edit')->where('id', '[0-9]+')->name('user.edit');
+        Route::get('/user/{id}/notifications', 'notifications')->where('id', '[0-9]+')->name('user.notifications');
         Route::get('/user/{id}/followers', 'followers')->where('id', '[0-9]+')->name('user.followers');
         Route::get('/user/{id}/following', 'following')->where('id', '[0-9]+')->name('user.following');
         Route::get('/user/{id}/requests', 'requests')->where('id', '[0-9]+')->name('user.requests');
@@ -218,6 +219,8 @@ Route::prefix('api')->group(function () {
         //     Route::get('/user/{id}/followers', 'listFollowers');
         //     Route::get('/user/{id}/following', 'listFollowing');
         //     Route::get('/user/{id}/post', 'listPosts');
+        Route::post('/user/{id}/notifications/read', 'readAllNotifications')->where('id', '[0-9]+')->name('api.user.notifications.read');
+        Route::post('/user/{userId}/notification/{notificationId}/read', 'readNotification')->where('userId', '[0-9]+')->where('notificationId', '[0-9]+')->name('api.user.notification.read');
         Route::post('/user/{id}/follow', 'follow')->where('id', '[0-9]+')->name('api.user.follow');
         Route::delete('/user/{id}/follow', 'unfollow')->where('id', '[0-9]+')->name('api.user.unfollow');
         Route::delete('/follower/{id}', 'removeFollower')->where('id', '[0-9]+')->name('api.follower.remove');
