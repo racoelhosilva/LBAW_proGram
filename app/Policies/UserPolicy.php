@@ -35,13 +35,32 @@ class UserPolicy
      */
     public function viewContent(?User $user, User $model): bool
     {
-        $isAdmin = Auth::guard('admin')->check();
-        $followsUser = $user && $user->following->contains('id', $model->id);
-        $isSelf = $user && $user->id === $model->id;
-        $isBanned = $user && $user->isBanned();
-        $isPublic = $model->is_public;
+        // Grant access if the user is admin.
+        if (Auth::guard('admin')->check()) {
+            return true;
+        }
 
-        return ! $isBanned && ($isAdmin || $followsUser || $isSelf || $isPublic);
+        // Deny access if the user is banned.
+        if ($user && $user->isBanned()) {
+            return false;
+        }
+
+        // Grant access if the user is the author.
+        if ($user && $user->id === $model->id) {
+            return true;
+        }
+
+        // Grant access if the user is following the author.
+        if ($user && $user->following->contains('id', $model->id)) {
+            return true;
+        }
+
+        // Grant access if the user is public
+        if ($model->is_public) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
