@@ -1,24 +1,23 @@
-import { sendPost,sendPatch, sendToastMessage ,sendDelete} from './utils';
-
+import { sendPost, getView, sendPatch, sendToastMessage ,sendDelete} from './utils';
+console.log('comment.js loaded');
+import { addDropdownListeners} from './app';
 const addSubmitCommentListener = () => {
     const form = document.getElementById('comment-submit-form');
-    form.addEventListener('submit', (event) => {
+    console.log(form);
+    const commentSection = document.querySelector('.comment-list'); // Container for comments
+
+    form.addEventListener('submit', async (event) => {
         event.preventDefault();
         const formData = new FormData(form);
-        const data = Object.fromEntries(formData.entries()); 
-        data.post_id = parseInt(data.post_id,10);
-        data.author_id = parseInt(data.author_id,10);
-        res = sendPost('/api/comment', data)
-        .then((_) => {
-            form.reset();
-            window.location.reload();
-        })
-        .catch((error) => {
-            sendToastMessage('An error occurred while submiting comment.', 'error');
-        });
-    
+        const params = Object.fromEntries(formData.entries());
+        const comment = await getView(form.action, params, 'POST');
+        commentSection.insertAdjacentHTML('afterbegin', comment);
+        addDropdownListeners();
+        form.reset();
+        
     });
 };
+
 const addEditCommentListener = () => {
     const commentSection = document.getElementById('comment-section');
     if (!commentSection) return;

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Events\CommentEvent;
 use App\Events\CommentLikeEvent;
 use App\Http\Controllers\Controller;
 use App\Models\Comment;
@@ -49,13 +48,9 @@ class ApiCommentController extends Controller
                 'author_id' => $request->input('author_id'),
             ]);
 
-            event(new CommentEvent($comment->post_id, $comment->post->author_id));
-
-            return response()->json($comment, 201);
+            return view('partials.comment-card', ['comment' => $comment]);
         } catch (\Exception $e) {
-            return response()->json([
-                'error' => 'Failed to create comment.'.$e,
-            ], 500);
+            return response('Failed to create comment.', 500);
         }
     }
 

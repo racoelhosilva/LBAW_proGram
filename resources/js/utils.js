@@ -9,10 +9,11 @@ const encodeParams = (params) => {
     }).join('&');
 }
 
-const getView = (url, params) => {
+const getView = (url, params, method = 'GET') => {
     return fetch(url + encodeParams(params), {
-        method: 'GET',
+        method: method.toUpperCase(),
         headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
             'X-Requested-With': 'XMLHttpRequest',
         },
     }).then(response => {
@@ -21,7 +22,7 @@ const getView = (url, params) => {
         }
         return response.text();
     });
-}
+};
 
 const sendPost = (url, data) => {
     return fetch(url, {
