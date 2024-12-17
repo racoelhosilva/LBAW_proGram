@@ -20,14 +20,14 @@
             @endif
         </section>
 
-        <section class="card h-min flex flex-col gap-3 col-span-2">
+        <section class="card h-min space-y-3 col-span-2">
             <h1 class="text-xl font-bold">Recommended Posts</h1>
-            @forelse ($posts as $post)
-                @include('partials.post-card', ['post' => $post])
-            @empty
-                <p>No posts at the moment</p>
-            @endforelse
-
+            <div id="home-posts" class="space-y-3">
+                @include('partials.post-list', ['posts' => $posts])
+            </div>
+            <div class="flex flex-col items-center">
+                @include('partials.loading-spinner')
+            </div>
         </section>
 
         <section class="card h-min flex flex-col gap-3">

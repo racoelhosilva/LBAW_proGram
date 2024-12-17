@@ -1,9 +1,9 @@
-<header class="h-24 px-24 grid grid-cols-[1fr_auto] items-center justify-end">
-    <div class="inline-flex gap-8 items-center"> {{-- Left elements --}}
+<header class="h-24 px-24 grid grid-cols-[auto_1fr_auto] items-center justify-end">
+    <div class="inline-flex gap-8 items-center">
         @include('partials.logo')
-        @include('partials.search-field') {{-- To prevent search field from expanding all available space --}}
+        @include('partials.search-field')
     </div>
-    <div class="inline-flex gap-2 items-center"> {{-- Right elements --}}
+    <div class="col-start-3 inline-flex gap-2 items-center">
         @if (Auth::check())
             @include('partials.text-button', [
                 'text' => 'Create Post',
