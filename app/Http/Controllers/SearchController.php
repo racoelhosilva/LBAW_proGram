@@ -155,7 +155,7 @@ class SearchController extends Controller
             case 'relevance':
             default:
                 $posts = $posts->when($queryStr, function ($query) use ($queryStr) {
-                    $query->orderByRaw("ts_rank(group.tsvectors, plainto_tsquery('english', ?)) DESC", [$queryStr]);
+                    $query->orderByRaw("ts_rank(groups.tsvectors, plainto_tsquery('english', ?)) DESC", [$queryStr]);
                 });
                 break;
         }
