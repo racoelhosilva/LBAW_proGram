@@ -142,3 +142,23 @@
         @apply hidden;
     }
 }
+
+.ql-toolbar {
+    @apply rounded-t-lg border !border-slate-300 dark:!border-slate-600;
+}
+
+.ql-container {
+    @apply rounded-b-lg font-medium text-black dark:text-white placeholder-gray-500 dark:placeholder-gray-400 border !border-slate-300 dark:!border-slate-600;
+}
+
+.ql-stroke {
+    stroke: currentColor !important;
+}
+
+.ql-fill {
+    fill: currentColor !important;
+}
+
+.ql-container code {
+    @apply !bg-slate-300 dark:!bg-slate-600;
+}
