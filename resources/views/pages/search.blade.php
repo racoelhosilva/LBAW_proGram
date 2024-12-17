@@ -24,8 +24,8 @@
             </div>
         </section>
 
-        <section id="search-filters" class="card h-min row-start-2 space-y-4">
-            <h1 class="text-xl font-semibold">Search Filters</h1>
+        <section id="search-filters" class="card h-min row-start-2 grid justify-stretch gap-4">
+            <h1 class="text-xl font-semibold">Search Parameters</h1>
             @if(request('search_type') === 'posts')
                 @include('partials.select', [
                     'name' => 'tags[]',
@@ -94,6 +94,12 @@
                     @break
             @endswitch
 
+            @include('partials.text-button', [
+                'text' => 'Apply Parameters',
+                'type' => 'primary',
+                'submit' => true,
+                'form' => 'search-field'
+            ])
         </section>
 
         <section id="search-results" class="flex flex-col col-span-3 row-span-2 gap-3">
