@@ -1,4 +1,4 @@
-@props(['type', 'results', 'numResults', 'tags'])
+@props(['results', 'numResults', 'tags'])
 
 @php
     $tagOptions = array_map(function ($tag) {
@@ -18,14 +18,14 @@
         <section id="search-options" class="card h-min">
             <h1 class="pb-4 text-xl font-semibold">Search Options</h1>
             <div class="border-t border-slate-300 dark:border-slate-600 grid justify-stretch">
-                @include('partials.search-type-button', ['optionType' => 'posts', 'searchType' => $type, 'icon' => 'message-circle', 'text' => 'Posts'])
-                @include('partials.search-type-button', ['optionType' => 'users', 'searchType' => $type, 'icon' => 'user-round', 'text' => 'Users'])
-                @include('partials.search-type-button', ['optionType' => 'groups', 'searchType' => $type, 'icon' => 'users-round', 'text' => 'Groups'])
+                @include('partials.search-type-button', ['optionType' => 'posts', 'searchType' => request('search_type'), 'icon' => 'message-circle', 'text' => 'Posts'])
+                @include('partials.search-type-button', ['optionType' => 'users', 'searchType' => request('search_type'), 'icon' => 'user-round', 'text' => 'Users'])
+                @include('partials.search-type-button', ['optionType' => 'groups', 'searchType' => request('search_type'), 'icon' => 'users-round', 'text' => 'Groups'])
             </div>
         </section>
 
         <section id="search-filters" class="card h-min row-start-2 space-y-4">
-            @if($type === 'posts')
+            @if(request('search_type') === 'posts')
             <h1 class="text-xl font-semibold">Search Filters</h1>
                 @include('partials.select', [
                     'name' => 'tags[]',
@@ -54,6 +54,8 @@
                     ['name' => 'Relevance', 'value' => null],
                     ['name' => 'Newest', 'value' => 'newest'],
                     ['name' => 'Oldest', 'value' => 'oldest'],
+                    ['name' => 'Likes', 'value' => 'likes'],
+                    ['name' => 'Comments', 'value' => 'comments'],
                     ['name' => 'Title', 'value' => 'title'],
                 ],
                 'selected' => request('order_by'),
@@ -62,7 +64,7 @@
         </section>
 
         <section id="search-results" class="flex flex-col col-span-3 row-span-2 gap-3">
-            @switch($type)
+            @switch(request('search_type'))
                 @case('posts')
                     @if ($numResults > 0)
                         <h1 class="text-xl font-semibold">

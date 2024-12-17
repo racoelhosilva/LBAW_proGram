@@ -17,6 +17,7 @@ const addSearchListeners = () => {
         query: urlParams.get('query'),
         tags: urlParams.getAll('tags[]'),
         search_attr: urlParams.get('search_attr'),
+        order_by: urlParams.get('order_by'),
     };
     if (searchPosts) {
         addLazyLoading(searchPosts, searchLoadingSpinner, '/search', { ...searchParams, search_type: 'posts' }, addLikeButtonListeners);
