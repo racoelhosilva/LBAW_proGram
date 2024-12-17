@@ -70,7 +70,9 @@
 
     <div class="mt-4 col-span-3">
         <h1 class="font-bold text-xl"><a href="{{ $postUrl }}">{{ $post->title }}</a></h1>
-        {!! str_replace("\\n", "<br>", $post->text) !!}
+        <div class="post-content">
+            {!! str_replace("\\n", "<br>", $post->text) !!}
+        </div>
     </div>
 
     <div class="-ms-3 col-span-3 grid grid-cols-[auto_auto_auto_1fr_50%] items-center">
