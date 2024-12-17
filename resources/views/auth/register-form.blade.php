@@ -22,6 +22,18 @@
                 <p class="text-sm text-green-500">{{ session('success') }}</p>
             @endif
         </div>
+
+        <div class="h-12 col-span-2 grid grid-cols-[1fr_auto_1fr] items-center gap-3">
+            <span class="h-px bg-gray-300 dark:bg-gray-700"></span>
+            Or Connect With
+            <span class="h-px bg-gray-300 dark:bg-gray-700"></span>
+        </div>
+        <div class="col-span-2 grid grid-cols-3 gap-4">
+            @include('auth.oauth-login-button', ['provider' => 'google'])
+            <!-- TODO: when the user is logging in using github after the first time, they get redirected automatically to the home page, but that process takes some time. maybe add a spinning loading indicator?  -->
+            @include('auth.oauth-login-button', ['provider' => 'github'])
+            @include('auth.oauth-login-button', ['provider' => 'gitlab'])
+        </div>
     </form>
 
     <p>
