@@ -24,9 +24,9 @@
             </div>
         </section>
 
-        @if($type === 'posts')
-            <section id="search-filters" class="card h-min row-start-2 space-y-4">
-                <h1 class="text-xl font-semibold">Search Filters</h1>
+        <section id="search-filters" class="card h-min row-start-2 space-y-4">
+            @if($type === 'posts')
+            <h1 class="text-xl font-semibold">Search Filters</h1>
                 @include('partials.select', [
                     'name' => 'tags[]',
                     'label' => 'Filter by Tags',
@@ -46,8 +46,20 @@
                     'selected' => request('search_attr'),
                     'form' => 'search-field'
                 ])
-            </section>
-        @endif
+            @endif
+            @include('partials.select', [
+                'name' => 'order_by',
+                'label' => 'Order By',
+                'options' => [
+                    ['name' => 'Relevance', 'value' => null],
+                    ['name' => 'Newest', 'value' => 'newest'],
+                    ['name' => 'Oldest', 'value' => 'oldest'],
+                    ['name' => 'Title', 'value' => 'title'],
+                ],
+                'selected' => request('order_by'),
+                'form' => 'search-field'
+            ])
+        </section>
 
         <section id="search-results" class="flex flex-col col-span-3 row-span-2 gap-3">
             @switch($type)

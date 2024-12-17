@@ -39,18 +39,14 @@
                     @if ($user->stats->languages->count() > 0)
                         <p><span class="font-bold">Top Languages: </span>
                             @foreach ($user->stats->languages as $language)
-                                {{ $language->name }}@if (!$loop->last)
-                                    ,
-                                @endif
+                                {{ $language->name . ($loop->last ? '' : ', ') }}
                             @endforeach
                         </p>
                     @endif
                     @if ($user->stats->technologies->count() > 0)
                         <p><span class="font-bold">Technologies: </span>
                             @foreach ($user->stats->technologies as $technology)
-                                {{ $technology->name }}@if (!$loop->last)
-                                    ,
-                                @endif
+                                {{ $technology->name . ($loop->last ? '' : ', ') }}
                             @endforeach
                         </p>
                     @endif
