@@ -33,9 +33,9 @@
         <section class="card h-min flex flex-col gap-3">
             <h1 class="text-xl font-bold">Trending Topics</h1>
             @forelse ($tags as $tag)
-                <div class="select-none">
-                    <span class="ms-4 font-medium text-blue-600 dark:text-blue-400">{{ '#' . $tag->name }}</span>
-                    <p class="ms-4 text-xs/3 text-gray-500 dark:text-gray-400">{{ $tag->posts->count() . ' posts' }}</p>
+                <div>
+                    @include('partials.tag', ['tag' => $tag])
+                    <p class="ms-4 text-xs/3 text-gray-500 dark:text-gray-400 select-none">{{ $tag->posts->count() . ' posts' }}</p>
                 </div>
             @empty
                 <p>No tags at the moment</p>
