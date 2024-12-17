@@ -31,11 +31,23 @@
 
         @can('viewContent', $user)
             <section id="profile-left" class="h-min col-span-4 lg:col-span-1 grid grid-cols-4 space-y-3">
-                <article id="user-info" class="card col-span-4 space-y-3">
-                    <h1 class="text-xl font-bold">User Info</h1>
-                    <p>{{ $user->description }}</p>
-                    <p><span class="font-bold">Joined at:
-                        </span>{{ \Carbon\Carbon::parse($user->register_timestamp)->format('Y-m-d') }}</p>
+                <article id="user-info" class="card col-span-4 grid space-y-3">
+                    <div class="grid grid-cols-[auto_1fr_auto] items-start">
+                        <h1 class="text-xl font-bold">User Info</h1>
+                        <div class="col-start-3 flex">
+                            @isset($user->stats->github_url)
+                                @include('partials.icon-button', ['iconName' => 'github', 'label' => 'GitHub', 'type' => 'transparent', 'anchorUrl' => $user->stats->github_url])
+                            @endisset
+                            @isset($user->stats->gitlab_url)
+                                @include('partials.icon-button', ['iconName' => 'gitlab', 'label' => 'GitLab', 'type' => 'transparent', 'anchorUrl' => $user->stats->gitlab_url])
+                            @endisset
+                            @isset($user->stats->linkedin_url)
+                                @include('partials.icon-button', ['iconName' => 'linkedin', 'label' => 'LinkedIn', 'type' => 'transparent', 'anchorUrl' => $user->stats->linkedin_url])
+                            @endisset
+                        </div>
+                    </div>
+                    <p>{{$user->description}}</p>
+                    <p><span class="font-bold">Joined at: </span>{{ \Carbon\Carbon::parse($user->register_timestamp)->format('Y-m-d') }}</p>
                     @if ($user->stats->languages->count() > 0)
                         <p><span class="font-bold">Top Languages: </span>
                             @foreach ($user->stats->languages as $language)

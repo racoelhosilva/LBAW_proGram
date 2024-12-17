@@ -169,7 +169,7 @@ class SearchController extends Controller
             'query' => 'nullable|string',
             'tags' => 'nullable|array',
             'tags.*' => 'exists:tag,id',
-            'search_type' => 'nullable|string',
+            'search_type' => 'nullable|string|in:posts,users,groups',
             'search_attr' => 'nullable|string',
             'order_by' => 'nullable|string',
         ]);

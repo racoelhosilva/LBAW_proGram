@@ -21,6 +21,14 @@
         ])
         @include('partials.theme-button')
         @if (Auth::check())
+            <a href="{{ route('user.notifications', auth()->id()) }}" id="notification-button" aria-label="Notification" class="p-3 secondary-btn relative">
+                @include('partials.icon', ['name' => 'notification'])
+                <span class="{{auth()->user()->notifications->count() == 0 ? "hidden" : ""}} absolute bottom-0 right-0 block text-xs font-bold text-white bg-red-500 rounded-full flex items-center justify-center p-0.5" id="notification-count">
+                    {{ auth()->user()->notifications->count() }}
+                </span>
+            </button>
+
+
             <a href="{{ route('user.show', auth()->id()) }}">
                 <img src="{{ auth()->user()->getProfilePicture() }}" alt="Profile photo" class="h-[49.5px] w-[49.5px] rounded-full object-cover">
             </a>
