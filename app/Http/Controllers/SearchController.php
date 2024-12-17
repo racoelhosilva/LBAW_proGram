@@ -91,7 +91,7 @@ class SearchController extends Controller
                     ->orderByRaw("ts_rank(tsvectors, plainto_tsquery('english', ?)) DESC", [$queryStr]);
             });
 
-        return $includeTotal ? [$groups->simplePaginate(10), $groups->count()] : $groups->simplePaginate(10);
+        return $this->orderGroups($groups, $queryStr, $orderBy, $includeTotal);
     }
 
     public function orderUsers(Builder $users, ?string $queryStr, ?string $orderBy, bool $includeTotal)
@@ -101,7 +101,7 @@ class SearchController extends Controller
                 $users = $users->orderBy('name');
                 break;
             case 'followers':
-                $users = $users->orderByDesc('followers');
+                $users = $users->orderByDesc('num_followers');
                 break;
             case 'relevance':
             default:
@@ -136,6 +136,26 @@ class SearchController extends Controller
             default:
                 $posts = $posts->when($queryStr, function ($query) use ($queryStr) {
                     $query->orderByRaw("ts_rank(post.tsvectors, plainto_tsquery('english', ?)) DESC", [$queryStr]);
+                });
+                break;
+        }
+
+        return $includeTotal ? [$posts->simplePaginate(10), $posts->count()] : $posts->simplePaginate(10);
+    }
+
+    public function orderGroups(Builder $posts, ?string $queryStr, ?string $orderBy, bool $includeTotal)
+    {
+        switch ($orderBy) {
+            case 'name':
+                $posts = $posts->orderBy('name');
+                break;
+            case 'members':
+                $posts = $posts->orderByDesc('member_count');
+                break;
+            case 'relevance':
+            default:
+                $posts = $posts->when($queryStr, function ($query) use ($queryStr) {
+                    $query->orderByRaw("ts_rank(group.tsvectors, plainto_tsquery('english', ?)) DESC", [$queryStr]);
                 });
                 break;
         }

@@ -64,6 +64,7 @@
                         'form' => 'search-field'
                     ])
                     @break
+
                 @case('users')
                     @include('partials.select', [
                         'name' => 'order_by',
@@ -76,6 +77,21 @@
                         'selected' => request('order_by'),
                         'form' => 'search-field'
                     ])
+                    @break
+
+                @case('groups')
+                    @include('partials.select', [
+                        'name' => 'order_by',
+                        'label' => 'Order By',
+                        'options' => [
+                            ['name' => 'Relevance', 'value' => null],
+                            ['name' => 'Group Name', 'value' => 'name'],
+                            ['name' => 'Members', 'value' => 'members'],
+                        ],
+                        'selected' => request('order_by'),
+                        'form' => 'search-field'
+                    ])
+                    @break
             @endswitch
 
         </section>
