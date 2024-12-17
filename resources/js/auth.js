@@ -1,33 +1,38 @@
-const showPassword = (showPasswordIcon, hidePasswordIcon) => {
-	const passwordInput = document.querySelector("#password");
+const showPassword = (showPasswordIcon, hidePasswordIcon, passwordInput) => {
 	passwordInput.type = "text";
 	showPasswordIcon.classList.add("hidden");
 	hidePasswordIcon.classList.remove("hidden");
 };
 
-const hidePassword = (showPasswordIcon, hidePasswordIcon) => {
-	const passwordInput = document.querySelector("#password");
+const hidePassword = (showPasswordIcon, hidePasswordIcon, passwordInput) => {
 	passwordInput.type = "password";
 	showPasswordIcon.classList.remove("hidden");
 	hidePasswordIcon.classList.add("hidden");
 };
 
 const toggleVisibility = (toggleButton) => {
-	const showPasswordIcon = toggleButton.querySelector("#eye-closed");
-	const hidePasswordIcon = toggleButton.querySelector("#eye");
+	const showPasswordIcon = toggleButton.querySelector(".eye-closed");
+	const hidePasswordIcon = toggleButton.querySelector(".eye");
+	console.log(toggleButton.parentElement);
+	const passwordInput =
+		toggleButton.parentElement.querySelector(".password-input");
 	if (showPasswordIcon.classList.contains("hidden")) {
-		hidePassword(showPasswordIcon, hidePasswordIcon);
+		hidePassword(showPasswordIcon, hidePasswordIcon, passwordInput);
 	} else {
-		showPassword(showPasswordIcon, hidePasswordIcon);
+		showPassword(showPasswordIcon, hidePasswordIcon, passwordInput);
 	}
 };
 
 const addToggleViewPasswordVisibilityListener = () => {
-	const toggleButton = document.querySelector("#toggle-password-visibility");
+	const toggleButtons = document.querySelectorAll(
+		".toggle-password-visibility",
+	);
 
-	toggleButton.addEventListener("click", (event) => {
-		event.preventDefault();
-		toggleVisibility(toggleButton);
+	toggleButtons.forEach((toggleButton) => {
+		toggleButton.addEventListener("click", (event) => {
+			event.preventDefault();
+			toggleVisibility(toggleButton);
+		});
 	});
 };
 
