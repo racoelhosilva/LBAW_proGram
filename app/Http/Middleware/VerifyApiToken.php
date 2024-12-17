@@ -45,7 +45,7 @@ class VerifyApiToken
         }
 
         $tokenStr = $matches[1];
-        $token = Token::find($tokenStr);
+        $token = Token::where('value', $tokenStr)->first();
         if (! isset($token) || ! $token->isValid()) {
             return null;
         }
