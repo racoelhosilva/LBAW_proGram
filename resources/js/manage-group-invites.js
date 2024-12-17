@@ -1,4 +1,4 @@
-import { sendDelete, sendGet , sendPost} from './utils.js';
+import { sendDelete, sendGet , sendPost, sendToastMessage} from './utils.js';
 
 const inviteSendListener = () => {
     const invitesPage = document.querySelector('#group-invites-page');
@@ -17,6 +17,7 @@ const inviteSendListener = () => {
                         uninvitebtn.classList.remove('hidden');
                     })
                     .catch((error) => {
+                        sendToastMessage('An error occurred while inviting the user.', 'error');
                         console.error('Error inviting user:', error);
                     });
             });
@@ -41,6 +42,7 @@ const inviteUnSendListener = () => {
                         invitebtn.classList.remove('hidden');
                     })
                     .catch((error) => {
+                        sendToastMessage('An error occurred while uninviting the user.', 'error');
                         console.error('Error uninviting user:', error);
                     });
             });

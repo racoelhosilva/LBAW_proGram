@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Support\Facades\Log;
 
 class Post extends Model
 {
@@ -84,7 +83,6 @@ class Post extends Model
                 $subQuery->orWhere('author_id', $user->id);
 
                 // Posts from followed users (excluding group posts)
-                Log::info('Followed Users: '.$user->following->pluck('id')->toJson()); // Log followed users
                 $followedUserIds = $user->following->pluck('id');
                 if ($followedUserIds->isNotEmpty()) {
                     $subQuery->orWhere(function ($followQuery) use ($followedUserIds) {
@@ -97,10 +95,6 @@ class Post extends Model
                     });
                 }
 
-                // Log the SQL of the subquery
-                Log::info('Follow Query SQL: '.$subQuery->toSql());
-                Log::info('Follow Query Bindings: '.json_encode($subQuery->getBindings()));
-
                 // Group posts where the user is a member
                 $subQuery->orWhereExists(function ($groupQuery) use ($user) {
                     $groupQuery->selectRaw(1)
@@ -109,8 +103,6 @@ class Post extends Model
                         ->whereColumn('group_post.post_id', 'id')
                         ->where('group_member.user_id', $user->id);
                 });
-                Log::info('Group Query SQL: '.$subQuery->toSql());
-                Log::info('Group Query Bindings: '.json_encode($subQuery->getBindings()));
             }
 
         });

@@ -10,7 +10,6 @@ use App\Models\Tag;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 
 class GroupController extends Controller
 {
@@ -102,6 +101,11 @@ class GroupController extends Controller
 
         if ($searchQuery) {
             $usersSearched = User::where('id', '!=', $ownerId)
+                ->whereNotIn('id', function ($query) use ($groupId) {
+                    $query->select('user_id')
+                        ->from('group_member')
+                        ->where('group_id', $groupId);
+                })
                 ->whereRaw("tsvectors @@ plainto_tsquery('english', ?)", [$searchQuery])
                 ->orderByRaw("ts_rank(tsvectors, plainto_tsquery('english', ?)) DESC", [$searchQuery])
                 ->get();
@@ -184,7 +188,6 @@ class GroupController extends Controller
         } else {
             $usersSearched = $group->invitedUsers;
         }
-        Log::info($usersSearched);
 
         return view('pages.manage-group', ['group' => $group, 'usersWhoWantToJoin' => $usersWhoWantToJoin, 'usersSearched' => $usersSearched]);
     }

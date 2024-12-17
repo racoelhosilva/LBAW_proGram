@@ -40,6 +40,11 @@ class GroupPolicy
         return $user && ! $user->isBanned() && $user->id === $group->owner_id;
     }
 
+    public function invite(?User $user, Group $group, ?User $invitee): bool
+    {
+        return $user && ! $user->isBanned() && $user->id === $group->owner_id && ! $group->members()->where('user_id', $invitee->id)->exists();
+    }
+
     public function addPostToGroup(?User $user, Group $group): bool
     {
         return $user && ! $user->isBanned() && $group->members()->where('user_id', $user->id)->exists();

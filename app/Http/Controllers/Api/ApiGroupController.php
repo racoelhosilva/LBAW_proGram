@@ -7,6 +7,7 @@ use App\Models\Group;
 use App\Models\GroupInvitation;
 use App\Models\GroupJoinRequest;
 use App\Models\GroupMember;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -79,7 +80,8 @@ class ApiGroupController extends Controller
     public function invite(Request $request, int $group_id, int $invitee_id)
     {
         $group = Group::findOrFail($group_id);
-        $this->authorize('manage', $group);
+        $invitee = User::findOrFail($invitee_id);
+        $this->authorize('invite', [$group, $invitee]);
 
         $invitation = GroupInvitation::create(
             [
@@ -98,7 +100,7 @@ class ApiGroupController extends Controller
     public function uninvite(Request $request, int $group_id, int $invitee_id)
     {
         $group = Group::findOrFail($group_id);
-        $this->authorize('manage', $group);
+        $this->authorize('invite', $group, $invitee);
 
         GroupInvitation::where('group_id', $group_id)
             ->where('invitee_id', $invitee_id)
