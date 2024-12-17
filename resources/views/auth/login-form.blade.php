@@ -39,29 +39,13 @@
                 'type' => 'primary',
                 'submit' => true,
             ])
-            @include('partials.text-button', [
-                'text' => 'Continue with Google',
-                'label' => 'Google',
-                'type' => 'secondary',
-                'submit' => true,
-                'anchorUrl' => route('google.auth'),
-            ])
-            <!-- TODO: when the user is logging in using github after the first time, they get redirected automatically to the home page, but that process takes some time. maybe add a spinning loading indicator?  -->
-            @include('partials.text-button', [
-                'text' => 'Continue with GitHub',
-                'label' => 'GitHub',
-                'type' => 'secondary',
-                'submit' => true,
-                'anchorUrl' => route('github.auth'),
-            ])
-            @include('partials.text-button', [
-                'text' => 'Continue with GitLab',
-                'label' => 'GitLab',
-                'type' => 'secondary',
-                'submit' => true,
-                'anchorUrl' => route('gitlab.auth'),
-            ])
 
+            <div class="grid grid-cols-3 gap-2">
+                @include('auth.oauth-login-button', ['provider' => 'google'])
+                <!-- TODO: when the user is logging in using github after the first time, they get redirected automatically to the home page, but that process takes some time. maybe add a spinning loading indicator?  -->
+                @include('auth.oauth-login-button', ['provider' => 'github'])
+                @include('auth.oauth-login-button', ['provider' => 'gitlab'])
+            </div>
         </div>
     </form>
 
