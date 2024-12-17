@@ -100,7 +100,8 @@ class ApiGroupController extends Controller
     public function uninvite(Request $request, int $group_id, int $invitee_id)
     {
         $group = Group::findOrFail($group_id);
-        $this->authorize('invite', $group, $invitee);
+        $invitee = User::findOrFail($invitee_id);
+        $this->authorize('invite', [$group, $invitee]);
 
         GroupInvitation::where('group_id', $group_id)
             ->where('invitee_id', $invitee_id)
