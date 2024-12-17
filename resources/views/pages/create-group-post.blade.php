@@ -3,10 +3,10 @@
 @section('title') {{'Create Post on '. $group->name . ' | ProGram'}} @endsection
 
 @section('content')
-    <main id="create-post-page" class="grid grid-cols-[1fr_auto_1fr] lg:grid-cols-3 items-center">
-        <article class="h-min card p-10 pt-16 grid gap-12  col-start-2 ">
-            <h1 class="text-xl font-bold">Post on {{$group->name}}</h1>
-            <form id="create-post-form" class="grid gap-4 justify-self-stretch ">
+    <main id="create-post-page" class="flex justify-center items-center">
+        <article class="h-min card p-10  max-w-xl w-full flex flex-col  gap-12">
+            <h1 class="text-xl font-bold  ">Post on {{$group->name}}</h1>
+            <form id="create-post-form" class="grid gap-4 ">
                 @csrf
                 <input type="hidden" id="group_id" name="group_id" value="{{ $group->id }}">
 

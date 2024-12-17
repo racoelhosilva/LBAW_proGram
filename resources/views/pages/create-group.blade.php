@@ -1,8 +1,8 @@
 @extends('layouts.app')
-@section('title') {{'Create Post | ProGram'}} @endsection
+@section('title') {{'Create Group | ProGram'}} @endsection
 @section('content')
-    <main id="create-post-page" class="grid grid-cols-[1fr_auto_1fr] items-center">
-        <article class="card h-min p-10 pt-16 grid gap-12  col-start-2 ">
+    <main id="create-group-page" class="flex justify-center items-center">
+        <article class="h-min card p-10  max-w-xl w-full flex flex-col  gap-12">
             <h1 class="text-xl font-bold">Create Group</h1>
             <form action="{{ route('group.store') }}" method="POST" class="grid gap-4 justify-self-stretch">
                 @csrf
