@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\DB;
 
 class PostController extends Controller
 {
+    const ALLOWED_TAGS = '<p><strong><em><u><code><ol><ul><li><span><a><img><iframe>';
+
     /**
      * Show the form for creating a new resource.
      */
@@ -52,10 +54,11 @@ class PostController extends Controller
         ]);
 
         $post = new Post;
+        $text = strip_tags($request->input('text'), self::ALLOWED_TAGS);
 
-        DB::transaction(function () use ($post, $request) {
+        DB::transaction(function () use ($post, $request, $text) {
             $post->title = $request->input('title');
-            $post->text = $request->input('text');
+            $post->text = $text;
             $post->author_id = Auth::id();
             $post->is_public = $request->input('is_public', false);
             $post->is_announcement = $request->input('is_announcement', false);
@@ -120,9 +123,11 @@ class PostController extends Controller
 
         $post = Post::findOrFail($id);
 
-        DB::transaction(function () use ($post, $request) {
+        $text = strip_tags($request->input('text'), self::ALLOWED_TAGS);
+
+        DB::transaction(function () use ($post, $request, $text) {
             $post->title = $request->input('title', $post->title);
-            $post->text = $request->input('text', $post->text);
+            $post->text = $text;
             $post->is_public = $request->filled('is_public');
             $post->is_announcement = $request->filled('is_announcement');
 

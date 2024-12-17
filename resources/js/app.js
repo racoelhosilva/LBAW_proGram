@@ -68,7 +68,6 @@ const activateQuill = () => {
                 toolbar: [
                     ['bold', 'italic', 'underline', 'code'],
                     [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-                    [{ 'script': 'sub' }, { 'script': 'super' }],
                     ['link', 'image', 'video'],
                     ['clean']
                 ]
