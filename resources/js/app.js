@@ -95,6 +95,7 @@ const addSelectListeners = () => {
     });
 }
 
+
 addDropdownListeners();
 addModalListeners();
 addToastMessageListeners();

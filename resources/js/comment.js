@@ -1,9 +1,7 @@
 import { sendPost, getView, sendPatch, sendToastMessage ,sendDelete} from './utils';
-console.log('comment.js loaded');
-import { addDropdownListeners} from './app';
+import { addDropdownListeners } from './app';
 const addSubmitCommentListener = () => {
     const form = document.getElementById('comment-submit-form');
-    console.log(form);
     const commentSection = document.querySelector('.comment-list'); // Container for comments
 
     form.addEventListener('submit', async (event) => {
