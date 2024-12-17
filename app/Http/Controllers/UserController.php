@@ -79,6 +79,9 @@ class UserController extends Controller
             'description' => 'nullable|string|max:200',
             'is_public' => 'nullable',
             'handle' => ['required', 'string', 'max:20', Rule::unique('users')->ignore($user->id)],
+            'github_url' => 'nullable|url',
+            'gitlab_url' => 'nullable|url',
+            'linkedin_url' => 'nullable|url',
             'languages' => 'nullable|array',
             'languages.*' => 'exists:language,id',
             'technologies' => 'nullable|array',
@@ -86,7 +89,6 @@ class UserController extends Controller
             'top_projects' => 'nullable|array|max:10',
             'banner_picture' => 'image|mimes:jpeg,png,jpg|max:10240',
             'profile_picture' => 'image|mimes:jpeg,png,jpg|max:10240',
-
         ]);
 
         DB::transaction(function () use ($request, $user) {
@@ -99,6 +101,11 @@ class UserController extends Controller
             $user->stats->technologies()->sync($request->input('technologies') ?? []);
 
             $user->save();
+
+            $user->stats->github_url = $request->input('github_url');
+            $user->stats->gitlab_url = $request->input('gitlab_url');
+            $user->stats->linkedin_url = $request->input('linkedin_url');
+            $user->stats->save();
 
             $user->stats->topProjects()->delete();
 
