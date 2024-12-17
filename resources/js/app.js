@@ -75,7 +75,7 @@ const activateQuill = () => {
             placeholder: 'Write something amazing...',
             theme: 'snow'
         });
-        quill.clipboard.dangerouslyPasteHTML(field.value, "silent");
+        quill.clipboard.dangerouslyPasteHTML(field.value ?? '', "silent");
 
         form.onsubmit = () => {
             field.value = quill.root.innerHTML;

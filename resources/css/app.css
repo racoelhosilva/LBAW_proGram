@@ -167,7 +167,11 @@
 }
 
 .ql-container {
-    @apply rounded-b-lg font-medium text-black dark:text-white placeholder-gray-500 dark:placeholder-gray-400 border !border-slate-300 dark:!border-slate-600;
+    @apply rounded-b-lg !text-base text-black dark:text-white border !border-slate-300 dark:!border-slate-600;
+}
+
+.ql-editor.ql-blank::before {
+    @apply !text-gray-500 dark:!text-gray-400
 }
 
 .ql-stroke {

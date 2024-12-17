@@ -1,3 +1,5 @@
+@props(['post', 'tags'])
+
 @extends('layouts.app')
 @section('title')
     {{ 'Edit ' . $post->title . ' | ProGram' }}
@@ -8,7 +10,6 @@
             <h1 class="mb-12 text-xl font-bold">Edit Post</h1>
             <form id="quill-form" action="{{ route('post.update', $post->id) }}" method="POST" class="mb-4 grid gap-4 justify-self-stretch" data-quill-field="text">
                 @csrf
-
                 @method('PUT')
 
                 @include('partials.input-field', [
