@@ -46,11 +46,11 @@ const addDeleteCommentListener = () => {
     const comments = commentSection.querySelectorAll('.comment-card');
 
     comments.forEach(comment => {
-        console.log("called delete");
         const deleteButton = comment.querySelector('.delete-button-container button');
         
         if (deleteButton) {
             deleteButton.addEventListener('click', () => {
+                console.log("clicked delete");
                 const commentId = comment.dataset.commentId;
                 sendDelete(`/api/comment/${commentId}`)
                     .then((_) => {
@@ -74,9 +74,9 @@ const addSaveCommentListener = () => {
     comments.forEach(comment => {
         const saveButton = comment.querySelector('.edit-comment-form button');
         const contentEditForm = comment.querySelector('.edit-comment-form');
-        saveButton.addEventListener('click', async () => {
-            console.log("called save");
+        saveButton.addEventListener('click', async (event) => {
             event.preventDefault();
+            console.log("called save");
             const commentId = comment.dataset.commentId;
             console.log(contentEditForm);
             const formData = new FormData(contentEditForm);
@@ -87,6 +87,7 @@ const addSaveCommentListener = () => {
             addDropdownListeners();
             addEditCommentListener();
             addDeleteCommentListener();
+            addSaveCommentListener();
         });
     });
 }

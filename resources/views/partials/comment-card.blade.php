@@ -32,11 +32,10 @@
         <p class="whitespace-pre-wrap">{{ str_replace("\\n", "\n", $comment->content) }}</p>
     </div>
       <div class="edit-content-container hidden">
-        <form class="edit-comment-form">
+        <form class="edit-comment-form" action="{{ route('api.comment.update', ['id' => $comment->id]) }}">
             @csrf
-            @method('PUT')
             <textarea name="content" class="edit-textarea">{{ str_replace("\\n", "\n", $comment->content) }}</textarea>
-            <button type="submit" class="primary-btn p-2 w-full mt-2 update-button">Save</button>
+            @include('partials.text-button', ['text' => 'Save', 'class' => 'w-full mt-2 mb-2', 'submit' => true])
         </form>
     </div>
     <div class="flex flex-col items-center">
