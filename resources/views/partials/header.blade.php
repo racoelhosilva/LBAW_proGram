@@ -46,11 +46,6 @@
                             @csrf
                             @include('partials.dropdown-item', ['icon' => 'log-out', 'text' => 'Logout', 'submit' => true])
                         </form>
-                        @include('partials.dropdown-item', [
-                            'icon' => 'message-circle',
-                            'text' => 'Create Post',
-                            'anchorUrl' => route('post.create'),
-                        ])
                     @else
                         @include('partials.dropdown-item', [
                             'icon' => 'log-in',
@@ -64,13 +59,22 @@
                         ])
                     @endauth
                 </div>
-                <div class="sm:!hidden">
-                    @include('partials.dropdown-item', [
-                        'icon' => 'notification',
-                        'text' => 'Notifications',
-                        'anchorUrl' => route('user.notifications', auth()->id()),
-                    ])
-                </div>
+                @auth
+                    <div>
+                        @include('partials.dropdown-item', [
+                            'icon' => 'message-circle',
+                            'text' => 'Create Post',
+                            'anchorUrl' => route('post.create'),
+                        ])
+                    </div>
+                    <div class="sm:!hidden">
+                        @include('partials.dropdown-item', [
+                            'icon' => 'notification',
+                            'text' => 'Notifications',
+                            'anchorUrl' => route('user.notifications', auth()->id()),
+                        ])
+                    </div>
+                @endauth
                 <div>
                     @include('partials.dropdown-item', [
                         'icon' => 'info',
