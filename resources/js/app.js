@@ -73,6 +73,7 @@ const activateQuill = () => {
                     ['clean']
                 ]
             },
+            placeholder: 'Write something amazing...',
             theme: 'snow'
         });
         quill.clipboard.dangerouslyPasteHTML(field.value, "silent");
