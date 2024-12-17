@@ -67,7 +67,7 @@ const activateQuill = () => {
             modules: {
                 toolbar: [
                     ['bold', 'italic', 'underline', 'code'],
-                    [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                    [{ 'list': 'ordered' }, { 'list': 'bullet' }, 'code-block'],
                     ['link', 'image', 'video'],
                     ['clean']
                 ]
