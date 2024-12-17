@@ -25,8 +25,8 @@
         </section>
 
         <section id="search-filters" class="card h-min row-start-2 space-y-4">
-            @if(request('search_type') === 'posts')
             <h1 class="text-xl font-semibold">Search Filters</h1>
+            @if(request('search_type') === 'posts')
                 @include('partials.select', [
                     'name' => 'tags[]',
                     'label' => 'Filter by Tags',
@@ -47,20 +47,37 @@
                     'form' => 'search-field'
                 ])
             @endif
-            @include('partials.select', [
-                'name' => 'order_by',
-                'label' => 'Order By',
-                'options' => [
-                    ['name' => 'Relevance', 'value' => null],
-                    ['name' => 'Newest', 'value' => 'newest'],
-                    ['name' => 'Oldest', 'value' => 'oldest'],
-                    ['name' => 'Likes', 'value' => 'likes'],
-                    ['name' => 'Comments', 'value' => 'comments'],
-                    ['name' => 'Title', 'value' => 'title'],
-                ],
-                'selected' => request('order_by'),
-                'form' => 'search-field'
-            ])
+            @switch(request('search_type'))
+                @case('posts')
+                    @include('partials.select', [
+                        'name' => 'order_by',
+                        'label' => 'Order By',
+                        'options' => [
+                            ['name' => 'Relevance', 'value' => null],
+                            ['name' => 'Newest', 'value' => 'newest'],
+                            ['name' => 'Oldest', 'value' => 'oldest'],
+                            ['name' => 'Likes', 'value' => 'likes'],
+                            ['name' => 'Comments', 'value' => 'comments'],
+                            ['name' => 'Title', 'value' => 'title'],
+                        ],
+                        'selected' => request('order_by'),
+                        'form' => 'search-field'
+                    ])
+                    @break
+                @case('users')
+                    @include('partials.select', [
+                        'name' => 'order_by',
+                        'label' => 'Order By',
+                        'options' => [
+                            ['name' => 'Relevance', 'value' => null],
+                            ['name' => 'User Name', 'value' => 'name'],
+                            ['name' => 'Followers', 'value' => 'followers'],
+                        ],
+                        'selected' => request('order_by'),
+                        'form' => 'search-field'
+                    ])
+            @endswitch
+
         </section>
 
         <section id="search-results" class="flex flex-col col-span-3 row-span-2 gap-3">
