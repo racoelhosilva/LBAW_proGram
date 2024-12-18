@@ -14,7 +14,7 @@ class AdminTagController extends Controller
     public function index(Request $request)
     {
         $request->validate([
-            'query' => 'nullable|string|max:255|unique:tag,name',
+            'query' => 'nullable|string|max:255',
         ]);
 
         $tags = Tag::query();
@@ -25,7 +25,7 @@ class AdminTagController extends Controller
             $tags = $tags->where('name', 'ILIKE', $pattern);
 
             if (is_numeric($request->input('query'))) {
-                $tags = $tags->orWhere('id', $request->input('query'));
+                $bans = $bans->orWhere('id', $request->input('query'));
             }
         }
 

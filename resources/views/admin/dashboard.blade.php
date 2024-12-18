@@ -121,7 +121,7 @@
                     <div class="flex">
                         @include('partials.text-button', [
                             'text' => 'View Technologies',
-                            'anchorUrl' => route('admin.post.index'),
+                            'anchorUrl' => route('admin.technology.index'),
                         ])
                     </div>
                 </div>

@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Tag;
+use App\Models\Technology;
 use Illuminate\Http\Request;
 
-class AdminTagController extends Controller
+class AdminTechnologyController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,24 +14,24 @@ class AdminTagController extends Controller
     public function index(Request $request)
     {
         $request->validate([
-            'query' => 'nullable|string|max:255|unique:tag,name',
+            'query' => 'nullable|string|max:255',
         ]);
 
-        $tags = Tag::query();
+        $technologies = Technology::query();
 
         if (! empty($request->input('query'))) {
             $pattern = '%'.str_replace(['\\', '%', '_'], ['\\\\', '\\%', '\\_'], $request->input('query')).'%';
 
-            $tags = $tags->where('name', 'ILIKE', $pattern);
+            $technologies = $technologies->where('name', 'ILIKE', $pattern);
 
             if (is_numeric($request->input('query'))) {
-                $tags = $tags->orWhere('id', $request->input('query'));
+                $technologies = $technologies->orWhere('id', $request->input('query'));
             }
         }
 
-        $tags = $tags->orderBy('id')->paginate(20);
+        $technologies = $technologies->orderBy('id')->paginate(20);
 
-        return view('admin.pages.tag', ['tags' => $tags]);
+        return view('admin.pages.technology', ['technologies' => $technologies]);
     }
 
     /**
@@ -48,19 +48,19 @@ class AdminTagController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'tag' => 'required|string|max:255',
+            'technology' => 'required|string|max:255|unique:technology,name',
         ]);
-        $tag = new Tag;
-        $tag->name = $request->input('tag');
-        $tag->save();
+        $technology = new Technology;
+        $technology->name = $request->input('technology');
+        $technology->save();
 
-        return redirect()->route('admin.tag.index')->withSuccess('Tag created successfully.');
+        return redirect()->route('admin.technology.index')->withSuccess('Technology created successfully.');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Tag $tag)
+    public function show(Technology $technology)
     {
         //
     }
@@ -68,15 +68,15 @@ class AdminTagController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Tag $tag)
-    {
-        //
-    }
+    public function edit(Technology $technology)
+		{
+				//
+		}
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Tag $tag)
+    public function update(Request $request, Technology $technology)
     {
         //
     }
@@ -86,9 +86,9 @@ class AdminTagController extends Controller
      */
     public function destroy(Request $request, int $id)
     {
-        $tag = Tag::findOrFail($id);
-        $tag->delete();
+        $technology = Technology::findOrFail($id);
+        $technology->delete();
 
-        return redirect()->route('admin.tag.index')->withSuccess('Tag deleted successfully.');
+        return redirect()->route('admin.technology.index')->withSuccess('Technology deleted successfully.');
     }
 }
