@@ -11,6 +11,12 @@
     main {
         min-height: calc(100vh - 9rem);
     }
+
+    @media (max-width: 1024px) {
+        main {
+            min-height: calc(100vh - 12rem);
+        }
+    }
 }
 
 @layer components {
@@ -35,7 +41,7 @@
     }
 
     .dropdown > div {
-        @apply absolute right-0 rounded-lg overflow-hidden w-60 mt-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 flex-col shadow;
+        @apply absolute right-0 rounded-lg overflow-hidden w-60 mt-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 flex-col shadow z-10;
     }
 
     .dropdown > div:not(.hidden) {
@@ -179,6 +185,22 @@
     .follow-card-button.pending .lucide-unfollow,
     .follow-card-button.unfollowing .lucide-pending,
     .follow-card-button.unfollowing .lucide-unfollow {
+        @apply hidden;
+    }
+
+    .responsive-dropdown > div {
+        @apply opacity-100 transition-opacity;
+    }
+
+    .responsive-dropdown.closed > div {
+        @apply max-lg:h-0 max-lg:py-0 max-lg:invisible max-lg:opacity-0;
+    }
+
+    .responsive-dropdown:not(.closed) > button > .lucide-chevron-up {
+        @apply hidden;
+    }
+
+    .responsive-dropdown.closed > button > .lucide-chevron-down {
         @apply hidden;
     }
 }

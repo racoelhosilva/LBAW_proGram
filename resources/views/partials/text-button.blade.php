@@ -12,7 +12,7 @@
         {{ $text }}
     </button>
 @else
-    <a href={{ $anchorUrl }} {{ isset($id) ? "id=$id" : "" }}  {{ isset($form) ? "form=$form" : "" }} class="px-4 py-3 {{ $buttonClass }} text-center font-medium {{ $class }}">
+    <a href="{{ $anchorUrl }}" {{ isset($id) ? "id=$id" : "" }}  {{ isset($form) ? "form=$form" : "" }} class="px-4 py-3 {{ $buttonClass }} text-center font-medium {{ $class }}">
         {{ $text }}
     </a>
 @endif

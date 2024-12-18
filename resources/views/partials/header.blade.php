@@ -1,45 +1,38 @@
-<header class="h-24 px-24 grid grid-cols-[auto_1fr_auto] items-center justify-end">
-    <div class="inline-flex gap-8 items-center">
-        @include('partials.logo')
-        @include('partials.search-field')
-    </div>
-    <div class="col-start-3 inline-flex gap-2 items-center">
-        @if (Auth::check())
-            @include('partials.text-button', [
-                'text' => 'Create Post',
-                'id' => 'create-post-button',
-                'type' => 'primary',
-                'anchorUrl' => route('post.create'),
+<header class="h-auto py-4 lg:h-24 px-8 lg:px-24 grid grid-cols-[auto_auto_1fr_auto] items-center justify-end gap-x-4 gap-y-3.5">
+    @include('partials.logo')
+    @include('partials.search-field')
+    <div class="col-start-4 inline-flex gap-x-2 items-center">
+        <div class="hidden xl:flex">
+            @include('partials.icon-button', [
+                'iconName' => 'home',
+                'id' => 'home-button',
+                'label' => 'Home',
+                'type' => 'secondary',
+                'anchorUrl' => route('home'),
             ])
-        @endif
-        @include('partials.icon-button', [
-            'iconName' => 'home',
-            'id' => 'home-button',
-            'label' => 'Home',
-            'type' => 'secondary',
-            'anchorUrl' => route('home'),
-        ])
+        </div>
         @include('partials.theme-button')
-        @if (Auth::check())
-            <a href="{{ route('user.notifications', auth()->id()) }}" id="notification-button" aria-label="Notification" class="p-3 secondary-btn relative">
+        @auth
+            <a href="{{ route('user.notifications', auth()->id()) }}" id="notification-button" aria-label="Notification" class="p-3 secondary-btn relative hidden sm:flex">
                 @include('partials.icon', ['name' => 'notification'])
                 <span class="{{auth()->user()->notifications->count() == 0 ? "hidden" : ""}} absolute bottom-0 right-0 block text-xs font-bold text-white bg-red-500 rounded-full flex items-center justify-center p-0.5" id="notification-count">
                     {{ auth()->user()->notifications->count() }}
                 </span>
-            </button>
-
+            </a>
 
             <a href="{{ route('user.show', auth()->id()) }}">
                 <img src="{{ auth()->user()->getProfilePicture() }}" alt="Profile photo" class="h-[49.5px] w-[49.5px] rounded-full object-cover">
             </a>
         @else
-            @include('partials.text-button', [
-                'text' => 'Login/Register',
-                'id' => 'login-button',
-                'type' => 'primary',
-                'anchorUrl' => route('login'),
-            ])
-        @endif
+            <div class="hidden sm:flex">
+                @include('partials.text-button', [
+                    'text' => 'Login/Register',
+                    'id' => 'login-button',
+                    'type' => 'primary',
+                    'anchorUrl' => route('login'),
+                ])
+            </div>
+        @endauth
         
         <article class="dropdown">
             @include('partials.icon-button', [
@@ -50,7 +43,7 @@
             ])
             <div class="hidden">
                 <div>
-                    @if (Auth::check())
+                    @auth
                         <form method="post" action="{{ route('logout') }}" class="flex flex-col">
                             @csrf
                             @include('partials.dropdown-item', ['icon' => 'log-out', 'text' => 'Logout', 'submit' => true])
@@ -66,8 +59,24 @@
                             'text' => 'Register',
                             'anchorUrl' => route('register'),
                         ])
-                    @endif
+                    @endauth
                 </div>
+                @auth
+                    <div>
+                        @include('partials.dropdown-item', [
+                            'icon' => 'message-circle',
+                            'text' => 'Create Post',
+                            'anchorUrl' => route('post.create'),
+                        ])
+                    </div>
+                    <div class="sm:!hidden">
+                        @include('partials.dropdown-item', [
+                            'icon' => 'notification',
+                            'text' => 'Notifications',
+                            'anchorUrl' => route('user.notifications', auth()->id()),
+                        ])
+                    </div>
+                @endauth
                 <div>
                     @include('partials.dropdown-item', [
                         'icon' => 'info',
