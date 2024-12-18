@@ -54,13 +54,24 @@
                         'text' => 'See Post',
                         'anchorUrl' => route('post.show', $post->id),
                     ])
-                    @if (Auth::check() && Auth::id() === $post->author->id)
+                    @can('update', $post)
                         @include('partials.dropdown-item', [
                             'icon' => 'pencil',
                             'text' => 'Edit Post',
                             'anchorUrl' => route('post.edit', $post->id),
                         ])
-                    @endif
+                    @endcan
+                    @can('forceDelete', $post)
+                        <form method="POST" action="{{ route('post.destroy', $post->id) }}" class="flex flex-col">
+                            @csrf
+                            @method('DELETE')
+                            @include('partials.dropdown-item', [
+                                'icon' => 'trash',
+                                'text' => 'Delete Post',
+                                'submit' => true,
+                            ])
+                        </form>
+                    @endcan
                 </div>
             </div>
         </div>

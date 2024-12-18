@@ -37,9 +37,12 @@ class PostPolicy
         if (Auth::guard('admin')->check()) {
             return true;
         }
-
         // Grant access if the user is following the author.
-        if ($user && $user->following->contains('id', $post->author->id)) {
+        if (! $post->group()->first() && $user && $user->following->contains('id', $post->author->id)) {
+            return true;
+        }
+
+        if ($post->group()->first() && $user && $post->group->first()->members->contains('id', $user->id)) {
             return true;
         }
 
@@ -74,8 +77,9 @@ class PostPolicy
     public function forceDelete(?User $user, Post $post): bool
     {
         $isAdmin = Auth::guard('admin')->check();
+        $group = $post->group()->first();
 
-        return $isAdmin || ($user && ! $user->isBanned() && $user->id === $post->author->id);
+        return $isAdmin || ($user && ! $user->isBanned() && ($user->id === $post->author->id || ($group && $group->owner->id === $user->id)));
     }
 
     public function like(?User $user, Post $post): bool
