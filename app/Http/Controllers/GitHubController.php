@@ -37,7 +37,7 @@ class GitHubController extends Controller
             $user->save();
             Auth::login($user);
 
-            return redirect()->route('home');
+            return redirect()->intended()->withSuccess('You have successfully logged in!');
         }
 
         $user = User::where('github_id', $github_user->getId())->first();
@@ -79,6 +79,6 @@ class GitHubController extends Controller
         }
 
         // After login, redirect to homepage
-        return redirect()->route('home');
+        return redirect()->intended()->withSuccess('You have successfully logged in!');
     }
 }

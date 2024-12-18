@@ -39,7 +39,7 @@ class GoogleController extends Controller
             $user->save();
             Auth::login($user);
 
-            return redirect()->route('home');
+            return redirect()->route('home')->withSuccess('You have successfully logged in!');
         }
 
         $user = User::where('google_id', $google_user->getId())->first();
@@ -81,6 +81,6 @@ class GoogleController extends Controller
         }
 
         // After login, redirect to homepage
-        return redirect()->route('home');
+        return redirect()->route('home')->withSuccess('You have successfully logged in!');
     }
 }
