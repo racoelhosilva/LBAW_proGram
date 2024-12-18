@@ -2,7 +2,7 @@
     @include('partials.logo')
     @include('partials.search-field')
     <div class="col-start-4 inline-flex gap-x-2 items-center">
-        <div class="hidden sm:flex">
+        <div class="hidden xl:flex">
             @include('partials.icon-button', [
                 'iconName' => 'home',
                 'id' => 'home-button',
@@ -24,12 +24,14 @@
                 <img src="{{ auth()->user()->getProfilePicture() }}" alt="Profile photo" class="h-[49.5px] w-[49.5px] rounded-full object-cover">
             </a>
         @else
-            @include('partials.text-button', [
-                'text' => 'Login/Register',
-                'id' => 'login-button',
-                'type' => 'primary',
-                'anchorUrl' => route('login'),
-            ])
+            <div class="hidden sm:flex">
+                @include('partials.text-button', [
+                    'text' => 'Login/Register',
+                    'id' => 'login-button',
+                    'type' => 'primary',
+                    'anchorUrl' => route('login'),
+                ])
+            </div>
         @endauth
         
         <article class="dropdown">
