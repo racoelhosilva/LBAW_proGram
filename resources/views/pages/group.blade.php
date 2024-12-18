@@ -22,7 +22,7 @@
                 
             </div>
             <div class="col-span-full flex justify-between ">
-                <div class="flex flex-col">
+                <div class="flex flex-col justify-end">
                     @if($isMember || $group->is_public)
                          <a href="{{ route('group.members', ['id' => $group->id]) }}" class="text-xl font-bold">{{$group->member_count}} members</a>
                     @endif
@@ -70,10 +70,10 @@
             <section class="grid gap-4">
                 <div class="flex  gap-10">
                     <button id="group-chat-tab" class="tab-button text-2xl font-bold py-2 border-b-2" data-tab="group-chat">
-                        Group Chat
+                        Recent Activity
                     </button>
                     <button id="board-tab" class="tab-button text-2xl font-bold py-2 text-gray-500" data-tab="board">
-                        Board
+                        Announcements Board
                     </button>
                 </div>
 
