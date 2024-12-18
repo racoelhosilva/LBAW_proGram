@@ -12,13 +12,14 @@
             'placeholder' => 'johndoe@password.com',
             'required' => true,
         ])
-        @include('partials.input-field', [
+        @include('partials.password-input-field', [
             'name' => 'password',
             'label' => 'Password',
             'type' => 'password',
             'placeholder' => 'password123',
             'required' => true,
         ])
+
 
         <div class="flex flex-col space-y-4">
             <div class="flex flex-row justify-between">
