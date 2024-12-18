@@ -10,6 +10,11 @@ class GroupPolicy
     /**
      * Determine whether the user can create models.
      */
+    public function view(?User $user, Group $group): bool
+    {
+        return $user && ! $user->isBanned() && $group->members()->where('user_id', $user->id)->exists() || $group->is_public;
+    }
+
     public function create(?User $user): bool
     {
         return $user && ! $user->isBanned();
@@ -22,7 +27,7 @@ class GroupPolicy
 
     public function join(?User $user, Group $group): bool
     {
-        return $user && ! $user->isBanned() && ! $group->members()->where('user_id', $user->id)->exists();
+        return $user && ! $user->isBanned() && ! $group->members()->where('user_id', $user->id)->exists() && $user->id !== $group->owner_id;
     }
 
     public function leave(?User $user, Group $group): bool
@@ -35,7 +40,7 @@ class GroupPolicy
         return $user && ! $user->isBanned() && $user->id === $group->owner_id;
     }
 
-    public function manage(?User $user, Group $group): bool
+    public function manageRequests(?User $user, Group $group): bool
     {
         return $user && ! $user->isBanned() && $user->id === $group->owner_id;
     }
@@ -45,12 +50,18 @@ class GroupPolicy
         return $user && ! $user->isBanned() && $user->id === $group->owner_id && ! $group->members()->where('user_id', $invitee->id)->exists();
     }
 
-    public function addPostToGroup(?User $user, Group $group): bool
+    public function createPost(?User $user, Group $group): bool
     {
         return $user && ! $user->isBanned() && $group->members()->where('user_id', $user->id)->exists();
     }
 
-    public function isInvited(?User $user, Group $group): bool
+    public function acceptInvite(?User $user, Group $group): bool
+    {
+
+        return $user && ! $user->isBanned() && $group->invitedUsers()->where('users.id', $user->id)->exists();
+    }
+
+    public function rejectInvite(?User $user, Group $group): bool
     {
 
         return $user && ! $user->isBanned() && $group->invitedUsers()->where('users.id', $user->id)->exists();

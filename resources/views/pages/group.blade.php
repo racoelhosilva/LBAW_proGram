@@ -14,40 +14,37 @@
                         @include('partials.icon', ['name' => 'lock', 'type' => 'secondary'])
                     @endif
                 </div>
-
             </div>
             <div class="col-span-full flex justify-start items-end">
-
                 <p class="text-xl">{{$group->description}}</p>
-                
             </div>
             <div class="col-span-full flex justify-between ">
                 <div class="flex flex-col justify-end">
-                    @if($isMember || $group->is_public)
+                    @can('view', $group)
                          <a href="{{ route('group.members', ['id' => $group->id]) }}" class="text-xl font-bold">{{$group->member_count}} members</a>
-                    @endif
+                    @endcan
                 </div>
-
                 <div id="group-buttons-container" class="flex flex-col sm:flex-row gap-2" data-group-id={{$group->id}}>
-                    @if ($isMember && !$isOwner)
+                    @can('leave', $group)
                         <form action="{{ route('group.leave', ['id' => $group->id]) }}" method="POST">
                             @csrf
                             @method('POST') 
                             @include('partials.text-button', ['text' => 'Leave Group','submit'=>true,'id'=>'leave-group-button'])
                         </form>
                         @include('partials.text-button', ['text' => 'Post to Group', 'anchorUrl' => route('group.post.create', ['group_id' => $group->id])])
-                    @elseif (!$isMember && Auth::check())
+                    @endcan
+                    @can('join', $group)
                         @if( $group->pendingJoinRequests->where('id', Auth::id())->count() > 0)
                             @include('partials.text-button', ['text' => 'Request Pending'])
                         @else
-                        <form action="{{ route('group.join', ['id' => $group->id]) }}" method="POST">
-                            @csrf
-                            @method('POST') 
-                            @include('partials.text-button', ['text' => 'Join Group','submit'=>true, 'id'=>'join-group-button'])
-                        </form>
-                           
-                        @endif
-                    @elseif($isOwner)
+                            <form action="{{ route('group.join', ['id' => $group->id]) }}" method="POST">
+                                @csrf
+                                @method('POST') 
+                                @include('partials.text-button', ['text' => 'Join Group','submit'=>true, 'id'=>'join-group-button'])
+                            </form>
+                        @endif      
+                    @endcan
+                    @can('update', $group)
                         @include('partials.text-button', ['text' => 'Edit Group', 'anchorUrl' => route('group.edit', ['id' => $group->id])])
                         <article class="dropdown">
                             @include('partials.text-button', ['text' => 'Manage Group', 'id'=>'manage-group-button'])
@@ -62,13 +59,13 @@
                             </div>
                         </article>
                         @include('partials.text-button', ['text' => 'Post to Group', 'anchorUrl' => route('group.post.create', ['group_id' => $group->id])])
-                    @endif
+                    @endcan
 
                 </div>
             </div>  
 
         </section>
-        @if($group->is_public || (!$group->is_public && $isMember))
+        @can('view', $group)
             <section class="grid gap-4">
                 <div class="flex  gap-10">
                     <button id="group-chat-tab" class="tab-button text-2xl font-bold py-2 border-b-2" data-tab="group-chat">
@@ -108,11 +105,6 @@
         <section id="private-profile" class="col-span-4 flex justify-center items-center h-64">
             <h1 class="text-4xl font-bold text-gray-500">This group is private</h1>
         </section>
-
-       @endif
-
-       
+       @endcan
     </main>
-
-
 @endsection

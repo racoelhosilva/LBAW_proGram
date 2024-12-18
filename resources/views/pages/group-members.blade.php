@@ -25,7 +25,6 @@
             @empty
                 <p>No members at the moment</p>
             @endforelse
-
         </section>  
       </main>
 @endsection

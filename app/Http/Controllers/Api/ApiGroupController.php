@@ -57,7 +57,7 @@ class ApiGroupController extends Controller
     public function acceptRequest(Request $request, int $group_id, int $requester_id)
     {
         $group = Group::findOrFail($group_id);
-        $this->authorize('manage', $group);
+        $this->authorize('manageRequests', $group);
         $groupJoinRequest = GroupJoinRequest::where('group_id', $group_id)->where('requester_id', $requester_id)->where('status', 'pending')->firstOrFail();
         $groupJoinRequest->status = 'accepted';
         $groupJoinRequest->save();
@@ -69,7 +69,7 @@ class ApiGroupController extends Controller
     public function rejectRequest(Request $request, int $group_id, int $requester_id)
     {
         $group = Group::findOrFail($group_id);
-        $this->authorize('manage', $group);
+        $this->authorize('manageRequests', $group);
         $groupJoinRequest = GroupJoinRequest::where('group_id', $group_id)->where('requester_id', $requester_id)->where('status', 'pending')->firstOrFail();
         $groupJoinRequest->status = 'rejected';
         $groupJoinRequest->save();
@@ -114,7 +114,7 @@ class ApiGroupController extends Controller
     public function acceptInvite(Request $request, int $group_id)
     {
         $group = Group::findOrFail($group_id);
-        $this->authorize('isInvited', $group);
+        $this->authorize('acceptInvite', $group);
 
         $user = Auth::user();
 
@@ -139,7 +139,7 @@ class ApiGroupController extends Controller
     public function rejectInvite(Request $request, int $group_id)
     {
         $group = Group::findOrFail($group_id);
-        $this->authorize('isInvited', $group);
+        $this->authorize('rejectInvite', $group);
 
         $user = Auth::user();
 
