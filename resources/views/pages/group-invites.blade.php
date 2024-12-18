@@ -13,12 +13,12 @@
                     <div class="manage-invite-container flex flex-row w-full " data-user-id={{$user->id}}>
                         @php
                         if($group->isUserInvited($user)){
-                            $inviteButton = view('partials.text-button', ['text' => 'Send', 'class' => 'w-40    invite-button hidden'])->render();
-                            $inviteButton .= view('partials.text-button', ['text' => 'Unsend', 'class' => 'w-40  uninvite-button '])->render();
+                            $inviteButton = view('partials.text-button', ['text' => 'Send', 'type' =>'secondary','class' => 'w-40    invite-button hidden'])->render();
+                            $inviteButton .= view('partials.text-button', ['text' => 'Unsend','type' =>'secondary', 'class' => 'w-40  uninvite-button '])->render();
                             
                         }else {
-                            $inviteButton = view('partials.text-button', ['text' => 'Send', 'class' => 'w-40    invite-button'])->render();
-                            $inviteButton .= view('partials.text-button', ['text' => 'Unsend', 'class' => 'w-40  uninvite-button hidden'])->render();
+                            $inviteButton = view('partials.text-button', ['text' => 'Send','type' =>'secondary', 'class' => 'w-40    invite-button'])->render();
+                            $inviteButton .= view('partials.text-button', ['text' => 'Unsend','type' =>'secondary', 'class' => 'w-40  uninvite-button hidden'])->render();
                                 
                         }
                         $buttons = $inviteButton;
