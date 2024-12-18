@@ -12,7 +12,7 @@
             'placeholder' => 'johndoe@password.com',
             'required' => true,
         ])
-        @include('partials.input-field', [
+        @include('partials.password-input-field', [
             'name' => 'password',
             'label' => 'Password',
             'type' => 'password',
@@ -20,7 +20,7 @@
             'required' => true,
         ])
 
-        @include('partials.input-field', [
+        @include('partials.password-input-field', [
             'name' => 'password_confirmation',
             'label' => 'Password Confirmation',
             'type' => 'password',
