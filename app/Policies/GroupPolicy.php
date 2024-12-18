@@ -106,4 +106,12 @@ class GroupPolicy
     {
         return $user || ! $user->isBanned();
     }
+
+    /*
+    *Add Post to Group
+    */
+    public function addPostToGroup(?User $user, Group $group): bool
+    {
+        return $user && ! $user->isBanned() && $group->members()->where('user_id', $user->id)->exists();
+    }
 }
