@@ -43,9 +43,13 @@ const toggleCommentLike = (likeButton, likeCount, commentId) => {
 	} else {
 		sendPost(`/api/comment/${commentId}/like`)
 			.then(_ => {
+				console.log('liked');
 				likeButton.classList.add("liked");
+				console.log("added liked");
 				likeCount.innerHTML = parseInt(likeCount.innerHTML) + 1;
+				console.log("incremented like count");
 				likeButton.disabled = false;
+				console.log("enabled button");
 			})
 			.catch(_ => {
 				likeButton.disabled = false;
@@ -61,7 +65,8 @@ const addLikeButtonListeners = () => {
 		const postId = postCard.dataset.postId;
 		const likeButton = postCard.querySelector(".like-button");
 		const likeCount = postCard.querySelector(".like-button + p");
-
+		if(likeButton.classList.contains('has-like-listener')) return;
+		likeButton.classList.add('has-like-listener');
 		likeButton.onclick = () =>	{
 			if (likeButton.classList.contains('enabled')) {
 				togglePostLike(likeButton, likeCount, postId);

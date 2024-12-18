@@ -21,15 +21,12 @@
                 @include('partials.dropdown-item', ['icon' => 'trash', 'text' => 'Delete Comment', 'class' => 'delete-comment'])
            </div>
             
-
-
             </div>
         </div>
         @endif
     </div>
-
     <div class="mt-4 content-container max-w-full overflow-hidden">
-        <p class="whitespace-pre-wrap text-pretty break-words text-ellipsis">{!! nl2br(e($comment->content)) !!}</p>
+        <p class="whitespace-pre-wrap text-pretty break-words text-ellipsis">{{str_replace("\\n", "\n", $comment->content) }}</p>
     </div>
       <div class="edit-content-container hidden">
         <form class="edit-comment-form" action="{{ route('api.comment.update', ['id' => $comment->id]) }}">

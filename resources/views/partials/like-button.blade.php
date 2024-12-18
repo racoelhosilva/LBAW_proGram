@@ -9,7 +9,12 @@
         if (auth()->id() === $model->author->id)
             $disabledReason = 'is-owner';
         $liked = $model->likedBy(auth()->user());
+        Debugbar::info("liked: $liked");
+        Debugbar::info($model);
+        Debugbar::info(auth()->user());
         $enabled = auth()->user()->can('like', $model);
+        Debugbar::info("val after".$enabled);
+       
     }
 @endphp
 

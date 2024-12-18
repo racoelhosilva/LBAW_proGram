@@ -1,5 +1,6 @@
 import { sendPostView, sendPutView, sendToastMessage ,sendDelete} from './utils';
 import { addDropdownListeners } from './app';
+import { addLikeButtonListeners } from './post';
 const addSubmitCommentListener = () => {
     const form = document.getElementById('comment-submit-form');
     const commentSection = document.querySelector('.comment-list'); // Container for comments
@@ -16,6 +17,7 @@ const addSubmitCommentListener = () => {
         addEditCommentListener();
         addDeleteCommentListener();
         addSaveCommentListener();
+        addLikeButtonListeners();
     });
 };
 
@@ -86,6 +88,7 @@ const addSaveCommentListener = () => {
                 addEditCommentListener();
                 addDeleteCommentListener();
                 addSaveCommentListener();
+                addLikeButtonListeners();
             });
         }
     });
