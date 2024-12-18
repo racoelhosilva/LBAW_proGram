@@ -42,16 +42,14 @@ class ApiPostController extends Controller
     public function store(Request $request)
     {
         $this->authorize('create', Post::class);
-
         $request->validate([
-            'title' => 'required|string|max:255',
+            'title' => 'required|string',
             'text' => 'required|string',
             'tags' => 'nullable|array',
             'tags.*' => 'exists:tag,id',
             'is_public' => 'nullable|boolean',
             'is_announcement' => 'nullable|boolean',
         ]);
-
         try {
             $post = Post::create([
                 'title' => $request->input('title'),
@@ -79,7 +77,7 @@ class ApiPostController extends Controller
         $this->authorize('update', $post);
 
         $request->validate([
-            'title' => 'nullable|string|max:255',
+            'title' => 'nullable|string',
             'text' => 'nullable|string',
             'tags' => 'nullable|array',
             'tags.*' => 'exists:tag,id',

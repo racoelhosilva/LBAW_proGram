@@ -43,8 +43,26 @@ class Group extends Model
         return $this->belongsToMany(User::class, 'group_join_request', 'group_id', 'requester_id')->withPivot('creation_timestamp', 'status');
     }
 
+    public function pendingJoinRequests()
+    {
+        return $this->joinRequests()->wherePivot('status', 'pending');
+    }
+
+    public function invitedUsers()
+    {
+        return $this->belongsToMany(User::class, 'group_invitation', 'group_id', 'invitee_id')
+            ->withPivot('creation_timestamp')
+            ->where('status', 'pending')
+            ->whereNotIn('invitee_id', $this->members()->pluck('user_id'));
+    }
+
     public function posts(): BelongsToMany
     {
-        return $this->belongsToMany(Post::class, 'group_post', 'group_id', 'post_id');
+        return $this->belongsToMany(Post::class, 'group_post', 'group_id', 'post_id')->orderby('creation_timestamp', 'desc');
+    }
+
+    public function isUserInvited(User $user): bool
+    {
+        return $this->invitedUsers()->where('invitee_id', $user->id)->exists();
     }
 }

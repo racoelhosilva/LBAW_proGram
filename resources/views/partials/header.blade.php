@@ -69,6 +69,15 @@
                             'anchorUrl' => route('post.create'),
                         ])
                     </div>
+                    <div>
+                        @include('partials.dropdown-item',[
+                            'icon' => 'group',
+                            'text' => 'Create Group',
+                            'anchorUrl' => route('group.create')
+                        ]
+
+                        )
+                    </div>
                     <div class="sm:!hidden">
                         @include('partials.dropdown-item', [
                             'icon' => 'notification',

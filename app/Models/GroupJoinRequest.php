@@ -12,9 +12,12 @@ class GroupJoinRequest extends Model
 
     protected $table = 'group_join_request';
 
+    public $timestamps = false;
+
     protected $fillable = [
-        'creation_timestamp',
         'status',
+        'group_id',
+        'requester_id',
     ];
 
     protected $casts = [
