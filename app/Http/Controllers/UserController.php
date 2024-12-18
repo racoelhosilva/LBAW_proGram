@@ -185,7 +185,8 @@ class UserController extends Controller
     {
         $user = User::findOrFail($id);
 
-        // TODO: Check policies @HenriqueSFernandes
+        // We are using the delete policy, because it serves the policy we need.
+        $this->authorize('delete', $user);
 
         $notifications = $user->notifications()->orderBy('timestamp', 'desc')->paginate(10);
 
