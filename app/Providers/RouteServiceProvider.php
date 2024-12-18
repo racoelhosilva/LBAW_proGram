@@ -28,6 +28,13 @@ class RouteServiceProvider extends ServiceProvider
             return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
         });
 
+        RateLimiter::for('calmdown', function (Request $request) {
+            return Limit::perMinute(2)->response(function () use ($request) {
+
+                return redirect()->back()->withErrors('You are sending too many requests. Calm down.');
+            });
+        });
+
         $this->routes(function () {
             Route::middleware('api')
                 ->prefix('api')

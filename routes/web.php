@@ -89,7 +89,7 @@ Route::middleware(['deny.banned', 'deny.deleted'])->group(function () {
 
     // Post
     Route::controller(PostController::class)->group(function () {
-        Route::post('/post', 'store')->name('post.store');
+        Route::post('/post', 'store')->name('post.store')->middleware('throttle:calmdown');
         Route::get('/post/create', 'create')->name('post.create');
         Route::get('/post/{id}', 'show')->where('id', '[0-9]+')->name('post.show');
         Route::put('/post/{id}', 'update')->where('id', '[0-9]+')->name('post.update');
@@ -114,7 +114,7 @@ Route::middleware(['deny.banned', 'deny.deleted'])->group(function () {
     // Group
     Route::controller(GroupController::class)->group(function () {
         Route::get('/group', 'index')->name('group.index');
-        Route::post('/group', 'store')->name('group.store');
+        Route::post('/group', 'store')->name('group.store')->middleware('throttle:calmdown');
         Route::get('/group/create', 'create')->name('group.create');
         Route::get('/group/{id}', 'show')->where('id', '[0-9]+')->name('group.show');
         Route::get('/group/{id}/members', 'showMembers')->where('id', '[0-9]+')->name('group.members');
