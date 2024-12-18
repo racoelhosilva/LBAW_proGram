@@ -9,7 +9,7 @@
     <main class="px-4">
         <h1 class="mb-4 text-2xl font-bold col-span-4">Dashboard</h1>
 
-        <section class="grid grid-cols-4 gap-4">
+        <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             <article class="dashboard-card">
                 <svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
