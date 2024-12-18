@@ -17,7 +17,7 @@
             </article>
             <article class="email card p-4 border rounded-lg shadow w-full">
                 <h2 class="text-2xl font-semibold mb-2">Email</h2>
-                <a href="mailto:contact@program.com">contact@program.com</a>
+                <a href="mailto:programlbaw@gmail.com">programlbaw@gmail.com</a>
             </article>
         </section>
     </main>
