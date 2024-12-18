@@ -28,11 +28,9 @@ class UserController extends Controller
         $this->authorize('viewAny', Post::class);
 
         $posts = $user->posts()
-            ->when(Auth::check() && ! Auth::user()->follows($user) && Auth::id() !== $id, function ($query) {
-                $query->where('is_public', true);
-            })
+            ->visibleTo(Auth::user())
             ->orderBy('likes', 'DESC')
-            ->paginate(10);
+            ->get();
 
         $isOwnProfile = Auth::check() && Auth::id() === $user->id;
         $recommendedUsers = Auth::check() ? $this->recommendedUsers(Auth::user(), $user) : null;
@@ -44,6 +42,36 @@ class UserController extends Controller
             'isOwnProfile' => $isOwnProfile,
             'recommendedUsers' => $recommendedUsers,
             'num_requests' => $num_requests,
+        ]);
+    }
+
+    public function showGroups(int $id)
+    {
+        $user = User::findOrFail($id);
+
+        $this->authorize('view', $user);
+
+        $groups = $user->groups()
+            ->orderBy('name', 'ASC')
+            ->get();
+
+        return view('pages.user-groups', [
+            'user' => $user,
+            'groups' => $groups,
+        ]);
+    }
+
+    public function showInvites(int $id)
+    {
+        $user = User::findOrFail($id);
+
+        $this->authorize('view', $user);
+
+        $invites = $user->groupsInvitedTo()->orderBy('name', 'ASC')->get();
+
+        return view('pages.user-group-invites', [
+            'user' => $user,
+            'invites' => $invites,
         ]);
     }
 
@@ -185,7 +213,8 @@ class UserController extends Controller
     {
         $user = User::findOrFail($id);
 
-        // TODO: Check policies @HenriqueSFernandes
+        // We are using the delete policy, because it serves the policy we need.
+        $this->authorize('delete', $user);
 
         $notifications = $user->notifications()->orderBy('timestamp', 'desc')->paginate(10);
 

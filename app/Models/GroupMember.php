@@ -17,6 +17,8 @@ class GroupMember extends Pivot
      */
     protected $fillable = [
         'join_timestamp',
+        'user_id',
+        'group_id',
     ];
 
     protected $casts = [

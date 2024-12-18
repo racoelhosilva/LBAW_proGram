@@ -30,7 +30,7 @@ class ApiUserController extends Controller
     public function create(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'required|string',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:8',
             'handle' => 'nullable|string|unique:users,handle|max:50',
@@ -64,7 +64,7 @@ class ApiUserController extends Controller
         $user = User::where('id', $id)->where('is_deleted', false)->firstOrFail();
 
         $request->validate([
-            'name' => 'string|max:255',
+            'name' => 'string',
             'email' => 'email|unique:users,email',
             'password' => 'string|min:8',
             'handle' => 'string|unique:users,handle|max:50',
@@ -131,7 +131,7 @@ class ApiUserController extends Controller
     {
         $user = User::findOrFail($id);
 
-        // TODO: Check policies @HenriqueSFernandes
+        $this->authorize('update', $user);
 
         $user->notifications()->update(['is_read' => true]);
 
@@ -148,7 +148,7 @@ class ApiUserController extends Controller
             return response()->json(['message' => 'Notification not found'], 404);
         }
 
-        // TODO: Check policies @HenriqueSFernandes
+        $this->authorize('update', $user);
 
         $notification->is_read = true;
         $notification->save();
