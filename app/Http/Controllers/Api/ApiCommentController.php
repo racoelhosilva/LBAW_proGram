@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Events\CommentEvent;
 use App\Events\CommentLikeEvent;
 use App\Http\Controllers\Controller;
 use App\Models\Comment;
@@ -48,8 +49,12 @@ class ApiCommentController extends Controller
                 'author_id' => $request->input('author_id'),
                 'timestamp' => now(),
             ]);
-            if ($request->accepts('text/html')) {
 
+            $comment->likes = 0;
+
+            event(new CommentEvent($comment->post_id, $comment->post->author_id));
+
+            if ($request->accepts('text/html')) {
                 return view('partials.comment-card', ['comment' => $comment]);
             } else {
                 return response()->json($comment, 201);
