@@ -1,21 +1,13 @@
-@props(['results', 'numResults', 'tags'])
+@props(['label'])
 
-@php
-    $tagOptions = array_map(function ($tag) {
-        return ['name' => $tag->name, 'value' => $tag->id];
-    }, $tags->all());
-    uasort($tagOptions, function ($option) {
-        return $option['name'];
-    });
-@endphp
-
-@extends('layouts.app')
-@section('title')
-    {{'Search | Program'}}
-@endsection
-@section('content')
-    <main id="search-page" class="px-8 grid grid-cols-4 grid-rows-[auto_1fr] gap-6">
-        <section id="search-options" class="card h-min hidden lg:flex flex-col">
+<div class="responsive-dropdown closed w-full">
+    <button class="h-12 px-4 font-medium rounded-lg hover:bg-slate-300 dark:hover:bg-slate-700 transition-colors flex gap-1 items-center">
+        Options
+        @include('partials.icon', ['name' => 'chevron-down'])
+        @include('partials.icon', ['name' => 'chevron-up'])
+    </button>
+    <div class="py-4 flex flex-col gap-4">
+        <section id="search-options" class="card h-min flex flex-col">
             <h1 class="pb-4 text-xl font-semibold">Search Options</h1>
             <div class="grid justify-stretch">
                 @include('partials.search-type-button', ['optionType' => 'posts', 'searchType' => request('search_type'), 'icon' => 'message-circle', 'text' => 'Posts'])
@@ -24,7 +16,7 @@
             </div>
         </section>
 
-        <section id="search-filters" class="card h-min row-start-2 hidden lg:grid justify-stretch gap-4">
+        <section id="search-filters" class="card h-min row-start-2 grid justify-stretch gap-4">
             <h1 class="text-xl font-semibold">Search Parameters</h1>
             @if(request('search_type') === 'posts')
                 @include('partials.select', [
@@ -101,50 +93,5 @@
                 'form' => 'search-field'
             ])
         </section>
-
-        <section class="flex lg:hidden col-span-4">
-             @include('partials.responsive-dropdown')
-        </section>
-
-        <section id="search-results" class="flex flex-col col-span-4 lg:col-span-3 row-span-2 gap-3">
-            @switch(request('search_type'))
-                @case('posts')
-                    @if ($numResults > 0)
-                        <h1 class="text-xl font-semibold">
-                            Found {{ $numResults . ($numResults === 1 ? ' post' : ' posts') }}</h1>
-                        <div id="search-posts" class="space-y-3">
-                            @include('partials.post-list', ['posts' => $results])
-                        </div>
-                    @else
-                        <h1 class="text-xl font-semibold">No posts found</h1>
-                    @endif
-                    @break
-                @case('users')
-                    @if ($numResults > 0)
-                        <h1 class="text-xl font-semibold">
-                            Found {{ $numResults . ($numResults === 1 ? ' user' : ' users') }}</h1>
-                        <div id="search-users" class="space-y-3">
-                            @include('partials.user-list', ['users' => $results])
-                        </div>
-                    @else
-                        <h1 class="text-xl font-semibold">No users found</h1>
-                    @endif
-                    @break
-                @case('groups')
-                    @if ($numResults > 0)
-                        <h1 class="text-xl font-semibold">
-                            Found {{ $numResults . ($numResults === 1 ? ' group' : ' groups') }}</h1>
-                        <div id="search-groups" class="space-y-3">
-                            @include('partials.group-list', ['groups' => $results])
-                        </div>
-                    @else
-                        <h1 class="text-xl font-semibold">No groups found</h1>
-                    @endif
-                    @break
-            @endswitch
-            <div class="flex flex-col items-center">
-                @include('partials.loading-spinner')
-            </div>
-        </section>
-    </main>
-@endsection
+    </div>
+</div>

@@ -181,4 +181,20 @@
     .follow-card-button.unfollowing .lucide-unfollow {
         @apply hidden;
     }
+
+    .responsive-dropdown > div {
+        @apply max-h-[100] opacity-100;
+    }
+
+    .responsive-dropdown.closed > div {
+        @apply invisible h-0 opacity-0 transition-[height,opacity];
+    }
+
+    .responsive-dropdown:not(.closed) .lucide-chevron-up {
+        @apply hidden;
+    }
+
+    .responsive-dropdown.closed .lucide-chevron-down {
+        @apply hidden;
+    }
 }
