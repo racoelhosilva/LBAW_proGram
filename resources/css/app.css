@@ -187,7 +187,7 @@
     }
 
     .responsive-dropdown.closed > div {
-        @apply h-0 py-0 invisible opacity-0;
+        @apply max-lg:h-0 max-lg:py-0 max-lg:opacity-0;
     }
 
     .responsive-dropdown:not(.closed) > button > .lucide-chevron-up {
