@@ -12,7 +12,7 @@
                 'routeName' => 'group.invites',
                 'routeParams' => ['id' => $group->id],
             ])
-            <div id="invite-results" class="flex flex-col gap-4">
+            <div id="invite-results" class="flex flex-col gap-4 mt-4">
 
                 @foreach ($usersSearched as $user)
                     <div class="manage-invite-container flex flex-row w-full " data-user-id={{ $user->id }}>
