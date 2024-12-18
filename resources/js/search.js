@@ -25,13 +25,6 @@ const addSearchListeners = () => {
     if (searchUsers) {
         addLazyLoading(searchUsers, searchLoadingSpinner, '/search', { ...searchParams, search_type: 'users' });
     }
-
-    searchFilters.forEach(searchFilter => searchFilter.addEventListener('keypress', event => {
-        if (event.key === 'Enter') {
-            searchField.submit();
-            event.stopPropagation();
-        }
-    }));
 }
 
 addSearchListeners();

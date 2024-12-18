@@ -81,6 +81,7 @@ const addSelectListeners = () => {
     selects.forEach(select => {
         const selectDropdown = select.querySelector(':scope > div');
         const selectedOptionsText = select.querySelector(':scope .selected-options');
+        const selectForm = document.getElementById(select.dataset.form);
 
         select.addEventListener('click', event => {
             toggleSelect(select, event);
@@ -90,7 +91,13 @@ const addSelectListeners = () => {
             });
         });
 
-        selectDropdown.addEventListener('click', () => updateSelect(select, selectedOptionsText))
+        selectDropdown.addEventListener('click', () => updateSelect(select, selectedOptionsText));
+        select.addEventListener('keypress', event => {
+            if (event.key === 'Enter') {
+                selectForm.submit();
+                event.stopPropagation();
+            }
+        });
         document.addEventListener('click', event => closeSelect(select, event));
     });
 }

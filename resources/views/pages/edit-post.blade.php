@@ -3,10 +3,10 @@
     {{ 'Edit ' . $post->title . ' | ProGram' }}
 @endsection
 @section('content')
-    <main id="create-post-page" class="grid grid-cols-3 items-center">
+    <main id="create-post-page" class="px-8 flex justify-center items-center">
         <article class="card h-min p-10 pt-16 grid justify-items-center col-start-2">
-            <h1 class="mb-12 text-xl font-bold">Edit Post</h1>
-            <form action="{{ route('post.update', $post->id) }}" method="POST" class="mb-4 grid gap-4 justify-self-stretch">
+            <h1 class="mb-12 text-2xl font-bold">Edit Post</h1>
+            <form id="edit-post-form" action="{{ route('post.update', $post->id) }}" method="POST" class="mb-4 grid gap-4 justify-self-stretch">
                 @csrf
 
                 @method('PUT')
@@ -29,13 +29,12 @@
 
                 <section class="flex flex-col">
                     <label for="tags" class="mb-2 font-medium">Associated Tags</label>
-                    <select name="tags[]" id="tags" multiple class="card overflow-auto">
-                        @foreach ($tags as $tag)
-                            <option {{ $post->hasTag($tag) ? 'checked' : '' }}
-                                class="w-full text-gray-600 dark:text-white px-4 py-2" value="{{ $tag->id }}"
-                                {{ $post->hasTag($tag) ? 'selected' : '' }}>{{ $tag->name }}</option>
-                        @endforeach
-                    </select>
+                    @include('partials.tag-select', [
+                        'tags' => $tags,
+                        'label' => 'Tags',
+                        'selected' => $post->tags->pluck('id')->all(),
+                        'form' => 'edit-post-form',
+                    ])
                 </section>
 
                 <section class="flex flex-col">

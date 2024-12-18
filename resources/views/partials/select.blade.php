@@ -8,7 +8,7 @@
     }));
 @endphp
 
-<div class="select closed" tabindex="0">
+<div class="select closed" tabindex="0" data-form="{{ $form }}">
     <button type="button">
         <div>
             <span class="select-label">{{ $label }}:</span>
