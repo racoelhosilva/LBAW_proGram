@@ -142,7 +142,7 @@
             @method('DELETE')
             @include('partials.text-button', [
                 'text' => 'Delete Account',
-                'type' => 'primary',
+                'type' => 'danger',
                 'submit' => true,
             ])
         </form>
