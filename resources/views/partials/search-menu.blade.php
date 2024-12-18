@@ -24,11 +24,9 @@
     <section id="search-filters" class="card h-min row-start-2 grid justify-stretch gap-4">
         <h1 class="text-xl font-semibold">Search Parameters</h1>
         @if(request('search_type') === 'posts')
-            @include('partials.select', [
-                'name' => 'tags[]',
-                'label' => 'Filter by Tags',
-                'options' => $tagOptions,
-                'multi' => true,
+            @include('partials.tag-select', [
+                'tags' => $tags,
+                'label' => 'Select Tags',
                 'selected' => request('tags'),
                 'form' => 'search-field'
             ])
