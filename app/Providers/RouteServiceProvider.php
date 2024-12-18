@@ -29,8 +29,7 @@ class RouteServiceProvider extends ServiceProvider
         });
 
         RateLimiter::for('calmdown', function (Request $request) {
-            return Limit::perMinute(2)->response(function () use ($request) {
-
+            return Limit::perMinute(2)->by($request->user()?->id ?: $request->ip())->response(function () {
                 return redirect()->back()->withErrors('You are sending too many requests. Calm down.');
             });
         });
