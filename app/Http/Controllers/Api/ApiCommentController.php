@@ -48,7 +48,7 @@ class ApiCommentController extends Controller
                 'author_id' => $request->input('author_id'),
                 'timestamp' => now(),
             ]);
-            if ($request->ajax()) {
+            if ($request->accepts('text/html')) {
 
                 return view('partials.comment-card', ['comment' => $comment]);
             } else {
@@ -70,7 +70,7 @@ class ApiCommentController extends Controller
         ]);
 
         $comment->update($request->all());
-        if ($request->ajax()) {
+        if ($request->accepts('text/html')) {
             return view('partials.comment-card', ['comment' => $comment]);
         } else {
             return response()->json($comment);

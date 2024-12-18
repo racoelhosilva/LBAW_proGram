@@ -1,4 +1,4 @@
-import { sendPost, getView, sendPatch, sendToastMessage ,sendDelete} from './utils';
+import { sendPostView, sendPutView, sendToastMessage ,sendDelete} from './utils';
 import { addDropdownListeners } from './app';
 const addSubmitCommentListener = () => {
     const form = document.getElementById('comment-submit-form');
@@ -9,7 +9,7 @@ const addSubmitCommentListener = () => {
 
         const formData = new FormData(form);
         const params = Object.fromEntries(formData.entries());
-        const comment = await getView(form.action, params, 'POST');
+        const comment = await sendPostView(form.action, params, 'POST');
         commentSection.insertAdjacentHTML('afterbegin', comment);
         form.reset();
         addDropdownListeners();
@@ -80,7 +80,7 @@ const addSaveCommentListener = () => {
                 event.preventDefault();
                 const formData = new FormData(contentEditForm);
                 const params = Object.fromEntries(formData.entries());
-                const updatedComment = await getView(contentEditForm.action, params, 'PATCH');
+                const updatedComment = await sendPutView(contentEditForm.action, params, 'PATCH');
                 comment.outerHTML = updatedComment;
                 addDropdownListeners();
                 addEditCommentListener();

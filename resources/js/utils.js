@@ -32,9 +32,9 @@ const getView = (url, params) => {
 		return response.text();
 	});
 }
-const getView = (url, params, method = 'GET') => {
+const sendPostView = (url, params) => {
     return fetch(url + encodeParams(params), {
-        method: method.toUpperCase(),
+        method: 'POST',
         headers: {
             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
             'X-Requested-With': 'XMLHttpRequest',
@@ -45,6 +45,21 @@ const getView = (url, params, method = 'GET') => {
         }
         return response.text();
     });
+};
+
+const sendPutView = (url, params) => {
+	return fetch(url + encodeParams(params), {
+		method: 'PUT',
+		headers: {
+			'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+			'X-Requested-With': 'XMLHttpRequest',
+		},
+	}).then(response => {
+		if (!response.ok) {
+			throw new Error('Unexpected error occurred');
+		}
+		return response.text();
+	});
 };
 
 const sendPost = (url, data) => {
@@ -169,4 +184,4 @@ const addLazyLoading = (container, containerLoading, endpoint, params, callback)
 	});
 }
 
-export { sendGet, encodeParams, getView, sendDelete, sendPost, sendPatch, fadeToastMessage, sendToastMessage, addLazyLoading };
+export { sendGet, encodeParams, getView,sendPostView, sendPutView, sendDelete, sendPost, sendPatch, fadeToastMessage, sendToastMessage, addLazyLoading };
