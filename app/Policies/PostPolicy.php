@@ -77,8 +77,9 @@ class PostPolicy
     public function forceDelete(?User $user, Post $post): bool
     {
         $isAdmin = Auth::guard('admin')->check();
+        $group = $post->group()->first();
 
-        return $isAdmin || ($user && ! $user->isBanned() && $user->id === $post->author->id);
+        return $isAdmin || ($user && ! $user->isBanned() && ($user->id === $post->author->id || $group->owner->id == $user->id));
     }
 
     public function like(?User $user, Post $post): bool
