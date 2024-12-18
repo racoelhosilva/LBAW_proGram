@@ -4,7 +4,7 @@
 @endsection
 @section('content')
     <main id="create-post-page" class="px-8 flex justify-center items-center">
-        <article class="card h-min p-10 pt-16 grid justify-items-center col-start-2">
+        <article class="card h-min p-10 pt-16 grid justify-items-center">
             <h1 class="mb-12 text-2xl font-bold">Edit Post</h1>
             <form id="edit-post-form" action="{{ route('post.update', $post->id) }}" method="POST" class="mb-4 grid gap-4 justify-self-stretch">
                 @csrf
