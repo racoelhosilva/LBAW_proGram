@@ -105,7 +105,10 @@
                 </div>
             </section>
         @else
-        <h1> You cannot view this group's posts</h1>
+        <section id="private-profile" class="col-span-4 flex justify-center items-center h-64">
+            <h1 class="text-4xl font-bold text-gray-500">This group is private</h1>
+        </section>
+
        @endif
 
        
