@@ -27,8 +27,8 @@ class GroupController extends Controller
         $this->authorize('create', Group::class);
 
         $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'required|string|max:255',
+            'name' => 'required|string',
+            'description' => 'required|string',
             'is_public' => 'boolean',
             'owner_id' => 'required|integer',
         ]);
@@ -130,8 +130,8 @@ class GroupController extends Controller
 
         $this->authorize('update', $group);
         $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'required|string|max:255',
+            'name' => 'required|string',
+            'description' => 'required|string',
             'is_public' => 'boolean',
             'owner_id' => 'required|integer',
         ]);
@@ -214,7 +214,7 @@ class GroupController extends Controller
         $this->authorize('create', Post::class);
 
         $request->validate([
-            'title' => 'required|string|max:255',
+            'title' => 'required|string',
             'text' => 'required|string',
             'tags' => 'nullable|array',
             'tags.*' => 'exists:tag,id',
