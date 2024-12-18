@@ -44,6 +44,11 @@
             <div class="hidden">
                 <div>
                     @auth
+                        @include('partials.dropdown-item', [
+                            'icon' => 'user-round-cog',
+                            'text' => 'User Settings',
+                            'anchorUrl' => route('user.edit', auth()->id()),
+                        ])
                         <form method="post" action="{{ route('logout') }}" class="flex flex-col">
                             @csrf
                             @include('partials.dropdown-item', ['icon' => 'log-out', 'text' => 'Logout', 'submit' => true])
