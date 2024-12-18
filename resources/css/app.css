@@ -183,7 +183,7 @@
     }
 
     .responsive-dropdown > div {
-        @apply py-4 opacity-100 transition-opacity;
+        @apply opacity-100 transition-opacity;
     }
 
     .responsive-dropdown.closed > div {
