@@ -42,6 +42,33 @@
                     Make profile public
                 </label>
             </div>
+
+
+            @include('partials.input-field', [
+                'name' => 'github_url',
+                'label' => 'GitHub URL',
+                'type' => 'url',
+                'value' => $user->stats->github_url,
+                'placeholder' => 'github.com/johndoe',
+                'required' => false,
+            ])
+            @include('partials.input-field', [
+                'name' => 'gitlab_url',
+                'label' => 'GitLab URL',
+                'type' => 'url',
+                'value' => $user->stats->gitlab_url,
+                'placeholder' => 'gitlab.com/johndoe',
+                'required' => false,
+            ])
+            @include('partials.input-field', [
+                'name' => 'linkedin_url',
+                'label' => 'LinkedIn URL',
+                'type' => 'url',
+                'value' => $user->stats->linkedin_url,
+                'placeholder' => 'linkedin.com/in/johndoe',
+                'required' => false,
+            ])
+
             <section id="languages-section" class="flex flex-col">
                 <label for="languages" class="font-medium">Languages</label>
                 <select name="languages[]" id="languages" multiple class="card overflow-auto">

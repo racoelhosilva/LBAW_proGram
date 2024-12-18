@@ -4,23 +4,23 @@ const togglePostLike = (likeButton, likeCount, postId) => {
 	likeButton.disabled = true;
 	if (likeButton.classList.contains("liked")) {
 		sendDelete(`/api/post/${postId}/like`)
-			.then((_) => {
+			.then(_ => {
 				likeButton.classList.remove("liked");
 				likeCount.innerHTML = parseInt(likeCount.innerHTML) - 1;
 				likeButton.disabled = false;
 			})
-			.catch((error) => {
+			.catch(_ => {
 				likeButton.disable = false;
 				sendToastMessage('An error occurred while unliking.', 'error');
 			});
 	} else {
 		sendPost(`/api/post/${postId}/like`)
-			.then((_) => {
+			.then(_ => {
 				likeButton.classList.add("liked");
 				likeCount.innerHTML = parseInt(likeCount.innerHTML) + 1;
 				likeButton.disabled = false;
 			})
-			.catch((error) => {
+			.catch(_ => {
 				likeButton.disabled = false;
 				sendToastMessage('An error occurred while liking.', 'error');
 			});
@@ -31,23 +31,23 @@ const toggleCommentLike = (likeButton, likeCount, commentId) => {
 	likeButton.disabled = true;
 	if (likeButton.classList.contains("liked")) {
 		sendDelete(`/api/comment/${commentId}/like`)
-			.then((_) => {
+			.then(_ => {
 				likeButton.classList.remove("liked");
 				likeCount.innerHTML = parseInt(likeCount.innerHTML) - 1;
 				likeButton.disabled = false;
 			})
-			.catch((error) => {
+			.catch(_ => {
 				likeButton.disabled = false;
 				sendToastMessage('An error occurred while unliking.', 'error');
 			});
 	} else {
 		sendPost(`/api/comment/${commentId}/like`)
-			.then((_) => {
+			.then(_ => {
 				likeButton.classList.add("liked");
 				likeCount.innerHTML = parseInt(likeCount.innerHTML) + 1;
 				likeButton.disabled = false;
 			})
-			.catch((error) => {
+			.catch(_ => {
 				likeButton.disabled = false;
 				sendToastMessage('An error occurred while liking.', 'error');
 			});
@@ -62,7 +62,23 @@ const addLikeButtonListeners = () => {
 		const likeButton = postCard.querySelector(".like-button");
 		const likeCount = postCard.querySelector(".like-button + p");
 
-		likeButton.addEventListener("click", () =>	togglePostLike(likeButton, likeCount, postId));
+		likeButton.onclick = () =>	{
+			if (likeButton.classList.contains('enabled')) {
+				togglePostLike(likeButton, likeCount, postId);
+			} else {
+				switch (likeButton.dataset.disabledReason) {
+					case 'not-logged-in':
+						sendToastMessage('You must be logged in to like a post.', 'info');
+						break;
+					case 'is-owner':
+						sendToastMessage('You cannot like your own post.', 'info');
+						break;
+					default:
+						sendToastMessage('You are not authorized to like this post.', 'info');
+						break;
+				}
+			}
+		}
 	});
 
 	const commentCards = document.querySelectorAll(".comment-card");
@@ -72,8 +88,26 @@ const addLikeButtonListeners = () => {
 		const likeButton = commentCard.querySelector(".like-button");
 		const likeCount = commentCard.querySelector(".like-button + p");
 
-        likeButton.addEventListener('click', () => toggleCommentLike(likeButton, likeCount, commentId));
+		likeButton.onclick = () =>	{
+			if (likeButton.classList.contains('enabled')) {
+				toggleCommentLike(likeButton, likeCount, commentId);
+			} else {
+				switch (likeButton.dataset.disabledReason) {
+					case 'not-logged-in':
+						sendToastMessage('You must be logged in to like a comment.', 'info');
+						break;
+					case 'is-owner':
+						sendToastMessage('You cannot like your own comment.', 'info');
+						break;
+					default:
+						sendToastMessage('You are not authorized to like this comment.', 'info');
+						break;
+				}
+			}
+		}
     });
 };
 
 addLikeButtonListeners();
+
+export { addLikeButtonListeners };

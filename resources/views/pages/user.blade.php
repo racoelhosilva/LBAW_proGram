@@ -31,26 +31,34 @@
 
         @can('viewContent', $user)
             <section id="profile-left" class="h-min col-span-4 lg:col-span-1 grid grid-cols-4 space-y-3">
-                <article id="user-info" class="card col-span-4 space-y-3">
-                    <h1 class="text-xl font-bold">User Info</h1>
-                    <p>{{ $user->description }}</p>
-                    <p><span class="font-bold">Joined at:
-                        </span>{{ \Carbon\Carbon::parse($user->register_timestamp)->format('Y-m-d') }}</p>
+                <article id="user-info" class="card col-span-4 grid space-y-3">
+                    <div class="grid grid-cols-[auto_1fr_auto] items-start">
+                        <h1 class="text-xl font-bold">User Info</h1>
+                        <div class="col-start-3 flex">
+                            @isset($user->stats->github_url)
+                                @include('partials.icon-button', ['iconName' => 'github', 'label' => 'GitHub', 'type' => 'transparent', 'anchorUrl' => $user->stats->github_url])
+                            @endisset
+                            @isset($user->stats->gitlab_url)
+                                @include('partials.icon-button', ['iconName' => 'gitlab', 'label' => 'GitLab', 'type' => 'transparent', 'anchorUrl' => $user->stats->gitlab_url])
+                            @endisset
+                            @isset($user->stats->linkedin_url)
+                                @include('partials.icon-button', ['iconName' => 'linkedin', 'label' => 'LinkedIn', 'type' => 'transparent', 'anchorUrl' => $user->stats->linkedin_url])
+                            @endisset
+                        </div>
+                    </div>
+                    <p>{{$user->description}}</p>
+                    <p><span class="font-bold">Joined at: </span>{{ \Carbon\Carbon::parse($user->register_timestamp)->format('Y-m-d') }}</p>
                     @if ($user->stats->languages->count() > 0)
                         <p><span class="font-bold">Top Languages: </span>
                             @foreach ($user->stats->languages as $language)
-                                {{ $language->name }}@if (!$loop->last)
-                                    ,
-                                @endif
+                                {{ $language->name . ($loop->last ? '' : ', ') }}
                             @endforeach
                         </p>
                     @endif
                     @if ($user->stats->technologies->count() > 0)
                         <p><span class="font-bold">Technologies: </span>
                             @foreach ($user->stats->technologies as $technology)
-                                {{ $technology->name }}@if (!$loop->last)
-                                    ,
-                                @endif
+                                {{ $technology->name . ($loop->last ? '' : ', ') }}
                             @endforeach
                         </p>
                     @endif
@@ -92,6 +100,13 @@
                     <a href={{'/user/' . $user->id . '/following'}} class="text-xl font-bold block">Following: {{ $user->num_following }}</a>
                     @if($isOwnProfile)
                         <a href={{'/user/' . $user->id . '/requests'}} class="text-xl font-bold block">Requests: {{ $num_requests }}</a>
+                    @endif
+                </article>
+
+                <article id="groups" class="card col-span-4 space-y-3 flex flex-col">
+                    <a href={{'/user/' . $user->id . '/groups'}} class="text-xl font-bold">Groups: {{ $user->groups->count() }}</a>
+                    @if($user->id == Auth::id())
+                        <a href={{'/user/' . $user->id . '/invites'}} class="text-xl font-bold">Invites: {{ $user->groupsInvitedTo()->count() }}</a>
                     @endif
                 </article>
 

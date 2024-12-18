@@ -68,15 +68,43 @@ class Post extends Model
         return $this->tags->contains($tag);
     }
 
+    public function group()
+    {
+        return $this->belongsToMany(Group::class, 'group_post', 'post_id', 'group_id');
+    }
+
     public function scopeVisibleTo(Builder $query, ?User $user): Builder
     {
-        $query = $query->where('is_public', true);
+        return $query->where(function ($subQuery) use ($user) {
+            $subQuery->where('post.is_public', true);
 
-        if ($user) {
-            $query = $query->orWhere('author_id', $user->id)
-                ->orWhereIn('author_id', $user->following->pluck('id'));
-        }
+            if ($user) {
+                // User's own posts
+                $subQuery->orWhere('author_id', $user->id);
 
-        return $query;
+                // Posts from followed users (excluding group posts)
+                $followedUserIds = $user->following->pluck('id');
+                if ($followedUserIds->isNotEmpty()) {
+                    $subQuery->orWhere(function ($followQuery) use ($followedUserIds) {
+                        $followQuery->whereIn('author_id', $followedUserIds)
+                            ->whereNotExists(function ($groupCheck) {
+                                $groupCheck->selectRaw(1)
+                                    ->from('group_post')
+                                    ->whereColumn('group_post.post_id', 'id');
+                            });
+                    });
+                }
+
+                // Group posts where the user is a member
+                $subQuery->orWhereExists(function ($groupQuery) use ($user) {
+                    $groupQuery->selectRaw(1)
+                        ->from('group_post')
+                        ->join('group_member', 'group_member.group_id', '=', 'group_post.group_id')
+                        ->whereColumn('group_post.post_id', 'id')
+                        ->where('group_member.user_id', $user->id);
+                });
+            }
+
+        });
     }
 }
