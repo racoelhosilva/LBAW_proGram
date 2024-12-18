@@ -10,7 +10,19 @@ use Laravel\Socialite\Facades\Socialite;
 
 class GoogleController extends Controller
 {
-    public function sanitizeGoogleData($data)
+    private function randomizeHandle($handle)
+    {
+
+        $newHandle = $handle;
+
+        while (User::where('handle', $newHandle)->exists()) {
+            $newHandle = substr($handle, 0, 17).rand(100, 999);
+        }
+
+        return $newHandle;
+    }
+
+    private function sanitizeGoogleData($data)
     {
         $data['handle'] = preg_replace('/\s+/', '', $data['handle']);
         $data['handle'] = substr($data['handle'], 0, 20);
@@ -61,6 +73,7 @@ class GoogleController extends Controller
             ];
 
             $data = $this->sanitizeGoogleData($data);
+            $data['handle'] = $this->randomizeHandle($data['handle']);
 
             $new_user = new User;
 
