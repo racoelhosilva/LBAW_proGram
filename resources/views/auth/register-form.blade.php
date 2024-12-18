@@ -14,37 +14,45 @@
                 'required' => true,
             ])
         </div>
-        @include('partials.input-field', [
-            'name' => 'email',
-            'label' => 'Email',
-            'type' => 'email',
-            'value' => old('email'),
-            'placeholder' => 'johndoe@example.com',
-            'required' => true,
-        ])
-        @include('partials.input-field', [
-            'name' => 'handle',
-            'label' => 'User Handle',
-            'type' => 'text',
-            'value' => old('handle'),
-            'placeholder' => 'johndoe2024',
-            'required' => true,
-        ])
-        @include('partials.password-input-field', [
-            'name' => 'password',
-            'label' => 'Password',
-            'type' => 'password',
-            'placeholder' => 'password123',
-            'required' => true,
-        ])
-        @include('partials.password-input-field', [
-            'name' => 'password_confirmation',
-            'label' => 'Confirm Password',
-            'type' => 'password',
-            'placeholder' => 'password123',
-            'required' => true,
-        ])
-
+        <div class="col-span-2 sm:col-span-1">
+            @include('partials.input-field', [
+                'name' => 'email',
+                'label' => 'Email',
+                'type' => 'email',
+                'value' => old('email'),
+                'placeholder' => 'johndoe@example.com',
+                'required' => true,
+            ])
+        </div>
+        <div class="col-span-2 sm:col-span-1">
+            @include('partials.input-field', [
+                'name' => 'handle',
+                'label' => 'User Handle',
+                'type' => 'text',
+                'value' => old('handle'),
+                'placeholder' => 'johndoe2024',
+                'required' => true,
+            ])
+        </div>
+        <div class="col-span-2 sm:col-span-1">
+            @include('partials.password-input-field', [
+                'name' => 'password',
+                'label' => 'Password',
+                'type' => 'password',
+                'placeholder' => 'password123',
+                'required' => true,
+            ])
+        </div>
+        <div class="col-span-2 sm:col-span-1">
+            @include('partials.password-input-field', [
+                'name' => 'password_confirmation',
+                'label' => 'Confirm Password',
+                'type' => 'password',
+                'placeholder' => 'password123',
+                'required' => true,
+            ])
+        </div>
+        
         <div class="flex flex-col col-span-2">
             <label class="mb-2">
                 <input type="checkbox" name="remember" {{ old('remember') ? 'checked' : '' }}> <span
