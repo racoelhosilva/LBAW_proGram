@@ -95,7 +95,18 @@ const addSelectListeners = () => {
     });
 }
 
+const addResponsiveDropdownListeners = () => {
+    const dropdowns = document.querySelectorAll('.responsive-dropdown');
+
+    dropdowns.forEach(dropdown => {
+        const dropdownButton = dropdown.querySelector(':scope > button');
+
+        dropdownButton.addEventListener('click', () => dropdown.classList.toggle('closed'));
+    });
+};
+
 addDropdownListeners();
 addModalListeners();
 addToastMessageListeners();
 addSelectListeners();
+addResponsiveDropdownListeners();

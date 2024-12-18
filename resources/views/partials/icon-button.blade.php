@@ -13,7 +13,7 @@
         @include('partials.icon', ['name' => $iconName])
     </button>
 @else
-    <a href={{ $anchorUrl }} {{ isset($id) ? "id=$id" : "" }} aria-label="{{ $label }}" class="p-3 {{ $buttonClass }} {{ $class }}">
+    <a href="{{ $anchorUrl }}" {{ isset($id) ? "id=$id" : "" }} aria-label="{{ $label }}" class="p-3 {{ $buttonClass }} {{ $class }}">
         @include('partials.icon', ['name' => $iconName])
     </a>
 @endif

@@ -14,6 +14,7 @@ export default defineConfig({
 				"resources/js/admin.js",
 				"resources/js/faq.js",
 				"resources/js/home.js",
+				"resources/js/notifications.js",
 				"resources/js/auth.js",
 			],
 			refresh: true,
