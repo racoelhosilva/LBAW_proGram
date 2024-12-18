@@ -1,4 +1,4 @@
-<article class="card h-min p-10 pt-16 grid gap-12 justify-items-center col-start-2">
+<article class="card w-[40em] h-min p-10 pt-16 grid gap-12 justify-items-center">
     @include('partials.logo', ['size' => 'large'])
 
     <form method="post" action="{{ route('login') }}" class="grid gap-4 justify-self-stretch">
