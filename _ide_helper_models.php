@@ -147,6 +147,8 @@ namespace App\Models{
  * @property bool $is_public
  * @property int $member_count
  * @property string|null $tsvectors
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\User> $invitedUsers
+ * @property-read int|null $invited_users_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\User> $joinRequests
  * @property-read int|null $join_requests_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\User> $members
@@ -237,6 +239,8 @@ namespace App\Models{
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\PostAttachment> $attachments
  * @property-read int|null $attachments_count
  * @property-read \App\Models\User $author
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Group> $group
+ * @property-read int|null $group_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Tag> $tags
  * @property-read int|null $tags_count
  * @method static \Illuminate\Database\Eloquent\Builder|Post newModelQuery()
@@ -393,6 +397,8 @@ namespace App\Models{
  * @property-read int|null $group_join_requests_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Group> $groups
  * @property-read int|null $groups_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Group> $groupsInvitedTo
+ * @property-read int|null $groups_invited_to_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Notification> $notifications
  * @property-read int|null $notifications_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Post> $posts
