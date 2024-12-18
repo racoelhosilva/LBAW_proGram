@@ -13,9 +13,8 @@ const hidePassword = (showPasswordIcon, hidePasswordIcon, passwordInput) => {
 const toggleVisibility = (toggleButton) => {
 	const showPasswordIcon = toggleButton.querySelector(".eye-closed");
 	const hidePasswordIcon = toggleButton.querySelector(".eye");
-	console.log(toggleButton.parentElement);
-	const passwordInput =
-		toggleButton.parentElement.querySelector(".password-input");
+	const passwordInput = toggleButton.parentElement.querySelector(".password-input");
+	
 	if (showPasswordIcon.classList.contains("hidden")) {
 		hidePassword(showPasswordIcon, hidePasswordIcon, passwordInput);
 	} else {
