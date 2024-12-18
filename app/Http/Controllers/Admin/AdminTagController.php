@@ -14,7 +14,7 @@ class AdminTagController extends Controller
     public function index(Request $request)
     {
         $request->validate([
-            'query' => 'nullable|string|max:255|unique:tag,name',
+            'query' => 'nullable|string|max:255',
         ]);
 
         $tags = Tag::query();
@@ -48,7 +48,7 @@ class AdminTagController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'tag' => 'required|string|max:255',
+            'tag' => 'required|string|max:255|unique:tag,name',
         ]);
         $tag = new Tag;
         $tag->name = $request->input('tag');
