@@ -52,7 +52,7 @@
                 'required' => true,
             ])
         </div>
-        
+
         <div class="flex flex-col col-span-2">
             <label class="mb-2">
                 <input type="checkbox" name="remember" {{ old('remember') ? 'checked' : '' }}> <span
@@ -77,7 +77,6 @@
         </div>
         <div class="col-span-2 grid grid-cols-3 gap-4">
             @include('auth.oauth-button', ['provider' => 'google'])
-            <!-- TODO: when the user is logging in using github after the first time, they get redirected automatically to the home page, but that process takes some time. maybe add a spinning loading indicator?  -->
             @include('auth.oauth-button', ['provider' => 'github'])
             @include('auth.oauth-button', ['provider' => 'gitlab'])
         </div>

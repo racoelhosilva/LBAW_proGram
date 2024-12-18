@@ -29,11 +29,15 @@ class GitHubController extends Controller
     public function callbackGitHub()
     {
 
-        $github_user = Socialite::driver('github')->stateless()->user();
+        try {
+            $github_user = Socialite::driver('github')->stateless()->user();
+        } catch (\Exception $e) {
+            return redirect()->route('login')->withErrors('Login with GitHub was cancelled or failed.');
+        }
         $user = User::where('email', $github_user->getEmail())->first();
 
         if ($user) {
-            $user->google_id = $github_user->getId();
+            $user->github_id = $github_user->getId();
             $user->save();
             Auth::login($user);
 

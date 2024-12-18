@@ -29,11 +29,15 @@ class GitLabController extends Controller
     public function callbackGitLab()
     {
 
-        $gitlab_user = Socialite::driver('gitlab')->stateless()->user();
+        try {
+            $gitlab_user = Socialite::driver('gitlab')->stateless()->user();
+        } catch (\Exception $e) {
+            return redirect()->route('login')->withErrors('Login with GitLab was cancelled or failed.');
+        }
         $user = User::where('email', $gitlab_user->getEmail())->first();
 
         if ($user) {
-            $user->google_id = $gitlab_user->getId();
+            $user->gitlab_id = $gitlab_user->getId();
             $user->save();
             Auth::login($user);
 

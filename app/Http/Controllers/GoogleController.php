@@ -29,7 +29,12 @@ class GoogleController extends Controller
     public function callbackGoogle()
     {
 
-        $google_user = Socialite::driver('google')->stateless()->user();
+        try {
+            $google_user = Socialite::driver('google')->stateless()->user();
+        } catch (\Exception $e) {
+            return redirect()->route('login')->withErrors('Login with GitHub was cancelled or failed.');
+        }
+
         $user = User::where('email', $google_user->getEmail())->first();
 
         // If there is already an existant user with the same email.
