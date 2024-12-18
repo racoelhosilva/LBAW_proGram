@@ -1,47 +1,53 @@
 <!DOCTYPE html>
 <html lang="{{ app()->getLocale() }}">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <!-- CSRF Token -->
-        <meta name="csrf-token" content="{{ csrf_token() }}">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <!-- ID of current user if set -->
-        @isset (auth()->user()->id)
-            <meta name="user-id" content="{{ auth()->user()->id }}">
-        @endisset
+    <!-- CSRF Token -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>@yield('title')</title>
-        <!-- Fonts -->
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+    <!-- ID of current user if set -->
+    @isset(auth()->user()->id)
+        <meta name="user-id" content="{{ auth()->user()->id }}">
+    @endisset
 
-        <!-- Set dark mode with browser preferences (added to head to avoid FOUC) -->
-        <script type="text/javascript">
-            document.documentElement.classList.toggle(
-                'dark',
-                localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)
-            );
+    <title>@yield('title')</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap"
+        rel="stylesheet">
 
-            // This also fixes the Firefox autofocus FOUC
-            // See: http://stackoverflow.com/questions/18943276/html-5-autofocus-messes-up-css-loading/18945951#18945951
-        </script>
+    <!-- Set dark mode with browser preferences (added to head to avoid FOUC) -->
+    <script type="text/javascript">
+        document.documentElement.classList.toggle(
+            'dark',
+            localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia(
+                '(prefers-color-scheme: dark)').matches)
+        );
 
-        <!-- Pusher script (Notifications) -->
-        <script src="https://js.pusher.com/7.0/pusher.min.js" defer></script>
+        // This also fixes the Firefox autofocus FOUC
+        // See: http://stackoverflow.com/questions/18943276/html-5-autofocus-messes-up-css-loading/18945951#18945951
+    </script>
 
-        <!-- Styles & Scripts -->
-        @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/header.js', 'resources/js/search.js', 'resources/js/user.js', 'resources/js/post.js', 'resources/js/comment.js', 'resources/js/faq.js', 'resources/js/group.js','resources/js/manage-group-requests.js','resources/js/manage-group-invites.js' ,'resources/js/manage-group-members.js','resources/js/create-post-group.js', 'resources/js/user-groups.js', 'resources/js/user-invites.js', 'resources/js/notifications.js'])
-    </head>
-    <body class="bg-white dark:bg-slate-800 text-black dark:text-white">
-        @include('partials.header')
-        <main class="flex-grow">
-            @yield('content')
-        </main>
-        @include('partials.footer')
-        @include('partials.toast-messages')
-    </body>
+    <!-- Pusher script (Notifications) -->
+    <script src="https://js.pusher.com/7.0/pusher.min.js" defer></script>
+
+    <!-- Styles & Scripts -->
+    @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/header.js', 'resources/js/search.js', 'resources/js/user.js', 'resources/js/post.js', 'resources/js/comment.js', 'resources/js/faq.js', 'resources/js/group.js', 'resources/js/manage-group-requests.js', 'resources/js/manage-group-invites.js', 'resources/js/manage-group-members.js', 'resources/js/create-post-group.js', 'resources/js/user-groups.js', 'resources/js/user-invites.js', 'resources/js/notifications.js', 'resources/js/home.js'])
+</head>
+
+<body class="bg-white dark:bg-slate-800 text-black dark:text-white">
+    @include('partials.header')
+    <main class="flex-grow">
+        @yield('content')
+    </main>
+    @include('partials.footer')
+    @include('partials.toast-messages')
+</body>
+
 </html>

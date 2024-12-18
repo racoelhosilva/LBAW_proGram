@@ -3,7 +3,7 @@
     {{ 'Reset Password | ProGram' }}
 @endsection
 @section('content')
-    <main id="reset-password-page" class="grid grid-cols-3 items-center">
+    <main id="reset-password-page" class="px-8 flex justify-center items-center">
         @include('auth.forgot-password-form')
     </main>
 @endsection

@@ -131,7 +131,7 @@ class ApiUserController extends Controller
     {
         $user = User::findOrFail($id);
 
-        // TODO: Check policies @HenriqueSFernandes
+        $this->authorize('update', $user);
 
         $user->notifications()->update(['is_read' => true]);
 
@@ -148,7 +148,7 @@ class ApiUserController extends Controller
             return response()->json(['message' => 'Notification not found'], 404);
         }
 
-        // TODO: Check policies @HenriqueSFernandes
+        $this->authorize('update', $user);
 
         $notification->is_read = true;
         $notification->save();

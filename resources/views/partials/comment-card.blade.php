@@ -1,3 +1,5 @@
+@props(['comment'])
+
 @php
     $authorUrl = route('user.show', $comment->author->id);
 @endphp
@@ -30,16 +32,7 @@
         <p class="whitespace-pre-wrap">{{ str_replace("\\n", "\n", $comment->content) }}</p>
     </div>
     <div class="flex flex-col items-center">
-        @if(Auth::check() && Auth::id() !== $comment->author->id)
-            <button aria-label="Like" class="p-3 .btn-transparent like-button {{ $comment->likedBy(Auth::user()) ? 'liked' : '' }}">
-                @include('partials.icon', ['name' => 'heart'])
-                @include('partials.icon', ['name' => 'filled-heart'])
-            </button>
-        @else
-            <button aria-label="Like" class="p-3 .btn-transparent like-button" disabled>
-                @include('partials.icon', ['name' => 'heart'])
-            </button>
-        @endif
+        @include('partials.like-button', ['model' => $comment])
         <p class="font-medium">{{ $comment->likes }}</p>
     </div>
 </article>

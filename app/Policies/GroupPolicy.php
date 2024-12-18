@@ -66,4 +66,12 @@ class GroupPolicy
 
         return $user && ! $user->isBanned() && $group->invitedUsers()->where('users.id', $user->id)->exists();
     }
+
+    /*
+     * Determine whether the user can view any models.
+     */
+    public function viewAny(?User $user): bool
+    {
+        return ! $user || ! $user->isBanned();
+    }
 }

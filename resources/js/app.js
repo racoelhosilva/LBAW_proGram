@@ -57,6 +57,56 @@ const addToastMessageListeners = () => {
     });
 };
 
+const toggleSelect = (select, event) => {
+    select.classList.toggle('closed');
+    event.stopPropagation();
+};
+
+const closeSelect = (select, event) => {
+    select.classList.add('closed');
+    event.stopPropagation();
+}
+
+const updateSelect = (select, selectedOptionsText) => {
+    const selectedOptions = select.querySelectorAll(':scope label:has(input:checked) span');
+
+    selectedOptionsText.textContent = Array.from(selectedOptions)
+        .map(option => option.textContent)
+        .join(", ");
+};
+
+const addSelectListeners = () => {
+    const selects = document.querySelectorAll('.select');
+
+    selects.forEach(select => {
+        const selectDropdown = select.querySelector(':scope > div');
+        const selectedOptionsText = select.querySelector(':scope .selected-options');
+
+        select.addEventListener('click', event => {
+            toggleSelect(select, event);
+            selects.forEach(otherSelect => {
+                if (otherSelect !== select)
+                    closeSelect(otherSelect, event)
+            });
+        });
+
+        selectDropdown.addEventListener('click', () => updateSelect(select, selectedOptionsText))
+        document.addEventListener('click', event => closeSelect(select, event));
+    });
+}
+
+const addResponsiveDropdownListeners = () => {
+    const dropdowns = document.querySelectorAll('.responsive-dropdown');
+
+    dropdowns.forEach(dropdown => {
+        const dropdownButton = dropdown.querySelector(':scope > button');
+
+        dropdownButton.addEventListener('click', () => dropdown.classList.toggle('closed'));
+    });
+};
+
 addDropdownListeners();
 addModalListeners();
 addToastMessageListeners();
+addSelectListeners();
+addResponsiveDropdownListeners();

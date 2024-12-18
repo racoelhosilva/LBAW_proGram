@@ -3,139 +3,205 @@
 @tailwind utilities;
 
 @layer base {
-    :root {
-        font-family: "Inter", sans-serif;
-        font-optical-sizing: auto;
-    }
+	:root {
+		font-family: "Inter", sans-serif;
+		font-optical-sizing: auto;
+	}
 
-    main {
-        min-height: calc(100vh - 9rem);
-    }
+	main {
+		min-height: calc(100vh - 9rem);
+	}
+
+	@media (max-width: 1024px) {
+		main {
+			min-height: calc(100vh - 12rem);
+		}
+	}
 }
 
 @layer components {
-    .primary-btn {
-        @apply border rounded-full text-white bg-blue-600 hover:bg-blue-500 border-blue-600 hover:border-blue-500 transition-colors shadow;
-    }
+	.primary-btn {
+		@apply border rounded-full text-white bg-blue-600 hover:bg-blue-500 border-blue-600 hover:border-blue-500 transition-colors shadow;
+	}
 
-    .secondary-btn {
-        @apply border rounded-full text-black dark:text-white bg-white dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 border-slate-300 dark:border-slate-700 hover:dark:border-slate-600 transition-colors;
-    }
+	.secondary-btn {
+		@apply border rounded-full text-black dark:text-white bg-white dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 border-slate-300 dark:border-slate-700 hover:dark:border-slate-600 transition-colors;
+	}
 
-    .transparent-btn {
-        @apply border rounded-full text-black dark:text-white bg-white dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 border-white dark:border-slate-800 hover:border-slate-300 hover:dark:border-slate-700 transition-colors;
-    }
+	.transparent-btn {
+		@apply border rounded-full text-black dark:text-white bg-white dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 border-white dark:border-slate-800 hover:border-slate-300 hover:dark:border-slate-700 transition-colors;
+	}
 
-    .card {
-        @apply p-4 border rounded-xl bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 shadow;
-    }
+	.card {
+		@apply p-4 border rounded-xl bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 shadow;
+	}
 
-    .dropdown {
-        @apply relative;
-    }
+	.dropdown {
+		@apply relative;
+	}
 
-    .dropdown > div {
-        @apply absolute right-0 rounded-lg overflow-hidden w-60 mt-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 flex-col shadow;
-    }
+	.dropdown>div {
+		@apply absolute right-0 rounded-lg overflow-hidden w-60 mt-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 flex-col shadow z-10;
+	}
 
-    .dropdown > div:not(.hidden) {
-        @apply flex;
-    }
+	.dropdown>div:not(.hidden) {
+		@apply flex;
+	}
 
-    .dropdown > div > div {
-        @apply flex flex-col;
-    }
+	.dropdown>div>div {
+		@apply flex flex-col;
+	}
 
-    .dropdown > div > div:not(:last-child) {
-        @apply border-b border-slate-300 dark:border-slate-600;
-    }
+	.dropdown>div>div:not(:last-child) {
+		@apply border-b border-slate-300 dark:border-slate-600;
+	}
 
-    .dashboard-card {
-        @apply card grid grid-cols-[auto_1fr] items-center gap-4;
-    }
+	.dashboard-card {
+		@apply card grid grid-cols-[auto_1fr] items-center gap-4;
+	}
 
-    .like-button.liked .lucide-heart {
-        @apply hidden;
-    }
+	.like-button.liked .lucide-heart {
+		@apply hidden;
+	}
 
-    .like-button:not(.liked) .lucide-heart-filled {
-        @apply hidden;
-    }
+	.like-button:not(.liked) .lucide-heart-filled {
+		@apply hidden;
+	}
 
-    #tags option:checked, #languages option:checked, #technologies option:checked {
-        @apply bg-slate-300 dark:bg-slate-600;
-    }
+	#tags option:checked,
+	#languages option:checked,
+	#technologies option:checked {
+		@apply bg-slate-300 dark:bg-slate-600;
+	}
 
+	table {
+		@apply w-full overflow-hidden border border-separate border-spacing-0 rounded-xl bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 shadow;
+	}
 
-    table {
-        @apply w-full overflow-hidden border border-separate border-spacing-0 rounded-xl bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 shadow;
-    }
+	table th {
+		@apply p-2 bg-white dark:bg-slate-700;
+	}
 
-    table th {
-        @apply p-2 bg-white dark:bg-slate-700;
-    }
- 
-    table td {
-         @apply p-2 border-t border-slate-300 dark:border-slate-600;
-    }
+	table td {
+		@apply p-2 border-t border-slate-300 dark:border-slate-600;
+	}
 
-    .edit-textarea {
-        @apply w-full px-5 py-3 rounded-lg bg-white dark:bg-slate-700 text-gray-600 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 border border-slate-300 dark:border-slate-600 focus:border-blue-600 outline-none resize-none min-h-32;
-    }
-    
+	.edit-textarea {
+		@apply w-full px-5 py-3 rounded-lg bg-white dark:bg-slate-700 text-gray-600 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 border border-slate-300 dark:border-slate-600 focus:border-blue-600 outline-none resize-none min-h-32;
+	}
 
-    .pagination {
-        @apply w-fit border rounded-lg border-slate-300 dark:border-slate-700 flex overflow-hidden;
-    }
+	.pagination {
+		@apply w-fit border rounded-lg border-slate-300 dark:border-slate-700 flex overflow-hidden;
+	}
 
-    .page-item {
-        @apply flex bg-white dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 border-slate-300 dark:border-slate-700 transition-colors;
-    }
+	.page-item {
+		@apply flex bg-white dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 border-slate-300 dark:border-slate-700 transition-colors;
+	}
 
-    .page-item > a {
-        @apply px-3 py-2;
-    }
+	.page-item>a {
+		@apply px-3 py-2;
+	}
 
-    .page-item:not(:first-child) {
-        @apply border-l;
-    }
+	.page-item:not(:first-child) {
+		@apply border-l;
+	}
 
-    .page-item.active {
-        @apply bg-blue-600 text-white border-blue-600;
-    }
+	.page-item.active {
+		@apply bg-blue-600 text-white border-blue-600;
+	}
 
-    .page-item.inactive {
-        @apply bg-slate-300 dark:bg-slate-700 text-slate-600 dark:text-slate-300;
-    }
+	.page-item.inactive {
+		@apply bg-slate-300 dark:bg-slate-700 text-slate-600 dark:text-slate-300;
+	}
 
-    .modal > div {
-        @apply hidden z-10 fixed bg-black bg-opacity-50 top-0 left-0 w-full h-full justify-center items-center;
-    }
+	.modal>div {
+		@apply hidden z-10 fixed bg-black bg-opacity-50 top-0 left-0 w-full h-full justify-center items-center;
+	}
 
-    .modal.active > div {
-        @apply flex;
-    }
+	.modal.active>div {
+		@apply flex;
+	}
 
-    .modal > div > div {
-        @apply card col-start-2;
-    }
+	.modal>div>div {
+		@apply card col-start-2;
+	}
 
-    .follow-profile-button.following .follow,
-    .follow-profile-button.following .pending,
-    .follow-profile-button.pending .follow,
-    .follow-profile-button.pending .unfollow,
-    .follow-profile-button.unfollowing .pending,
-    .follow-profile-button.unfollowing .unfollow {
-        @apply hidden;
-    }
+	.select {
+		@apply relative w-full;
+	}
 
-    .follow-card-button.following .lucide-follow,
-    .follow-card-button.following .lucide-pending,
-    .follow-card-button.pending .lucide-follow,
-    .follow-card-button.pending .lucide-unfollow,
-    .follow-card-button.unfollowing .lucide-pending,
-    .follow-card-button.unfollowing .lucide-unfollow {
-        @apply hidden;
-    }
+	.select>button {
+		@apply w-full px-4 py-3 secondary-btn rounded-lg grid grid-cols-[1fr_auto];
+	}
 
+	.select>button>div:first-of-type {
+		@apply inline text-start overflow-hidden overflow-ellipsis text-nowrap;
+	}
+
+	.select .select-label {
+		@apply text-gray-700 dark:text-gray-300;
+	}
+
+	.select:not(.closed)>button>div:nth-of-type(2) {
+		@apply hidden;
+	}
+
+	.select>div {
+		@apply max-h-80 rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 shadow flex flex-col absolute right-0 left-0 z-10 top-14 overflow-y-auto opacity-100 transition-all;
+	}
+
+	.select.closed>div {
+		@apply invisible top-16 opacity-0;
+	}
+
+	.select.closed>button>div:nth-of-type(3) {
+		@apply hidden;
+	}
+
+	.select-option>span {
+		@apply ps-2 py-1 w-full text-gray-500 dark:text-gray-400 block cursor-pointer;
+	}
+
+	.select-option>input:checked+span,
+	.select-option>span:hover {
+		@apply text-black dark:text-white bg-slate-50 dark:bg-slate-750;
+	}
+
+	.select-option>input {
+		@apply hidden;
+	}
+
+	.follow-profile-button.following .follow,
+	.follow-profile-button.following .pending,
+	.follow-profile-button.pending .follow,
+	.follow-profile-button.pending .unfollow,
+	.follow-profile-button.unfollowing .pending,
+	.follow-profile-button.unfollowing .unfollow {
+		@apply hidden;
+	}
+
+	.follow-card-button.following .lucide-follow,
+	.follow-card-button.following .lucide-pending,
+	.follow-card-button.pending .lucide-follow,
+	.follow-card-button.pending .lucide-unfollow,
+	.follow-card-button.unfollowing .lucide-pending,
+	.follow-card-button.unfollowing .lucide-unfollow {
+		@apply hidden;
+	}
+
+	.responsive-dropdown>div {
+		@apply opacity-100 transition-opacity;
+	}
+
+	.responsive-dropdown.closed>div {
+		@apply max-lg:h-0 max-lg:py-0 max-lg:invisible max-lg:opacity-0;
+	}
+
+	.responsive-dropdown:not(.closed)>button>.lucide-chevron-up {
+		@apply hidden;
+	}
+
+	.responsive-dropdown.closed>button>.lucide-chevron-down {
+		@apply hidden;
+	}
 }

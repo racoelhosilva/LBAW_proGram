@@ -76,7 +76,7 @@ class Post extends Model
     public function scopeVisibleTo(Builder $query, ?User $user): Builder
     {
         return $query->where(function ($subQuery) use ($user) {
-            $subQuery->where('is_public', true); // Public posts
+            $subQuery->where('post.is_public', true);
 
             if ($user) {
                 // User's own posts
