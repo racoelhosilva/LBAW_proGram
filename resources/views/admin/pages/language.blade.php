@@ -1,23 +1,23 @@
 @extends('layouts.admin')
 @section('title')
-    {{ 'Admin Technology Search | ProGram' }}
+    {{ 'Admin Language Search | ProGram' }}
 @endsection
 @section('content')
     <main class="px-4 flex flex-col gap-4">
         <div class="grid grid-cols-[1fr_auto] gap-4 items-center">
-            @include('admin.partials.search-field', ['route' => 'admin.technology.index'])
+            @include('admin.partials.search-field', ['route' => 'admin.language.index'])
 
 
             <div class="modal ban-modal">
                 @include('partials.text-button', [
-                    'text' => 'Add Technology',
+                    'text' => 'Add Language',
                     'class' => 'open-button',
                     'type' => 'primary',
                 ])
                 <div>
                     <div>
                         <div class="mb-4 flex justify-between items-center">
-                            <h1 class="text-2xl font-bold">Add Technology</h1>
+                            <h1 class="text-2xl font-bold">Add Language</h1>
                             @include('partials.icon-button', [
                                 'iconName' => 'x',
                                 'class' => 'close-button',
@@ -25,14 +25,14 @@
                                 'type' => 'transparent',
                             ])
                         </div>
-                        <form method="post" action="{{ route('admin.technology.store') }}" class="grid gap-4">
+                        <form method="post" action="{{ route('admin.language.store') }}" class="grid gap-4">
                             @csrf
                             @include('partials.input-field', [
-                                'name' => 'technology',
+                                'name' => 'language',
                                 'label' => '',
                                 'type' => 'text',
-                                'value' => old('technology'),
-                                'placeholder' => 'Laravel',
+                                'value' => old('language'),
+                                'placeholder' => 'JavaScript',
                                 'required' => true,
                             ])
                             @include('partials.text-button', [
@@ -50,17 +50,17 @@
             <thead class="text-center">
                 <tr>
                     <th>ID</th>
-                    <th>Technology</th>
+                    <th>Language</th>
                     <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
-                @forelse ($technologies as $technology)
+                @forelse ($languages as $language)
                     <tr class="border-t border-white">
-                        <td>{{ $technology->id }}</td>
-                        <td>{{ $technology->name }}</td>
+                        <td>{{ $language->id }}</td>
+                        <td>{{ $language->name }}</td>
                         <td class="pe-8 flex justify-end gap-2">
-                            <form method="post" action="{{ route('admin.technology.destroy', $technology->id) }}">
+                            <form method="post" action="{{ route('admin.language.destroy', $language->id) }}">
                                 @csrf
                                 @method('DELETE')
                                 @include('partials.text-button', [
@@ -73,11 +73,11 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="4">No technologies found.</td>
+                        <td colspan="4">No languages found.</td>
                     </tr>
                 @endforelse
             </tbody>
         </table>
-        {{ $technologies->links() }}
+        {{ $languages->links() }}
     </main>
 @endsection

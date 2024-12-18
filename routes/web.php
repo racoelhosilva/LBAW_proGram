@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AdminAuthController;
 use App\Http\Controllers\Admin\AdminBanController;
+use App\Http\Controllers\Admin\AdminLanguageController;
 use App\Http\Controllers\Admin\AdminPostController;
 use App\Http\Controllers\Admin\AdminTagController;
 use App\Http\Controllers\Admin\AdminTechnologyController;
@@ -148,6 +149,9 @@ Route::prefix('admin')->group(function () {
         Route::delete('/technologies/{id}', [AdminTechnologyController::class, 'destroy'])->where('id', '[0-9]+')->name('admin.technology.destroy');
 
         // Technologies
+        Route::get('/languages', [AdminLanguageController::class, 'index'])->name('admin.language.index');
+        Route::post('/languages', [AdminLanguageController::class, 'store'])->name('admin.language.store');
+        Route::delete('/languages/{id}', [AdminLanguageController::class, 'destroy'])->where('id', '[0-9]+')->name('admin.language.destroy');
     });
 });
 

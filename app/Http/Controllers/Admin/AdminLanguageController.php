@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Tag;
+use App\Models\Language;
 use Illuminate\Http\Request;
 
-class AdminTagController extends Controller
+class AdminLanguageController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -17,21 +17,21 @@ class AdminTagController extends Controller
             'query' => 'nullable|string|max:255',
         ]);
 
-        $tags = Tag::query();
+        $languages = Language::query();
 
         if (! empty($request->input('query'))) {
             $pattern = '%'.str_replace(['\\', '%', '_'], ['\\\\', '\\%', '\\_'], $request->input('query')).'%';
 
-            $tags = $tags->where('name', 'ILIKE', $pattern);
+            $languages = $languages->where('name', 'ILIKE', $pattern);
 
             if (is_numeric($request->input('query'))) {
-                $bans = $bans->orWhere('id', $request->input('query'));
+                $languages = $languages->orWhere('id', $request->input('query'));
             }
         }
 
-        $tags = $tags->orderBy('id')->paginate(20);
+        $languages = $languages->orderBy('id')->paginate(20);
 
-        return view('admin.pages.tag', ['tags' => $tags]);
+        return view('admin.pages.language', ['languages' => $languages]);
     }
 
     /**
@@ -48,19 +48,19 @@ class AdminTagController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'tag' => 'required|string|max:255',
+            'language' => 'required|string|max:255|unique:language,name',
         ]);
-        $tag = new Tag;
-        $tag->name = $request->input('tag');
-        $tag->save();
+        $language = new Language;
+        $language->name = $request->input('language');
+        $language->save();
 
-        return redirect()->route('admin.tag.index')->withSuccess('Tag created successfully.');
+        return redirect()->route('admin.language.index')->withSuccess('Language created successfully.');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Tag $tag)
+    public function show(Language $language)
     {
         //
     }
@@ -68,7 +68,7 @@ class AdminTagController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Tag $tag)
+    public function edit(Language $language)
     {
         //
     }
@@ -76,7 +76,7 @@ class AdminTagController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Tag $tag)
+    public function update(Request $request, Language $language)
     {
         //
     }
@@ -86,9 +86,9 @@ class AdminTagController extends Controller
      */
     public function destroy(Request $request, int $id)
     {
-        $tag = Tag::findOrFail($id);
-        $tag->delete();
+        $language = Language::findOrFail($id);
+        $language->delete();
 
-        return redirect()->route('admin.tag.index')->withSuccess('Tag deleted successfully.');
+        return redirect()->route('admin.language.index')->withSuccess('Language deleted successfully.');
     }
 }

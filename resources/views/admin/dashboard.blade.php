@@ -101,7 +101,7 @@
                     <div class="flex">
                         @include('partials.text-button', [
                             'text' => 'View Languages',
-                            'anchorUrl' => route('admin.post.index'),
+                            'anchorUrl' => route('admin.language.index'),
                         ])
                     </div>
                 </div>
