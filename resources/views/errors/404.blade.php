@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <main id="404-page" class="flex flex-col justify-center items-center">
+    <main id="404-page" class="px-8 flex flex-col justify-center items-center">
         @include('errors.error-page', [
             'number' => '404', 
             'error' => 'Oops! Page Not Found...', 

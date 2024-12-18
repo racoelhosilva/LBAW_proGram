@@ -1,7 +1,7 @@
 @props(['number', 'error', 'message', 'button' => 'home'])
 
-<article class="h-min w-full max-w-96 grid justify-items-center col-start-2">
-    <section id="error-info" class="py-12 grid gap-6 justify-items-center">
+<article class="h-min w-full py-12 max-w-96 col-start-2 flex flex-col items-center gap-12">
+    <section id="error-info" class="grid gap-6 justify-items-center">
         <h1 class="text-9xl font-bold text-center">
             {{ $number }}
         </h1>
