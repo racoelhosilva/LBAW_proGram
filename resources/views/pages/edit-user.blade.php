@@ -3,8 +3,9 @@
     {{ 'Edit ' . $user->name . ' | ProGram' }}
 @endsection
 @section('content')
-    <main class="px-8">
-        <section class="card p-10 pt-16 h-min grid gap-6 justify-items-center">
+    <main class="px-8 grid grid-cols-4 grid-rows-[auto_1fr] gap-6">
+        @include('partials.user-settings-menu')
+        <section class="card p-10 pt-16 h-min col-span-4 lg:col-span-3 grid gap-6 justify-items-center">
             <h1 class="text-2xl font-bold">Edit Profile</h1>
             <form method="post" action="{{ route('user.update', $user->id) }}" class="grid gap-4 justify-self-stretch"
                 id="profile-form" enctype="multipart/form-data">

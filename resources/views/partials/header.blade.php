@@ -100,7 +100,7 @@
                     @include('partials.dropdown-item', [
                         'icon' => 'mail',
                         'text' => 'Contact Us',
-                        'anchorUrl' => route('contactus'),
+                        'anchorUrl' => route('contact-us'),
                     ])
                 </div>
             </div>
