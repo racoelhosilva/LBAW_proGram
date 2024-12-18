@@ -183,11 +183,11 @@
     }
 
     .responsive-dropdown > div {
-        @apply max-h-[100] opacity-100;
+        @apply py-4 opacity-100 transition-opacity;
     }
 
     .responsive-dropdown.closed > div {
-        @apply invisible h-0 opacity-0 transition-[height,opacity];
+        @apply h-0 py-0 invisible opacity-0;
     }
 
     .responsive-dropdown:not(.closed) .lucide-chevron-up {

@@ -1,12 +1,12 @@
 @props(['label'])
 
-<div class="responsive-dropdown closed w-full">
+<div class="responsive-dropdown closed w-full h-auto">
     <button class="h-12 px-4 font-medium rounded-lg hover:bg-slate-300 dark:hover:bg-slate-700 transition-colors flex gap-1 items-center">
-        Options
+        More Options
         @include('partials.icon', ['name' => 'chevron-down'])
         @include('partials.icon', ['name' => 'chevron-up'])
     </button>
-    <div class="py-4 flex flex-col gap-4">
+    <div class="flex flex-col gap-4">
         <section id="search-options" class="card h-min flex flex-col">
             <h1 class="pb-4 text-xl font-semibold">Search Options</h1>
             <div class="grid justify-stretch">
