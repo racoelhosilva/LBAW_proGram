@@ -5,7 +5,7 @@
     {{'Search | Program'}}
 @endsection
 @section('content')
-    <main id="search-page" class="px-8 grid grid-cols-4 grid-rows gap-6">
+    <main id="search-page" class="px-8 grid grid-cols-4 grid-rows-[auto_1fr] gap-6">
         @include('partials.search-menu', ['tags' => $tags])
 
         <section id="search-results" class="flex flex-col col-span-4 lg:col-span-3 gap-3">

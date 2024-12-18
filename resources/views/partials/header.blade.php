@@ -1,4 +1,4 @@
-<header class="h-auto py-4 lg:h-24 px-8 lg:px-24 grid grid-cols-[auto_auto_1fr_auto] items-center justify-end gap-x-4 gap-y-4">
+<header class="h-auto py-4 lg:h-24 px-8 lg:px-24 grid grid-cols-[auto_auto_1fr_auto] items-center justify-end gap-x-4 gap-y-3.5">
     @include('partials.logo')
     @include('partials.search-field')
     <div class="col-start-4 inline-flex gap-x-2 items-center">

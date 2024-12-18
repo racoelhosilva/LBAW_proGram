@@ -11,6 +11,12 @@
     main {
         min-height: calc(100vh - 9rem);
     }
+
+    @media (max-width: 1024px) {
+        main {
+            min-height: calc(100vh - 12rem);
+        }
+    }
 }
 
 @layer components {
@@ -187,7 +193,7 @@
     }
 
     .responsive-dropdown.closed > div {
-        @apply max-lg:h-0 max-lg:py-0 max-lg:opacity-0;
+        @apply max-lg:h-0 max-lg:py-0 max-lg:invisible max-lg:opacity-0;
     }
 
     .responsive-dropdown:not(.closed) > button > .lucide-chevron-up {
