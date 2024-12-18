@@ -9,7 +9,7 @@
 @endphp
 
 <div class="select closed" tabindex="0">
-    <button>
+    <button type="button">
         <div>
             <span class="select-label">{{ $label }}:</span>
             <span class="selected-options">{{ implode(", ", $selectedNames) }}</span>

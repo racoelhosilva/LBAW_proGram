@@ -26,7 +26,7 @@
         @if(request('search_type') === 'posts')
             @include('partials.tag-select', [
                 'tags' => $tags,
-                'label' => 'Select Tags',
+                'label' => 'Filter By Tags',
                 'selected' => request('tags'),
                 'form' => 'search-field'
             ])

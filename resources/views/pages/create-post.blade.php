@@ -6,7 +6,7 @@
     <main id="create-post-page" class="px-8 items-center">
         <article class="card h-min p-10 pt-16 flex flex-col gap-12 justify-items-center">
             <h1 class="text-xl font-bold text-center">Create a New Post</h1>
-            <form action="{{ route('post.store') }}" method="POST" class="w-full flex flex-col gap-4">
+            <form id="create-post-form" action="{{ route('post.store') }}" method="POST" class="w-full flex flex-col gap-4">
                 @csrf
                 
                 @include('partials.input-field', [
@@ -27,9 +27,9 @@
                     <label for="tags" class="font-medium">Associated Tags</label>
                     @include('partials.tag-select', [
                         'tags' => $tags,
-                        'label' => 'Select Tags',
+                        'label' => 'Tags',
                         'selected' => [],
-                        'form' => 'create-post',
+                        'form' => 'create-post-form',
                     ])
                 </section>
 
