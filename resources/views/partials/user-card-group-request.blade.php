@@ -17,7 +17,8 @@
     </div>
     @if($buttons)
     <div class="flex gap-x-4 justify-end">
-             {!! $buttons !!}
+        @include('partials.text-button', ['text' => 'Accept','type' =>'secondary', 'class' => 'w-40  accept-group-request-button'])->render();
+        @include('partials.text-button', ['text' => 'Decline','type' =>'secondary', 'class' => 'w-40 decline-group-request-button'])->render();
     </div>
     @endif
 </article>

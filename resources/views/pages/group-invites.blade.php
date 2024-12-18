@@ -42,7 +42,7 @@
                             }
                             $buttons = $inviteButton;
                         @endphp
-                        @include('partials.user-card-custom', [
+                        @include('partials.user-card-group-invites', [
                             'user' => $user,
                             'class' => 'w-full ',
                             'buttons' => $buttons,

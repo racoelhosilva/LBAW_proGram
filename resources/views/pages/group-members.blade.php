@@ -8,18 +8,7 @@
             <h1 class="text-4xl text-center font-medium m-4">Members</h1>
             @forelse ($group->members->where('id', '!=', $group->owner->id) as $user)
                 <div class="manage-member-container flex flex-row w-full mb-4" data-user-id={{$user->id}}>
-                    @php
-                        $removeButton = view('partials.text-button', ['text' => 'Remove','type' =>'secondary','class' => 'w-40 remove-member-button'])->render();
-                        if($group->owner->id == Auth::id()){
-                            $buttons = $removeButton;
-                        }
-                        else
-                        {
-                            $buttons = '';
-                        }
-                        
-                    @endphp
-                    @include('partials.user-card-custom', ['user' => $user, 'class' => 'w-full ', 'buttons' => $buttons])
+                    @include('partials.user-card-group-member', ['user' => $user, 'class' => 'w-full'])
                 </div>
 
             @empty
