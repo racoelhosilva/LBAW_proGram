@@ -6,7 +6,6 @@ const addSubmitCommentListener = () => {
 
     form.addEventListener('submit', async (event) => {
         event.preventDefault();
-        console.log("called submit");
 
         const formData = new FormData(form);
         const params = Object.fromEntries(formData.entries());
@@ -26,8 +25,6 @@ const addEditCommentListener = () => {
     if (!commentSection) return;
 
     const comments = commentSection.querySelectorAll('.comment-card');
-    console.log("called edit");
-    console.log(comments.length);
     comments.forEach((comment) => {
         const editButton = comment.querySelector('.edit-button-container button');
         const contentContainer = comment.querySelector('.content-container');
@@ -47,19 +44,15 @@ const addDeleteCommentListener = () => {
     if (!commentSection) return;
 
     const comments = commentSection.querySelectorAll('.comment-card');
-    console.log("called delete");
-    console.log(comments.length);
     comments.forEach(comment => {
         const deleteButton = comment.querySelector('.delete-button-container button');
         
         if (deleteButton && !deleteButton.classList.contains('has-delete-listener')) {
             deleteButton.classList.add('has-delete-listener');
             deleteButton.addEventListener('click', () => {
-                console.log('delete added');
                 const commentId = comment.dataset.commentId;
                 sendDelete(`/api/comment/${commentId}`)
                     .then((_) => {
-                        console.log(comment);
                         comment.remove();
                     })
                     .catch((error) => {
@@ -77,8 +70,6 @@ const addSaveCommentListener = () => {
     if (!commentSection) return;
 
     const comments = commentSection.querySelectorAll('.comment-card');
-    console.log("called save");
-    console.log(comments.length);
 
     comments.forEach(comment => {
         const saveButton = comment.querySelector('.edit-comment-form button');
@@ -87,8 +78,6 @@ const addSaveCommentListener = () => {
             saveButton.classList.add('has-save-listener');
             saveButton.addEventListener('click', async (event) => {
                 event.preventDefault();
-                console.log("called save");
-                console.log(contentEditForm);
                 const formData = new FormData(contentEditForm);
                 const params = Object.fromEntries(formData.entries());
                 const updatedComment = await getView(contentEditForm.action, params, 'PATCH');

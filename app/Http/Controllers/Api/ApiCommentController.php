@@ -46,8 +46,10 @@ class ApiCommentController extends Controller
                 'content' => $request->input('content'),
                 'post_id' => $request->input('post_id'),
                 'author_id' => $request->input('author_id'),
+                'timestamp' => now(),
             ]);
             if ($request->ajax()) {
+
                 return view('partials.comment-card', ['comment' => $comment]);
             } else {
                 return response()->json($comment, 201);
