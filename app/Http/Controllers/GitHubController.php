@@ -10,6 +10,18 @@ use Laravel\Socialite\Facades\Socialite;
 
 class GitHubController extends Controller
 {
+    private function randomizeHandle($handle)
+    {
+
+        $newHandle = $handle;
+
+        while (User::where('handle', $newHandle)->exists()) {
+            $newHandle = substr($handle, 0, 17).rand(100, 999);
+        }
+
+        return $newHandle;
+    }
+
     public function sanitizeGitHubData($data)
     {
         $data['handle'] = preg_replace('/\s+/', '', $data['handle']);
@@ -58,6 +70,7 @@ class GitHubController extends Controller
             ];
 
             $data = $this->sanitizeGitHubData($data);
+            $data['handle'] = $this->randomizeHandle($data['handle']);
 
             $new_user = new User;
 
