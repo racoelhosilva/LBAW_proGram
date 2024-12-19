@@ -14,6 +14,8 @@ const acceptRequestListener = () => {
                     .then(() => {
                         btn.closest('.manage-request-container').remove();
                         updateNoRequestsMessage();
+                        sendToastMessage('Request accepted with success', 'success');
+                        
                     })
                     .catch((error) => {
                         sendToastMessage('An error occurred while accepting the request.', 'error');
@@ -40,6 +42,7 @@ const rejectRequestListener = () => {
                 .then(() => {
                     btn.closest('.manage-request-container').remove();
                     updateNoRequestsMessage();
+                    sendToastMessage('Request rejected with success', 'success');
                 })
                 .catch((error) => {
                     sendToastMessage('An error occurred while rejecting the request.', 'error');
