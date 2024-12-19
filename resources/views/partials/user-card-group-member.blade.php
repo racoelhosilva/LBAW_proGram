@@ -1,4 +1,4 @@
-        @props(['user', 'class' => '', 'buttons' => null])
+@props(['user', 'class' => '', 'buttons' => null])
 
 @php($userUrl = route('user.show', $user->id))
 
@@ -16,16 +16,14 @@
         </div>
     </div>
     <div class="flex gap-x-4 justify-end">
-                        @can('remove',[$group, $user])
-                              @include('partials.confirmation-modal', [
-                                'label' => 'Remove Member',
-                                'type' => 'button',
-                                'message' => 'Are you sure you want to remove this member from this group?',
-                                'class' => 'remove-member-button',
-                                ])
-                        @endif
-                        
-
+        @can('remove',[$group, $user])
+            @include('partials.confirmation-modal', [
+                'label' => 'Remove Member',
+                'type' => 'button',
+                'message' => 'Are you sure you want to remove this member from this group?',
+                'class' => 'remove-member-button',
+            ])
+        @endif
     </div>
 </article>
 

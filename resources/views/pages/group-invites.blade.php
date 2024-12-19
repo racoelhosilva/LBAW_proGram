@@ -11,31 +11,27 @@
             @include('partials.search-invites', ['group' => $group])
             <div id="invite-results" class="flex flex-col gap-4 mt-4">
                 @if($searched)
-                    @if($usersSearched->isEmpty())
+                    @forelse ($usersSearched as $user)
+                        <div class="manage-invite-container flex flex-row w-full " data-user-id={{ $user->id }}>    
+                            @include('partials.user-card-group-invites', [
+                                'user' => $user,
+                                'class' => 'w-full ',
+                            ])
+                        </div>
+                    @empty
                         <p>No users found.</p>
-                    @else
-                        @foreach ($usersSearched as $user)
-                            <div class="manage-invite-container flex flex-row w-full " data-user-id={{ $user->id }}>    
-                                @include('partials.user-card-group-invites', [
-                                    'user' => $user,
-                                    'class' => 'w-full ',
-                                ])
-                            </div>
-                        @endforeach
-                    @endif
+                    @endforelse
                 @else
-                    @if($usersInvited->isEmpty())
+                    @forelse ($usersInvited as $user)
+                        <div class="manage-invite-container flex flex-row w-full " data-user-id={{ $user->id }}>    
+                            @include('partials.user-card-group-invites', [
+                                'user' => $user,
+                                'class' => 'w-full ',
+                            ])
+                        </div>
+                    @empty
                         <p>No invites sent yet.</p>
-                    @else
-                        @foreach ($usersInvited as $user)
-                            <div class="manage-invite-container flex flex-row w-full " data-user-id={{ $user->id }}>    
-                                @include('partials.user-card-group-invites', [
-                                    'user' => $user,
-                                    'class' => 'w-full ',
-                                ])
-                            </div>
-                        @endforeach
-                    @endif
+                    @endforelse
                 @endif
             </div>
         </section>
