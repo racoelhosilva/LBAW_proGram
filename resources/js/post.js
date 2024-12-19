@@ -65,8 +65,6 @@ const addLikeButtonListeners = () => {
 		const postId = postCard.dataset.postId;
 		const likeButton = postCard.querySelector(".like-button");
 		const likeCount = postCard.querySelector(".like-button + p");
-		if(likeButton.classList.contains('has-like-listener')) return;
-		likeButton.classList.add('has-like-listener');
 		likeButton.onclick = () =>	{
 			if (likeButton.classList.contains('enabled')) {
 				togglePostLike(likeButton, likeCount, postId);

@@ -3,11 +3,11 @@ import { addDropdownListeners } from './app';
 import { addLikeButtonListeners } from './post';
 const addSubmitCommentListener = () => {
     const form = document.getElementById('comment-submit-form');
+    if (!form) return;
     const commentSection = document.querySelector('.comment-list'); // Container for comments
-
+    if(!commentSection) return;
     form.addEventListener('submit', async (event) => {
         event.preventDefault();
-
         const formData = new FormData(form);
         const params = Object.fromEntries(formData.entries());
         const comment = await sendPostView(form.action, params, 'POST');
@@ -31,13 +31,12 @@ const addEditCommentListener = () => {
         const editButton = comment.querySelector('.edit-button-container button');
         const contentContainer = comment.querySelector('.content-container');
         const contentEditContainer = comment.querySelector('.edit-content-container');
-        if(editButton  && !editButton.classList.contains('has-edit-listener')) {
-            editButton.classList.add('has-edit-listener');
-            editButton.addEventListener('click', () => {
+        if(editButton) {
+            editButton.onclick = () => {
                 contentContainer.classList.toggle('hidden');
                 contentEditContainer.classList.toggle('hidden');
-            });
-    }
+            };
+        }
     });
 };
 
@@ -49,9 +48,8 @@ const addDeleteCommentListener = () => {
     comments.forEach(comment => {
         const deleteButton = comment.querySelector('.delete-button-container button');
         
-        if (deleteButton && !deleteButton.classList.contains('has-delete-listener')) {
-            deleteButton.classList.add('has-delete-listener');
-            deleteButton.addEventListener('click', () => {
+        if (deleteButton) {
+            deleteButton.onclick = () => {
                 const commentId = comment.dataset.commentId;
                 sendDelete(`/api/comment/${commentId}`)
                     .then((_) => {
@@ -61,7 +59,7 @@ const addDeleteCommentListener = () => {
                         console.error('Error deleting comment:', error);
                         sendToastMessage('An error occurred while deleting comment.', 'error');
                     });
-            });
+            };
         }
     });
 }
@@ -76,20 +74,19 @@ const addSaveCommentListener = () => {
     comments.forEach(comment => {
         const saveButton = comment.querySelector('.edit-comment-form button');
         const contentEditForm = comment.querySelector('.edit-comment-form');
-        if(saveButton && !saveButton.classList.contains('has-save-listener')) {
-            saveButton.classList.add('has-save-listener');
-            saveButton.addEventListener('click', async (event) => {
-                event.preventDefault();
-                const formData = new FormData(contentEditForm);
-                const params = Object.fromEntries(formData.entries());
-                const updatedComment = await sendPutView(contentEditForm.action, params, 'PATCH');
-                comment.outerHTML = updatedComment;
-                addDropdownListeners();
-                addEditCommentListener();
-                addDeleteCommentListener();
-                addSaveCommentListener();
-                addLikeButtonListeners();
-            });
+        if (saveButton) {
+            saveButton.onclick = async (event) => {
+            event.preventDefault();
+            const formData = new FormData(contentEditForm);
+            const params = Object.fromEntries(formData.entries());
+            const updatedComment = await sendPutView(contentEditForm.action, params, 'PATCH');
+            comment.outerHTML = updatedComment;
+            addDropdownListeners();
+            addEditCommentListener();
+            addDeleteCommentListener();
+            addSaveCommentListener();
+            addLikeButtonListeners();
+            };
         }
     });
 }

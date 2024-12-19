@@ -25,9 +25,8 @@ const addDropdownListeners = () => {
     dropdowns.forEach(dropdown => {
         const dropdownButton = dropdown.querySelector(':scope > button');
         const dropdownContent = dropdown.querySelector(':scope > div');
-        dropdownButton.addEventListener('click', event => toggleDropdown(dropdownContent, event));
-        dropdown.classList.add('has-dropdown-listener');
-        document.addEventListener('click', event => hideDropdown(dropdown, event));
+        dropdownButton.onclick = (event) => toggleDropdown(dropdownContent, event);
+        document.onClick = (event) => hideDropdowns(event);
     });
 };
 
