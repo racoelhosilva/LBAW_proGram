@@ -192,8 +192,8 @@ Route::prefix('api')->middleware('api.token')->group(function () {
         Route::get('/post', 'index')->name('api.post.index');
         Route::post('/post', 'store')->name('api.post.store');
         Route::get('/post/{id}', 'show')->where('id', '[0-9]+')->name('api.post.show');
-        // Route::put('/post/{id}', 'update')->where('id', '[0-9]+')->name('api.post.update');
-        // Route::delete('/post/{id}', 'destroy')->where('id', '[0-9]+')->name('api.post.destroy');
+        Route::put('/post/{id}', 'update')->where('id', '[0-9]+')->name('api.post.update');
+        Route::delete('/post/{id}', 'destroy')->where('id', '[0-9]+')->name('api.post.destroy');
         // Route::get('/post/{id}/like', 'indexLikes')->where('id', '[0-9]+')->name('api.post.like.index');
         Route::post('/post/{id}/like', 'like')->where('id', '[0-9]+')->name('api.post.like');
         Route::delete('/post/{id}/like', 'unlike')->where('id', '[0-9]+')->name('api.post.unlike');

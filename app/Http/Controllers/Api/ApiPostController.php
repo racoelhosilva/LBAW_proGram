@@ -107,7 +107,19 @@ class ApiPostController extends Controller
 
         $post->tags()->sync($request->input('tags'));
 
-        return response()->json($post);
+        $postData = $post->only([
+            'id',
+            'author_id',
+            'title',
+            'text',
+            'creation_timestamp',
+            'is_announcement',
+            'is_public',
+            'likes',
+            'comments',
+        ]);
+
+        return response()->json($postData);
     }
 
     public function like(Request $request, int $id)
