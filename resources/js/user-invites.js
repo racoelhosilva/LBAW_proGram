@@ -10,6 +10,7 @@ const addInviteAcceptListeners =  () =>{
             sendPost(`/api/group/${groupId}/acceptInvite`)
                 .then(() => {
                     inviteContainer.remove();
+                    sendToastMessage('Accepted invite with success', 'success');
                 })
                 .catch((error) => {
                     sendToastMessage('An error occurred while accepting the invite.', 'error');
@@ -28,6 +29,7 @@ const addInviteRejectListeners = () =>{
             sendDelete(`/api/group/${groupId}/rejectInvite`)
                 .then(() => {
                     inviteContainer.remove();
+                    sendToastMessage('Rejected invite with success', 'success');
                 })
                 .catch((error) => {
                     sendToastMessage('An error occurred while rejecting the invite.', 'error');

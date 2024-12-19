@@ -7,10 +7,18 @@ use App\Models\User;
 
 class GroupPolicy
 {
+    /*
+     * Determine whether the user can view any models.
+     */
+    public function viewAny(?User $user): bool
+    {
+        return ! $user || ! $user->isBanned();
+    }
+
     /**
      * Determine whether the user can create models.
      */
-    public function view(?User $user, Group $group): bool
+    public function viewContent(?User $user, Group $group): bool
     {
         return $user && ! $user->isBanned() && $group->members()->where('user_id', $user->id)->exists() || $group->is_public;
     }
@@ -51,9 +59,9 @@ class GroupPolicy
     /*
     * Determine whether the user can remove a user from the group.
     */
-    public function remove(?User $user, Group $group): bool
+    public function remove(?User $user, Group $group, ?User $userToBeRemoved): bool
     {
-        return $user && ! $user->isBanned() && $user->id === $group->owner_id;
+        return $user && ! $user->isBanned() && $user->id === $group->owner_id && $user->id !== $userToBeRemoved->id;
     }
 
     /*
@@ -97,21 +105,5 @@ class GroupPolicy
     {
 
         return $user && ! $user->isBanned() && $group->invitedUsers()->where('users.id', $user->id)->exists();
-    }
-
-    /*
-     * Determine whether the user can view any models.
-     */
-    public function viewAny(?User $user): bool
-    {
-        return ! $user || ! $user->isBanned();
-    }
-
-    /*
-    *Add Post to Group
-    */
-    public function addPostToGroup(?User $user, Group $group): bool
-    {
-        return $user && ! $user->isBanned() && $group->members()->where('user_id', $user->id)->exists();
     }
 }

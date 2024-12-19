@@ -18,7 +18,6 @@ export default defineConfig({
 				"resources/js/manage-group-requests.js",
 				"resources/js/manage-group-invites.js",
 				"resources/js/manage-group-members.js",
-				"resources/js/create-post-group.js",
 				"resources/js/user-groups.js",
 				"resources/js/user-invites.js",
 				"resources/js/notifications.js",

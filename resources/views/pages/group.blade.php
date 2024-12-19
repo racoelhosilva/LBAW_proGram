@@ -20,7 +20,7 @@
             </div>
             <div class="col-span-full flex justify-between ">
                 <div class="flex flex-col justify-end">
-                    @can('view', $group)
+                    @can('viewContent', $group)
                          <a href="{{ route('group.members', ['id' => $group->id]) }}" class="text-xl font-bold">{{$group->member_count}} members</a>
                     @endcan
                 </div>
@@ -65,7 +65,7 @@
             </div>  
 
         </section>
-        @can('view', $group)
+        @can('viewContent', $group)
             <section class="grid gap-4">
                 <div class="flex  gap-10">
                     <button id="group-chat-tab" class="tab-button text-2xl font-bold py-2 border-b-2" data-tab="group-chat">

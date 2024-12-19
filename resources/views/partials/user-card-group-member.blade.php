@@ -16,7 +16,7 @@
         </div>
     </div>
     <div class="flex gap-x-4 justify-end">
-        @if($group->owner->id == Auth::id())
+        @can('remove',[$group, $user])
             @include('partials.confirmation-modal', [
                 'label' => 'Remove Member',
                 'type' => 'button',
