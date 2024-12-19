@@ -5,7 +5,11 @@
     $postUrl = route('post.show', $post->id);
 @endphp
 
-<article class="post-card card px-6 w-full grid grid-cols-[auto_1fr_auto] items-center content-start"
+<article class="post-card card px-6 w-full grid grid-cols-[auto_1fr_auto] items-center content-start
+    @if($post->is_announcement)
+        shadow-[inset_0_0_4px_rgba(38,102,214,0.8)] dark:shadow-[inset_0_0_4px_rgba(38,102,214,0.8)]
+    @endif
+    "
     data-post-id="{{ $post->id }}">
     @if (!$post->author->is_deleted)
         <a href="{{ $authorUrl }}">
