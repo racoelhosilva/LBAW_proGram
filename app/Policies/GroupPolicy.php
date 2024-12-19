@@ -59,9 +59,9 @@ class GroupPolicy
     /*
     * Determine whether the user can remove a user from the group.
     */
-    public function remove(?User $user, Group $group): bool
+    public function remove(?User $user, Group $group, ?User $userToBeRemoved): bool
     {
-        return $user && ! $user->isBanned() && $user->id === $group->owner_id;
+        return $user && ! $user->isBanned() && $user->id === $group->owner_id && $user->id !== $userToBeRemoved->id;
     }
 
     /*

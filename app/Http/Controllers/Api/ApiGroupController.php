@@ -48,7 +48,7 @@ class ApiGroupController extends Controller
     public function remove(Request $request, int $group_id, int $user_id)
     {
         $group = Group::findOrFail($group_id);
-        $this->authorize('remove', $group);
+        $this->authorize('remove', [$group, User::findOrFail($user_id)]);
         GroupMember::where('group_id', $group_id)->where('user_id', $user_id)->delete();
 
         return response()->json(['message' => 'User removed from group.']);
