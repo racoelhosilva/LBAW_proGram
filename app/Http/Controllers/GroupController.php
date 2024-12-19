@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Group;
 use App\Models\GroupJoinRequest;
 use App\Models\GroupMember;
-use App\Models\Tag;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -67,6 +66,7 @@ class GroupController extends Controller
     {
 
         $group = Group::findOrFail($groupId);
+        $this->authorize('view', $group);
 
         $members = $group->members->where('id', '!=', $group->owner->id); // Exclude the owner
 
@@ -148,11 +148,6 @@ class GroupController extends Controller
         return redirect()->route('group.show', $group->id)->withSuccess('Group edited successfully.');
     }
 
-    public function destroy($id)
-    {
-        // Delete the group...
-    }
-
     public function edit($id)
     {
 
@@ -187,17 +182,6 @@ class GroupController extends Controller
         }
 
         return view('pages.manage-group', ['group' => $group, 'usersWhoWantToJoin' => $usersWhoWantToJoin, 'usersSearched' => $usersSearched]);
-    }
-
-    public function showCreatePostForm(Request $request, int $groupId)
-    {
-        $group = Group::findOrFail($groupId);
-
-        if (! Auth::check()) {
-            return redirect()->route('login');
-        }
-
-        return view('pages.create-group-post', ['group' => $group,  'tags' => Tag::all()]);
     }
 
     public function join(Request $request, int $group_id)

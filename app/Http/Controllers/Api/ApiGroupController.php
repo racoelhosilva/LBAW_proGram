@@ -158,13 +158,4 @@ class ApiGroupController extends Controller
 
         return response()->json(['message' => 'You have rejected the invitation.']);
     }
-
-    public function addPostToGroup(Request $request, int $group_id, int $post_id)
-    {
-        $group = Group::findOrFail($group_id);
-        $this->authorize('addPostToGroup', $group);
-        $group->posts()->attach($post_id);
-
-        return response()->json(['message' => 'Post added to group.']);
-    }
 }

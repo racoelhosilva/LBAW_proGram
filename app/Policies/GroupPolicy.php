@@ -7,6 +7,14 @@ use App\Models\User;
 
 class GroupPolicy
 {
+    /*
+     * Determine whether the user can view any models.
+     */
+    public function viewAny(?User $user): bool
+    {
+        return ! $user || ! $user->isBanned();
+    }
+
     /**
      * Determine whether the user can create models.
      */
@@ -97,21 +105,5 @@ class GroupPolicy
     {
 
         return $user && ! $user->isBanned() && $group->invitedUsers()->where('users.id', $user->id)->exists();
-    }
-
-    /*
-     * Determine whether the user can view any models.
-     */
-    public function viewAny(?User $user): bool
-    {
-        return ! $user || ! $user->isBanned();
-    }
-
-    /*
-    *Add Post to Group
-    */
-    public function addPostToGroup(?User $user, Group $group): bool
-    {
-        return $user && ! $user->isBanned() && $group->members()->where('user_id', $user->id)->exists();
     }
 }
