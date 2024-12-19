@@ -6,7 +6,7 @@
         @include('partials.post-card', ["post" => $post])
     </section>
     
-    <section id="comment-section" class="card h-fit flex flex-col gap-3 col-span-3 lg:col-span-1">
+    <section id="comment-section" class="card flex flex-col gap-3 col-span-3 lg:col-span-1" style="height: calc(100vh - 6rem - 4rem - 3rem);">
         <h1 class="text-xl font-bold">Comments</h1>
         @auth
             <form id ="comment-submit-form" action="{{ route('api.comment.store') }}" >
