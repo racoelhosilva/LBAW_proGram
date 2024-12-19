@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Comment;
 use App\Models\Post;
 use App\Models\Tag;
+use Barryvdh\Debugbar\Facades\Debugbar;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -18,27 +19,33 @@ class PostController extends Controller
 {
     const ALLOWED_TAGS = '<p><br><strong><em><u><code><ol><ul><li><span><div><a><img><iframe>';
 
-    protected function cleanupUnusedImages(string $text)
+    protected function cleanupUnusedImages(string $text, Post $post)
     {
         preg_match_all('/<img[^>]+>/i', $text, $result);
 
+        $folder = 'temporary/'.$post->author_id;
+
+        // files from the temporary folder + the postAttachments folder
+        $allFiles = Storage::disk('storage')->files($folder) + Storage::disk('storage')->files('postAttachments/'.$post->id.'/'.$post->author_id);
+
         if (empty($result[0])) {
+            foreach ($allFiles as $file) {
+                Storage::disk('storage')->delete($file);
+            }
+            Storage::disk('storage')->deleteDirectory($folder);
+            Storage::disk('storage')->deleteDirectory('postAttachments/'.$post->id);
+
             return [];
         }
 
-        $folder = explode('/', $result[0][0]);
-        $folder = $folder[3].'/'.$folder[4];
-
-        $allFiles = Storage::disk('storage')->files($folder);
-
         $usedFiles = [];
-        // extract only the path
         foreach ($result[0] as $img) {
             preg_match('/src="([^"]+)"/', $img, $match);
             $usedFiles[] = ltrim(parse_url($match[1], PHP_URL_PATH), '/');
         }
 
         $unusedFiles = array_diff($allFiles, $usedFiles);
+        Debugbar::info($unusedFiles);
 
         foreach ($unusedFiles as $file) {
             Storage::disk('storage')->delete($file);
@@ -98,7 +105,7 @@ class PostController extends Controller
 
             // Find the used images, and delete the unused ones
             $text = strip_tags($request->input('text'), self::ALLOWED_TAGS);
-            $usedFiles = $this->cleanupUnusedImages($text);
+            $usedFiles = $this->cleanupUnusedImages($text, $post);
             $text = str_replace('temporary', 'postAttachments/'.$postId, $text);
 
             // Move the used images to the postAttachments folder
@@ -172,7 +179,7 @@ class PostController extends Controller
         $post = Post::findOrFail($id);
 
         $text = strip_tags($request->input('text'), self::ALLOWED_TAGS);
-        $usedFiles = $this->cleanupUnusedImages($text);
+        $usedFiles = $this->cleanupUnusedImages($text, $post);
         $text = str_replace('temporary', 'postAttachments/'.$post->id, $text);
         foreach ($usedFiles as $file) {
             $newFile = str_replace('temporary', 'postAttachments/'.$post->id, $file);

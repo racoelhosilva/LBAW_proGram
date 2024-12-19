@@ -103,13 +103,10 @@ class FileController extends Controller
     public function uploadFile(Request $request)
     {
 
-        Debugbar::info($request);
-
         // Validation: has file
         if (! $request->hasFile('file')) {
             return redirect()->back()->withError('File not found');
         }
-        Debugbar::info($request->file('file'));
 
         // Validation: upload extension
         $file = $request->file('file');
