@@ -80,7 +80,7 @@ class GroupController extends Controller
         }
 
         $this->authorize('update', $group);
-        $usersWhoWantToJoin = $group->joinRequests()->where('status', 'pending')->paginate(10);
+        $usersWhoWantToJoin = $group->joinRequests()->where('status', 'pending');
 
         return view('pages.group-requests', ['group' => $group, 'usersWhoWantToJoin' => $usersWhoWantToJoin]);
     }
@@ -138,11 +138,15 @@ class GroupController extends Controller
             'is_public' => 'boolean',
             'owner_id' => 'required|integer',
         ]);
+
         if ($group->is_public != $request->filled('is_public')) {
             foreach ($group->posts as $post) {
                 $post->is_public = $request->filled('is_public');
                 $post->save();
             }
+        }
+        if ($request->filled('is_public')) {
+            GroupJoinRequest::where('group_id', $id)->where('status', 'pending')->update(['status' => 'accepted']);
         }
 
         $group->name = $request->input('name');
@@ -177,7 +181,7 @@ class GroupController extends Controller
         }
 
         $this->authorize('update', $group);
-        $usersWhoWantToJoin = $group->joinRequests()->where('status', 'pending')->paginate(10);
+        $usersWhoWantToJoin = $group->joinRequests()->where('status', 'pending');
 
         $userIds = request()->query('users');
         if ($userIds) {

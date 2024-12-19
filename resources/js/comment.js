@@ -26,7 +26,7 @@ const addEditCommentListener = () => {
 
     const comments = commentSection.querySelectorAll('.comment-card');
     comments.forEach((comment) => {
-        const editButton = comment.querySelector('.edit-button-container button');
+        const editButton = comment.querySelector('.edit-comment');
 
         if (editButton) {
             const onEditClick = () => {
@@ -51,6 +51,7 @@ const addEditCommentListener = () => {
 
                     sendPatch(`/api/comment/${commentId}`, data)
                         .then(() => {
+                            sendToastMessage('Comment updated successfully.', 'success');
                             window.location.reload();
                         })
                         .catch((error) => {
@@ -76,13 +77,14 @@ const addDeleteCommentListener = () => {
     const comments = commentSection.querySelectorAll('.comment-card');
 
     comments.forEach(comment => {
-        const deleteButton = comment.querySelector('.delete-button-container button');
+        const deleteButton = comment.querySelector('.delete-comment');
         
         if (deleteButton) {
             deleteButton.addEventListener('click', () => {
                 const commentId = comment.dataset.commentId;
                 sendDelete(`/api/comment/${commentId}`)
                     .then((_) => {
+                        sendToastMessage('Comment deleted successfully.', 'success');
                         window.location.reload();
                     })
                     .catch((error) => {

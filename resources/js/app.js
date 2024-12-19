@@ -1,5 +1,5 @@
 import './bootstrap';
-import { fadeToastMessage } from './utils'
+import {fadeToastMessage, sendToastMessage} from './utils'
 
 const toggleDropdown = (dropdownContent, event) => {
     dropdownContent.classList.toggle('hidden');
@@ -40,6 +40,7 @@ const openModal = (modal, event) => {
 
 const closeModal = (modal, event) => {
     modal.classList.remove('active');
+    hideDropdowns(event);
     event.stopPropagation();
 }
 
@@ -49,11 +50,13 @@ const addModalListeners = () => {
     modals.forEach(modal => {
         const modalOpenButton = modal.querySelector(`:scope .open-button`);
         const modalContent = modal.querySelector(':scope > div');
-        const modalCloseButton = modal.querySelector(':scope .close-button');
+        const modalCloseButtons = modal.querySelectorAll(':scope .close-button');
 
         modalContent.addEventListener('click', event => event.stopPropagation());
         modalOpenButton.addEventListener('click', event => openModal(modal, event));
-        modalCloseButton.addEventListener('click', event => closeModal(modal, event));
+        modalCloseButtons.forEach(closeButton => {
+            closeButton.addEventListener('click', event => closeModal(modal, event));
+        });
     });
 }
 
@@ -121,8 +124,23 @@ const addResponsiveDropdownListeners = () => {
     });
 };
 
+const addCopyButtonListeners = () => {
+    const copyButtons = document.querySelectorAll('.copy-button');
+
+    copyButtons.forEach(copyButton => {
+        copyButton.addEventListener('click', () => {
+            const copyText = copyButton.querySelector('span').textContent;
+
+            navigator.clipboard.writeText(copyText).then(() => {
+                sendToastMessage('Copied to clipboard!', 'success');
+            });
+        });
+    });
+};
+
 addDropdownListeners();
 addModalListeners();
 addToastMessageListeners();
 addSelectListeners();
 addResponsiveDropdownListeners();
+addCopyButtonListeners();

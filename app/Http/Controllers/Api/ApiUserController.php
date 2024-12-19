@@ -248,7 +248,12 @@ class ApiUserController extends Controller
     public function removeFollower($id)
     {
         $follower = User::findOrFail($id);
-        $currentUser = Auth()->user()->id;
+
+        if (! Auth()->check()) {
+            return response()->json(['message' => 'User not authenticated.'], 401);
+        }
+
+        $currentUser = Auth()->user();
 
         if ($follower->follows($currentUser)) {
             DB::transaction(function () use ($currentUser, $follower) {
