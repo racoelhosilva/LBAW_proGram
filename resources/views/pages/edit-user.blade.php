@@ -147,26 +147,5 @@
                 ])
             </form>
         </section>
-
-        <section class="w-full">
-            <h2 class="text-2xl font-bold">API Token</h2>
-            <div class="py-2 flex justify-between items-center gap-4">
-                @isset($user->token)
-                    @include('partials.copy-button', ['value' => $user->token->value])
-                    <form method="post" action="{{ route('token.destroy', $user->token->id) }}">
-                        {{ csrf_field() }}
-                        {{ method_field('DELETE') }}
-                        @include('partials.text-button', ['text' => 'Revoke Token', 'label' => 'Revoke Token', 'type' => 'primary', 'submit' => true])
-                    </form>
-                @else
-                    <p class="text-gray-700 dark:text-gray-400">You do not have an API token yet.</p>
-                    <form method="post" action="{{ route('token.store') }}">
-                        {{ csrf_field() }}
-                        <input type="hidden" name="duration" value="day">
-                        @include('partials.text-button', ['text' => 'Generate Token', 'label' => 'Generate Token', 'type' => 'primary', 'submit' => true])
-                    </form>
-                @endisset
-            </div>
-        </section>
     </main>
 @endsection
