@@ -154,8 +154,9 @@ class GroupController extends Controller
         $group->is_public = $request->filled('is_public');
         $group->owner_id = $request->input('owner_id');
         $group->save();
+        dd('aqui');
 
-        return redirect()->route('group.show', $group->id)->withSuccess('Group edited successfully.');
+        return redirect()->route('group.show', $group->id);
     }
 
     public function edit($id)
