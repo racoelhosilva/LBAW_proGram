@@ -15,16 +15,22 @@ class ApiPostController extends Controller
     // Retrieve all posts
     public function index()
     {
-        $this->authorize('viewAny', Post::class);
 
-        $posts = Post::where('is_public', true);
+        $user = auth()->user();
 
-        if (Auth::check()) {
-            $followingIds = Auth::user()->following->pluck('id');
-            $posts = $posts->orWhereIn('author_id', $followingIds);
-        }
-
-        $posts = $posts->select(['id', 'author_id', 'title', 'text', 'creation_timestamp', 'is_announcement', 'is_public', 'likes', 'comments'])->get();
+        $posts = Post::visibleTo($user)
+            ->select([
+                'id',
+                'author_id',
+                'title',
+                'text',
+                'creation_timestamp',
+                'is_announcement',
+                'is_public',
+                'likes',
+                'comments',
+            ])
+            ->get();
 
         return response()->json($posts);
     }
