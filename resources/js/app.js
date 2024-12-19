@@ -40,6 +40,7 @@ const openModal = (modal, event) => {
 
 const closeModal = (modal, event) => {
     modal.classList.remove('active');
+    hideDropdowns(event);
     event.stopPropagation();
 }
 

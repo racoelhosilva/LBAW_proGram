@@ -46,7 +46,7 @@
             </div>
         </div>
 
-        <div class="overflow-x-auto">
+        <div class="overflow-x-auto flex flex-col gap-4">
             <table>
                 <thead class="text-center">
                     <tr>
@@ -65,14 +65,14 @@
                                     @include('partials.icon-button', ['iconName' => 'ellipsis', 'label' => 'Options', 'type' => 'transparent'])
                                     <div class="hidden">
                                         <div>
-                                            <form method="post" action="{{ route('admin.language.destroy', $language->id) }}" class="flex flex-col">
-                                                @csrf
-                                                @method('DELETE')
-                                                @include('partials.dropdown-item', [
-                                                    'icon' => 'trash',
-                                                    'text' => 'Delete Language',
-                                                ])
-                                            </form>
+                                            @include('partials.confirmation-modal', [
+                                                'label' => 'Delete Language',
+                                                'icon' => 'trash',
+                                                'message' => 'Are you sure you want to delete this language? This action cannot be undone!',
+                                                'type' => 'dropdown',
+                                                'action' => route('admin.language.destroy', $language->id),
+                                                'method' => 'DELETE'
+                                            ])
                                         </div>
                                     </div>
                                 </div>
@@ -85,7 +85,7 @@
                     @endforelse
                 </tbody>
             </table>
+            {{ $languages->onEachSide(0)->links() }}
         </div>
-        {{ $languages->onEachSide(0)->links() }}
     </main>
 @endsection

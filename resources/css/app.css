@@ -78,11 +78,19 @@
 
 
     table {
-        @apply w-full overflow-hidden border border-separate border-spacing-0 rounded-xl bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 shadow;
+        @apply w-full border border-separate border-spacing-0 rounded-xl bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 shadow;
     }
 
     table th {
         @apply p-2 bg-white dark:bg-slate-700;
+    }
+
+    table th:first-child {
+        @apply rounded-tl-xl;
+    }
+
+    table th:last-child {
+        @apply rounded-tr-xl;
     }
  
     table td {

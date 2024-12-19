@@ -1,6 +1,6 @@
 @props(['label', 'message', 'action', 'method', 'type', 'icon', 'class' => ''])
 
-<div class="modal ban-modal flex flex-col">
+<div class="modal flex flex-col">
     @switch($type)
         @case('button')
             @include('partials.text-button', [

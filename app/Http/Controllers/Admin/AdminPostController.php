@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Post;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
 class AdminPostController extends Controller
@@ -39,5 +40,15 @@ class AdminPostController extends Controller
         $posts = $posts->orderBy('id')->paginate(20);
 
         return view('admin.pages.post', ['posts' => $posts]);
+    }
+
+    public function destroy(int $id): RedirectResponse
+    {
+        $post = Post::findOrFail($id);
+
+        $post->delete();
+
+        return redirect()->route('admin.post.index')
+            ->withSuccess('Post deleted successfully.');
     }
 }

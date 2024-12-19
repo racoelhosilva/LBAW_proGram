@@ -44,7 +44,7 @@
             </div>
         </div>
 
-        <div class="overflow-x-auto">
+        <div class="overflow-x-auto flex flex-col gap-4">
             <table>
                 <thead class="text-center">
                     <tr>
@@ -63,15 +63,14 @@
                                     @include('partials.icon-button', ['iconName' => 'ellipsis', 'label' => 'Options', 'type' => 'transparent'])
                                     <div class="hidden">
                                         <div>
-                                            <form method="post" action="{{ route('admin.technology.destroy', $technology->id) }}">
-                                                @csrf
-                                                @method('DELETE')
-                                                @include('partials.dropdown-item', [
-                                                    'icon' => 'message-circle-x',
-                                                    'text' => 'Delete Technology',
-                                                    'submit' => true,
-                                                ])
-                                            </form>
+                                            @include('partials.confirmation-modal', [
+                                                'label' => 'Delete Technology',
+                                                'icon' => 'trash',
+                                                'message' => 'Are you sure you want to delete this technology? This action cannot be undone!',
+                                                'type' => 'dropdown',
+                                                'action' => route('admin.technology.destroy', $technology->id),
+                                                'method' => 'DELETE'
+                                            ])
                                         </div>
                                     </div>
                                 </div>
@@ -84,7 +83,7 @@
                     @endforelse
                 </tbody>
             </table>
+            {{ $technologies->onEachSide(0)->links() }}
         </div>
-        {{ $technologies->onEachSide(0)->links() }}
     </main>
 @endsection
