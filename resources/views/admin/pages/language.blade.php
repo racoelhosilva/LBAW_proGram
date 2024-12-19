@@ -3,7 +3,7 @@
     {{ 'Admin Language Search | ProGram' }}
 @endsection
 @section('content')
-    <main class="px-4 flex flex-col gap-4">
+    <main class="px-8 flex flex-col gap-4">
         <div class="grid grid-cols-[1fr_auto] gap-4 items-center">
             @include('admin.partials.search-field', ['route' => 'admin.language.index'])
 

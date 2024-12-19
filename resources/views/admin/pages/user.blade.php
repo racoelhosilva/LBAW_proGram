@@ -3,7 +3,7 @@
     {{ 'Admin User Search | ProGram' }}
 @endsection
 @section('content')
-    <main class="px-4 flex flex-col gap-4">
+    <main class="px-8 flex flex-col gap-4">
         @include('admin.partials.search-field', ['route' => 'admin.user.index'])
 
         <div class="overflow-x-auto">

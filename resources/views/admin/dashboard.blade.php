@@ -6,10 +6,10 @@
 @extends('layouts.admin')
 
 @section('content')
-    <main class="px-4">
+    <main class="px-8">
         <h1 class="mb-4 text-2xl font-bold col-span-4">Dashboard</h1>
 
-        <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             <article class="dashboard-card">
                 <svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -79,7 +79,7 @@
                 </svg>
                 <div class="w-full flex flex-col">
                     <h2 class="text-xl font-bold">Tags</h2>
-                    <p class="mb-4"><span class="font-semibold">Tags count:</span> {{ $tagCount }}</p>
+                    <p class="mb-4"><span class="font-semibold">Tag count:</span> {{ $tagCount }}</p>
                     <div class="flex">
                         @include('partials.text-button', [
                             'text' => 'View Tags',
@@ -97,7 +97,7 @@
                 </svg>
                 <div class="w-full flex flex-col">
                     <h2 class="text-xl font-bold">Languages</h2>
-                    <p class="mb-4"><span class="font-semibold">Languages count:</span> {{ $languageCount }}</p>
+                    <p class="mb-4"><span class="font-semibold">Language count:</span> {{ $languageCount }}</p>
                     <div class="flex">
                         @include('partials.text-button', [
                             'text' => 'View Languages',
@@ -117,7 +117,7 @@
                 </svg>
                 <div class="w-full flex flex-col">
                     <h2 class="text-xl font-bold">Technologies</h2>
-                    <p class="mb-4"><span class="font-semibold">Technologies count:</span> {{ $technologyCount }}</p>
+                    <p class="mb-4"><span class="font-semibold">Technology count:</span> {{ $technologyCount }}</p>
                     <div class="flex">
                         @include('partials.text-button', [
                             'text' => 'View Technologies',
