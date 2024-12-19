@@ -22,9 +22,24 @@ class ApiUserController extends Controller
 
     public function show($id)
     {
-        $user = User::where('id', $id)->where('is_deleted', false)->firstOrFail();
+        $authenticatedUser = auth()->user();
+        $user = User::findOrFail($id);
+        if (! $user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+        if ($authenticatedUser->can('viewContent', $user)) {
+            $userObject = $user->only(['id', 'name', 'register_timestamp', 'handle', 'is_public', 'description', 'num_followers', 'num_following']);
 
-        return response()->json($user);
+            return response()->json($userObject);
+        } elseif ($authenticatedUser->can('view', $user)) {
+            $userObject = $user->only(['id', 'name', 'register_timestamp', 'handle', 'is_public']);
+
+            return response()->json($userObject);
+
+        } else {
+            return response()->json(['message' => 'You do not have permission to view this user'], 403);
+        }
+
     }
 
     public function create(Request $request)
