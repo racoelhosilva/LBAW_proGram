@@ -98,8 +98,8 @@ class PostController extends Controller
             $post->title = $request->input('title');
             $post->is_public = $request->input('is_public', false);
             $post->is_announcement = $request->input('is_announcement', false);
-            $post->tags()->sync($request->input('tags'));
             $post->save();
+            $post->tags()->sync($request->input('tags'));
 
             $postId = $post->id;
 
