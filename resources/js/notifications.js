@@ -32,37 +32,31 @@ if (userId) {
     const pusherChannel = pusher.subscribe(channel);
 
     pusherChannel.bind('notification-postlike', function(data) {
-        console.log(`New postlike notification: ${data.message}`);
         increaseCounter(counter);
         sendToastMessage(data.message, 'success');
     });
 
     pusherChannel.bind('notification-commentlike', function(data) {
-        console.log(`New commentlike notification: ${data.message}`);
         increaseCounter(counter);
         sendToastMessage(data.message, 'success');
     });
 
     pusherChannel.bind('notification-postunlike', function(data) {
-        console.log(`New unlike notification: ${data.message}`);
         decreaseCounter(counter);
         sendToastMessage(data.message, 'success');
     });
 
     pusherChannel.bind('notification-commentunlike', function(data) {
-        console.log(`New commentunlike notification: ${data.message}`);
         decreaseCounter(counter);
         sendToastMessage(data.message, 'success');
     });
 
     pusherChannel.bind('notification-comment', function(data) {
-        console.log(`New comment notification: ${data.message}`);
         increaseCounter(counter);
         sendToastMessage(data.message, 'success');
     });
 
     pusherChannel.bind('notification-follow', function(data) {
-        console.log(`New follow notification: ${data.message}`);
         increaseCounter(counter);
         sendToastMessage(data.message, 'success');
     });

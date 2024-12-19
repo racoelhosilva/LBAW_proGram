@@ -41,9 +41,8 @@ class GroupPostController extends Controller
                 $post->title = $request->input('title');
                 $post->text = $request->input('text');
                 $post->author_id = Auth::id();
-                $post->is_public = $request->input('is_public');
+                $post->is_public = $request->input('is_public', false);
                 $post->is_announcement = $request->input('is_announcement', false);
-
                 $post->save();
                 $post->tags()->sync($request->input('tags'));
             });
