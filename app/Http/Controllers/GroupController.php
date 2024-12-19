@@ -51,8 +51,7 @@ class GroupController extends Controller
     public function show(int $id)
     {
         $group = Group::findOrFail($id);
-        $this->authorize('view', $group);
-
+        $this->authorize('viewAny', $group);
         $posts = $group->posts()->visibleTo(Auth::user())->where('is_announcement', false)->get();
         $announcements = $group->posts()->visibleTo(Auth::user())->where('is_announcement', true)->get();
         $isOwner = Auth::check() && Auth::id() === $group->owner_id;
@@ -66,7 +65,7 @@ class GroupController extends Controller
     {
 
         $group = Group::findOrFail($groupId);
-        $this->authorize('view', $group);
+        $this->authorize('viewContent', $group);
 
         $members = $group->members->where('id', '!=', $group->owner->id); // Exclude the owner
 

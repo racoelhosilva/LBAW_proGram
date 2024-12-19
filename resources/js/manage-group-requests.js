@@ -12,7 +12,8 @@ const acceptRequestListener = () => {
                 if (!userId) return;
                 sendPost(`/api/group/${groupId}/request/${userId}/accept`)
                     .then(() => {
-                       btn.closest('.manage-request-container').remove();
+                        btn.closest('.manage-request-container').remove();
+                        updateNoRequestsMessage();
                     })
                     .catch((error) => {
                         sendToastMessage('An error occurred while accepting the request.', 'error');
@@ -37,7 +38,8 @@ const rejectRequestListener = () => {
             if (!userId) return;
             sendDelete(`/api/group/${groupId}/request/${userId}/reject`)
                 .then(() => {
-                    window.location.reload();
+                    btn.closest('.manage-request-container').remove();
+                    updateNoRequestsMessage();
                 })
                 .catch((error) => {
                     sendToastMessage('An error occurred while rejecting the request.', 'error');
@@ -46,6 +48,14 @@ const rejectRequestListener = () => {
     });
 }
 
+const updateNoRequestsMessage = () => {
+    console.log('updateNoRequestsMessage');
+    const requests = document.querySelectorAll('.manage-request-container ');
+    const noRequestsIndicator = document.querySelector('#no-requests-indicator');
+    if(requests.length === 0){
+        noRequestsIndicator.classList.remove('hidden');
+    }
+}
 
 acceptRequestListener();
 rejectRequestListener();

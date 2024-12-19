@@ -18,7 +18,7 @@ class GroupPolicy
     /**
      * Determine whether the user can create models.
      */
-    public function view(?User $user, Group $group): bool
+    public function viewContent(?User $user, Group $group): bool
     {
         return $user && ! $user->isBanned() && $group->members()->where('user_id', $user->id)->exists() || $group->is_public;
     }
