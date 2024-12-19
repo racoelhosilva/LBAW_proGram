@@ -67,6 +67,8 @@ const addToastMessageListeners = () => {
 	});
 };
 
+const attachments = [];
+
 const activateQuill = () => {
 	const form = document.querySelector("#quill-form");
 
@@ -80,7 +82,7 @@ const activateQuill = () => {
 					container: [
 						["bold", "italic", "underline", "code"],
 						[{ list: "ordered" }, { list: "bullet" }, "code-block"],
-						["link", "image", "video"],
+						["link", "image"],
 						["clean"],
 					],
 					handlers: {
@@ -95,7 +97,7 @@ const activateQuill = () => {
 								if (file) {
 									const formData = new FormData();
 									formData.append("file", file);
-									formData.append("type", "post");
+									formData.append("type", "temporary");
 									formData.append(
 										"user_id",
 										document
@@ -104,7 +106,7 @@ const activateQuill = () => {
 									);
 
 									try {
-										const response = await fetch("/upload-file", {
+										const response = await fetch("/api/upload-file", {
 											method: "POST",
 											headers: {
 												"X-CSRF-TOKEN": document.querySelector(
@@ -120,6 +122,7 @@ const activateQuill = () => {
 											const range = quill.getSelection();
 											console.log(url);
 											quill.insertEmbed(range.index, "image", url);
+											attachments.add(url);
 										} else {
 											console.error("Failed to upload image", response);
 										}
@@ -138,8 +141,38 @@ const activateQuill = () => {
 
 		quill.clipboard.dangerouslyPasteHTML(field.value ?? "", "silent");
 
-		form.onsubmit = () => {
-			field.value = quill.root.innerHTML;
+		form.onsubmit = async () => {
+			console.log("here");
+			const parser = new DOMParser();
+			const content = quill.root.innerHTML;
+			field.value = content;
+
+			const doc = parser.parseFromString(content, "text/html");
+			const currentImages = new Set(
+				Array.from(doc.querySelectorAll("img")).map((img) => img.src),
+			);
+
+			const unusedImages = Array.from(attachments).filter(
+				(url) => !currentImages.has(url),
+			);
+
+			for (const url of unusedImages) {
+				try {
+					const response = await fetch("/api/delete-file", {
+						method: "POST",
+						headers: {
+							"X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]')
+								.content,
+							"Content-Type": "application/json",
+						},
+						body: JSON.stringify({ url }),
+					});
+					console.log(response);
+					attachments.delete(url);
+				} catch (error) {
+					console.error("Error deleting image", error);
+				}
+			}
 		};
 	}
 };

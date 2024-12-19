@@ -1,14 +1,15 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use App\Models\User;
 use Barryvdh\Debugbar\Facades\Debugbar;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 
-class FileController extends Controller
+class ApiFileController extends Controller
 {
     public static $default = 'default.jpg';
 
@@ -17,7 +18,7 @@ class FileController extends Controller
     public static $systemTypes = [
         'profile' => ['png', 'jpg', 'jpeg'],
         'banner' => ['png', 'jpg', 'jpeg'],
-        'cadeira' => ['png', 'jpg', 'jpeg'],
+        'temporary' => ['png', 'jpg', 'jpeg'],
     ];
 
     private static function getDefaultExtension(string $type)
@@ -61,24 +62,16 @@ class FileController extends Controller
         return $fileName;
     }
 
-    private static function delete(string $type, int $id)
+    private static function deleteFile(Request $request)
     {
-        $existingFileName = self::getFileName($type, $id);
-        if ($existingFileName) {
-            Storage::disk(self::$diskName)->delete($type.'/'.$existingFileName);
+        $url = explode('/', $request->url);
+        $fileName = end($url);
+        $folder = $url[count($url) - 2];
+        Storage::disk(self::$diskName)->delete($folder.'/'.$fileName);
 
-            switch ($type) {
-                case 'profile':
-                    User::find($id)->profile_picture_url = null;
-                    break;
-                case 'banner':
-                    User::find($id)->banner_image_url = null;
-                    break;
-                case 'post':
-                    // TODO: post image delete
-                    break;
-            }
-        }
+        return response()->json([
+            'message' => 'File deleted successfully',
+        ]);
     }
 
     public static function get(string $type, int $userId)
@@ -130,72 +123,6 @@ class FileController extends Controller
             'url' => asset($type.'/'.$user_id.'/'.$fileName),
         ]);
 
-    }
-
-    public function upload(Request $request)
-    {
-
-        // Validation: has file
-        if (! $request->hasFile('file')) {
-            return redirect()->back()->withError('File not found');
-        }
-
-        // Validation: upload extension
-        $file = $request->file('file');
-        $type = $request->input('type');
-        $extension = $file->extension();
-
-        if (! $this->isValidExtension($type, $extension)) {
-            return redirect()->back()->withError('Unsupported upload extension');
-        }
-
-        // Prevent existing old files
-        if ($request->input('id') != null) {
-            $this->delete($type, $request->input('id'));
-        }
-
-        // Generate unique filename
-        $fileName = $file->hashName();
-
-        switch ($request->type) {
-            case 'profile':
-                $user = User::find($request->input('id'));
-
-                if ($user) {
-                    $this->authorize('update', $user);
-
-                    $user->profile_picture_url = $fileName;
-                    $user->save();
-                } else {
-                    redirect()->back()->withError('Unknown user');
-                }
-
-                break;
-            case 'banner':
-                $user = User::find($request->input('id'));
-
-                if ($user) {
-                    $this->authorize('update', $user);
-
-                    $user->banner_image_url = $fileName;
-                    $user->save();
-                } else {
-                    redirect()->back()->withError('Unknown user');
-                }
-
-                break;
-
-            case 'post':
-                // TODO: post image upload
-                break;
-
-            default:
-                redirect()->back()->withError('Unsupported upload type');
-        }
-
-        $file->storeAs($type, $fileName, self::$diskName);
-
-        return redirect()->back()->withSuccess('Upload successful!');
     }
 
     public static function updateImage(string $type, int $id, UploadedFile $file)

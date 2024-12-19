@@ -12,10 +12,41 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class PostController extends Controller
 {
     const ALLOWED_TAGS = '<p><br><strong><em><u><code><ol><ul><li><span><div><a><img><iframe>';
+
+    protected function cleanupUnusedImages(string $text)
+    {
+        preg_match_all('/<img[^>]+>/i', $text, $result);
+
+        if (empty($result[0])) {
+            return [];
+        }
+
+        $folder = explode('/', $result[0][0]);
+        $folder = $folder[3].'/'.$folder[4];
+
+        $allFiles = Storage::disk('storage')->files($folder);
+
+        $usedFiles = [];
+        // extract only the path
+        foreach ($result[0] as $img) {
+            preg_match('/src="([^"]+)"/', $img, $match);
+            $usedFiles[] = ltrim(parse_url($match[1], PHP_URL_PATH), '/');
+        }
+
+        $unusedFiles = array_diff($allFiles, $usedFiles);
+
+        foreach ($unusedFiles as $file) {
+            Storage::disk('storage')->delete($file);
+        }
+
+        return $usedFiles;
+
+    }
 
     /**
      * Show the form for creating a new resource.
@@ -54,18 +85,35 @@ class PostController extends Controller
         ]);
 
         $post = new Post;
-        $text = strip_tags($request->input('text'), self::ALLOWED_TAGS);
-
-        DB::transaction(function () use ($post, $request, $text) {
-            $post->title = $request->input('title');
-            $post->text = $text;
+        DB::transaction(function () use ($post, $request) {
+            // Save every field except for the text
             $post->author_id = Auth::id();
+            $post->title = $request->input('title');
             $post->is_public = $request->input('is_public', false);
             $post->is_announcement = $request->input('is_announcement', false);
-
+            $post->tags()->sync($request->input('tags'));
             $post->save();
 
-            $post->tags()->sync($request->input('tags'));
+            $postId = $post->id;
+
+            // Find the used images, and delete the unused ones
+            $text = strip_tags($request->input('text'), self::ALLOWED_TAGS);
+            $usedFiles = $this->cleanupUnusedImages($text);
+            $text = str_replace('temporary', 'postAttachments/'.$postId, $text);
+
+            // Move the used images to the postAttachments folder
+            foreach ($usedFiles as $file) {
+                $newFile = str_replace('temporary', 'postAttachments/'.$postId, $file);
+                Storage::disk('storage')->move($file, $newFile);
+            }
+
+            // Delete the temporary folder
+            Storage::disk('storage')->deleteDirectory('temporary/'.$post->author_id);
+
+            // Save the text
+            $post->text = $text;
+            $post->save();
+
         });
 
         return redirect()->route('post.show', $post->id)->withSuccess('Post created successfully.');

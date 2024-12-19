@@ -6,12 +6,12 @@ use App\Http\Controllers\Admin\AdminPostController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Api\ApiCommentController;
+use App\Http\Controllers\Api\ApiFileController;
 use App\Http\Controllers\Api\ApiPostController;
 use App\Http\Controllers\Api\ApiUserController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
-use App\Http\Controllers\FileController;
 use App\Http\Controllers\GitHubController;
 use App\Http\Controllers\GitLabController;
 use App\Http\Controllers\GoogleController;
@@ -66,8 +66,6 @@ Route::controller(ForgotPasswordController::class)->group(function () {
     Route::get('/reset-password/{token}', 'showResetPassword')->name('password.reset');
     Route::post('/reset-password', 'resetPassword')->name('password.update');
 });
-
-Route::post('/upload-file', [FileController::class, 'uploadFile'])->name('upload.file');
 
 Route::post('/sendemail', [MailController::class, 'send']);
 
@@ -185,5 +183,10 @@ Route::prefix('api')->group(function () {
         Route::delete('/follower/{id}', 'removeFollower')->where('id', '[0-9]+')->name('api.follower.remove');
         Route::post('/follow-request/{id}/accept', 'accept')->where('id', '[0-9]+')->name('api.follow-request.accept');
         Route::post('/follow-request/{id}/reject', 'reject')->where('id', '[0-9]+')->name('api.follow-request.reject');
+    });
+
+    Route::controller(ApiFileController::class)->group(function () {
+        Route::post('/upload-file', 'uploadFile')->name('api.upload.file');
+				Route::delete('/delete-file', 'deleteFile')->name('api.delete.file');
     });
 });
