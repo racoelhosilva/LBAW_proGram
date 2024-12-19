@@ -1,5 +1,5 @@
 import './bootstrap';
-import { fadeToastMessage } from './utils'
+import {fadeToastMessage, sendToastMessage} from './utils'
 
 const toggleDropdown = (dropdownContent, event) => {
     dropdownContent.classList.toggle('hidden');
@@ -124,8 +124,23 @@ const addResponsiveDropdownListeners = () => {
     });
 };
 
+const addCopyButtonListeners = () => {
+    const copyButtons = document.querySelectorAll('.copy-button');
+
+    copyButtons.forEach(copyButton => {
+        copyButton.addEventListener('click', () => {
+            const copyText = copyButton.querySelector('span').textContent;
+
+            navigator.clipboard.writeText(copyText).then(() => {
+                sendToastMessage('Copied to clipboard!', 'success');
+            });
+        });
+    });
+};
+
 addDropdownListeners();
 addModalListeners();
 addToastMessageListeners();
 addSelectListeners();
 addResponsiveDropdownListeners();
+addCopyButtonListeners();

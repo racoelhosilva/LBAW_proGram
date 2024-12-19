@@ -341,4 +341,14 @@ class UserController extends Controller
 
         return redirect()->route('home')->withSuccess('User deleted successfully.');
     }
+
+    public function showTokenSettings()
+    {
+        if (! auth()->check()) {
+            return redirect()->route('login');
+        }
+        $this->authorize('view', [Token::class, auth()->user()->token]);
+
+        return view('pages.user-token', ['user' => auth()->user()]);
+    }
 }

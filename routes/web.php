@@ -24,6 +24,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MailController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\SearchController;
+use App\Http\Controllers\TokenController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -103,7 +104,8 @@ Route::middleware(['deny.banned', 'deny.deleted'])->group(function () {
         Route::get('/user/{id}/requests', 'requests')->where('id', '[0-9]+')->name('user.requests');
         Route::delete('/user/{id}', 'destroy')->where('id', '[0-9]+')->name('user.destroy');
         Route::get('/user/{id}/groups', 'showGroups')->where('id', '[0-9]+')->name('user.groups');
-        Route::get('user/{id}/invites', 'showInvites')->where('id', '[0-9]+')->name('user.invites');
+        Route::get('/user/{id}/invites', 'showInvites')->where('id', '[0-9]+')->name('user.invites');
+        Route::get('/user/{id}/token', 'showTokenSettings')->where('id', '[0-9]+')->name('user.token');
     });
 
     // Group
@@ -128,6 +130,12 @@ Route::middleware(['deny.banned', 'deny.deleted'])->group(function () {
     });
     // Search
     Route::get('/search', [SearchController::class, 'index'])->name('search');
+
+    // Token
+    Route::controller(TokenController::class)->group(function () {
+        Route::post('/token', 'store')->name('token.store');
+        Route::delete('/token/{id}', 'destroy')->where('id', '[0-9]+')->name('token.destroy');
+    });
 });
 
 // Admin
@@ -174,7 +182,7 @@ Route::prefix('admin')->group(function () {
 });
 
 // API
-Route::prefix('api')->group(function () {
+Route::prefix('api')->middleware('api.token')->group(function () {
     // Post
     Route::controller(ApiPostController::class)->group(function () {
         // Route::get('/post', 'index')->name('api.post.index');

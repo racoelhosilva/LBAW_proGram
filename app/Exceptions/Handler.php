@@ -2,6 +2,7 @@
 
 namespace App\Exceptions;
 
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
 
@@ -26,5 +27,17 @@ class Handler extends ExceptionHandler
         $this->reportable(function (Throwable $e) {
             //
         });
+    }
+
+    public function render($request, Throwable $e)
+    {
+        if ($e instanceof AuthorizationException && $request->is('api/*')) {
+            $error = 'You do not have permissions to '
+                .($request->isMethod('GET') ? 'access this resource' : 'perform this action');
+
+            return response()->json(['error' => $error], 403);
+        }
+
+        return parent::render($request, $e);
     }
 }
