@@ -15,10 +15,10 @@ const inviteSendListener = () => {
                         btn.classList.add('hidden');
                         const uninvitebtn = btn.closest('.manage-invite-container').querySelector('.uninvite-button');
                         uninvitebtn.classList.remove('hidden');
+                        sendToastMessage('Invite sent with success', 'success');
                     })
                     .catch((error) => {
                         sendToastMessage('An error occurred while inviting the user.', 'error');
-                        console.error('Error inviting user:', error);
                     });
             });
         });
@@ -40,6 +40,7 @@ const inviteUnSendListener = () => {
                         btn.classList.add('hidden');
                         const invitebtn = btn.closest('.manage-invite-container').querySelector('.invite-button');
                         invitebtn.classList.remove('hidden');
+                        sendToastMessage('Invite unsent with success', 'success');
                     })
                     .catch((error) => {
                         sendToastMessage('An error occurred while uninviting the user.', 'error');
