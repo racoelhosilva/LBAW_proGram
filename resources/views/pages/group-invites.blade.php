@@ -15,37 +15,10 @@
             <div id="invite-results" class="flex flex-col gap-4 mt-4">
 
                 @foreach ($usersSearched as $user)
-                    <div class="manage-invite-container flex flex-row w-full " data-user-id={{ $user->id }}>
-                        @php
-                            if ($group->isUserInvited($user)) {
-                                $inviteButton = view('partials.text-button', [
-                                    'text' => 'Send',
-                                    'type' => 'secondary',
-                                    'class' => 'w-40    invite-button hidden',
-                                ])->render();
-                                $inviteButton .= view('partials.text-button', [
-                                    'text' => 'Unsend',
-                                    'type' => 'secondary',
-                                    'class' => 'w-40  uninvite-button ',
-                                ])->render();
-                            } else {
-                                $inviteButton = view('partials.text-button', [
-                                    'text' => 'Send',
-                                    'type' => 'secondary',
-                                    'class' => 'w-40    invite-button',
-                                ])->render();
-                                $inviteButton .= view('partials.text-button', [
-                                    'text' => 'Unsend',
-                                    'type' => 'secondary',
-                                    'class' => 'w-40  uninvite-button hidden',
-                                ])->render();
-                            }
-                            $buttons = $inviteButton;
-                        @endphp
+                    <div class="manage-invite-container flex flex-row w-full " data-user-id={{ $user->id }}>    
                         @include('partials.user-card-group-invites', [
                             'user' => $user,
                             'class' => 'w-full ',
-                            'buttons' => $buttons,
                         ])
                     </div>
                 @endforeach

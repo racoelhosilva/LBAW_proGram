@@ -10,7 +10,6 @@
                 <div class="manage-member-container flex flex-row w-full mb-4" data-user-id={{$user->id}}>
                     @include('partials.user-card-group-member', ['user' => $user, 'class' => 'w-full'])
                 </div>
-
             @empty
                 <p>No members at the moment</p>
             @endforelse
