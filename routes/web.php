@@ -12,7 +12,6 @@ use App\Http\Controllers\Api\ApiCommentController;
 use App\Http\Controllers\Api\ApiFileController;
 use App\Http\Controllers\Api\ApiGroupController;
 use App\Http\Controllers\Api\ApiPostController;
-use App\Http\Controllers\Api\ApiSearchController;
 use App\Http\Controllers\Api\ApiUserController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\LoginController;
@@ -190,9 +189,9 @@ Route::prefix('admin')->group(function () {
 Route::prefix('api')->middleware('api.token')->group(function () {
     // Post
     Route::controller(ApiPostController::class)->group(function () {
-        // Route::get('/post', 'index')->name('api.post.index');
+        Route::get('/post', 'index')->name('api.post.index');
         Route::post('/post', 'store')->name('api.post.store');
-        // Route::get('/post/{id}', 'show')->where('id', '[0-9]+')->name('api.post.show');
+        Route::get('/post/{id}', 'show')->where('id', '[0-9]+')->name('api.post.show');
         // Route::put('/post/{id}', 'update')->where('id', '[0-9]+')->name('api.post.update');
         // Route::delete('/post/{id}', 'destroy')->where('id', '[0-9]+')->name('api.post.destroy');
         // Route::get('/post/{id}/like', 'indexLikes')->where('id', '[0-9]+')->name('api.post.like.index');
@@ -217,6 +216,7 @@ Route::prefix('api')->middleware('api.token')->group(function () {
     // Group
 
     Route::controller(ApiGroupController::class)->group(function () {
+        Route::get('/group', 'index')->name('api.group.index');
         Route::post('/group/{id}/join', 'join')->where('id', '[0-9]+')->name('api.group.join');
         Route::delete('/group/{id}/leave', 'leave')->where('id', '[0-9]+')->name('api.group.leave');
         Route::delete('/group/{id}/remove/{user_id}', 'remove')->where('id', '[0-9]+')->where('user_id', '[0-9]+')->name('api.group.remove');
@@ -228,10 +228,6 @@ Route::prefix('api')->middleware('api.token')->group(function () {
         Route::delete('/group/{id}/rejectInvite', 'rejectInvite')->where('id', '[0-9]+')->name('api.group.invite.reject');
     });
 
-    Route::controller(ApiSearchController::class)->group(function () {
-        Route::get('/search/users', 'searchUsers')->name('api.users.search');
-    });
-
     // User
     Route::controller(ApiUserController::class)->group(function () {
         //     Route::get('/user', 'list');
@@ -239,8 +235,8 @@ Route::prefix('api')->middleware('api.token')->group(function () {
         //     Route::post('/user', 'create');
         //     Route::delete('/user/{id}', 'delete');
         //     Route::put('/user/{id}', 'update');
-        //     Route::get('/user/{id}/followers', 'listFollowers');
-        //     Route::get('/user/{id}/following', 'listFollowing');
+        Route::get('/user/{id}/followers', 'listFollowers');
+        Route::get('/user/{id}/following', 'listFollowing');
         //     Route::get('/user/{id}/post', 'listPosts');
         Route::post('/user/{id}/notifications/read', 'readAllNotifications')->where('id', '[0-9]+')->name('api.user.notifications.read');
         Route::post('/user/{userId}/notification/{notificationId}/read', 'readNotification')->where('userId', '[0-9]+')->where('notificationId', '[0-9]+')->name('api.user.notification.read');

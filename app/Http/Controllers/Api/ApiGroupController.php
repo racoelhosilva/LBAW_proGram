@@ -13,6 +13,13 @@ use Illuminate\Support\Facades\Auth;
 
 class ApiGroupController extends Controller
 {
+    public function index(Request $request)
+    {
+        $groups = Group::all();
+
+        return response()->json($groups);
+    }
+
     public function join(Request $request, int $group_id)
     {
         $group = Group::findOrFail($group_id);
