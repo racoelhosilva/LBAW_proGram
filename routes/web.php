@@ -104,7 +104,8 @@ Route::middleware(['deny.banned', 'deny.deleted'])->group(function () {
         Route::get('/user/{id}/requests', 'requests')->where('id', '[0-9]+')->name('user.requests');
         Route::delete('/user/{id}', 'destroy')->where('id', '[0-9]+')->name('user.destroy');
         Route::get('/user/{id}/groups', 'showGroups')->where('id', '[0-9]+')->name('user.groups');
-        Route::get('user/{id}/invites', 'showInvites')->where('id', '[0-9]+')->name('user.invites');
+        Route::get('/user/{id}/invites', 'showInvites')->where('id', '[0-9]+')->name('user.invites');
+        Route::get('/user/{id}/token', 'showTokenSettings')->where('id', '[0-9]+')->name('user.token');
     });
 
     // Group

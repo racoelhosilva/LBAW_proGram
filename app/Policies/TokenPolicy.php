@@ -18,9 +18,16 @@ class TokenPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(?User $user, Token $token): bool
+    public function view(?User $user, ?Token $token): bool
     {
-        return $user && $token->account && ! $user->isBanned() && $user->id === $token->account->id;
+        if (! $user || $user->isBanned()) {
+            return false;
+        }
+        if (! $token) {
+            return true;
+        }
+
+        return $token->account && $user->id == $token->account->id;
     }
 
     /**

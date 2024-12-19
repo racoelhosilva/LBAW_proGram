@@ -16,10 +16,10 @@
 {{--            'selected' => request()->routeIs('user.password.edit'),--}}
 {{--        ])--}}
         @include('partials.menu-anchor', [
-            'anchorUrl' => route('home'),
+            'anchorUrl' => route('user.token', ['id' => auth()->id()]),
             'icon' => 'key-round',
             'text' => 'API Settings',
-            'selected' => request()->routeIs('home'),
+            'selected' => request()->routeIs('user.token'),
         ])
     </nav>
 @endsection

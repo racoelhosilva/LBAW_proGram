@@ -37,7 +37,7 @@ class TokenController extends Controller
 
         $token->save();
 
-        return redirect()->route('user.edit', ['id' => auth()->id()])
+        return redirect()->route('user.token', ['id' => auth()->id()])
             ->withSuccess('Token created successfully.');
     }
 
@@ -52,7 +52,7 @@ class TokenController extends Controller
 
         $token->delete();
 
-        return redirect()->route('user.edit', ['id' => auth()->id()])
+        return redirect()->route('user.token', ['id' => auth()->id()])
             ->withSuccess('Token deleted successfully.');
     }
 }
