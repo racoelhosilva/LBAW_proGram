@@ -9,6 +9,7 @@ use App\Models\Post;
 use App\Models\PostLike;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class ApiPostController extends Controller
 {
@@ -69,16 +70,19 @@ class ApiPostController extends Controller
             'is_announcement' => 'nullable|boolean',
         ]);
         try {
-            $post = Post::create([
-                'title' => $request->input('title'),
-                'text' => $request->input('text'),
-                'author_id' => auth()->id(),
-                'is_public' => $request->input('is_public', true),
-                'is_announcement' => $request->input('is_announcement', false),
-                'likes' => 0,
-            ]);
+            $post = new Post;
 
-            $post->tags()->sync($request->input('tags'));
+            DB::transaction(function () use ($post, $request) {
+                $post->title = $request->input('title');
+                $post->text = $request->input('text');
+                $post->author_id = Auth::id();
+                $post->is_public = $request->input('is_public', false);
+                $post->is_announcement = $request->input('is_announcement', false);
+
+                $post->save();
+
+                $post->tags()->sync($request->input('tags'));
+            });
 
             return response()->json($post, 201);
         } catch (\Exception $e) {
