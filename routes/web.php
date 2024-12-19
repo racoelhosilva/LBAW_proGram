@@ -78,17 +78,9 @@ Route::middleware(['deny.banned', 'deny.deleted'])->group(function () {
     // Home
     Route::get('/', [HomeController::class, 'show'])->name('home');
 
-    Route::get('/about', function () {
-        return view('pages.about');
-    })->name('about');
-
-    Route::get('faqs', function () {
-        return view('pages.faqs');
-    })->name('faqs');
-
-    Route::get('/contactus', function () {
-        return view('pages.contactus');
-    })->name('contactus');
+    Route::view('/about', 'pages.about')->name('about');
+    Route::view('/faqs', 'pages.faqs')->name('faqs');
+    Route::view('/contactus', 'pages.contactus')->name('contact-us');
 
     // Post
     Route::controller(PostController::class)->group(function () {
