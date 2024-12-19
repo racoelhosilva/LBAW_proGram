@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\ApiUserController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\FileController;
 use App\Http\Controllers\GitHubController;
 use App\Http\Controllers\GitLabController;
 use App\Http\Controllers\GoogleController;
@@ -65,6 +66,8 @@ Route::controller(ForgotPasswordController::class)->group(function () {
     Route::get('/reset-password/{token}', 'showResetPassword')->name('password.reset');
     Route::post('/reset-password', 'resetPassword')->name('password.update');
 });
+
+Route::post('/upload-file', [FileController::class, 'uploadFile'])->name('upload.file');
 
 Route::post('/sendemail', [MailController::class, 'send']);
 

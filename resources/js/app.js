@@ -1,86 +1,147 @@
-import './bootstrap';
-import { fadeToastMessage } from './utils'
+import "./bootstrap";
+import { fadeToastMessage } from "./utils";
 import Quill from "quill";
 import "quill/dist/quill.core.css";
 
 const toggleDropdown = (dropdownContent, event) => {
-    dropdownContent.classList.toggle('hidden');
-    event.stopPropagation();
+	dropdownContent.classList.toggle("hidden");
+	event.stopPropagation();
 };
 
 const hideDropdown = (dropdown, event) => {
-    const dropdownContent = dropdown.querySelector(':scope > div');
-    if (!dropdown.contains(event.target)) {
-        dropdownContent.classList.add('hidden');
-    }
+	const dropdownContent = dropdown.querySelector(":scope > div");
+	if (!dropdown.contains(event.target)) {
+		dropdownContent.classList.add("hidden");
+	}
 };
 
 const addDropdownListeners = () => {
-    const dropdowns = document.querySelectorAll('.dropdown');
+	const dropdowns = document.querySelectorAll(".dropdown");
 
-    dropdowns.forEach(dropdown => {
-        const dropdownButton = dropdown.querySelector(':scope > button');
-        const dropdownContent = dropdown.querySelector(':scope > div');
+	dropdowns.forEach((dropdown) => {
+		const dropdownButton = dropdown.querySelector(":scope > button");
+		const dropdownContent = dropdown.querySelector(":scope > div");
 
-        dropdownButton.addEventListener('click', event => toggleDropdown(dropdownContent, event));
-        document.addEventListener('click', event => hideDropdown(dropdown, event));
-    });
+		dropdownButton.addEventListener("click", (event) =>
+			toggleDropdown(dropdownContent, event),
+		);
+		document.addEventListener("click", (event) =>
+			hideDropdown(dropdown, event),
+		);
+	});
 };
 
-
 const openModal = (modal, event) => {
-    modal.classList.add('active');
-    event.stopPropagation();
+	modal.classList.add("active");
+	event.stopPropagation();
 };
 
 const closeModal = (modal, event) => {
-    modal.classList.remove('active');
-    event.stopPropagation();
-}
+	modal.classList.remove("active");
+	event.stopPropagation();
+};
 
 const addModalListeners = () => {
-    const modals = document.querySelectorAll('.modal');
+	const modals = document.querySelectorAll(".modal");
 
-    modals.forEach(modal => {
-        const modalOpenButton = modal.querySelector(`:scope .open-button`);
-        const modalCloseButton = modal.querySelector(':scope .close-button');
+	modals.forEach((modal) => {
+		const modalOpenButton = modal.querySelector(`:scope .open-button`);
+		const modalCloseButton = modal.querySelector(":scope .close-button");
 
-        modalOpenButton.addEventListener('click', event => openModal(modal, event));
-        modalCloseButton.addEventListener('click', event => closeModal(modal, event));
-    });
-}
+		modalOpenButton.addEventListener("click", (event) =>
+			openModal(modal, event),
+		);
+		modalCloseButton.addEventListener("click", (event) =>
+			closeModal(modal, event),
+		);
+	});
+};
 
 const addToastMessageListeners = () => {
-    document.addEventListener('DOMContentLoaded', () => {
-        const toastMessages = document.querySelectorAll('.toast-message:not(.hidden)');
+	document.addEventListener("DOMContentLoaded", () => {
+		const toastMessages = document.querySelectorAll(
+			".toast-message:not(.hidden)",
+		);
 
-        toastMessages.forEach(fadeToastMessage);
-    });
+		toastMessages.forEach(fadeToastMessage);
+	});
 };
 
 const activateQuill = () => {
-    const form = document.querySelector('#quill-form');
+	const form = document.querySelector("#quill-form");
 
-    if (form) {
-        const field = form.querySelector(`input[name="${form.dataset.quillField}"]`);
-        const quill = new Quill('#quill-editor', {
-            modules: {
-                toolbar: [
-                    ['bold', 'italic', 'underline', 'code'],
-                    [{ 'list': 'ordered' }, { 'list': 'bullet' }, 'code-block'],
-                    ['link', 'image', 'video'],
-                    ['clean']
-                ]
-            },
-            placeholder: 'Write something amazing...',
-            theme: 'snow'
-        });
-        quill.clipboard.dangerouslyPasteHTML(field.value ?? '', "silent");
+	if (form) {
+		const field = form.querySelector(
+			`input[name="${form.dataset.quillField}"]`,
+		);
+		const quill = new Quill("#quill-editor", {
+			modules: {
+				toolbar: {
+					container: [
+						["bold", "italic", "underline", "code"],
+						[{ list: "ordered" }, { list: "bullet" }, "code-block"],
+						["link", "image", "video"],
+						["clean"],
+					],
+					handlers: {
+						image: function() {
+							const input = document.createElement("input");
+							input.setAttribute("type", "file");
+							input.setAttribute("accept", "image/*");
+							input.click();
 
-        form.onsubmit = () => {
-            field.value = quill.root.innerHTML;
-        };
-    }
+							input.onchange = async () => {
+								const file = input.files[0];
+								if (file) {
+									const formData = new FormData();
+									formData.append("file", file);
+									formData.append("type", "post");
+									formData.append(
+										"user_id",
+										document
+											.querySelector('meta[name="user-id"]')
+											.getAttribute("content"),
+									);
+
+									try {
+										const response = await fetch("/upload-file", {
+											method: "POST",
+											headers: {
+												"X-CSRF-TOKEN": document.querySelector(
+													'meta[name="csrf-token"]',
+												).content,
+											},
+											body: formData,
+										});
+										console.log(response);
+
+										if (response.ok) {
+											const { url } = await response.json();
+											const range = quill.getSelection();
+											console.log(url);
+											quill.insertEmbed(range.index, "image", url);
+										} else {
+											console.error("Failed to upload image", response);
+										}
+									} catch (error) {
+										console.error("Error uploading image", error);
+									}
+								}
+							};
+						},
+					},
+				},
+			},
+			placeholder: "Write something amazing...",
+			theme: "snow",
+		});
+
+		quill.clipboard.dangerouslyPasteHTML(field.value ?? "", "silent");
+
+		form.onsubmit = () => {
+			field.value = quill.root.innerHTML;
+		};
+	}
 };
 
 addDropdownListeners();

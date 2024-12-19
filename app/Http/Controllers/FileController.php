@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Barryvdh\Debugbar\Facades\Debugbar;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
@@ -99,8 +100,41 @@ class FileController extends Controller
         return self::defaultAsset($type);
     }
 
+    public function uploadFile(Request $request)
+    {
+
+        Debugbar::info($request);
+
+        // Validation: has file
+        if (! $request->hasFile('file')) {
+            return redirect()->back()->withError('File not found');
+        }
+        Debugbar::info($request->file('file'));
+
+        // Validation: upload extension
+        $file = $request->file('file');
+        $type = $request->input('type');
+        $user_id = $request->input('user_id');
+        $extension = $file->extension();
+
+        if (! $this->isValidExtension($type, $extension)) {
+            return redirect()->back()->withError('Unsupported upload extension');
+        }
+
+        $fileName = $file->hashName();
+
+        Debugbar::info($fileName);
+        $file->storeAs($type.'/'.$user_id, $fileName, self::$diskName);
+
+        return response()->json([
+            'url' => asset($type.'/'.$user_id.'/'.$fileName),
+        ]);
+
+    }
+
     public function upload(Request $request)
     {
+
         // Validation: has file
         if (! $request->hasFile('file')) {
             return redirect()->back()->withError('File not found');
@@ -116,7 +150,9 @@ class FileController extends Controller
         }
 
         // Prevent existing old files
-        $this->delete($type, $request->input('id'));
+        if ($request->input('id') != null) {
+            $this->delete($type, $request->input('id'));
+        }
 
         // Generate unique filename
         $fileName = $file->hashName();
