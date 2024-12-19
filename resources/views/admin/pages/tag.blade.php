@@ -80,7 +80,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="4">No tags found.</td>
+                            <td colspan="3">No tags found.</td>
                         </tr>
                     @endforelse
                 </tbody>
