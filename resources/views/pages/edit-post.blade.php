@@ -60,15 +60,13 @@
                 @include('partials.text-button', ['text' => 'Update Post', 'label' => 'update', 'type' => 'primary', 'submit' => true])
             </form>
 
-            <form method="post" action="{{ route('post.destroy', $post->id) }}" class="w-full flex flex-col">
-                @csrf
-                @method('DELETE')
-                @include('partials.text-button', [
-                    'text' => 'Delete Post',
-                    'type' => 'danger',
-                    'submit' => true,
-                ])
-            </form>
+            @include('partials.confirmation-modal', [
+                'label' => 'Delete Post',
+                'message' => 'Are you sure you want to delete this post? It\'s data will be lost FOREVER (i.e. a very long time)!',
+                'action' => route('post.destroy', $post->id),
+                'type' => 'button',
+                'method' => 'DELETE',
+            ])
         </article>
     </main>
 @endsection

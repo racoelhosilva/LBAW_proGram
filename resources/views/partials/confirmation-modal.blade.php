@@ -1,6 +1,6 @@
-@props(['label', 'text', 'action', 'method', 'type', 'icon'])
+@props(['label', 'message', 'action', 'method', 'type', 'icon'])
 
-<div class="modal ban-modal">
+<div class="modal ban-modal flex flex-col">
     @switch($type)
         @case('button')
             @include('partials.text-button', [
@@ -18,35 +18,34 @@
     @endswitch
 
     <div>
-        <div>
-            <section>
-                <div class="mb-4 flex justify-between items-center">
-                    <h1 class="text-2xl font-bold">{{ $label }}?</h1>
-                    @include('partials.icon-button', [
-                        'iconName' => 'x',
-                        'class' => 'close-button',
-                        'label' => 'Close',
-                        'type' => 'transparent',
-                    ])
-                </div>
-                {{ $text }}
+        <section class="space-y-4">
+            <div class="flex justify-between items-center">
+                <h1 class="text-2xl font-bold">{{ $label }}?</h1>
+                @include('partials.icon-button', [
+                    'iconName' => 'x',
+                    'class' => 'close-button',
+                    'label' => 'Close',
+                    'type' => 'transparent',
+                ])
+            </div>
+            {{ $message }}
 
-                <div class="grid grid-cols-2">
+            <div class="grid grid-cols-2 gap-4">
+                @include('partials.text-button', [
+                    'text' => 'Cancel',
+                    'type' => 'primary',
+                    'class' => 'close-button',
+                ])
+                <form method="post" action="{{ $action }}" class="flex flex-col">
+                    @csrf
+                    @method($method)
                     @include('partials.text-button', [
-                        'text' => 'Cancel',
-                        'type' => 'primary',
-                        'class' => 'close-button',
+                        'text' => 'Continue',
+                        'type' => 'danger',
+                        'submit' => true,
                     ])
-                    <form method="{{ $method }}" action="{{ $action }}" class="flex">
-                        @csrf
-                        @include('partials.text-button', [
-                            'text' => 'Continue',
-                            'type' => 'danger',
-                            'submit' => true,
-                        ])
-                    </form>
-                </div>
-            </section>
-        </div>
+                </form>
+            </div>
+        </section>
     </div>
 </div>
