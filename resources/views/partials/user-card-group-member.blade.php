@@ -20,7 +20,7 @@
             @include('partials.confirmation-modal', [
                 'label' => 'Remove Member',
                 'type' => 'button',
-                'message' => 'Are you sure you want to remove this member from this post?',
+                'message' => 'Are you sure you want to remove this member from this group?',
                 'class' => 'remove-member-button',
             ])
         @endif

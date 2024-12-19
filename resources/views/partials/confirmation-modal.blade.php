@@ -33,7 +33,7 @@
             <div class="grid grid-cols-2 gap-4">
                 @include('partials.text-button', [
                     'text' => 'Cancel',
-                    'type' => 'primary',
+                    'type' => 'secondary',
                     'class' => 'close-button',
                 ])
                 @isset($action)
