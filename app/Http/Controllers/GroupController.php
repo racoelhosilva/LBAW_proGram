@@ -93,7 +93,7 @@ class GroupController extends Controller
             return redirect()->route('login');
         }
         $this->authorize('update', $group);
-        $searchQuery = request()->query('query');
+        $searchQuery = request()->query('invite_query');
         $ownerId = $group->owner->id;
         $usersSearched = [];
         $usersInvited = [];
