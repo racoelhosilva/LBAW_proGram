@@ -95,8 +95,11 @@ class GroupController extends Controller
         $this->authorize('update', $group);
         $searchQuery = request()->query('query');
         $ownerId = $group->owner->id;
-
+        $usersSearched = [];
+        $usersInvited = [];
+        $searched = false;
         if ($searchQuery) {
+            $searched = true;
             $usersSearched = User::where('id', '!=', $ownerId)
                 ->whereNotIn('id', function ($query) use ($groupId) {
                     $query->select('user_id')
@@ -106,13 +109,17 @@ class GroupController extends Controller
                 ->whereRaw("tsvectors @@ plainto_tsquery('english', ?)", [$searchQuery])
                 ->orderByRaw("ts_rank(tsvectors, plainto_tsquery('english', ?)) DESC", [$searchQuery])
                 ->get();
+            $usersInvited = [];
         } else {
-            $usersSearched = $group->invitedUsers;
+            $usersSearched = [];
+            $usersInvited = $group->invitedUsers;
         }
 
         return view('pages.group-invites', [
             'group' => $group,
             'usersSearched' => $usersSearched,
+            'usersInvited' => $usersInvited,
+            'searched' => $searched,
         ]);
     }
 
