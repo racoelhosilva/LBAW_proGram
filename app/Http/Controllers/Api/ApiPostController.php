@@ -24,7 +24,7 @@ class ApiPostController extends Controller
             $posts = $posts->orWhereIn('author_id', $followingIds);
         }
 
-        $posts = $posts->get();
+        $posts = $posts->select(['id', 'author_id', 'title', 'text', 'creation_timestamp', 'is_announcement', 'is_public', 'likes', 'comments'])->get();
 
         return response()->json($posts);
     }
@@ -35,6 +35,8 @@ class ApiPostController extends Controller
         $post = Post::findOrFail($id);
 
         $this->authorize('view', $post);
+
+        $post = $post->only(['id', 'author_id', 'title', 'text', 'creation_timestamp', 'is_announcement', 'is_public', 'likes', 'comments']);
 
         return response()->json($post);
     }
