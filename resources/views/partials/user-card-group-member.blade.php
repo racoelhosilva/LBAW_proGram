@@ -16,8 +16,8 @@
         </div>
     </div>
     <div class="flex gap-x-4 justify-end">
-                        @if($group->owner->id == Auth::id())
-                            @include('partials.text-button', ['text' => 'Remove','type' =>'secondary','class' => 'w-40 remove-member-button'])  ;
+                        @can('remove',[$group, $user])
+                            @include('partials.text-button', ['text' => 'Remove','type' =>'secondary','class' => 'w-40 remove-member-button'])
                         @endif
                         
 
