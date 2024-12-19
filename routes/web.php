@@ -109,7 +109,6 @@ Route::middleware(['deny.banned', 'deny.deleted'])->group(function () {
 
     // Group
     Route::controller(GroupController::class)->group(function () {
-        Route::get('/group', 'index')->name('group.index');
         Route::post('/group', 'store')->name('group.store')->middleware('throttle:calmdown');
         Route::get('/group/create', 'create')->name('group.create');
         Route::get('/group/{id}', 'show')->where('id', '[0-9]+')->name('group.show');
