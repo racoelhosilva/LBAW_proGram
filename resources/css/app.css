@@ -32,9 +32,13 @@
 		@apply border rounded-full text-black dark:text-white bg-white dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 border-white dark:border-slate-800 hover:border-slate-300 hover:dark:border-slate-700 transition-colors;
 	}
 
-	.card {
-		@apply p-4 border rounded-xl bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 shadow;
-	}
+    .danger-btn {
+        @apply border rounded-full text-white bg-red-500 hover:bg-red-400 border-red-500 hover:border-red-400 transition-colors shadow;
+    }
+
+    .card {
+        @apply p-4 border rounded-xl bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 shadow;
+    }
 
 	.dropdown {
 		@apply relative;
