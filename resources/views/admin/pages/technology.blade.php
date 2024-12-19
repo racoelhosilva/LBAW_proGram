@@ -6,8 +6,6 @@
     <main class="px-4 flex flex-col gap-4">
         <div class="grid grid-cols-[1fr_auto] gap-4 items-center">
             @include('admin.partials.search-field', ['route' => 'admin.technology.index'])
-
-
             <div class="modal ban-modal">
                 @include('partials.text-button', [
                     'text' => 'Add Technology',
@@ -78,6 +76,6 @@
                 @endforelse
             </tbody>
         </table>
-        {{ $technologies->links() }}
+        {{ $technologies->onEachSide(0)->links() }}
     </main>
 @endsection

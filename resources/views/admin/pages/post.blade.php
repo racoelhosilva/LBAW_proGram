@@ -17,23 +17,27 @@
                 @forelse ($posts as $post)
                     <tr class="border-t border-white">
                         <td>{{ $post->id }}</td>
-                        <td>{{ $post->author->name }}</td>
-                        <td>{{ $post->title }}</td>
-                        <td class="pe-8 flex justify-end gap-2">
-                            @include('partials.text-button', [
-                                'text' => 'View Post',
-                                'type' => 'secondary',
-                                'anchorUrl' => route('post.show', $post->id),
-                            ])
-                            <form method="post" action="{{ route('post.destroy', $post->id) }}">
-                                @csrf
-                                @method('DELETE')
-                                @include('partials.text-button', [
-                                    'text' => 'Delete',
-                                    'type' => 'secondary',
-                                    'submit' => true,
-                                ])
-                            </form>
+                        <td class="break-words">{{ $post->author->name }}</td>
+                        <td class="break-all">{{ $post->title }}</td>
+                        <td class="flex justify-end">
+                            <div class="dropdown">
+                                @include('partials.icon-button', ['iconName' => 'ellipsis', 'label' => 'Options', 'type' => 'transparent'])
+                                <div class="hidden">
+                                    @include('partials.dropdown-item', [
+                                        'icon' => 'message-circle',
+                                        'text' => 'View Post',
+                                        'anchorUrl' => route('post.show', $post->id),
+                                    ])
+                                    <form method="post" action="{{ route('post.destroy', $post->id) }}" class="flex flex-col">
+                                        @csrf
+                                        @method('DELETE')
+                                        @include('partials.dropdown-item', [
+                                            'icon' => 'message-circle-x',
+                                            'text' => 'Delete Post',
+                                        ])
+                                    </form>
+                                </div>
+                            </div>
                         </td>
                     </tr>
                 @empty
@@ -43,6 +47,6 @@
                 @endforelse
             </tbody>
         </table>
-        {{ $posts->links() }}
+        {{ $posts->onEachSide(0)->links() }}
     </main>
 @endsection

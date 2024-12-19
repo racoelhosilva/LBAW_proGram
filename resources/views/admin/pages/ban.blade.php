@@ -47,6 +47,6 @@
                 @endforelse
             </tbody>
         </table>
-        {{ $bans->links() }}
+        {{ $bans->onEachSide(0)->links() }}
     </main>
 @endsection

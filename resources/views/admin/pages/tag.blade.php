@@ -78,6 +78,6 @@
                 @endforelse
             </tbody>
         </table>
-        {{ $tags->links() }}
+        {{ $tags->onEachSide(0)->links() }}
     </main>
 @endsection

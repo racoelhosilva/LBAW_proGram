@@ -78,6 +78,6 @@
                 @endforelse
             </tbody>
         </table>
-        {{ $languages->links() }}
+        {{ $languages->onEachSide(0)->links() }}
     </main>
 @endsection

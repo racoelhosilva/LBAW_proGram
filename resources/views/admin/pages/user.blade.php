@@ -92,6 +92,6 @@
                 @endforelse
             </tbody>
         </table>
-        {{ $users->links() }}
+        {{ $users->onEachSide(0)->links() }}
     </main>
 @endsection
