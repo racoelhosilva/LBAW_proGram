@@ -324,6 +324,7 @@ namespace App\Models{
  * @property int|null $administrator_id
  * @property \Illuminate\Support\Carbon $creation_timestamp
  * @property \Illuminate\Support\Carbon $validity_timestamp
+ * @property-read \App\Models\User|null $account
  * @method static \Illuminate\Database\Eloquent\Builder|Token newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Token newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Token query()
@@ -404,6 +405,7 @@ namespace App\Models{
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Post> $posts
  * @property-read int|null $posts_count
  * @property-read \App\Models\UserStats|null $stats
+ * @property-read \App\Models\Token|null $token
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Token> $tokens
  * @property-read int|null $tokens_count
  * @method static \Database\Factories\UserFactory factory($count = null, $state = [])

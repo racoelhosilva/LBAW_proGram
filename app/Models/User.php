@@ -182,4 +182,9 @@ class User extends Authenticatable
 
         return $followRequest?->status;
     }
+
+    public function token(): HasOne
+    {
+        return $this->hasOne(Token::class);
+    }
 }

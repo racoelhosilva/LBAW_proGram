@@ -17,7 +17,7 @@
             @foreach($notifications as $notification)
                 @include('partials.notification-card', ['notification' => $notification])
             @endforeach
-            {{ $notifications->links() }}
+            {{ $notifications->onEachSide(0)->links() }}
         @endempty
     </section>
 </main>

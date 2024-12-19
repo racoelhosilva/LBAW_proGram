@@ -4,7 +4,7 @@
     <main class="px-8 flex flex-col gap-4">
         @include('admin.partials.search-field', ['route' => 'admin.ban.index'])
 
-        <div class="overflow-x-auto">
+        <div class="overflow-x-auto flex flex-col gap-4">
             <table>
                 <thead>
                     <tr>
@@ -34,15 +34,14 @@
                                         @include('partials.icon-button', ['iconName' => 'ellipsis', 'label' => 'Options', 'type' => 'transparent'])
                                         <div class="hidden">
                                             <div>
-                                                <form action="{{ route('admin.ban.revoke', $ban->id) }}" method="POST" class="flex flex-col">
-                                                    @csrf
-                                                    @include('partials.dropdown-item', [
-                                                        'icon' => 'user-round-x',
-                                                        'text' => 'Revoke',
-                                                        'type' => 'secondary',
-                                                        'submit' => true,
-                                                    ])
-                                                </form>
+                                                @include('partials.confirmation-modal', [
+                                                    'icon' => 'user-round-x',
+                                                    'label' => 'Revoke',
+                                                    'message' => 'Are you sure you want to revoke this ban?',
+                                                    'type' => 'dropdown',
+                                                    'action' => route('admin.ban.revoke', $ban->id),
+                                                    'method' => 'POST',
+                                                ])
                                             </div>
                                         </div>
                                     </div>
@@ -56,7 +55,7 @@
                     @endforelse
                 </tbody>
             </table>
+            {{ $bans->onEachSide(0)->links() }}
         </div>
-        {{ $bans->onEachSide(0)->links() }}
     </main>
 @endsection

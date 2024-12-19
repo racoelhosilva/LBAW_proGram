@@ -1,5 +1,5 @@
 import "./bootstrap";
-import { fadeToastMessage } from "./utils";
+import {fadeToastMessage, sendToastMessage} from "./utils";
 import Quill from "quill";
 import "quill/dist/quill.core.css";
 
@@ -41,21 +41,24 @@ const openModal = (modal, event) => {
 
 const closeModal = (modal, event) => {
 	modal.classList.remove("active");
+    hideDropdowns(event);
 	event.stopPropagation();
 };
 
 const addModalListeners = () => {
 	const modals = document.querySelectorAll(".modal");
 
-	modals.forEach((modal) => {
-		const modalOpenButton = modal.querySelector(`:scope .open-button`);
-		const modalCloseButton = modal.querySelector(":scope .close-button");
-		const modalContent = modal.querySelector(':scope > div');
+    modals.forEach(modal => {
+        const modalOpenButton = modal.querySelector(`:scope .open-button`);
+        const modalContent = modal.querySelector(':scope > div');
+        const modalCloseButtons = modal.querySelectorAll(':scope .close-button');
 
-		modalContent.addEventListener('click', event => event.stopPropagation());
-		modalOpenButton.addEventListener('click', event => openModal(modal, event));
-		modalCloseButton.addEventListener('click', event => closeModal(modal, event));
-	});
+        modalContent.addEventListener('click', event => event.stopPropagation());
+        modalOpenButton.addEventListener('click', event => openModal(modal, event));
+        modalCloseButtons.forEach(closeButton => {
+            closeButton.addEventListener('click', event => closeModal(modal, event));
+        });
+    });
 }
 
 const addToastMessageListeners = () => {
@@ -228,9 +231,24 @@ const addResponsiveDropdownListeners = () => {
 	});
 };
 
+const addCopyButtonListeners = () => {
+    const copyButtons = document.querySelectorAll('.copy-button');
+
+    copyButtons.forEach(copyButton => {
+        copyButton.addEventListener('click', () => {
+            const copyText = copyButton.querySelector('span').textContent;
+
+            navigator.clipboard.writeText(copyText).then(() => {
+                sendToastMessage('Copied to clipboard!', 'success');
+            });
+        });
+    });
+};
+
 addDropdownListeners();
 addModalListeners();
 addToastMessageListeners();
 activateQuill();
 addSelectListeners();
 addResponsiveDropdownListeners();
+addCopyButtonListeners();

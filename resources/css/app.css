@@ -49,11 +49,15 @@
     }
 
     .dropdown > div {
-        @apply absolute right-0 rounded-lg overflow-hidden w-60 mt-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 flex-col shadow z-10;
+        @apply absolute right-0 top-14 rounded-lg overflow-hidden w-60 mt-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 flex flex-col shadow z-10 opacity-100 transition-all;
+    }
+
+    .dropdown > div.hidden {
+        @apply flex invisible opacity-0 top-16;
     }
 
     .dropdown > div:not(.hidden) {
-        @apply flex;
+        @apply flex visible opacity-100;
     }
 
     .dropdown > div > div {
@@ -81,11 +85,19 @@
     }
 
     table {
-        @apply w-full overflow-hidden border border-separate border-spacing-0 rounded-xl bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 shadow;
+        @apply w-full border border-separate border-spacing-0 rounded-xl bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 shadow;
     }
 
     table th {
         @apply p-2 bg-white dark:bg-slate-700;
+    }
+
+    table th:first-child {
+        @apply rounded-tl-xl;
+    }
+
+    table th:last-child {
+        @apply rounded-tr-xl;
     }
  
     table td {
@@ -126,11 +138,12 @@
     }
 
     .modal.active > div {
-        @apply flex;
+        @apply flex items-center justify-center;
     }
 
-    .modal > div > div {
-        @apply card col-start-2;
+    .modal > div > section {
+        @apply card w-[30rem];
+        max-width: calc(100vw - 4rem);
     }
 
     .select {
