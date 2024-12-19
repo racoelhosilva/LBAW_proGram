@@ -35,13 +35,32 @@ class UserPolicy
      */
     public function viewContent(?User $user, User $model): bool
     {
-        $isAdmin = Auth::guard('admin')->check();
-        $followsUser = $user && $user->following->contains('id', $model->id);
-        $isSelf = $user && $user->id === $model->id;
-        $isBanned = $user && $user->isBanned();
-        $isPublic = $model->is_public;
+        // Grant access if the user is admin.
+        if (Auth::guard('admin')->check()) {
+            return true;
+        }
 
-        return ! $isBanned && ($isAdmin || $followsUser || $isSelf || $isPublic);
+        // Deny access if the user is banned.
+        if ($user && $user->isBanned()) {
+            return false;
+        }
+
+        // Grant access if the user is the author.
+        if ($user && $user->id === $model->id) {
+            return true;
+        }
+
+        // Grant access if the user is following the author.
+        if ($user && $user->following->contains('id', $model->id)) {
+            return true;
+        }
+
+        // Grant access if the user is public
+        if ($model->is_public) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -76,6 +95,46 @@ class UserPolicy
         }
 
         return false;
+    }
+
+    /**
+     * Determine whether the user can view notifications.
+     */
+    public function viewNotifications(?User $user, User $model): bool
+    {
+        if ($user && ! $user->isBanned() && $user->id === $model->id) {
+            return true;
+        }
+
+        if (Auth::guard('admin')->check()) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Determine whether the user can view follow requests.
+     */
+    public function viewRequests(?User $user, User $model): bool
+    {
+        if ($user && ! $user->isBanned() && $user->id === $model->id) {
+            return true;
+        }
+
+        if (Auth::guard('admin')->check()) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Determine whether the user can update the notifications.
+     */
+    public function updateNotification(?User $user, User $model): bool
+    {
+        return $user && ! $user->isBanned() && $user->id === $model->id;
     }
 
     /**

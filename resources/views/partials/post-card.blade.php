@@ -5,7 +5,11 @@
     $postUrl = route('post.show', $post->id);
 @endphp
 
-<article class="post-card card px-6 w-full grid grid-cols-[auto_1fr_auto] items-center content-start"
+<article class="post-card card px-6 w-full grid grid-cols-[auto_1fr_auto] items-center content-start
+    @if($post->is_announcement)
+        shadow-[inset_0_0_4px_rgba(38,102,214,0.8)] dark:shadow-[inset_0_0_4px_rgba(38,102,214,0.8)]
+    @endif
+    "
     data-post-id="{{ $post->id }}">
     @if (!$post->author->is_deleted)
         <a href="{{ $authorUrl }}">
@@ -16,8 +20,6 @@
         <img src="{{ $post->author->getProfilePicture() }}" alt="deleted account"
             class="w-12 h-12 rounded-full object-cover">
     @endif
-
-
 
     <div class="ms-4 flex flex-col">
         <p class="text-base/4 font-medium select-none">
@@ -43,6 +45,9 @@
     </div>
 
     <div class="ms-4 -me-3 flex">
+        @if ($post->is_announcement)
+            @include('partials.icon-button', ['iconName' => 'pin', 'label' => 'Announcement', 'type' => 'transparent'])
+        @endif
         <div class="dropdown">
             @include('partials.icon-button', [
                 'iconName' => 'ellipsis',
@@ -56,49 +61,51 @@
                         'text' => 'See Post',
                         'anchorUrl' => route('post.show', $post->id),
                     ])
-                    @if (Auth::check() && Auth::id() === $post->author->id)
+                    @can('update', $post)
                         @include('partials.dropdown-item', [
                             'icon' => 'pencil',
                             'text' => 'Edit Post',
                             'anchorUrl' => route('post.edit', $post->id),
                         ])
-                    @endif
+                    @endcan
+                    @can('forceDelete', $post)
+                        <form method="POST" action="{{ route('post.destroy', $post->id) }}" class="flex flex-col">
+                            @csrf
+                            @method('DELETE')
+                            @include('partials.dropdown-item', [
+                                'icon' => 'trash',
+                                'text' => 'Delete Post',
+                                'submit' => true,
+                            ])
+                        </form>
+                    @endcan
                 </div>
             </div>
         </div>
     </div>
 
     <div class="mt-4 col-span-3">
-        <h1 class="font-bold text-xl"><a href="{{ $postUrl }}">{{ $post->title }}</a></h1>
-        <div class="post-content">
-            {!! str_replace("\\n", "<br>", $post->text) !!}
-        </div>
+        <h1 class="font-bold text-xl break-words"><a href="{{ $postUrl }}">{{ $post->title }}</a></h1>
+        <p class="whitespace-pre-wrap text-pretty break-words">{{ str_replace("\\n", "\n", $post->text) }}</p>
     </div>
-
-    <div class="-ms-3 col-span-3 grid grid-cols-[auto_auto_auto_1fr_50%] items-center">
-        @if (Auth::check() && Auth::id() !== $post->author->id)
-            <button aria-label="Like"
-                class="p-3 .btn-transparent like-button {{ $post->likedBy(Auth::user()) ? 'liked' : '' }}">
-                @include('partials.icon', ['name' => 'heart'])
-                @include('partials.icon', ['name' => 'filled-heart'])
-            </button>
-        @else
-            <button aria-label="Like" class="p-3 .btn-transparent like-button" disabled>
-                @include('partials.icon', ['name' => 'heart'])
-            </button>
-        @endif
-        <p class="me-3 font-medium select-none">{{ $post->likes }}</p>
-        @include('partials.icon-button', [
-            'iconName' => 'message-square-text',
-            'label' => 'Comments',
-            'type' => 'transparent',
-            'anchorUrl' => $postUrl,
-        ])
-        <p class="font-medium select-none">{{ $post->comments }}</p>
-        <div class="select-none text-end break-keep">
+    
+    <div class="-ms-3 col-span-3 grid grid-cols-[auto_auto_1fr_50%] items-end">
+        <div class="flex items-center">
+            @include('partials.like-button', ['model' => $post])
+            <p class="me-3 font-medium select-none">{{ $post->likes }}</p>
+        </div>
+        <div class="flex items-center">
+            @include('partials.icon-button', [
+                'iconName' => 'message-square-text',
+                'label' => 'Comments',
+                'type' => 'transparent',
+                'anchorUrl' => $postUrl,
+            ])
+            <p class="font-medium select-none">{{ $post->comments }}</p>
+        </div>
+        <div class="select-none text-end break-keep col-start-4">
             @foreach ($post->tags as $tag)
-                {{-- TODO: Add tag search results link --}}
-                <span class="text-sm font-medium text-blue-600 dark:text-blue-400">{{ '#' . $tag->name }}</span>
+                @include('partials.tag', ['tag' => $tag, 'small' => true])
             @endforeach
         </div>
     </div>

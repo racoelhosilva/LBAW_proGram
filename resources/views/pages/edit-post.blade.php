@@ -9,6 +9,10 @@
         <article class="card h-min p-10 pt-16 grid justify-items-center">
             <h1 class="mb-12 text-xl font-bold">Edit Post</h1>
             <form id="quill-form" action="{{ route('post.update', $post->id) }}" method="POST" class="mb-4 grid gap-4 justify-self-stretch" data-quill-field="text">
+    <main id="edit-post-page" class="px-8">
+        <article class="card h-min p-10 pt-16 flex flex-col gap-12">
+            <h1 class="mb-12 text-2xl font-bold">Edit Post</h1>
+            <form id="quill-form" action="{{ route('post.update', $post->id) }}" method="POST" class="mb-4 grid gap-4 justify-self-stretch" data-quill-field="text">
                 @csrf
                 @method('PUT')
 
@@ -29,27 +33,35 @@
 
                 <section class="flex flex-col">
                     <label for="tags" class="mb-2 font-medium">Associated Tags</label>
-                    <select name="tags[]" id="tags" multiple class="card overflow-auto">
-                        @foreach ($tags as $tag)
-                            <option {{ $post->hasTag($tag) ? 'checked' : '' }}
-                                class="w-full text-gray-600 dark:text-white px-4 py-2" value="{{ $tag->id }}"
-                                {{ $post->hasTag($tag) ? 'selected' : '' }}>{{ $tag->name }}</option>
-                        @endforeach
-                    </select>
+                    @include('partials.tag-select', [
+                        'tags' => $tags,
+                        'label' => 'Tags',
+                        'selected' => $post->tags->pluck('id')->all(),
+                        'form' => 'edit-post-form',
+                    ])
                 </section>
 
                 <section class="flex flex-col">
                     <label class="mb-2">
-                        <input type="checkbox" name="is_public" value="1" {{ $post->is_public ? 'checked' : '' }}>
-                        <span class="font-medium">Make this post public</span>
+                        @if($post->group()->first())
+                            @if($post->group()->first()->is_public)
+                                <input type="checkbox" name="is_public" value="1" checked hidden>
+                            @else
+                                <input type="checkbox" name="is_public" value="1" hidden>
+                            @endif
+                        @else
+                            <input type="checkbox" name="is_public" value="1" {{ $post->is_public ? 'checked' : '' }}> 
+                            <span class="font-medium">Make this post public</span>
+                        @endif
                     </label>
                 </section>
-                @include('partials.text-button', [
-                    'text' => 'Update Post',
-                    'label' => 'update',
-                    'type' => 'primary',
-                    'submit' => true,
-                ])
+                <section class="flex flex-col">
+                    <label class="mb-2">
+                        <input type="checkbox" name="is_announcement" value="1" {{ $post->is_announcement ? 'checked' : '' }}> 
+                        <span class="font-medium">Make this post an announcement</span>
+                    </label>
+                </section>
+                @include('partials.text-button', ['text' => 'Update Post', 'label' => 'update', 'type' => 'primary', 'submit' => true])
             </form>
 
             <form method="post" action="{{ route('post.destroy', $post->id) }}" class="w-full flex flex-col">
@@ -57,7 +69,7 @@
                 @method('DELETE')
                 @include('partials.text-button', [
                     'text' => 'Delete Post',
-                    'type' => 'primary',
+                    'type' => 'danger',
                     'submit' => true,
                 ])
             </form>

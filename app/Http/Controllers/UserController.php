@@ -28,11 +28,11 @@ class UserController extends Controller
         $this->authorize('viewAny', Post::class);
 
         $posts = $user->posts()
-            ->when(Auth::check() && ! Auth::user()->follows($user) && Auth::id() !== $id, function ($query) {
-                $query->where('is_public', true);
-            })
+            ->visibleTo(Auth::user())
+            ->orderBy('is_announcement', 'DESC')
+            ->orderBy('creation_timestamp', 'DESC')
             ->orderBy('likes', 'DESC')
-            ->paginate(10);
+            ->get();
 
         $isOwnProfile = Auth::check() && Auth::id() === $user->id;
         $recommendedUsers = Auth::check() ? $this->recommendedUsers(Auth::user(), $user) : null;
@@ -44,6 +44,36 @@ class UserController extends Controller
             'isOwnProfile' => $isOwnProfile,
             'recommendedUsers' => $recommendedUsers,
             'num_requests' => $num_requests,
+        ]);
+    }
+
+    public function showGroups(int $id)
+    {
+        $user = User::findOrFail($id);
+
+        $this->authorize('view', $user);
+
+        $groups = $user->groups()
+            ->orderBy('name', 'ASC')
+            ->get();
+
+        return view('pages.user-groups', [
+            'user' => $user,
+            'groups' => $groups,
+        ]);
+    }
+
+    public function showInvites(int $id)
+    {
+        $user = User::findOrFail($id);
+
+        $this->authorize('view', $user);
+
+        $invites = $user->groupsInvitedTo()->orderBy('name', 'ASC')->get();
+
+        return view('pages.user-group-invites', [
+            'user' => $user,
+            'invites' => $invites,
         ]);
     }
 
@@ -79,6 +109,9 @@ class UserController extends Controller
             'description' => 'nullable|string|max:200',
             'is_public' => 'nullable',
             'handle' => ['required', 'string', 'max:20', Rule::unique('users')->ignore($user->id)],
+            'github_url' => 'nullable|url',
+            'gitlab_url' => 'nullable|url',
+            'linkedin_url' => 'nullable|url',
             'languages' => 'nullable|array',
             'languages.*' => 'exists:language,id',
             'technologies' => 'nullable|array',
@@ -86,7 +119,6 @@ class UserController extends Controller
             'top_projects' => 'nullable|array|max:10',
             'banner_picture' => 'image|mimes:jpeg,png,jpg|max:10240',
             'profile_picture' => 'image|mimes:jpeg,png,jpg|max:10240',
-
         ]);
 
         DB::transaction(function () use ($request, $user) {
@@ -99,6 +131,11 @@ class UserController extends Controller
             $user->stats->technologies()->sync($request->input('technologies') ?? []);
 
             $user->save();
+
+            $user->stats->github_url = $request->input('github_url');
+            $user->stats->gitlab_url = $request->input('gitlab_url');
+            $user->stats->linkedin_url = $request->input('linkedin_url');
+            $user->stats->save();
 
             $user->stats->topProjects()->delete();
 
@@ -178,7 +215,7 @@ class UserController extends Controller
     {
         $user = User::findOrFail($id);
 
-        // TODO: Check policies @HenriqueSFernandes
+        $this->authorize('viewNotifications', $user);
 
         $notifications = $user->notifications()->orderBy('timestamp', 'desc')->paginate(10);
 
@@ -237,7 +274,7 @@ class UserController extends Controller
     {
         $user = User::findOrFail($id);
 
-        $this->authorize('delete', $user);
+        $this->authorize('viewRequests', $user);
 
         $followRequests = $user->followRequests()
             ->where('status', 'pending')

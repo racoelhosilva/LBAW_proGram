@@ -1,47 +1,30 @@
-const seeUserResults = (seePostsButton, seeUsersButton, postResults, userResults) => {
-    userResults.classList.remove('hidden');
-    userResults.classList.add('flex');
-
-    postResults.classList.add('hidden');
-    postResults.classList.remove('flex');
-
-    seePostsButton.classList.remove('font-bold');
-    seePostsButton.classList.add('font-medium');
-
-    seeUsersButton.classList.remove('font-medium');
-    seeUsersButton.classList.add('font-bold');
-}
-
-const seePostResults = (seePostsButton, seeUsersButton, postResults, userResults) => {
-    userResults.classList.add('hidden');
-    userResults.classList.remove('flex');
-
-    postResults.classList.remove('hidden');
-    postResults.classList.add('flex');
-
-    seeUsersButton.classList.remove('font-bold');
-    seeUsersButton.classList.add('font-medium');
-    
-    seePostsButton.classList.remove('font-medium');
-    seePostsButton.classList.add('font-bold');
-}
+import {addLikeButtonListeners} from "./post.js";
+import {addLazyLoading} from "./utils.js";
 
 const addSearchListeners = () => {
-    const seePostsButton = document.getElementById('see-posts-button');
-    const seeUsersButton = document.getElementById('see-users-button');
-    const userResults = document.getElementById('user-results');
-    const postResults = document.getElementById('post-results');
+    const searchPosts = document.getElementById('search-posts');
+    const searchUsers = document.getElementById('search-users');
+    const searchLoadingSpinner = document.querySelector('#search-results > div:last-child > .loading-spinner');
+    const searchFilters = document.querySelectorAll('#search-filters .select');
+    const searchField = document.getElementById('search-field');
 
-    if (!seePostsButton || !seeUsersButton || !userResults || !postResults) {
+    if (!searchLoadingSpinner || !searchField || !searchFilters) {
         return;
     }
 
-    seePostsButton.addEventListener('click', () => {
-        seePostResults(seePostsButton, seeUsersButton, postResults, userResults);
-    });
-    seeUsersButton.addEventListener('click', () => {
-        seeUserResults(seePostsButton, seeUsersButton, postResults, userResults);
-    });
+    const urlParams = new URLSearchParams(window.location.search);
+    const searchParams = {
+        query: urlParams.get('query'),
+        tags: urlParams.getAll('tags[]'),
+        search_attr: urlParams.get('search_attr'),
+        order_by: urlParams.get('order_by'),
+    };
+    if (searchPosts) {
+        addLazyLoading(searchPosts, searchLoadingSpinner, '/search', { ...searchParams, search_type: 'posts' }, addLikeButtonListeners);
+    }
+    if (searchUsers) {
+        addLazyLoading(searchUsers, searchLoadingSpinner, '/search', { ...searchParams, search_type: 'users' });
+    }
 }
 
 addSearchListeners();
