@@ -154,6 +154,7 @@ Route::prefix('admin')->group(function () {
 
         // Admin posts
         Route::get('/post', [AdminPostController::class, 'index'])->name('admin.post.index');
+        Route::delete('/post/{id}', [AdminPostController::class, 'destroy'])->where('id', '[0-9]+')->name('admin.post.destroy');
 
         // Tags
         Route::get('/tags', [AdminTagController::class, 'index'])->name('admin.tag.index');

@@ -9,20 +9,23 @@
         <p class="text-base/4 font-medium"><a href="{{ $authorUrl }}">{{ $comment->author->name }}</a></p>
         <p class="text-xs/3 pt-1 font-medium text-gray-500 dark:text-gray-400"><a href="{{ $authorUrl }}">{{ '@' . $comment->author->handle }}</a>{{ ' • ' . $comment->timestamp->diffForHumans() }}</p>
     </div>
-    <div class=" flex">
+    <div class="flex">
         @if(Auth::check() && Auth::id() === $comment->author->id)
-        <div class="dropdown">
-            @include('partials.icon-button', ['iconName' => 'ellipsis', 'label' => 'Options', 'type' => 'transparent'])
-            <div class="hidden">
-            <div class="edit-button-container">
-                @include('partials.dropdown-item', ['icon' => 'pencil', 'text' => 'Edit Comment', 'class' => 'edit-comment'])
+            <div class="dropdown">
+                @include('partials.icon-button', ['iconName' => 'ellipsis', 'label' => 'Options', 'type' => 'transparent'])
+                <div class="hidden">
+                    <div class= "comment-actions">
+                        @include('partials.dropdown-item', ['icon' => 'pencil', 'text' => 'Edit Comment', 'class' => 'edit-comment'])
+                        @include('partials.confirmation-modal', [
+                            'icon' => 'trash',
+                            'label' => 'Delete Comment',
+                            'type' => 'dropdown',
+                            'message' => 'Are you sure you want to delete this comment?',
+                            'class' => 'delete-comment',
+                        ])
+                    </div>
+                </div>
             </div>
-            <div class="delete-button-container">
-                @include('partials.dropdown-item', ['icon' => 'trash', 'text' => 'Delete Comment', 'class' => 'delete-comment'])
-           </div>
-            
-            </div>
-        </div>
         @endif
     </div>
     <div class="mt-4 content-container max-w-full overflow-hidden">

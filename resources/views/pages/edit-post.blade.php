@@ -5,7 +5,7 @@
 @section('content')
     <main id="edit-post-page" class="px-8">
         <article class="card h-min p-10 pt-16 flex flex-col gap-12">
-            <h1 class="mb-12 text-2xl font-bold">Edit Post</h1>
+            <h1 class="mb-12 text-2xl font-bold text-center">Edit Post</h1>
             <form id="edit-post-form" action="{{ route('post.update', $post->id) }}" method="POST" class="mb-4 grid gap-4 justify-self-stretch">
                 @csrf
 
@@ -60,15 +60,13 @@
                 @include('partials.text-button', ['text' => 'Update Post', 'label' => 'update', 'type' => 'primary', 'submit' => true])
             </form>
 
-            <form method="post" action="{{ route('post.destroy', $post->id) }}" class="w-full flex flex-col">
-                @csrf
-                @method('DELETE')
-                @include('partials.text-button', [
-                    'text' => 'Delete Post',
-                    'type' => 'danger',
-                    'submit' => true,
-                ])
-            </form>
+            @include('partials.confirmation-modal', [
+                'label' => 'Delete Post',
+                'message' => 'Are you sure you want to delete this post? It\'s data will be lost FOREVER (i.e. a very long time)!',
+                'action' => route('post.destroy', $post->id),
+                'type' => 'button',
+                'method' => 'DELETE',
+            ])
         </article>
     </main>
 @endsection

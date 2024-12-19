@@ -4,7 +4,7 @@
     <main class="px-8 flex flex-col gap-4">
         @include('admin.partials.search-field', ['route' => 'admin.post.index'])
 
-        <div class="overflow-x-auto">
+        <div class="overflow-x-auto flex flex-col gap-4 pb-8">
             <table>
                 <thead class="text-center">
                     <tr>
@@ -30,14 +30,14 @@
                                                 'text' => 'View Post',
                                                 'anchorUrl' => route('post.show', $post->id),
                                             ])
-                                            <form method="post" action="{{ route('post.destroy', $post->id) }}" class="flex flex-col">
-                                                @csrf
-                                                @method('DELETE')
-                                                @include('partials.dropdown-item', [
-                                                    'icon' => 'message-circle-x',
-                                                    'text' => 'Delete Post',
-                                                ])
-                                            </form>
+                                            @include('partials.confirmation-modal', [
+                                                'label' => 'Delete Post',
+                                                'icon' => 'trash',
+                                                'message' => 'Are you sure you want to delete this post? This action cannot be undone!',
+                                                'type' => 'dropdown',
+                                                'action' => route('admin.post.destroy', $post->id),
+                                                'method' => 'DELETE'
+                                            ])
                                         </div>
                                     </div>
                                 </div>
@@ -50,7 +50,7 @@
                     @endforelse
                 </tbody>
             </table>
+            {{ $posts->onEachSide(0)->links() }}
         </div>
-        {{ $posts->onEachSide(0)->links() }}
     </main>
 @endsection

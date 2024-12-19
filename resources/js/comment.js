@@ -1,5 +1,5 @@
 import { sendPostView, sendPutView, sendToastMessage ,sendDelete} from './utils';
-import { addDropdownListeners } from './app';
+import { addDropdownListeners, addModalListeners } from './app';
 import { addLikeButtonListeners } from './post';
 const addSubmitCommentListener = () => {
     const form = document.getElementById('comment-submit-form');
@@ -18,6 +18,7 @@ const addSubmitCommentListener = () => {
         addDeleteCommentListener();
         addSaveCommentListener();
         addLikeButtonListeners();
+        addModalListeners();
     });
 };
 
@@ -28,7 +29,7 @@ const addEditCommentListener = () => {
 
     const comments = commentSection.querySelectorAll('.comment-card');
     comments.forEach((comment) => {
-        const editButton = comment.querySelector('.edit-button-container button');
+        const editButton = comment.querySelector('.comment-actions .edit-comment');
         const contentContainer = comment.querySelector('.content-container');
         const contentEditContainer = comment.querySelector('.edit-content-container');
         if(editButton) {
@@ -46,7 +47,7 @@ const addDeleteCommentListener = () => {
 
     const comments = commentSection.querySelectorAll('.comment-card');
     comments.forEach(comment => {
-        const deleteButton = comment.querySelector('.delete-button-container button');
+        const deleteButton = comment.querySelector(' .comment-actions .delete-comment');
         
         if (deleteButton) {
             deleteButton.onclick = () => {
@@ -66,7 +67,6 @@ const addDeleteCommentListener = () => {
 
 const addSaveCommentListener = () => {
     const commentSection = document.getElementById('comment-section');
-    const commentList = document.querySelector('.comment-list');
     if (!commentSection) return;
 
     const comments = commentSection.querySelectorAll('.comment-card');
@@ -86,6 +86,7 @@ const addSaveCommentListener = () => {
             addDeleteCommentListener();
             addSaveCommentListener();
             addLikeButtonListeners();
+            addModalListeners();
             };
         }
     });
