@@ -21,7 +21,7 @@ class PostController extends Controller
 
     protected function cleanupUnusedImages(string $text, Post $post)
     {
-        preg_match_all('/<img[^>]+>/i', $text, $result);
+        preg_match_all('/<(img|iframe)[^>]+>/i', $text, $result);
 
         $folder = 'temporary/'.$post->author_id;
 

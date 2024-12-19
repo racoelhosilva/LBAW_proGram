@@ -21,3 +21,5 @@ yarn-error.log
 !/public/profile/default.jpg
 /public/banner/*
 !/public/banner/default.jpg
+/public/postAttachments/
+/public/temporary/

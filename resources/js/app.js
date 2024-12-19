@@ -67,8 +67,6 @@ const addToastMessageListeners = () => {
 	});
 };
 
-const attachments = [];
-
 const activateQuill = () => {
 	const form = document.querySelector("#quill-form");
 
@@ -82,7 +80,7 @@ const activateQuill = () => {
 					container: [
 						["bold", "italic", "underline", "code"],
 						[{ list: "ordered" }, { list: "bullet" }, "code-block"],
-						["link", "image"],
+						["link", "image", "video"],
 						["clean"],
 					],
 					handlers: {
@@ -105,29 +103,56 @@ const activateQuill = () => {
 											.getAttribute("content"),
 									);
 
-									try {
-										const response = await fetch("/api/upload-file", {
-											method: "POST",
-											headers: {
-												"X-CSRF-TOKEN": document.querySelector(
-													'meta[name="csrf-token"]',
-												).content,
-											},
-											body: formData,
-										});
-										console.log(response);
+									const response = await fetch("/api/upload-file", {
+										method: "POST",
+										headers: {
+											"X-CSRF-TOKEN": document.querySelector(
+												'meta[name="csrf-token"]',
+											).content,
+										},
+										body: formData,
+									});
 
-										if (response.ok) {
-											const { url } = await response.json();
-											const range = quill.getSelection();
-											console.log(url);
-											quill.insertEmbed(range.index, "image", url);
-											attachments.add(url);
-										} else {
-											console.error("Failed to upload image", response);
-										}
-									} catch (error) {
-										console.error("Error uploading image", error);
+									if (response.ok) {
+										const { url } = await response.json();
+										const range = quill.getSelection();
+										quill.insertEmbed(range.index, "image", url);
+									}
+								}
+							};
+						},
+						video: function() {
+							const input = document.createElement("input");
+							input.setAttribute("type", "file");
+							input.setAttribute("accept", "video/*");
+							input.click();
+
+							input.onchange = async () => {
+								const file = input.files[0];
+								if (file) {
+									const formData = new FormData();
+									formData.append("file", file);
+									formData.append("type", "temporary");
+									formData.append(
+										"user_id",
+										document
+											.querySelector('meta[name="user-id"]')
+											.getAttribute("content"),
+									);
+
+									const response = await fetch("/api/upload-file", {
+										method: "POST",
+										headers: {
+											"X-CSRF-TOKEN": document.querySelector(
+												'meta[name="csrf-token"]',
+											).content,
+										},
+										body: formData,
+									});
+									if (response.ok) {
+										const { url } = await response.json();
+										const range = quill.getSelection();
+										quill.insertEmbed(range.index, "video", url);
 									}
 								}
 							};
@@ -142,37 +167,7 @@ const activateQuill = () => {
 		quill.clipboard.dangerouslyPasteHTML(field.value ?? "", "silent");
 
 		form.onsubmit = async () => {
-			console.log("here");
-			const parser = new DOMParser();
-			const content = quill.root.innerHTML;
-			field.value = content;
-
-			const doc = parser.parseFromString(content, "text/html");
-			const currentImages = new Set(
-				Array.from(doc.querySelectorAll("img")).map((img) => img.src),
-			);
-
-			const unusedImages = Array.from(attachments).filter(
-				(url) => !currentImages.has(url),
-			);
-
-			for (const url of unusedImages) {
-				try {
-					const response = await fetch("/api/delete-file", {
-						method: "POST",
-						headers: {
-							"X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]')
-								.content,
-							"Content-Type": "application/json",
-						},
-						body: JSON.stringify({ url }),
-					});
-					console.log(response);
-					attachments.delete(url);
-				} catch (error) {
-					console.error("Error deleting image", error);
-				}
-			}
+			field.value = quill.root.innerHTML;
 		};
 	}
 };

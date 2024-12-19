@@ -18,7 +18,7 @@ class ApiFileController extends Controller
     public static $systemTypes = [
         'profile' => ['png', 'jpg', 'jpeg'],
         'banner' => ['png', 'jpg', 'jpeg'],
-        'temporary' => ['png', 'jpg', 'jpeg'],
+        'temporary' => ['png', 'jpg', 'jpeg', 'mp4'],
     ];
 
     private static function getDefaultExtension(string $type)
@@ -96,13 +96,11 @@ class ApiFileController extends Controller
     public function uploadFile(Request $request)
     {
 
-        Debugbar::info($request);
 
         // Validation: has file
         if (! $request->hasFile('file')) {
             return redirect()->back()->withError('File not found');
         }
-        Debugbar::info($request->file('file'));
 
         // Validation: upload extension
         $file = $request->file('file');
@@ -116,7 +114,6 @@ class ApiFileController extends Controller
 
         $fileName = $file->hashName();
 
-        Debugbar::info($fileName);
         $file->storeAs($type.'/'.$user_id, $fileName, self::$diskName);
 
         return response()->json([
