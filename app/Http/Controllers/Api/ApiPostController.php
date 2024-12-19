@@ -32,13 +32,23 @@ class ApiPostController extends Controller
     // Retrieve a single post by ID
     public function show($id)
     {
+        $user = auth()->user();
         $post = Post::findOrFail($id);
-
         $this->authorize('view', $post);
 
-        $post = $post->only(['id', 'author_id', 'title', 'text', 'creation_timestamp', 'is_announcement', 'is_public', 'likes', 'comments']);
+        $postData = $post->only([
+            'id',
+            'author_id',
+            'title',
+            'text',
+            'creation_timestamp',
+            'is_announcement',
+            'is_public',
+            'likes',
+            'comments',
+        ]);
 
-        return response()->json($post);
+        return response()->json($postData);
     }
 
     public function store(Request $request)
