@@ -38,7 +38,7 @@
                                                     'class' => 'open-button',
                                                 ])
                                                 <div>
-                                                    <div>
+                                                    <section>
                                                         <div class="mb-4 flex justify-between items-center">
                                                             <h1 class="text-2xl font-bold">Ban User</h1>
                                                             @include('partials.icon-button', [
@@ -67,11 +67,11 @@
                                                             <label><input type="checkbox" name="permanent"> Permanent</label>
                                                             @include('partials.text-button', [
                                                                 'text' => 'Ban User',
-                                                                'type' => 'primary',
+                                                                'type' => 'danger',
                                                                 'submit' => true,
                                                             ])
                                                         </form>
-                                                    </div>
+                                                    </section>
                                                 </div>
                                             </div>
                                             @include('partials.dropdown-item', [

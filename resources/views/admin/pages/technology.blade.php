@@ -13,7 +13,7 @@
                     'type' => 'primary',
                 ])
                 <div>
-                    <div>
+                    <section>
                         <div class="mb-4 flex justify-between items-center">
                             <h1 class="text-2xl font-bold">Add Technology</h1>
                             @include('partials.icon-button', [
@@ -39,7 +39,7 @@
                                 'submit' => true,
                             ])
                         </form>
-                    </div>
+                    </section>
                 </div>
             </div>
         </div>

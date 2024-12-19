@@ -123,11 +123,11 @@
     }
 
     .modal.active > div {
-        @apply flex;
+        @apply flex items-center justify-center;
     }
 
-    .modal > div > div {
-        @apply card col-start-2;
+    .modal > div > section {
+        @apply card;
     }
 
     .select {
