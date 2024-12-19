@@ -30,7 +30,7 @@
                 </a>
                 <label class="mb-2">
                     <input type="checkbox" name="remember" {{ old('remember') ? 'checked' : '' }}> <span
-                            class="font-medium">Remember Me</span>
+                        class="font-medium">Remember Me</span>
                 </label>
             </div>
 
@@ -48,7 +48,6 @@
             </div>
             <div class="grid grid-cols-3 gap-4">
                 @include('auth.oauth-button', ['provider' => 'google'])
-                <!-- TODO: when the user is logging in using github after the first time, they get redirected automatically to the home page, but that process takes some time. maybe add a spinning loading indicator?  -->
                 @include('auth.oauth-button', ['provider' => 'github'])
                 @include('auth.oauth-button', ['provider' => 'gitlab'])
             </div>
