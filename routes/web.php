@@ -20,6 +20,7 @@ use App\Http\Controllers\GitHubController;
 use App\Http\Controllers\GitLabController;
 use App\Http\Controllers\GoogleController;
 use App\Http\Controllers\GroupController;
+use App\Http\Controllers\GroupPostController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MailController;
 use App\Http\Controllers\PostController;
@@ -118,13 +119,17 @@ Route::middleware(['deny.banned', 'deny.deleted'])->group(function () {
         Route::get('/group/{id}/edit', 'edit')->where('id', '[0-9]+')->name('group.edit');
         Route::get('/group/{id}/manage', 'manage')->where('id', '[0-9]+')->name('group.manage');
         Route::get('/group/{group_id}/post/create', [GroupController::class, 'showCreatePostForm'])->where('group_id', '[0-9]+')->name('group.post.create');
-        Route::post('/group/{group_id}/post', [GroupController::class, 'createPost'])->where('group_id', '[0-9]+')->name('group.post.store')->middleware('throttle:calmdown');
         Route::get('/group/{id}/members', [GroupController::class, 'showMembers'])->name('group.members');
         Route::get('/group/{id}/requests', [GroupController::class, 'showRequests'])->name('group.requests');
         Route::get('/group/{id}/invites', [GroupController::class, 'showInvites'])->name('group.invites');
         Route::post('/group/{id}/join', [GroupController::class, 'join'])->name('group.join');
         Route::post('/group/{id}/leave', [GroupController::class, 'leave'])->name('group.leave');
 
+    });
+
+    //Group Post
+    Route::controller(GroupPostController::class)->group(function () {
+        Route::post('/group/{id}/post', 'store')->where('id', '[0-9]+')->name('group.post.store');
     });
     // Search
     Route::get('/search', [SearchController::class, 'index'])->name('search');
@@ -208,7 +213,6 @@ Route::prefix('api')->group(function () {
         Route::delete('/group/{id}/remove/{user_id}', 'remove')->where('id', '[0-9]+')->where('user_id', '[0-9]+')->name('api.group.remove');
         Route::post('/group/{id}/request/{user_id}/accept', 'acceptRequest')->where('id', '[0-9]+')->where('user_id', '[0-9]+')->name('api.group.request.accept');
         Route::delete('/group/{id}/request/{user_id}/reject', 'rejectRequest')->where('id', '[0-9]+')->where('user_id', '[0-9]+')->name('api.group.request.reject');
-        Route::post('/group/{id}/post/{post_id}', 'addPostToGroup')->where('id', '[0-9]+')->where('post_id', '[0-9]+')->name('api.group.post.add');
         Route::post('/group/{id}/invite/{user_id}', 'invite')->where('id', '[0-9]+')->where('user_id', '[0-9]+')->name('api.group.invite');
         Route::delete('/group/{id}/uninvite/{user_id}', 'uninvite')->where('id', '[0-9]+')->where('user_id', '[0-9]+')->name('api.group.uninvite');
         Route::post('/group/{id}/acceptInvite', 'acceptInvite')->where('id', '[0-9]+')->name('api.group.invite.accept');

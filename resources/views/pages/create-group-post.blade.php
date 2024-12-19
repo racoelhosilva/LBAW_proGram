@@ -6,7 +6,8 @@
     <main id="create-post-page" class="px-8">
         <article class="card h-min p-10 pt-16 flex flex-col gap-12">
             <h1 class="text-2xl font-bold text-center">Create Post on {{$group->name}}</h1>
-            <form id="create-post-form" class="grid gap-4 ">
+            <form id="create-group-post-form" class="grid gap-4" action="{{ route('group.post.store', ['id' => $group->id]) }}" method="POST">
+                
                 @csrf
                 <input type="hidden" id="group_id" name="group_id" value="{{ $group->id }}">
 
