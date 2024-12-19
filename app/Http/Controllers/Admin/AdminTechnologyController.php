@@ -69,9 +69,9 @@ class AdminTechnologyController extends Controller
      * Show the form for editing the specified resource.
      */
     public function edit(Technology $technology)
-		{
-				//
-		}
+    {
+        //
+    }
 
     /**
      * Update the specified resource in storage.

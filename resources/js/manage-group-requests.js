@@ -28,6 +28,7 @@ const acceptRequestListener = () => {
 
 const rejectRequestListener = () => {
     const manageGroupPage = document.querySelector('#group-requests-page');
+    if (!manageGroupPage) return;
     const groupId = manageGroupPage.getAttribute('data-group-id');
 
     const rejectRequestBtns = document.querySelectorAll('.decline-group-request-button');

@@ -104,7 +104,7 @@ class GroupPolicy
      */
     public function viewAny(?User $user): bool
     {
-        return $user || ! $user->isBanned();
+        return ! $user || ! $user->isBanned();
     }
 
     /*
