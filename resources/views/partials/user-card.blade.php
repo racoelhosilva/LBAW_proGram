@@ -18,7 +18,7 @@
 
     @if(auth()->check() && auth()->id() !== $user->id)
         @if($remove)
-            <button aria-label="Remove Follower" class="p-3 secondary-btn remove-follower-button" data-user-id="{{ $user->id }} col-start-3">
+            <button aria-label="Remove Follower" class="p-3 secondary-btn remove-follower-button col-start-3" data-user-id="{{ $user->id }}">
                 @include('partials.icon', ['name' => 'remove'])
             </button>
         @else

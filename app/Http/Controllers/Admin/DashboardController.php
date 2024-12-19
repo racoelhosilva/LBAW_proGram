@@ -17,7 +17,7 @@ class DashboardController extends Controller
             $query->active();
         })->count();
 
-        return view('admin.dashboard', [
+        return view('admin.pages.dashboard', [
             'userCount' => User::count(),
             'bannedCount' => $bannedCount,
             'postCount' => Post::count(),

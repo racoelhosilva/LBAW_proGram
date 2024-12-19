@@ -6,7 +6,7 @@
     <main class="px-8 flex flex-col gap-4">
         @include('admin.partials.search-field', ['route' => 'admin.user.index'])
 
-        <div class="overflow-x-auto">
+        <div class="overflow-x-auto flex flex-col gap-4 pb-20">
             <table>
                 <thead class="text-center">
                     <tr>
@@ -38,7 +38,7 @@
                                                     'class' => 'open-button',
                                                 ])
                                                 <div>
-                                                    <div>
+                                                    <section>
                                                         <div class="mb-4 flex justify-between items-center">
                                                             <h1 class="text-2xl font-bold">Ban User</h1>
                                                             @include('partials.icon-button', [
@@ -67,11 +67,11 @@
                                                             <label><input type="checkbox" name="permanent"> Permanent</label>
                                                             @include('partials.text-button', [
                                                                 'text' => 'Ban User',
-                                                                'type' => 'primary',
+                                                                'type' => 'danger',
                                                                 'submit' => true,
                                                             ])
                                                         </form>
-                                                    </div>
+                                                    </section>
                                                 </div>
                                             </div>
                                             @include('partials.dropdown-item', [
@@ -80,14 +80,14 @@
                                                 'anchorUrl' => route('user.show', $user->id),
                                             ])
 
-                                            <form method="post" action="{{ route('admin.user.destroy', $user->id) }}" class="flex flex-col">
-                                                @csrf
-                                                @method('DELETE')
-                                                @include('partials.dropdown-item', [
-                                                    'icon' => 'user-round-x',
-                                                    'text' => 'Delete Account',
-                                                ])
-                                            </form>
+                                            @include('partials.confirmation-modal', [
+                                                'type' => 'dropdown',
+                                                'icon' => 'user-round-x',
+                                                'label' => 'Delete Account',
+                                                'message' => 'Are you sure you want to delete this account? This action cannot be undone!',
+                                                'action' => route('admin.user.destroy', $user->id),
+                                                'method' => 'DELETE',
+                                            ])
                                         </div>
                                     </div>
                                 </div>
@@ -100,7 +100,7 @@
                     @endforelse
                 </tbody>
             </table>
+            {{ $users->onEachSide(0)->links() }}
         </div>
-        {{ $users->onEachSide(0)->links() }}
     </main>
 @endsection

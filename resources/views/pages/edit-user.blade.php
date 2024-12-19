@@ -5,7 +5,7 @@
 @section('content')
     <main class="px-8 grid grid-cols-4 grid-rows-[auto_1fr] gap-6">
         @include('partials.user-settings-menu')
-        <section class="card p-10 pt-16 h-min col-span-4 lg:col-span-3 grid gap-6 justify-items-center">
+        <section class="card p-10 pt-16 h-min col-span-4 lg:col-span-3 grid gap-6 justify-items-stretch">
             <h1 class="text-2xl font-bold">Edit Profile</h1>
             <form method="post" action="{{ route('user.update', $user->id) }}" class="grid gap-4 justify-self-stretch"
                 id="profile-form" enctype="multipart/form-data">
@@ -137,15 +137,13 @@
                 </div>
             </form>
 
-            <form method="post" action="{{ route('user.destroy', $user->id) }}" class="w-full flex flex-col">
-                @csrf
-                @method('DELETE')
-                @include('partials.text-button', [
-                    'text' => 'Delete Account',
-                    'type' => 'danger',
-                    'submit' => true,
-                ])
-            </form>
+            @include('partials.confirmation-modal', [
+                'label' => 'Delete Account',
+                'message' => 'Are you sure you want to delete your account? All of your data will be erased FOREVER (i.e. a very long time)!',
+                'action' => route('user.destroy', $user->id),
+                'type' => 'button',
+                'method' => 'DELETE',
+            ])
         </section>
     </main>
 @endsection

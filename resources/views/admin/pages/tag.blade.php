@@ -15,7 +15,7 @@
                     'type' => 'primary',
                 ])
                 <div>
-                    <div>
+                    <section>
                         <div class="mb-4 flex justify-between items-center">
                             <h1 class="text-2xl font-bold">Add Tag</h1>
                             @include('partials.icon-button', [
@@ -41,12 +41,12 @@
                                 'submit' => true,
                             ])
                         </form>
-                    </div>
+                    </section>
                 </div>
             </div>
         </div>
 
-        <div class="overflow-x-auto">
+        <div class="overflow-x-auto flex flex-col gap-4">
             <table>
                 <thead class="text-center">
                     <tr>
@@ -65,14 +65,14 @@
                                     @include('partials.icon-button', ['iconName' => 'ellipsis', 'label' => 'Options', 'type' => 'transparent'])
                                     <div class="hidden">
                                         <div>
-                                            <form method="post" action="{{ route('admin.tag.destroy', $tag->id) }}" class="flex flex-col">
-                                                @csrf
-                                                @method('DELETE')
-                                                @include('partials.dropdown-item', [
-                                                    'icon' => 'trash',
-                                                    'text' => 'Delete Tag',
-                                                ])
-                                            </form>
+                                            @include('partials.confirmation-modal', [
+                                                'label' => 'Delete Tag',
+                                                'icon' => 'trash',
+                                                'message' => 'Are you sure you want to delete this tag? This action cannot be undone!',
+                                                'type' => 'dropdown',
+                                                'action' => route('admin.tag.destroy', $tag->id),
+                                                'method' => 'DELETE',
+                                            ])
                                         </div>
                                     </div>
                                 </div>
@@ -85,7 +85,7 @@
                     @endforelse
                 </tbody>
             </table>
+            {{ $tags->onEachSide(0)->links() }}
         </div>
-        {{ $tags->onEachSide(0)->links() }}
     </main>
 @endsection

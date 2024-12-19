@@ -133,7 +133,7 @@ class PostController extends Controller
         });
 
         if (url()->previous() === route('post.edit', $post->id)) {
-            return redirect(session('previous_url'))->with('Post updated successfully.');
+            return redirect(session('previous_url'))->withSuccess('Post updated successfully.');
         }
 
         return redirect()->route('post.show', $post->id)->withSuccess('Post updated successfully.');
@@ -151,7 +151,7 @@ class PostController extends Controller
         $post->delete();
 
         if (url()->previous() === route('post.edit', $post->id)) {
-            return redirect(session('previous_url'))->with('Post deleted successfully.');
+            return redirect(session('previous_url'))->withSuccess('Post deleted successfully.');
         }
 
         return redirect()->back()->withSuccess('Post deleted successfully.');

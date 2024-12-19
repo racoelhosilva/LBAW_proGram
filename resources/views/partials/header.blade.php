@@ -42,30 +42,6 @@
                 'type' => 'transparent',
             ])
             <div class="hidden">
-                <div>
-                    @auth
-                        @include('partials.dropdown-item', [
-                            'icon' => 'user-round-cog',
-                            'text' => 'User Settings',
-                            'anchorUrl' => route('user.edit', auth()->id()),
-                        ])
-                        <form method="post" action="{{ route('logout') }}" class="flex flex-col">
-                            @csrf
-                            @include('partials.dropdown-item', ['icon' => 'log-out', 'text' => 'Logout', 'submit' => true])
-                        </form>
-                    @else
-                        @include('partials.dropdown-item', [
-                            'icon' => 'log-in',
-                            'text' => 'Login',
-                            'anchorUrl' => route('login'),
-                        ])
-                        @include('partials.dropdown-item', [
-                            'icon' => 'user-round-plus',
-                            'text' => 'Register',
-                            'anchorUrl' => route('register'),
-                        ])
-                    @endauth
-                </div>
                 @auth
                     <div>
                         @include('partials.dropdown-item', [
@@ -107,6 +83,30 @@
                         'text' => 'Contact Us',
                         'anchorUrl' => route('contact-us'),
                     ])
+                </div>
+                <div>
+                    @auth
+                        @include('partials.dropdown-item', [
+                            'icon' => 'user-round-cog',
+                            'text' => 'User Settings',
+                            'anchorUrl' => route('user.edit', auth()->id()),
+                        ])
+                        <form method="post" action="{{ route('logout') }}" class="flex flex-col">
+                            @csrf
+                            @include('partials.dropdown-item', ['icon' => 'log-out', 'text' => 'Logout', 'submit' => true])
+                        </form>
+                    @else
+                        @include('partials.dropdown-item', [
+                            'icon' => 'log-in',
+                            'text' => 'Login',
+                            'anchorUrl' => route('login'),
+                        ])
+                        @include('partials.dropdown-item', [
+                            'icon' => 'user-round-plus',
+                            'text' => 'Register',
+                            'anchorUrl' => route('register'),
+                        ])
+                    @endauth
                 </div>
             </div>
         </article>
