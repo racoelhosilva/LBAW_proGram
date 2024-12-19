@@ -16,6 +16,9 @@
                     @include('partials.dropdown-item', ['icon' => 'user-round', 'text' => 'View Users', 'anchorUrl' => route('admin.user.index')])
                     @include('partials.dropdown-item', ['icon' => 'user-round-x', 'text' => 'View Bans', 'anchorUrl' => route('admin.ban.index')])
                     @include('partials.dropdown-item', ['icon' => 'message-circle', 'text' => 'View Posts', 'anchorUrl' => route('admin.post.index')])
+                    @include('partials.dropdown-item', ['icon' => 'hash', 'text' => 'View Tags', 'anchorUrl' => route('admin.tag.index')])
+                    @include('partials.dropdown-item', ['icon' => 'code', 'text' => 'View Languages', 'anchorUrl' => route('admin.language.index')])
+                    @include('partials.dropdown-item', ['icon' => 'layers', 'text' => 'View Technologies', 'anchorUrl' => route('admin.technology.index')])
                 </div>
                 <div class="flex sm:!hidden">
                     @include('partials.dropdown-item', ['icon' => 'home', 'text' => 'View Home', 'anchorUrl' => route('home')])
