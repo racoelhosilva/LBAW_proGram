@@ -9,11 +9,9 @@ const acceptRequestListener = () => {
             btn.addEventListener('click', async (event) => {
                 event.preventDefault();
                 const userId = btn.closest('.manage-request-container').getAttribute('data-user-id');
-                console.log(userId);
                 if (!userId) return;
                 sendPost(`/api/group/${groupId}/request/${userId}/accept`)
                     .then(() => {
-                       console.log('accepted');
                        btn.closest('.manage-request-container').remove();
                     })
                     .catch((error) => {

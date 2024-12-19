@@ -47,9 +47,9 @@ class ApiCommentController extends Controller
                 'content' => $request->input('content'),
                 'post_id' => $request->input('post_id'),
                 'author_id' => $request->input('author_id'),
-                'timestamp' => now(),
             ]);
 
+            $comment->timestamp = now();
             $comment->likes = 0;
 
             event(new CommentEvent($comment->post_id, $comment->post->author_id));
