@@ -267,3 +267,7 @@
 .ql-container code {
     @apply !bg-slate-300 dark:!bg-slate-600;
 }
+
+.ql-code-block-container {
+    @apply bg-gray-800 text-gray-200 dark:bg-gray-900 dark:text-gray-300 p-2;
+}
