@@ -172,6 +172,13 @@ class PostController extends Controller
         $post = Post::findOrFail($id);
 
         $text = strip_tags($request->input('text'), self::ALLOWED_TAGS);
+        $usedFiles = $this->cleanupUnusedImages($text);
+        $text = str_replace('temporary', 'postAttachments/'.$post->id, $text);
+        foreach ($usedFiles as $file) {
+            $newFile = str_replace('temporary', 'postAttachments/'.$post->id, $file);
+            Storage::disk('storage')->move($file, $newFile);
+        }
+        Storage::disk('storage')->deleteDirectory('temporary/'.$post->author_id);
 
         DB::transaction(function () use ($post, $request, $text) {
             $post->title = $request->input('title', $post->title);
