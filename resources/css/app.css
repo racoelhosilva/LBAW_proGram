@@ -127,7 +127,7 @@
     }
 
     .modal > div > section {
-        @apply card;
+        @apply card w-[30rem];
         max-width: calc(100vw - 4rem);
     }
 

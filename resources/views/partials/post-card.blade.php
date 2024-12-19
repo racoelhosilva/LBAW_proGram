@@ -69,15 +69,14 @@
                         ])
                     @endcan
                     @can('forceDelete', $post)
-                        <form method="POST" action="{{ route('post.destroy', $post->id) }}" class="flex flex-col">
-                            @csrf
-                            @method('DELETE')
-                            @include('partials.dropdown-item', [
-                                'icon' => 'trash',
-                                'text' => 'Delete Post',
-                                'submit' => true,
-                            ])
-                        </form>
+                        @include('partials.confirmation-modal', [
+                            'icon' => 'trash',
+                            'label' => 'Delete Post',
+                            'message' => 'Are you sure you want to delete this post? It\'s data will be lost FOREVER (i.e. a very long time)!',
+                            'action' => route('post.destroy', $post->id),
+                            'type' => 'dropdown',
+                            'method' => 'DELETE',
+                        ])
                     @endcan
                 </div>
             </div>

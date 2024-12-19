@@ -1,4 +1,4 @@
-@props(['label', 'message', 'action', 'method', 'type', 'icon'])
+@props(['label', 'message', 'action', 'method', 'type', 'icon', 'class' => ''])
 
 <div class="modal ban-modal flex flex-col">
     @switch($type)
@@ -36,15 +36,25 @@
                     'type' => 'primary',
                     'class' => 'close-button',
                 ])
-                <form method="post" action="{{ $action }}" class="flex flex-col">
-                    @csrf
-                    @method($method)
+                @isset($action)
+                    <form method="post" action="{{ $action }}" class="flex flex-col">
+                        @csrf
+                        @method($method)
+                        @include('partials.text-button', [
+                            'text' => 'Continue',
+                            'type' => 'danger',
+                            'submit' => true,
+                            'class' => $class,
+                        ])
+                    </form>
+                @else
                     @include('partials.text-button', [
                         'text' => 'Continue',
                         'type' => 'danger',
                         'submit' => true,
+                        'class' => 'close-button ' . $class,
                     ])
-                </form>
+                @endisset
             </div>
         </section>
     </div>

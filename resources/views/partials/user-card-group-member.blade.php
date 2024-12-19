@@ -16,11 +16,14 @@
         </div>
     </div>
     <div class="flex gap-x-4 justify-end">
-                        @if($group->owner->id == Auth::id())
-                            @include('partials.text-button', ['text' => 'Remove','type' =>'secondary','class' => 'w-40 remove-member-button'])
-                        @endif
-                        
-
+        @if($group->owner->id == Auth::id())
+            @include('partials.confirmation-modal', [
+                'label' => 'Remove Member',
+                'type' => 'button',
+                'message' => 'Are you sure you want to remove this member from this post?',
+                'class' => 'remove-member-button',
+            ])
+        @endif
     </div>
 </article>
 

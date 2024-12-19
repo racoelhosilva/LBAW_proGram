@@ -6,8 +6,8 @@
 
 @section('content')
     <main id="group-invites-page" class="px-8 py-4 flex flex-col gap-6" data-group-id={{ $group->id }}>
-        <section id="invites" class="flex flex-col">
-            <h1 class="text-4xl text-center font-medium m-4">Invites</h1>
+        <section id="invites" class="card flex flex-col">
+            <h1 class="text-2xl text-center font-medium m-4">Invites</h1>
             @include('partials.search-field', [
                 'routeName' => 'group.invites',
                 'routeParams' => ['id' => $group->id],
