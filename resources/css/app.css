@@ -45,11 +45,15 @@
     }
 
     .dropdown > div {
-        @apply absolute right-0 rounded-lg overflow-hidden w-60 mt-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 flex-col shadow z-10;
+        @apply absolute right-0 top-14 rounded-lg overflow-hidden w-60 mt-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 flex flex-col shadow z-10 opacity-100 transition-all;
+    }
+
+    .dropdown > div.hidden {
+        @apply flex invisible opacity-0 top-16;
     }
 
     .dropdown > div:not(.hidden) {
-        @apply flex;
+        @apply flex visible opacity-100;
     }
 
     .dropdown > div > div {
