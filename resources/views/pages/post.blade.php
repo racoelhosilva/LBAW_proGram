@@ -19,12 +19,11 @@
                 @include('partials.text-button', ['text' => 'Post Comment', 'class' => 'w-full mt-2 mb-2', 'submit' => true])
             </form>
         @endauth
-        <div class="flex-1 overflow-y-auto space-y-3 comment-list">
-            @forelse($post->allComments as $comment)
-                @include('partials.comment-card', ['comment' => $comment])
-            @empty
-                <p>No comments on this post</p>
-            @endforelse
+        <div class="flex-1 overflow-y-auto space-y-3" id="comment-list">
+            @include('partials.comment-list', ['comments' => $comments])
+        </div>
+        <div class="flex flex-col items-center">
+            @include('partials.loading-spinner')
         </div>
     </section>
 </main>

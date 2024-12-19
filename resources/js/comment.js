@@ -22,7 +22,6 @@ const addSubmitCommentListener = () => {
     });
 };
 
-
 const addEditCommentListener = () => {
     const commentSection = document.getElementById('comment-section');
     if (!commentSection) return;
@@ -96,5 +95,3 @@ addSaveCommentListener();
 addEditCommentListener();
 addDeleteCommentListener();
 addSubmitCommentListener();
-
-

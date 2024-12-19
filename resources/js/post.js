@@ -1,4 +1,4 @@
-import { sendDelete, sendPost, sendToastMessage } from './utils'
+import { addLazyLoading, sendDelete, sendPost, sendToastMessage } from './utils'
 
 const togglePostLike = (likeButton, likeCount, postId) => {
 	likeButton.disabled = true;
@@ -107,6 +107,21 @@ const addLikeButtonListeners = () => {
     });
 };
 
+const addCommentSectionListeners = () => {
+	const commentList = document.getElementById('comment-list');
+	const commentListLoading = document.querySelector('#comment-list + div .loading-spinner');
+
+	if (!commentList || !commentListLoading) {
+		return;
+	}
+
+	const url = window.location.href;
+	const id = url.split('/post/')[1];
+
+	addLazyLoading(commentList, commentListLoading, '/post/' + id, null ,addLikeButtonListeners);
+}
+
 addLikeButtonListeners();
+addCommentSectionListeners();
 
 export { addLikeButtonListeners };
