@@ -3,20 +3,26 @@ import { fadeToastMessage } from './utils'
 
 const toggleDropdown = (dropdownContent, event) => {
     dropdownContent.classList.toggle('hidden');
+
+    const dropdownContents = document.querySelectorAll('.dropdown > div');
+    dropdownContents.forEach(content => {
+        if (content !== dropdownContent)
+            content.classList.add('hidden');
+    });
+
     event.stopPropagation();
 };
 
-const hideDropdown = (dropdown, event) => {
-    const dropdownContent = dropdown.querySelector(':scope > div');
-    if (!dropdown.contains(event.target)) {
-        dropdownContent.classList.add('hidden');
-    }
+const hideDropdowns = event => {
+    const dropdownContents = document.querySelectorAll('.dropdown > div');
+    dropdownContents.forEach(content => {
+        content.classList.add('hidden');
+    });
 };
 
 const addDropdownListeners = () => {
     const dropdowns = document.querySelectorAll('.dropdown');
     dropdowns.forEach(dropdown => {
-        if( dropdown.classList.contains('has-dropdown-listener') ) return;
         const dropdownButton = dropdown.querySelector(':scope > button');
         const dropdownContent = dropdown.querySelector(':scope > div');
         dropdownButton.addEventListener('click', event => toggleDropdown(dropdownContent, event));
@@ -41,8 +47,10 @@ const addModalListeners = () => {
 
     modals.forEach(modal => {
         const modalOpenButton = modal.querySelector(`:scope .open-button`);
+        const modalContent = modal.querySelector(':scope > div');
         const modalCloseButton = modal.querySelector(':scope .close-button');
 
+        modalContent.addEventListener('click', event => event.stopPropagation());
         modalOpenButton.addEventListener('click', event => openModal(modal, event));
         modalCloseButton.addEventListener('click', event => closeModal(modal, event));
     });
@@ -81,6 +89,7 @@ const addSelectListeners = () => {
     selects.forEach(select => {
         const selectDropdown = select.querySelector(':scope > div');
         const selectedOptionsText = select.querySelector(':scope .selected-options');
+        const selectForm = document.getElementById(select.dataset.form);
 
         select.addEventListener('click', event => {
             toggleSelect(select, event);
@@ -90,7 +99,13 @@ const addSelectListeners = () => {
             });
         });
 
-        selectDropdown.addEventListener('click', () => updateSelect(select, selectedOptionsText))
+        selectDropdown.addEventListener('click', () => updateSelect(select, selectedOptionsText));
+        select.addEventListener('keypress', event => {
+            if (event.key === 'Enter') {
+                selectForm.submit();
+                event.stopPropagation();
+            }
+        });
         document.addEventListener('click', event => closeSelect(select, event));
     });
 }

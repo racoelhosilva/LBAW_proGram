@@ -2,7 +2,10 @@
 
 use App\Http\Controllers\Admin\AdminAuthController;
 use App\Http\Controllers\Admin\AdminBanController;
+use App\Http\Controllers\Admin\AdminLanguageController;
 use App\Http\Controllers\Admin\AdminPostController;
+use App\Http\Controllers\Admin\AdminTagController;
+use App\Http\Controllers\Admin\AdminTechnologyController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Api\ApiCommentController;
@@ -75,21 +78,13 @@ Route::middleware(['deny.banned', 'deny.deleted'])->group(function () {
     // Home
     Route::get('/', [HomeController::class, 'show'])->name('home');
 
-    Route::get('/about', function () {
-        return view('pages.about');
-    })->name('about');
-
-    Route::get('faqs', function () {
-        return view('pages.faqs');
-    })->name('faqs');
-
-    Route::get('/contactus', function () {
-        return view('pages.contactus');
-    })->name('contactus');
+    Route::view('/about', 'pages.about')->name('about');
+    Route::view('/faqs', 'pages.faqs')->name('faqs');
+    Route::view('/contactus', 'pages.contactus')->name('contact-us');
 
     // Post
     Route::controller(PostController::class)->group(function () {
-        Route::post('/post', 'store')->name('post.store');
+        Route::post('/post', 'store')->name('post.store')->middleware('throttle:calmdown');
         Route::get('/post/create', 'create')->name('post.create');
         Route::get('/post/{id}', 'show')->where('id', '[0-9]+')->name('post.show');
         Route::put('/post/{id}', 'update')->where('id', '[0-9]+')->name('post.update');
@@ -114,7 +109,7 @@ Route::middleware(['deny.banned', 'deny.deleted'])->group(function () {
     // Group
     Route::controller(GroupController::class)->group(function () {
         Route::get('/group', 'index')->name('group.index');
-        Route::post('/group', 'store')->name('group.store');
+        Route::post('/group', 'store')->name('group.store')->middleware('throttle:calmdown');
         Route::get('/group/create', 'create')->name('group.create');
         Route::get('/group/{id}', 'show')->where('id', '[0-9]+')->name('group.show');
         Route::get('/group/{id}/members', 'showMembers')->where('id', '[0-9]+')->name('group.members');
@@ -123,7 +118,7 @@ Route::middleware(['deny.banned', 'deny.deleted'])->group(function () {
         Route::get('/group/{id}/edit', 'edit')->where('id', '[0-9]+')->name('group.edit');
         Route::get('/group/{id}/manage', 'manage')->where('id', '[0-9]+')->name('group.manage');
         Route::get('/group/{group_id}/post/create', [GroupController::class, 'showCreatePostForm'])->where('group_id', '[0-9]+')->name('group.post.create');
-        Route::post('/group/{group_id}/post', [GroupController::class, 'createPost'])->where('group_id', '[0-9]+')->name('group.post.store');
+        Route::post('/group/{group_id}/post', [GroupController::class, 'createPost'])->where('group_id', '[0-9]+')->name('group.post.store')->middleware('throttle:calmdown');
         Route::get('/group/{id}/members', [GroupController::class, 'showMembers'])->name('group.members');
         Route::get('/group/{id}/requests', [GroupController::class, 'showRequests'])->name('group.requests');
         Route::get('/group/{id}/invites', [GroupController::class, 'showInvites'])->name('group.invites');
@@ -159,6 +154,21 @@ Route::prefix('admin')->group(function () {
 
         // Admin posts
         Route::get('/post', [AdminPostController::class, 'index'])->name('admin.post.index');
+
+        // Tags
+        Route::get('/tags', [AdminTagController::class, 'index'])->name('admin.tag.index');
+        Route::post('/tags', [AdminTagController::class, 'store'])->name('admin.tag.store');
+        Route::delete('/tags/{id}', [AdminTagController::class, 'destroy'])->where('id', '[0-9]+')->name('admin.tag.destroy');
+
+        // Languages
+        Route::get('/technologies', [AdminTechnologyController::class, 'index'])->name('admin.technology.index');
+        Route::post('/technologies', [AdminTechnologyController::class, 'store'])->name('admin.technology.store');
+        Route::delete('/technologies/{id}', [AdminTechnologyController::class, 'destroy'])->where('id', '[0-9]+')->name('admin.technology.destroy');
+
+        // Technologies
+        Route::get('/languages', [AdminLanguageController::class, 'index'])->name('admin.language.index');
+        Route::post('/languages', [AdminLanguageController::class, 'store'])->name('admin.language.store');
+        Route::delete('/languages/{id}', [AdminLanguageController::class, 'destroy'])->where('id', '[0-9]+')->name('admin.language.destroy');
     });
 });
 

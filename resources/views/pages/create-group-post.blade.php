@@ -3,9 +3,9 @@
 @section('title') {{'Create Post on '. $group->name . ' | ProGram'}} @endsection
 
 @section('content')
-    <main id="create-post-page" class="flex justify-center items-center">
-        <article class="h-min card p-10  max-w-xl w-full flex flex-col  gap-12">
-            <h1 class="text-xl font-bold  ">Post on {{$group->name}}</h1>
+    <main id="create-post-page" class="px-8">
+        <article class="card h-min p-10 pt-16 flex flex-col gap-12">
+            <h1 class="text-2xl font-bold text-center">Create Post on {{$group->name}}</h1>
             <form id="create-post-form" class="grid gap-4 ">
                 @csrf
                 <input type="hidden" id="group_id" name="group_id" value="{{ $group->id }}">
@@ -25,12 +25,13 @@
                 ])
                     
                 <section class="flex flex-col">
-                    <label for="tags" class="mb-2 font-medium">Associated Tags</label>
-                    <select name="tags[]" id="tags" multiple class="card overflow-auto">
-                        @foreach ($tags as $tag)
-                            <option class="w-full text-gray-600 dark:text-white px-4 py-2" value="{{ $tag->id }}">{{ $tag->name }}</option>
-                        @endforeach
-                    </select>
+                    <label for="tags" class="font-medium">Associated Tags</label>
+                    @include('partials.tag-select', [
+                        'tags' => $tags,
+                        'label' => 'Tags',
+                        'selected' => [],
+                        'form' => 'create-post-form',
+                    ])
                 </section>
 
                 <section class="flex flex-col">

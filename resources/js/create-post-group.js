@@ -30,12 +30,10 @@ const submitPostForm = () => {
                         window.location.href = `/group/${groupId}`;
                     })
                     .catch((error) => {
-                        console.error('Error with second post request:', error);
                         sendToastMessage('Error with handling post after creation.', 'error');
                     });
             })
             .catch((error) => {
-                console.error('Error nooo :', error);
                 sendToastMessage('There was an issue submitting the post.', 'error');
             });
     }
@@ -43,8 +41,6 @@ const submitPostForm = () => {
     const formElement = document.getElementById('create-post-form');
     if (formElement) {
         formElement.addEventListener('submit', handleFormSubmit);
-    } else {
-        console.error("Form with id 'create-post-form' not found.");
     }
 }
 

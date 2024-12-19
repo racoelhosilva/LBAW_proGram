@@ -10,7 +10,19 @@ use Laravel\Socialite\Facades\Socialite;
 
 class GoogleController extends Controller
 {
-    public function sanitizeGoogleData($data)
+    private function randomizeHandle($handle)
+    {
+
+        $newHandle = $handle;
+
+        while (User::where('handle', $newHandle)->exists()) {
+            $newHandle = substr($handle, 0, 17).rand(100, 999);
+        }
+
+        return $newHandle;
+    }
+
+    private function sanitizeGoogleData($data)
     {
         $data['handle'] = preg_replace('/\s+/', '', $data['handle']);
         $data['handle'] = substr($data['handle'], 0, 20);
@@ -29,7 +41,12 @@ class GoogleController extends Controller
     public function callbackGoogle()
     {
 
-        $google_user = Socialite::driver('google')->stateless()->user();
+        try {
+            $google_user = Socialite::driver('google')->stateless()->user();
+        } catch (\Exception $e) {
+            return redirect()->route('login')->withErrors('Login with GitHub was cancelled or failed.');
+        }
+
         $user = User::where('email', $google_user->getEmail())->first();
 
         // If there is already an existant user with the same email.
@@ -39,7 +56,7 @@ class GoogleController extends Controller
             $user->save();
             Auth::login($user);
 
-            return redirect()->route('home');
+            return redirect()->route('home')->withSuccess('You have successfully logged in!');
         }
 
         $user = User::where('google_id', $google_user->getId())->first();
@@ -56,6 +73,7 @@ class GoogleController extends Controller
             ];
 
             $data = $this->sanitizeGoogleData($data);
+            $data['handle'] = $this->randomizeHandle($data['handle']);
 
             $new_user = new User;
 
@@ -81,6 +99,6 @@ class GoogleController extends Controller
         }
 
         // After login, redirect to homepage
-        return redirect()->route('home');
+        return redirect()->route('home')->withSuccess('You have successfully logged in!');
     }
 }

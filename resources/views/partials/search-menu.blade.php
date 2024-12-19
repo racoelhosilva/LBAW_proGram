@@ -12,23 +12,21 @@
 @endphp
 
 @section('dropdownContent')
-    <section id="search-options" class="card h-min flex flex-col">
+    <nav id="search-options" class="card h-min flex flex-col">
         <h1 class="pb-4 text-xl font-semibold">Search Options</h1>
         <div class="grid justify-stretch">
-            @include('partials.search-type-button', ['optionType' => 'posts', 'searchType' => request('search_type'), 'icon' => 'message-circle', 'text' => 'Posts'])
-            @include('partials.search-type-button', ['optionType' => 'users', 'searchType' => request('search_type'), 'icon' => 'user-round', 'text' => 'Users'])
-            @include('partials.search-type-button', ['optionType' => 'groups', 'searchType' => request('search_type'), 'icon' => 'users-round', 'text' => 'Groups'])
+            @include('partials.search-type-button', ['optionType' => 'posts', 'icon' => 'message-circle', 'text' => 'Posts'])
+            @include('partials.search-type-button', ['optionType' => 'users', 'icon' => 'user-round', 'text' => 'Users'])
+            @include('partials.search-type-button', ['optionType' => 'groups', 'icon' => 'users-round', 'text' => 'Groups'])
         </div>
-    </section>
+    </nav>
 
     <section id="search-filters" class="card h-min row-start-2 grid justify-stretch gap-4">
         <h1 class="text-xl font-semibold">Search Parameters</h1>
         @if(request('search_type') === 'posts')
-            @include('partials.select', [
-                'name' => 'tags[]',
-                'label' => 'Filter by Tags',
-                'options' => $tagOptions,
-                'multi' => true,
+            @include('partials.tag-select', [
+                'tags' => $tags,
+                'label' => 'Filter By Tags',
                 'selected' => request('tags'),
                 'form' => 'search-field'
             ])

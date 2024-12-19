@@ -98,6 +98,46 @@ class UserPolicy
     }
 
     /**
+     * Determine whether the user can view notifications.
+     */
+    public function viewNotifications(?User $user, User $model): bool
+    {
+        if ($user && ! $user->isBanned() && $user->id === $model->id) {
+            return true;
+        }
+
+        if (Auth::guard('admin')->check()) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Determine whether the user can view follow requests.
+     */
+    public function viewRequests(?User $user, User $model): bool
+    {
+        if ($user && ! $user->isBanned() && $user->id === $model->id) {
+            return true;
+        }
+
+        if (Auth::guard('admin')->check()) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Determine whether the user can update the notifications.
+     */
+    public function updateNotification(?User $user, User $model): bool
+    {
+        return $user && ! $user->isBanned() && $user->id === $model->id;
+    }
+
+    /**
      * Determine whether the user can restore the model.
      */
     public function restore(User $user, User $model): bool

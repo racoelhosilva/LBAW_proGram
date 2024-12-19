@@ -1,9 +1,9 @@
 @extends('layouts.app')
 @section('title') {{'Edit ' . $group->name . ' | ProGram'}} @endsection
 @section('content')
-    <main id="edit-group-page"  class="flex justify-center items-center">
-        <article class="h-min card p-10  max-w-xl w-full flex flex-col  gap-12">
-            <h1 class="text-xl font-bold">Edit {{$group->name}}</h1>
+    <main id="edit-group-page" class="px-8">
+        <article class="card h-min p-10 pt-16 flex flex-col gap-12">
+            <h1 class="text-xl font-bold text-center">Edit {{$group->name}}</h1>
             <form action="{{ route('group.update',$group->id) }}" method="POST" class="grid gap-4 justify-self-stretch">
                 @csrf
                 @method('PUT')
@@ -23,7 +23,7 @@
                 ])
                 <section class="flex flex-col">
                     <label class="mb-2">
-                        <input type="checkbox" name="is_public"  value="1" {{ $group->is_public ? 'checked' : '' }}> 
+                        <input type="checkbox" name="is_public" value="1" {{ $group->is_public ? 'checked' : '' }}>
                         <span class="font-medium">Make this group public</span>
                     </label>
                 </section>

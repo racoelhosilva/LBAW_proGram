@@ -10,6 +10,18 @@ use Laravel\Socialite\Facades\Socialite;
 
 class GitLabController extends Controller
 {
+    private function randomizeHandle($handle)
+    {
+
+        $newHandle = $handle;
+
+        while (User::where('handle', $newHandle)->exists()) {
+            $newHandle = substr($handle, 0, 17).rand(100, 999);
+        }
+
+        return $newHandle;
+    }
+
     public function sanitizeGitLabData($data)
     {
         $data['handle'] = preg_replace('/\s+/', '', $data['handle']);
@@ -29,15 +41,19 @@ class GitLabController extends Controller
     public function callbackGitLab()
     {
 
-        $gitlab_user = Socialite::driver('gitlab')->stateless()->user();
+        try {
+            $gitlab_user = Socialite::driver('gitlab')->stateless()->user();
+        } catch (\Exception $e) {
+            return redirect()->route('login')->withErrors('Login with GitLab was cancelled or failed.');
+        }
         $user = User::where('email', $gitlab_user->getEmail())->first();
 
         if ($user) {
-            $user->google_id = $gitlab_user->getId();
+            $user->gitlab_id = $gitlab_user->getId();
             $user->save();
             Auth::login($user);
 
-            return redirect()->route('home');
+            return redirect()->intended()->withSuccess('You have successfully logged in!');
         }
 
         $user = User::where('gitlab_id', $gitlab_user->getId())->first();
@@ -54,6 +70,7 @@ class GitLabController extends Controller
             ];
 
             $data = $this->sanitizeGitLabData($data);
+            $data['handle'] = $this->randomizeHandle($data['handle']);
 
             $new_user = new User;
 
@@ -79,6 +96,6 @@ class GitLabController extends Controller
         }
 
         // After login, redirect to homepage
-        return redirect()->route('home');
+        return redirect()->intended()->withSuccess('You have successfully logged in!');
     }
 }

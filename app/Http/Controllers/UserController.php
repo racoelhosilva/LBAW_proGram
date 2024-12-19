@@ -29,6 +29,8 @@ class UserController extends Controller
 
         $posts = $user->posts()
             ->visibleTo(Auth::user())
+            ->orderBy('is_announcement', 'DESC')
+            ->orderBy('creation_timestamp', 'DESC')
             ->orderBy('likes', 'DESC')
             ->get();
 
@@ -213,8 +215,7 @@ class UserController extends Controller
     {
         $user = User::findOrFail($id);
 
-        // We are using the delete policy, because it serves the policy we need.
-        $this->authorize('delete', $user);
+        $this->authorize('viewNotifications', $user);
 
         $notifications = $user->notifications()->orderBy('timestamp', 'desc')->paginate(10);
 
@@ -273,7 +274,7 @@ class UserController extends Controller
     {
         $user = User::findOrFail($id);
 
-        $this->authorize('delete', $user);
+        $this->authorize('viewRequests', $user);
 
         $followRequests = $user->followRequests()
             ->where('status', 'pending')

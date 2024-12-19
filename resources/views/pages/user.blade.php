@@ -5,14 +5,14 @@
 @endsection
 
 @section('content')
-    <main id="profile-page" class="px-8 py-4 grid grid-cols-4 gap-6">
+    <main id="profile-page" class="px-8 py-4 grid grid-cols-4 grid-rows-[auto_1fr] gap-x-6 gap-y-3 lg:gap-y-6">
         <section id="banner-section" style="background-image: url('{{ $user->getBannerImage() }}');"
-            class="card h-min col-span-4 grid grid-cols-[auto_1fr] gap-y-16 p-4 bg-cover">
+            class="card h-min col-span-4 grid grid-cols-[auto_1fr_auto] gap-y-16 p-4 bg-cover">
             <div class="col-span-full">
                 <h1 class="text-4xl font-bold">{{ $user->name }}</h1>
                 <h2 class="text-2xl">{{ '@' . $user->handle }}</h2>
             </div>
-            <img src="{{ $user->getProfilePicture() }}" class="w-52 h-52 rounded-full object-cover">
+            <img src="{{ $user->getProfilePicture() }}" class="w-36 sm:w-52 h-36 sm:h-52 rounded-full object-cover">
             <div class="profile-buttons flex justify-end items-end">
                 @if ($isOwnProfile)
                     @include('partials.text-button', [
@@ -30,8 +30,8 @@
         </section>
 
         @can('viewContent', $user)
-            <section id="profile-left" class="h-min col-span-4 lg:col-span-1 grid grid-cols-4 space-y-3">
-                <article id="user-info" class="card col-span-4 grid space-y-3">
+            <section id="profile-left" class="h-min col-span-4 lg:col-span-1 flex flex-col gap-3">
+                <article id="user-info" class="card flex flex-col gap-3">
                     <div class="grid grid-cols-[auto_1fr_auto] items-start">
                         <h1 class="text-xl font-bold">User Info</h1>
                         <div class="col-start-3 flex">
@@ -64,7 +64,7 @@
                     @endif
                 </article>
 
-                <article id="top-projects" class="card col-span-4 space-y-3">
+                <article id="top-projects" class="card flex flex-col gap-3">
                     <h1 class="text-xl font-bold">Top Projects</h1>
                     @if ($user->stats->topProjects()->count() > 0)
                         <ul class="ms-4 list-disc">
@@ -81,8 +81,8 @@
                 </article>
             </section>
 
-            <section id="profile-middle" class="h-min col-span-4 lg:col-span-2 grid grid-cols-4 space-y-3">
-                <article class="card col-span-4 space-y-3">
+            <section id="profile-middle" class="h-min col-span-4 lg:col-span-2 row-start-4 lg:row-start-2 col-start-1 lg:col-start-2 flex flex-col gap-3">
+                <article class="card space-y-3">
                     <h1 class="text-xl font-bold">Posts</h1>
                     @if ($posts->count() === 0)
                         <p>No posts to show</p>
@@ -94,12 +94,12 @@
                 </article>
             </section>
 
-            <section id="profile-right" class="h-min col-span-4 lg:col-span-1 grid grid-cols-4 space-y-3">
-                <article id="follows" class="card col-span-4 space-y-3">
-                    <a href={{'/user/' . $user->id . '/followers'}} class="text-xl font-bold block">Followers: {{ $user->num_followers }}</a>
-                    <a href={{'/user/' . $user->id . '/following'}} class="text-xl font-bold block">Following: {{ $user->num_following }}</a>
+            <section id="profile-right" class="h-min col-span-4 lg:col-span-1 row-start-3 lg:row-start-2 col-start-1 lg:col-start-4 flex flex-col gap-3">
+                <article id="follows" class="card flex flex-col gap-3">
+                    <a href="{{ route('user.followers', ['id' => $user->id]) }}" class="text-xl font-bold block">Followers: {{ $user->num_followers }}</a>
+                    <a href="{{ route('user.following', ['id' => $user->id]) }}" class="text-xl font-bold block">Following: {{ $user->num_following }}</a>
                     @if($isOwnProfile)
-                        <a href={{'/user/' . $user->id . '/requests'}} class="text-xl font-bold block">Requests: {{ $num_requests }}</a>
+                        <a href="{{ route('user.requests', ['id' => $user->id]) }}" class="text-xl font-bold block">Requests: {{ $num_requests }}</a>
                     @endif
                 </article>
 
@@ -111,17 +111,16 @@
                 </article>
 
                 @if ($recommendedUsers !== null && $recommendedUsers->count() > 0)
-                    <article id="users" class="card col-span-4 space-y-3">
+                    <article id="users" class="card hidden lg:flex flex-col gap-3">
                         <h3 class="text-xl font-bold">Users you might know</h3>
-                        @foreach ($recommendedUsers as $recommendedUser)
-                            @include('partials.user-card', ['user' => $recommendedUser])
-                        @endforeach
+                        @include('partials.user-list', ['users' => $recommendedUsers, 'responsive' => true])
                     </article>     
                 @endif
             </section>
         @else
-            <section id="private-profile" class="col-span-4 flex justify-center items-center h-64">
-                <h1 class="text-4xl font-bold text-gray-500">This profile is private</h1>
+            <section id="private-profile" class="min-h-32 col-span-4 flex flex-col justify-center items-center">
+                <h1 class="text-4xl/[3rem] font-bold">This profile is private</h1>
+                <p class="font-medium">You cannot see this user profile until you follow this person</p>
             </section>
         @endcan
     </main>
