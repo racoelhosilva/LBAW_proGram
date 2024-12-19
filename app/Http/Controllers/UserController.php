@@ -29,6 +29,8 @@ class UserController extends Controller
 
         $posts = $user->posts()
             ->visibleTo(Auth::user())
+            ->orderBy('is_announcement', 'DESC')
+            ->orderBy('creation_timestamp', 'DESC')
             ->orderBy('likes', 'DESC')
             ->get();
 
