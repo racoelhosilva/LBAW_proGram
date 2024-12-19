@@ -22,7 +22,7 @@ class ApiGroupController extends Controller
 
     public function show(Request $request, int $group_id)
     {
-        $group = Group::findOrFail($group_id);
+        $group = Group::select('id', 'name', 'owner_id', 'description', 'creation_timestamp', 'is_public', 'member_count')->findOrFail($group_id);
 
         return response()->json($group);
     }
