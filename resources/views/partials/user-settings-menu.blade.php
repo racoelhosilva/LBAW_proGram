@@ -15,11 +15,11 @@
 {{--            'text' => 'Change Password',--}}
 {{--            'selected' => request()->routeIs('user.password.edit'),--}}
 {{--        ])--}}
-{{--        @include('partials.menu-anchor', [--}}
-{{--            'anchorUrl' => route('home'),--}}
-{{--            'icon' => 'user-round-x',--}}
-{{--            'text' => 'API Settings',--}}
-{{--            'selected' => request()->routeIs('home'),--}}
-{{--        ])--}}
+        @include('partials.menu-anchor', [
+            'anchorUrl' => route('home'),
+            'icon' => 'key-round',
+            'text' => 'API Settings',
+            'selected' => request()->routeIs('home'),
+        ])
     </nav>
 @endsection
