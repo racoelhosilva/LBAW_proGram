@@ -20,6 +20,13 @@ class ApiGroupController extends Controller
         return response()->json($groups);
     }
 
+    public function show(Request $request, int $group_id)
+    {
+        $group = Group::findOrFail($group_id);
+
+        return response()->json($group);
+    }
+
     public function join(Request $request, int $group_id)
     {
         $group = Group::findOrFail($group_id);

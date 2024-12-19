@@ -217,6 +217,7 @@ Route::prefix('api')->middleware('api.token')->group(function () {
 
     Route::controller(ApiGroupController::class)->group(function () {
         Route::get('/group', 'index')->name('api.group.index');
+        Route::get('/group/{id}', 'show')->where('id', '[0-9]+')->name('api.group.show');
         Route::post('/group/{id}/join', 'join')->where('id', '[0-9]+')->name('api.group.join');
         Route::delete('/group/{id}/leave', 'leave')->where('id', '[0-9]+')->name('api.group.leave');
         Route::delete('/group/{id}/remove/{user_id}', 'remove')->where('id', '[0-9]+')->where('user_id', '[0-9]+')->name('api.group.remove');
