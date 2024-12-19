@@ -24,19 +24,21 @@
                                 <div class="dropdown">
                                     @include('partials.icon-button', ['iconName' => 'ellipsis', 'label' => 'Options', 'type' => 'transparent'])
                                     <div class="hidden">
-                                        @include('partials.dropdown-item', [
-                                            'icon' => 'message-circle',
-                                            'text' => 'View Post',
-                                            'anchorUrl' => route('post.show', $post->id),
-                                        ])
-                                        <form method="post" action="{{ route('post.destroy', $post->id) }}" class="flex flex-col">
-                                            @csrf
-                                            @method('DELETE')
+                                        <div>
                                             @include('partials.dropdown-item', [
-                                                'icon' => 'message-circle-x',
-                                                'text' => 'Delete Post',
+                                                'icon' => 'message-circle',
+                                                'text' => 'View Post',
+                                                'anchorUrl' => route('post.show', $post->id),
                                             ])
-                                        </form>
+                                            <form method="post" action="{{ route('post.destroy', $post->id) }}" class="flex flex-col">
+                                                @csrf
+                                                @method('DELETE')
+                                                @include('partials.dropdown-item', [
+                                                    'icon' => 'message-circle-x',
+                                                    'text' => 'Delete Post',
+                                                ])
+                                            </form>
+                                        </div>
                                     </div>
                                 </div>
                             </td>

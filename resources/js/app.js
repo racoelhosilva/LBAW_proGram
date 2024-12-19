@@ -3,14 +3,21 @@ import { fadeToastMessage } from './utils'
 
 const toggleDropdown = (dropdownContent, event) => {
     dropdownContent.classList.toggle('hidden');
+
+    const dropdownContents = document.querySelectorAll('.dropdown > div');
+    dropdownContents.forEach(content => {
+        if (content !== dropdownContent)
+            content.classList.add('hidden');
+    });
+
     event.stopPropagation();
 };
 
-const hideDropdown = (dropdown, event) => {
-    const dropdownContent = dropdown.querySelector(':scope > div');
-    if (!dropdown.contains(event.target)) {
-        dropdownContent.classList.add('hidden');
-    }
+const hideDropdowns = event => {
+    const dropdownContents = document.querySelectorAll('.dropdown > div');
+    dropdownContents.forEach(content => {
+        content.classList.add('hidden');
+    });
 };
 
 const addDropdownListeners = () => {
@@ -21,7 +28,7 @@ const addDropdownListeners = () => {
         const dropdownContent = dropdown.querySelector(':scope > div');
 
         dropdownButton.addEventListener('click', event => toggleDropdown(dropdownContent, event));
-        document.addEventListener('click', event => hideDropdown(dropdown, event));
+        document.addEventListener('click', hideDropdowns);
     });
 };
 
@@ -41,8 +48,10 @@ const addModalListeners = () => {
 
     modals.forEach(modal => {
         const modalOpenButton = modal.querySelector(`:scope .open-button`);
+        const modalContent = modal.querySelector(':scope > div');
         const modalCloseButton = modal.querySelector(':scope .close-button');
 
+        modalContent.addEventListener('click', event => event.stopPropagation());
         modalOpenButton.addEventListener('click', event => openModal(modal, event));
         modalCloseButton.addEventListener('click', event => closeModal(modal, event));
     });
