@@ -15,7 +15,7 @@ class ApiGroupController extends Controller
 {
     public function index(Request $request)
     {
-        $groups = Group::all();
+        $groups = Group::select('id', 'name', 'owner_id', 'description', 'creation_timestamp', 'is_public', 'member_count')->get();
 
         return response()->json($groups);
     }
