@@ -15,9 +15,37 @@ class ApiUserController extends Controller
 {
     public function list()
     {
+        $authenticatedUser = auth()->user();
+
         $users = User::where('is_deleted', false)->get();
 
-        return response()->json($users);
+        $response = $users->map(function ($user) use ($authenticatedUser) {
+            if ($authenticatedUser->can('viewContent', $user)) {
+                return $user->only([
+                    'id',
+                    'name',
+                    'register_timestamp',
+                    'handle',
+                    'is_public',
+                    'description',
+                    'num_followers',
+                    'num_following',
+                ]);
+            } elseif ($authenticatedUser->can('view', $user)) {
+                return $user->only([
+                    'id',
+                    'name',
+                    'register_timestamp',
+                    'handle',
+                    'is_public',
+                ]);
+            } else {
+
+                return null;
+            }
+        })->filter();
+
+        return response()->json($response->values());
     }
 
     public function show($id)
