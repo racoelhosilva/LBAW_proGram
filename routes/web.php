@@ -204,7 +204,7 @@ Route::prefix('api')->middleware('api.token')->group(function () {
 
     // Comment
     Route::controller(ApiCommentController::class)->group(function () {
-        // Route::get('/comment', 'index')->name('api.comment.index');
+        Route::get('/comment', 'index')->name('api.comment.index');
         Route::post('/comment', 'store')->name('api.comment.store');
         // Route::get('/comment/{id}', 'show')->where('id', '[0-9]+')->name('api.comment.show');
         Route::put('/comment/{id}', 'update')->where('id', '[0-9]+')->name('api.comment.update');

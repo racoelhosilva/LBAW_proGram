@@ -14,11 +14,12 @@ class ApiCommentController extends Controller
 {
     public function index(Request $request)
     {
-        $this->authorize('viewAny', Comment::class);
 
-        $comments = Comment::whereHas('post', function ($query) {
-            $query->where('is_public', true);
-        })->get();
+        $user = auth()->user();
+        $comments = Comment::all();
+        $comments = $comments->filter(function ($comment) use ($user) {
+            return $user ? $this->authorize('view', $user, $comment) : false;
+        });
 
         return response()->json($comments);
     }

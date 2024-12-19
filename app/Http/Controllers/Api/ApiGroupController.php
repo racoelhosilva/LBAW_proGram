@@ -15,7 +15,22 @@ class ApiGroupController extends Controller
 {
     public function index(Request $request)
     {
+        $user = auth()->user();
+
+        if (! $this->authorize('viewAny', Group::class)) {
+            return response()->json([]);
+        }
+
         $groups = Group::select('id', 'name', 'owner_id', 'description', 'creation_timestamp', 'is_public', 'member_count')->get();
+
+        $groups = $groups->map(function ($group) use ($user) {
+            if ($user->can('view', $group)) {
+                return $group;
+            }
+            $group->makeHidden('member_count');
+
+            return $group;
+        });
 
         return response()->json($groups);
     }
