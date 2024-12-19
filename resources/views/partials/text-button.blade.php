@@ -4,6 +4,7 @@
     $buttonClass = match($type) {
         'primary' => 'primary-btn',
         'secondary' => 'secondary-btn',
+        'danger' => 'danger-btn',
     };  
 @endphp
 

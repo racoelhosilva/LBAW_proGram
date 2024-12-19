@@ -10,6 +10,18 @@ use Laravel\Socialite\Facades\Socialite;
 
 class GitHubController extends Controller
 {
+    private function randomizeHandle($handle)
+    {
+
+        $newHandle = $handle;
+
+        while (User::where('handle', $newHandle)->exists()) {
+            $newHandle = substr($handle, 0, 17).rand(100, 999);
+        }
+
+        return $newHandle;
+    }
+
     public function sanitizeGitHubData($data)
     {
         $data['handle'] = preg_replace('/\s+/', '', $data['handle']);
@@ -29,15 +41,19 @@ class GitHubController extends Controller
     public function callbackGitHub()
     {
 
-        $github_user = Socialite::driver('github')->stateless()->user();
+        try {
+            $github_user = Socialite::driver('github')->stateless()->user();
+        } catch (\Exception $e) {
+            return redirect()->route('login')->withErrors('Login with GitHub was cancelled or failed.');
+        }
         $user = User::where('email', $github_user->getEmail())->first();
 
         if ($user) {
-            $user->google_id = $github_user->getId();
+            $user->github_id = $github_user->getId();
             $user->save();
             Auth::login($user);
 
-            return redirect()->route('home');
+            return redirect()->intended()->withSuccess('You have successfully logged in!');
         }
 
         $user = User::where('github_id', $github_user->getId())->first();
@@ -54,6 +70,7 @@ class GitHubController extends Controller
             ];
 
             $data = $this->sanitizeGitHubData($data);
+            $data['handle'] = $this->randomizeHandle($data['handle']);
 
             $new_user = new User;
 
@@ -79,6 +96,6 @@ class GitHubController extends Controller
         }
 
         // After login, redirect to homepage
-        return redirect()->route('home');
+        return redirect()->intended()->withSuccess('You have successfully logged in!');
     }
 }
