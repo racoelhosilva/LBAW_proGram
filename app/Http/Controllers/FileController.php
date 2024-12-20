@@ -17,7 +17,7 @@ class FileController extends Controller
     public static $systemTypes = [
         'profile' => ['png', 'jpg', 'jpeg'],
         'banner' => ['png', 'jpg', 'jpeg'],
-        'cadeira' => ['png', 'jpg', 'jpeg'],
+        'temporary' => ['png', 'jpg', 'jpeg'],
     ];
 
     private static function getDefaultExtension(string $type)
