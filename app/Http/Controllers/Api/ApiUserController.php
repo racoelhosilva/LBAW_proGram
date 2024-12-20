@@ -9,8 +9,10 @@ use App\Models\FollowRequest;
 use App\Models\User;
 use App\Models\UserStats;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 
 class ApiUserController extends Controller
 {
@@ -111,29 +113,83 @@ class ApiUserController extends Controller
         return response()->json($user, 201);
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, int $id)
     {
-        $user = User::where('id', $id)->where('is_deleted', false)->firstOrFail();
+        $user = User::findOrFail($id);
+
+        if (! Auth::check()) {
+            return redirect()->route('login');
+        }
+
+        $this->authorize('update', $user);
 
         $request->validate([
-            'name' => 'string',
-            'email' => 'email|unique:users,email',
-            'password' => 'string|min:8',
-            'handle' => 'string|unique:users,handle|max:50',
-            'is_public' => 'boolean',
-            'description' => 'string|max:500',
+            'name' => 'required|string|max:30',
+            'description' => 'nullable|string|max:200',
+            'is_public' => 'nullable',
+            'handle' => ['required', 'string', 'max:20', Rule::unique('users')->ignore($user->id)],
+            'github_url' => 'nullable|url',
+            'gitlab_url' => 'nullable|url',
+            'linkedin_url' => 'nullable|url',
+            'languages' => 'nullable|array',
+            'languages.*' => 'exists:language,id',
+            'technologies' => 'nullable|array',
+            'technologies.*' => 'exists:technology,id',
+            'top_projects' => 'nullable|array|max:10',
         ]);
 
-        try {
-            $user->update($request->all());
+        DB::transaction(function () use ($request, $user) {
+            $user->name = $request->input('name');
+            $user->description = $request->input('description');
+            $user->is_public = $request->filled('is_public');
+            $user->handle = $request->input('handle');
 
-            return response()->json($user);
-        } catch (\Exception $e) {
-            return response()->json([
-                'error' => 'Failed to update user.',
-                'message' => $e->getMessage(),
-            ], 500);
-        }
+            $user->stats->languages()->sync($request->input('languages') ?? []);
+            $user->stats->technologies()->sync($request->input('technologies') ?? []);
+
+            $user->save();
+
+            $user->stats->github_url = $request->input('github_url');
+            $user->stats->gitlab_url = $request->input('gitlab_url');
+            $user->stats->linkedin_url = $request->input('linkedin_url');
+            $user->stats->save();
+
+            $user->stats->topProjects()->delete();
+
+            if (! $request->filled('top_projects')) {
+                return;
+            }
+
+            foreach ($request->input('top_projects') as $project) {
+                if (! isset($project['name'], $project['url'])) {
+                    continue;
+                }
+
+                $newProject = new TopProject;
+
+                $newProject->user_stats_id = $user->stats->id;
+                $newProject->name = $project['name'];
+                $newProject->url = $project['url'];
+
+                $newProject->save();
+            }
+        });
+
+        $user->save();
+
+        return response()->json($user->only([
+            'id',
+            'name',
+            'handle',
+            'description',
+            'is_public',
+            'github_url',
+            'gitlab_url',
+            'linkedin_url',
+            'languages',
+            'technologies',
+            'top_projects',
+        ]));
     }
 
     public function listUserStats($id)

@@ -235,7 +235,7 @@ Route::prefix('api')->middleware('api.token')->group(function () {
         Route::get('/user/{id}', 'show');
         Route::post('/user', 'create');
         //     Route::delete('/user/{id}', 'delete');
-        //     Route::put('/user/{id}', 'update');
+        Route::put('/user/{id}', 'update');
         Route::get('/user/{id}/followers', 'listFollowers');
         Route::get('/user/{id}/following', 'listFollowing');
         //     Route::get('/user/{id}/post', 'listPosts');
