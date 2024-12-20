@@ -3,8 +3,8 @@
 @section('title') {{$group->name . ' | ProGram'}} @endsection
 
 @section('content')
-    <main id="group-page" class="px-8 py-4 flex flex-col gap-6">
-        <section id="banner-section" class="card h-min  grid grid-cols-[auto_1fr_1fr] gap-y-8 p-8 ">
+    <main id="group-page" class="px-8 py-4 grid grid-rows-[auto_1fr] gap-6">
+        <section id="banner-section" class="card h-min grid grid-cols-[auto_1fr_1fr] gap-y-8 p-8">
             <div class="col-span-full flex justify-between">
                 <h1 class="text-4xl font-bold">{{ $group->name }}</h1>
                 <div class="min-w-[24px]">
@@ -102,7 +102,7 @@
                 </div>
             </section>
         @else
-        <section id="private-profile" class="col-span-4 flex justify-center items-center h-64">
+        <section id="private-profile" class="min-h-32 col-span-4 flex flex-col justify-center items-center">
             <h1 class="text-4xl font-bold text-gray-500">This group is private</h1>
         </section>
        @endcan
