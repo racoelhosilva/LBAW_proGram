@@ -9,7 +9,7 @@
 @endphp
 
 @if (!isset($anchorUrl))
-    <button {{ isset($id) ? "id=$id" : "" }} {{ isset($form) ? "form=$form" : "" }} class="px-4 py-3 {{ $buttonClass }} text-center font-medium {{ $class }}">
+    <button type="{{ $submit ? 'submit' : 'button'}}" {{ isset($id) ? "id=$id" : "" }} {{ isset($form) ? "form=$form" : "" }} class="px-4 py-3 {{ $buttonClass }} text-center font-medium {{ $class }}">
         {{ $text }}
     </button>
 @else
