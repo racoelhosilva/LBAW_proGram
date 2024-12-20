@@ -238,7 +238,7 @@ Route::prefix('api')->middleware('api.token')->group(function () {
         Route::put('/user/{id}', 'update');
         Route::get('/user/{id}/followers', 'listFollowers');
         Route::get('/user/{id}/following', 'listFollowing');
-        //     Route::get('/user/{id}/post', 'listPosts');
+        Route::get('/user/{id}/post', 'listPosts');
         Route::post('/user/{id}/notifications/read', 'readAllNotifications')->where('id', '[0-9]+')->name('api.user.notifications.read');
         Route::post('/user/{userId}/notification/{notificationId}/read', 'readNotification')->where('userId', '[0-9]+')->where('notificationId', '[0-9]+')->name('api.user.notification.read');
         Route::post('/user/{id}/follow', 'follow')->where('id', '[0-9]+')->name('api.user.follow');
