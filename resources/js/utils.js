@@ -14,9 +14,9 @@ const encodeParams = (params) => {
 	}
 	return '?' + Object.keys(params).map(key => {
 		return !Array.isArray(params[key])
-			? encodeURIComponent(key) + '=' + encodeURIComponent(params[key])
-			: params[key].map(value => encodeURIComponent(key) + '[]=' + encodeURIComponent(value)).join('&');
-	}).join('&');
+			? encodeURIComponent(key) + '=' + encodeURIComponent(params[key] ?? '')
+			: params[key].map(value => encodeURIComponent(key) + '[]=' + encodeURIComponent(value ?? '')).join('&');
+	}).filter(str => str !== '').join('&');
 }
 
 const getView = (url, params) => {
@@ -138,7 +138,7 @@ const addLazyLoading = (container, containerLoading, endpoint, params, callback)
 	let atEnd = false;
 	let page = 1;
 
-	document.addEventListener('scroll', async () => {
+	document.addEventListener('scrollend', async () => {
 		if (!atEnd && !loading && window.innerHeight + window.scrollY >= document.body.offsetHeight - 100) {
 			loading = true;
 			containerLoading.classList.remove('hidden');

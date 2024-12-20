@@ -22,6 +22,7 @@ export default defineConfig({
 				"resources/js/user-invites.js",
 				"resources/js/notifications.js",
 				"resources/js/auth.js",
+				"resources/js/comment.js",
 			],
 			refresh: true,
 		}),
