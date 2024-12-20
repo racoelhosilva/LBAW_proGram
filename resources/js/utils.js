@@ -90,7 +90,7 @@ const fadeToastMessage = (toastMessage) => {
 
 	toastMessage.dataset.timeoutId = setTimeout(() => {
 		toastMessage.classList.add('opacity-0');
-		setTimeout(() => {
+		toastMessage.dataset.timeoutId = setTimeout(() => {
 			toastMessage.classList.add('hidden');
 			toastMessage.classList.remove('opacity-0');
 		}, 500);
