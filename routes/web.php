@@ -83,7 +83,7 @@ Route::middleware(['deny.banned', 'deny.deleted'])->group(function () {
 
     Route::view('/about', 'pages.about')->name('about');
     Route::view('/faqs', 'pages.faqs')->name('faqs');
-    Route::view('/contactus', 'pages.contactus')->name('contact-us');
+    Route::view('/contactus', 'pages.contact-us')->name('contact-us');
 
     // Post
     Route::controller(PostController::class)->group(function () {
