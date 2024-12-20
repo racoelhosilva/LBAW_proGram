@@ -5,19 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\Group;
 use App\Models\GroupJoinRequest;
 use App\Models\GroupMember;
-use App\Models\Post;
-use App\Models\Tag;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class GroupController extends Controller
 {
-    public function index()
-    {
-        return view('group.index');
-    }
-
     public function store(Request $request)
     {
         if (! Auth::check()) {
@@ -58,6 +51,7 @@ class GroupController extends Controller
     public function show(int $id)
     {
         $group = Group::findOrFail($id);
+        $this->authorize('viewAny', $group);
         $posts = $group->posts()->visibleTo(Auth::user())->where('is_announcement', false)->get();
         $announcements = $group->posts()->visibleTo(Auth::user())->where('is_announcement', true)->get();
         $isOwner = Auth::check() && Auth::id() === $group->owner_id;
@@ -69,7 +63,9 @@ class GroupController extends Controller
 
     public function showMembers(int $groupId)
     {
+
         $group = Group::findOrFail($groupId);
+        $this->authorize('viewContent', $group);
 
         $members = $group->members->where('id', '!=', $group->owner->id); // Exclude the owner
 
@@ -84,7 +80,7 @@ class GroupController extends Controller
         }
 
         $this->authorize('update', $group);
-        $usersWhoWantToJoin = $group->joinRequests()->where('status', 'pending')->paginate(10);
+        $usersWhoWantToJoin = $group->joinRequests()->where('status', 'pending');
 
         return view('pages.group-requests', ['group' => $group, 'usersWhoWantToJoin' => $usersWhoWantToJoin]);
     }
@@ -96,10 +92,13 @@ class GroupController extends Controller
             return redirect()->route('login');
         }
         $this->authorize('update', $group);
-        $searchQuery = request()->query('query');
+        $searchQuery = request()->query('invite_query');
         $ownerId = $group->owner->id;
-
+        $usersSearched = [];
+        $usersInvited = [];
+        $searched = false;
         if ($searchQuery) {
+            $searched = true;
             $usersSearched = User::where('id', '!=', $ownerId)
                 ->whereNotIn('id', function ($query) use ($groupId) {
                     $query->select('user_id')
@@ -109,13 +108,17 @@ class GroupController extends Controller
                 ->whereRaw("tsvectors @@ plainto_tsquery('english', ?)", [$searchQuery])
                 ->orderByRaw("ts_rank(tsvectors, plainto_tsquery('english', ?)) DESC", [$searchQuery])
                 ->get();
+            $usersInvited = [];
         } else {
-            $usersSearched = $group->invitedUsers;
+            $usersSearched = [];
+            $usersInvited = $group->invitedUsers;
         }
 
         return view('pages.group-invites', [
             'group' => $group,
             'usersSearched' => $usersSearched,
+            'usersInvited' => $usersInvited,
+            'searched' => $searched,
         ]);
     }
 
@@ -135,11 +138,15 @@ class GroupController extends Controller
             'is_public' => 'boolean',
             'owner_id' => 'required|integer',
         ]);
+
         if ($group->is_public != $request->filled('is_public')) {
             foreach ($group->posts as $post) {
                 $post->is_public = $request->filled('is_public');
                 $post->save();
             }
+        }
+        if ($request->filled('is_public')) {
+            GroupJoinRequest::where('group_id', $id)->where('status', 'pending')->update(['status' => 'accepted']);
         }
 
         $group->name = $request->input('name');
@@ -148,12 +155,7 @@ class GroupController extends Controller
         $group->owner_id = $request->input('owner_id');
         $group->save();
 
-        return redirect()->route('group.show', $group->id)->withSuccess('Group edited successfully.');
-    }
-
-    public function destroy($id)
-    {
-        // Delete the group...
+        return redirect()->route('group.show', $group->id);
     }
 
     public function edit($id)
@@ -179,7 +181,7 @@ class GroupController extends Controller
         }
 
         $this->authorize('update', $group);
-        $usersWhoWantToJoin = $group->joinRequests()->where('status', 'pending')->paginate(10);
+        $usersWhoWantToJoin = $group->joinRequests()->where('status', 'pending');
 
         $userIds = request()->query('users');
         if ($userIds) {
@@ -190,55 +192,6 @@ class GroupController extends Controller
         }
 
         return view('pages.manage-group', ['group' => $group, 'usersWhoWantToJoin' => $usersWhoWantToJoin, 'usersSearched' => $usersSearched]);
-    }
-
-    public function showCreatePostForm(Request $request, int $groupId)
-    {
-        $group = Group::findOrFail($groupId);
-
-        if (! Auth::check()) {
-            return redirect()->route('login');
-        }
-
-        return view('pages.create-group-post', ['group' => $group,  'tags' => Tag::all()]);
-    }
-
-    public function createPost(Request $request, int $groupId)
-    {
-        $group = Group::findOrFail($groupId);
-
-        if (! Auth::check()) {
-            return redirect()->route('login');
-        }
-
-        $this->authorize('create', Post::class);
-
-        $request->validate([
-            'title' => 'required|string',
-            'text' => 'required|string',
-            'tags' => 'nullable|array',
-            'tags.*' => 'exists:tag,id',
-            'is_public' => 'nullable|boolean',
-            'is_announcement' => 'nullable|boolean',
-        ]);
-
-        try {
-            $post = Post::create([
-                'title' => $request->input('title'),
-                'text' => $request->input('text'),
-                'author_id' => auth()->id(),
-                'is_public' => $request->input('is_public', true),
-                'is_announcement' => $request->input('is_announcement', false),
-                'likes' => 0,
-            ]);
-
-            $post->tags()->sync($request->input('tags'));
-            $group->posts()->attach($post->id);
-
-            return redirect()->route('group.show', $group->id)->withSuccess('Post created successfully.');
-        } catch (\Exception $e) {
-            return redirect()->route('group.show', $group->id)->withError('Failed to create post.');
-        }
     }
 
     public function join(Request $request, int $group_id)

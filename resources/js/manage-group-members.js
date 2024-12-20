@@ -13,6 +13,7 @@ const removeMemberListener = () => {
                 sendDelete(`/api/group/${groupId}/remove/${userId}`)
                     .then(() => {
                         btn.closest('.manage-member-container').remove();
+                        sendToastMessage('Member removed with success', 'success');
                     })
                     .catch((error) => {
                         sendToastMessage('An error occurred while removing the member.', 'error');

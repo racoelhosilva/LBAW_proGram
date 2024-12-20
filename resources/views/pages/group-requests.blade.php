@@ -9,9 +9,9 @@
             @forelse ($usersWhoWantToJoin as $user)
                 <div class="manage-request-container flex flex-row gap-4" data-user-id={{$user->id}}>
                     @include('partials.user-card-group-request', ['user' => $user, 'class' => 'w-full'])             
-                </div>    
-            @empty  
-                <p>No requests yet.</p>
+                </div>
+            @empty
+                <p>No requests at the moment</p>
             @endforelse
         </section>
       </main>

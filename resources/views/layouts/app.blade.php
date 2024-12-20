@@ -38,7 +38,7 @@
     <script src="https://js.pusher.com/7.0/pusher.min.js" defer></script>
 
     <!-- Styles & Scripts -->
-    @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/header.js', 'resources/js/search.js', 'resources/js/user.js', 'resources/js/post.js', 'resources/js/comment.js', 'resources/js/faq.js', 'resources/js/group.js', 'resources/js/manage-group-requests.js', 'resources/js/manage-group-invites.js', 'resources/js/manage-group-members.js', 'resources/js/create-post-group.js', 'resources/js/user-groups.js', 'resources/js/user-invites.js', 'resources/js/notifications.js', 'resources/js/home.js'])
+    @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/header.js', 'resources/js/search.js', 'resources/js/user.js', 'resources/js/post.js', 'resources/js/comment.js', 'resources/js/faq.js', 'resources/js/group.js', 'resources/js/manage-group-requests.js', 'resources/js/manage-group-invites.js', 'resources/js/manage-group-members.js', 'resources/js/user-groups.js', 'resources/js/user-invites.js', 'resources/js/notifications.js', 'resources/js/home.js'])
 </head>
 
 <body class="bg-white dark:bg-slate-800 text-black dark:text-white">
