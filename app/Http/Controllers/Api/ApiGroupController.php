@@ -17,8 +17,8 @@ class ApiGroupController extends Controller
     {
         $user = auth()->user();
 
-        if (! $this->authorize('viewAny', Group::class)) {
-            return response()->json([]);
+        if (! $user->can('viewAny', Group::class)) {
+            return response()->json(['message' => 'You are not authorized to view groups.'], 403);
         }
 
         $groups = Group::select('id', 'name', 'owner_id', 'description', 'creation_timestamp', 'is_public', 'member_count')->get();
@@ -37,9 +37,25 @@ class ApiGroupController extends Controller
 
     public function show(Request $request, int $group_id)
     {
-        $group = Group::select('id', 'name', 'owner_id', 'description', 'creation_timestamp', 'is_public', 'member_count')->findOrFail($group_id);
+        $user = auth()->user();
 
-        return response()->json($group);
+        $group = Group::findOrFail($group_id);
+        $groupData = $group->only([
+            'id',
+            'name',
+            'owner_id',
+            'description',
+            'creation_timestamp',
+            'is_public',
+            'member_count',
+        ]);
+        if (! $user->can('viewAny', $group)) {
+            return response()->json(['message' => 'You are not authorized to view this group.'], 403);
+        } elseif (! $user->can('view', $group)) {
+            unset($groupData['member_count']);
+        }
+
+        return response()->json($groupData);
     }
 
     public function join(Request $request, int $group_id)

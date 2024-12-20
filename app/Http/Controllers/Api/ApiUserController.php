@@ -10,15 +10,30 @@ use App\Models\User;
 use App\Models\UserStats;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class ApiUserController extends Controller
 {
     public function list()
     {
         $authenticatedUser = auth()->user();
+        $users = User::all();
+        $this->authorize('viewAny', User::class);
+        if (! $authenticatedUser) {
+            $users = $users->filter(function ($user) {
+                return $user->is_public;
+            })->map(function ($user) {
+                return $user->only([
+                    'id',
+                    'name',
+                    'register_timestamp',
+                    'handle',
+                    'is_public',
+                ]);
+            });
 
-        $users = User::where('is_deleted', false)->get();
-
+            return response()->json($users->values());
+        }
         $response = $users->map(function ($user) use ($authenticatedUser) {
             if ($authenticatedUser->can('viewContent', $user)) {
                 return $user->only([
@@ -72,34 +87,28 @@ class ApiUserController extends Controller
 
     public function create(Request $request)
     {
+
         $request->validate([
-            'name' => 'required|string',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|string|min:8',
-            'handle' => 'nullable|string|unique:users,handle|max:50',
-            'is_public' => 'nullable|boolean',
-            'description' => 'nullable|string|max:500',
+            'handle' => 'required|alpha_dash:ascii|max:20|unique:users',
+            'name' => 'required|string|max:250',
+            'email' => 'required|email|max:250|unique:users',
+            'password' => 'required|min:8|confirmed',
         ]);
+        $user = new User;
+        DB::transaction(function () use ($request, $user) {
+            $user->name = $request->input('name');
+            $user->email = $request->input('email');
+            $user->password = Hash::make($request->input('password'));
+            $user->handle = $request->input('handle');
+            $user->is_public = true;
 
-        // Create user with the provided fields
-        try {
-            $user = User::create([
-                'name' => $request->input('name'),
-                'email' => $request->input('email'),
-                'password' => bcrypt($request->input('password')),
-                'handle' => $request->input('handle'),
-                'is_public' => $request->input('is_public', true), // Defaults to true if not provided
-                'description' => $request->input('description'),
-                'register_timestamp' => now(), // Auto-set registration timestamp
-            ]);
+            $user->save();
+            $userStats = new UserStats;
+            $userStats->user_id = $user->id;
+            $userStats->save();
+        });
 
-            return response()->json($user, 201);
-        } catch (\Exception $e) {
-            return response()->json([
-                'error' => 'Failed to create user.',
-                'message' => $e->getMessage(),
-            ], 500);
-        }
+        return response()->json($user, 201);
     }
 
     public function update(Request $request, $id)

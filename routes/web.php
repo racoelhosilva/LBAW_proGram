@@ -233,7 +233,7 @@ Route::prefix('api')->middleware('api.token')->group(function () {
     Route::controller(ApiUserController::class)->group(function () {
         Route::get('/user', 'list');
         Route::get('/user/{id}', 'show');
-        //     Route::post('/user', 'create');
+        Route::post('/user', 'create');
         //     Route::delete('/user/{id}', 'delete');
         //     Route::put('/user/{id}', 'update');
         Route::get('/user/{id}/followers', 'listFollowers');
