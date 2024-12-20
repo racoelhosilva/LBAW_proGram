@@ -44,7 +44,7 @@ class GoogleController extends Controller
         try {
             $google_user = Socialite::driver('google')->stateless()->user();
         } catch (\Exception $e) {
-            return redirect()->route('login')->withErrors('Login with GitHub was cancelled or failed.');
+            return redirect()->route('login')->withErrors('Login with Google was cancelled or failed.');
         }
 
         $user = User::where('email', $google_user->getEmail())->first();
