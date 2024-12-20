@@ -199,10 +199,6 @@ class PostController extends Controller
             $post->tags()->sync($request->input('tags'));
         });
 
-        if (url()->previous() === route('post.edit', $post->id)) {
-            return redirect(session('previous_url'))->withSuccess('Post updated successfully.');
-        }
-
         return redirect()->route('post.show', $post->id)->withSuccess('Post updated successfully.');
     }
 
@@ -217,10 +213,6 @@ class PostController extends Controller
 
         $post->delete();
 
-        if (url()->previous() === route('post.edit', $post->id)) {
-            return redirect(session('previous_url'))->withSuccess('Post deleted successfully.');
-        }
-
-        return redirect()->back()->withSuccess('Post deleted successfully.');
+        return redirect()->route('user.show', $post->author_id)->withSuccess('Post deleted successfully.');
     }
 }
