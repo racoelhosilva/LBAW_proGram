@@ -8,10 +8,6 @@ const pusher = new Pusher(PUSHER_APP_KEY, {
     encrypted: true
 });
 
-const userId = document.querySelector('meta[name="user-id"]').getAttribute('content');
-const channel = "user." + userId;
-const counter = document.querySelector('#notification-count');
-
 const increaseCounter = (counter) => {
     if (counter) {
         counter.classList.remove('hidden');
@@ -28,7 +24,8 @@ const decreaseCounter = (counter) => {
     }
 }
 
-if (userId) {
+const subscribeNotifications = (userId, counter) => {
+    const channel = "user." + userId;
     const pusherChannel = pusher.subscribe(channel);
 
     pusherChannel.bind('notification-postlike', function(data) {
@@ -91,7 +88,7 @@ const markNotificationRead = (button, notificationId, userId, counter) => {
         });
 };
 
-const addMarkReadButtonListeners = () => {
+const addMarkReadButtonListeners = (userId, counter) => {
 	const notifications = document.querySelectorAll(".notification-card");
 
 	notifications.forEach((card) => {
@@ -107,6 +104,11 @@ const addMarkReadButtonListeners = () => {
     }
 };
 
-if (userId) {
-    addMarkReadButtonListeners();
+const userIdElement = document.querySelector('meta[name="user-id"]')
+const counter = document.querySelector('#notification-count');
+
+if (userIdElement && counter) {
+    const userId = userIdElement.getAttribute('content');
+    subscribeNotifications(userId, counter);
+    addMarkReadButtonListeners(userId, counter);
 }
