@@ -211,7 +211,6 @@ class ApiUserController extends Controller
 
         $user = User::findOrFail($id);
         $this->authorize('viewContent', $user);
-        $user = User::where('id', $id)->where('is_deleted', false)->firstOrFail();
 
         return response()->json($user->followers->select('id', 'name', 'handle', 'is_public'));
     }
@@ -227,9 +226,20 @@ class ApiUserController extends Controller
 
     public function listPosts($id)
     {
-        $user = User::where('id', $id)->where('is_deleted', false)->firstOrFail();
+        $user = User::findOrFail($id);
+        $this->authorize('viewContent', $user);
 
-        return response()->json($user->posts);
+        return response()->json($user->posts->select([
+            'id',
+            'author_id',
+            'title',
+            'text',
+            'creation_timestamp',
+            'is_announcement',
+            'is_public',
+            'likes',
+            'comments',
+        ]));
     }
 
     public function listFollowRequests($id)
