@@ -66,7 +66,7 @@
 
         </section>
         @can('viewContent', $group)
-            <section class="grid gap-4">
+            <section class="grid grid-rows-[auto_1fr] gap-4">
                 <div class="flex  gap-10">
                     <button id="group-chat-tab" class="tab-button text-2xl font-bold py-2 border-b-2" data-tab="group-chat">
                         Recent Activity
