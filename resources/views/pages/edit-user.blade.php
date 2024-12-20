@@ -19,7 +19,7 @@
                     'value' => $user->name,
                     'placeholder' => 'John Doe',
                     'required' => true,
-                    'help' => 'The name that will be displayed on your profile, posts, and comments',
+                    'help' => 'The name that will be displayed on your profile, posts, and comments.',
 
                 ])
                 @include('partials.textarea', [
@@ -29,7 +29,7 @@
                     'value' => $user->description,
                     'placeholder' => 'I am just a chill dev',
                     'required' => false,
-                    'help' => 'A short description of yourself that will be displayed on your profile',
+                    'help' => 'A short description of yourself that will be displayed on your profile.',
                 ])
                 @include('partials.input-field', [
                     'name' => 'handle',
@@ -38,16 +38,19 @@
                     'value' => $user->handle,
                     'placeholder' => 'john_doe',
                     'required' => true,
-                    'help' => 'A unique handle that will be used to identify you on the platform',
+                    'help' => 'A unique handle that will be used to identify you on the platform.',
                 ])
 
-                <div class="flex items-center mt-4">
+                <div class="flex gap-2 items-center mt-4">
                     <input type="checkbox" id="is_public" name="is_public" value="1"
-                        class="w-5 h-5 mr-2 text-blue-600 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+                        class="w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
                         {{ $user->is_public ? 'checked' : '' }}>
                     <label for="is_public" class="font-medium text-gray-700 dark:text-gray-200">
                         Make profile public
                     </label>
+                    @include('partials.help-icon', [
+                        'text' => 'If your profile is public, other users will be able to see your description, profile and posts.',
+                    ])
                 </div>
 
                 @include('partials.input-field', [
@@ -75,28 +78,41 @@
                     'required' => false,
                 ])
 
-                <section id="languages-section" class="flex flex-col">
-                    <label for="languages" class="font-medium">Languages</label>
+                <section id="languages-section" class="grid grid-cols-[1fr_auto] items-center gap-x-2">
+                    <label for="languages" class="font-medium col-span-2">Languages</label>
                     @include('partials.tag-select', [
                         'tags' => $languages,
                         'label' => 'Languages',
                         'selected' => $user->stats->languages->pluck('id')->all(),
                         'form' => 'profile-form',
                     ])
+                    @include('partials.help-icon', [
+                        'text' => 'The languages you are most comfortable with. These will be displayed in your profile.',
+                        'left' => false,
+                    ])
                 </section>
 
-                <section id="technologies-section" class="flex flex-col">
-                    <label for="technologies" class="font-medium">Technologies</label>
+                <section id="technologies-section" class="grid grid-cols-[1fr_auto] items-center gap-x-2">
+                    <label for="technologies" class="font-medium col-span-2">Technologies</label>
                     @include('partials.tag-select', [
                         'tags' => $technologies,
                         'label' => 'Technologies',
                         'selected' => $user->stats->technologies->pluck('id')->all(),
                         'form' => 'profile-form',
                     ])
+                    @include('partials.help-icon', [
+                        'text' => 'The technologies you are most comfortable with. These will be displayed in your profile.',
+                        'left' => false,
+                    ])
                 </section>
 
                 <section id="projects-section" class="flex flex-col">
-                    <label for="projects" class="font-medium">Projects</label>
+                    <label for="projects" class="font-medium flex gap-2">
+                        Top Projects
+                        @include('partials.help-icon', [
+                            'text' => 'The projects that you deem are your best work. These will be displayed in your profile. You can choose up to ten projects.',
+                        ])
+                    </label>
                     <div id="projects">
                         @foreach ($user->stats->topProjects as $project)
                             <div class="grid grid-cols-12 gap-2" data-project-id="{{ $project->id }}">
