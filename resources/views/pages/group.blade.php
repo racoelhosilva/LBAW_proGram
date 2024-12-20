@@ -4,7 +4,7 @@
 
 @section('content')
     <main id="group-page" class="px-8 py-4 grid grid-rows-[auto_1fr] gap-6">
-        <section id="banner-section" class="card h-min grid grid-cols-[auto_1fr_1fr] gap-y-8 p-8">
+        <section id="banner-section" class="card h-min w-full grid grid-cols-[auto_1fr_1fr] gap-y-8 p-8">
             <div class="col-span-full flex justify-between">
                 <h1 class="text-4xl font-bold">{{ $group->name }}</h1>
                 <div class="min-w-[24px]">
@@ -67,7 +67,7 @@
         </section>
         @can('viewContent', $group)
             <section class="grid grid-rows-[auto_1fr] gap-4">
-                <div class="flex  gap-10">
+                <div class="flex gap-10">
                     <button id="group-chat-tab" class="tab-button text-2xl font-bold py-2 border-b-2" data-tab="group-chat">
                         Recent Activity
                     </button>
@@ -88,8 +88,7 @@
                     </article>  
                 </div>
             
-                <div id="board-content" class="tab-content hidden grid gap-4">
-
+                <div id="board-content" class="tab-content hidden">
                     <article class="grid gap-4">
                         @if ($announcements->count() === 0)
                             <p>No posts to show</p>
