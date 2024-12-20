@@ -1,3 +1,5 @@
+@props(['post', 'tags'])
+
 @extends('layouts.app')
 @section('title')
     {{ 'Edit ' . $post->title . ' | ProGram' }}
@@ -6,9 +8,8 @@
     <main id="edit-post-page" class="px-8">
         <article class="card h-min p-10 pt-16 flex flex-col gap-12">
             <h1 class="mb-12 text-2xl font-bold text-center">Edit Post</h1>
-            <form id="edit-post-form" action="{{ route('post.update', $post->id) }}" method="POST" class="mb-4 grid gap-4 justify-self-stretch">
+            <form id="edit-post-form" action="{{ route('post.update', $post->id) }}" method="POST" class="mb-4 grid gap-4 justify-self-stretch quill-form" data-quill-field="text">
                 @csrf
-
                 @method('PUT')
 
                 @include('partials.input-field', [
@@ -19,10 +20,9 @@
                     'required' => true,
                 ])
 
-                @include('partials.textarea', [
+                @include('partials.quill-editor', [
                     'name' => 'text',
                     'label' => 'Post Content',
-                    'placeholder' => 'Write your post here...',
                     'value' => $post->text,
                     'required' => false,
                 ])

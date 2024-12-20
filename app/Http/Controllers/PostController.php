@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Comment;
 use App\Models\Post;
 use App\Models\Tag;
+use Barryvdh\Debugbar\Facades\Debugbar;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -12,9 +13,48 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class PostController extends Controller
 {
+    const ALLOWED_TAGS = '<p><br><strong><em><u><code><ol><ul><li><span><div><a><img><iframe>';
+
+    protected function cleanupUnusedImages(string $text, Post $post)
+    {
+        preg_match_all('/<(img|iframe)[^>]+>/i', $text, $result);
+
+        $folder = 'temporary/'.$post->author_id;
+
+        // files from the temporary folder + the postAttachments folder
+        $allFiles = Storage::disk('storage')->files($folder) + Storage::disk('storage')->files('postAttachments/'.$post->id.'/'.$post->author_id);
+
+        if (empty($result[0])) {
+            foreach ($allFiles as $file) {
+                Storage::disk('storage')->delete($file);
+            }
+            Storage::disk('storage')->deleteDirectory($folder);
+            Storage::disk('storage')->deleteDirectory('postAttachments/'.$post->id);
+
+            return [];
+        }
+
+        $usedFiles = [];
+        foreach ($result[0] as $img) {
+            preg_match('/src="([^"]+)"/', $img, $match);
+            $usedFiles[] = ltrim(parse_url($match[1], PHP_URL_PATH), '/');
+        }
+
+        $unusedFiles = array_diff($allFiles, $usedFiles);
+        Debugbar::info($unusedFiles);
+
+        foreach ($unusedFiles as $file) {
+            Storage::disk('storage')->delete($file);
+        }
+
+        return $usedFiles;
+
+    }
+
     /**
      * Show the form for creating a new resource.
      */
@@ -52,17 +92,35 @@ class PostController extends Controller
         ]);
 
         $post = new Post;
-
         DB::transaction(function () use ($post, $request) {
-            $post->title = $request->input('title');
-            $post->text = $request->input('text');
+            // Save every field except for the text
             $post->author_id = Auth::id();
+            $post->title = $request->input('title');
             $post->is_public = $request->input('is_public', false);
             $post->is_announcement = $request->input('is_announcement', false);
+            $post->save();
+            $post->tags()->sync($request->input('tags'));
 
+            $postId = $post->id;
+
+            // Find the used images, and delete the unused ones
+            $text = strip_tags($request->input('text'), self::ALLOWED_TAGS);
+            $usedFiles = $this->cleanupUnusedImages($text, $post);
+            $text = str_replace('temporary', 'postAttachments/'.$postId, $text);
+
+            // Move the used images to the postAttachments folder
+            foreach ($usedFiles as $file) {
+                $newFile = str_replace('temporary', 'postAttachments/'.$postId, $file);
+                Storage::disk('storage')->move($file, $newFile);
+            }
+
+            // Delete the temporary folder
+            Storage::disk('storage')->deleteDirectory('temporary/'.$post->author_id);
+
+            // Save the text
+            $post->text = $text;
             $post->save();
 
-            $post->tags()->sync($request->input('tags'));
         });
 
         return redirect()->route('post.show', $post->id)->withSuccess('Post created successfully.');
@@ -121,9 +179,18 @@ class PostController extends Controller
         ]);
         $post = Post::findOrFail($id);
 
-        DB::transaction(function () use ($post, $request) {
+        $text = strip_tags($request->input('text'), self::ALLOWED_TAGS);
+        $usedFiles = $this->cleanupUnusedImages($text, $post);
+        $text = str_replace('temporary', 'postAttachments/'.$post->id, $text);
+        foreach ($usedFiles as $file) {
+            $newFile = str_replace('temporary', 'postAttachments/'.$post->id, $file);
+            Storage::disk('storage')->move($file, $newFile);
+        }
+        Storage::disk('storage')->deleteDirectory('temporary/'.$post->author_id);
+
+        DB::transaction(function () use ($post, $request, $text) {
             $post->title = $request->input('title', $post->title);
-            $post->text = $request->input('text', $post->text);
+            $post->text = $text;
             $post->is_public = $request->filled('is_public');
             $post->is_announcement = $request->filled('is_announcement');
 
