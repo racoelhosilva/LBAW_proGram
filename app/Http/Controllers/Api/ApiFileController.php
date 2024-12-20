@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use Barryvdh\Debugbar\Facades\Debugbar;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
@@ -95,7 +94,6 @@ class ApiFileController extends Controller
 
     public function uploadFile(Request $request)
     {
-
 
         // Validation: has file
         if (! $request->hasFile('file')) {
