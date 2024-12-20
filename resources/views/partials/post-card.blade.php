@@ -88,7 +88,7 @@
 
     <div class="mt-4 col-span-3">
         <h1 class="font-bold text-xl break-words"><a href="{{ $postUrl }}">{{ $post->title }}</a></h1>
-        <div class="whitespace-pre-wrap text-pretty break-words">{!! str_replace("\\n", "\n", $post->text) !!}</div>
+        <div class="whitespace-pre-wrap text-pretty break-words post-content">{!! $post->text !!}</div>
     </div>
 
     <div class="-ms-3 col-span-3 grid grid-cols-[auto_auto_1fr_50%] items-end">

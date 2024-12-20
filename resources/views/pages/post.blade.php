@@ -8,7 +8,7 @@
     
     <section id="comment-section" class="card h-fit flex flex-col gap-3 col-span-3 lg:col-span-1">
         <h1 class="text-xl font-bold">Comments</h1>
-        <form id ="comment-submit-form">
+        <form id="comment-submit-form">
             @include('partials.textarea', ['name' => 'content', 'placeholder' => 'Write a comment...', 'label' => ''])
             <input type="hidden" name="post_id" value="{{ $post->id }}">
             @if (Auth::check())

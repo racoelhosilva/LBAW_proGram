@@ -72,7 +72,7 @@ const addToastMessageListeners = () => {
 };
 
 const activateQuill = () => {
-	const form = document.querySelector("#quill-form");
+	const form = document.querySelector(".quill-form");
 
 	if (form) {
 		const field = form.querySelector(

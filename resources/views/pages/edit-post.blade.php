@@ -5,14 +5,10 @@
     {{ 'Edit ' . $post->title . ' | ProGram' }}
 @endsection
 @section('content')
-    <main id="create-post-page" class="grid items-center">
-        <article class="card h-min p-10 pt-16 grid justify-items-center">
-            <h1 class="mb-12 text-xl font-bold">Edit Post</h1>
-            <form id="quill-form" action="{{ route('post.update', $post->id) }}" method="POST" class="mb-4 grid gap-4 justify-self-stretch" data-quill-field="text">
     <main id="edit-post-page" class="px-8">
         <article class="card h-min p-10 pt-16 flex flex-col gap-12">
             <h1 class="mb-12 text-2xl font-bold text-center">Edit Post</h1>
-            <form id="quill-form" action="{{ route('post.update', $post->id) }}" method="POST" class="mb-4 grid gap-4 justify-self-stretch" data-quill-field="text">
+            <form id="edit-post-form" action="{{ route('post.update', $post->id) }}" method="POST" class="mb-4 grid gap-4 justify-self-stretch quill-form" data-quill-field="text">
                 @csrf
                 @method('PUT')
 
