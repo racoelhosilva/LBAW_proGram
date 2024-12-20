@@ -1,9 +1,10 @@
-import {addLikeButtonListeners} from "./post.js";
+import {addPostListeners} from "./post.js";
 import {addLazyLoading} from "./utils.js";
 
 const addSearchListeners = () => {
     const searchPosts = document.getElementById('search-posts');
     const searchUsers = document.getElementById('search-users');
+    const searchGroups = document.getElementById('search-groups');
     const searchLoadingSpinner = document.querySelector('#search-results > div:last-child > .loading-spinner');
     const searchFilters = document.querySelectorAll('#search-filters .select');
     const searchField = document.getElementById('search-field');
@@ -20,10 +21,13 @@ const addSearchListeners = () => {
         order_by: urlParams.get('order_by'),
     };
     if (searchPosts) {
-        addLazyLoading(searchPosts, searchLoadingSpinner, '/search', { ...searchParams, search_type: 'posts' }, addLikeButtonListeners);
+        addLazyLoading(searchPosts, searchLoadingSpinner, '/search', { ...searchParams, search_type: 'posts' }, addPostListeners);
     }
     if (searchUsers) {
         addLazyLoading(searchUsers, searchLoadingSpinner, '/search', { ...searchParams, search_type: 'users' });
+    }
+    if (searchGroups) {
+        addLazyLoading(searchGroups, searchLoadingSpinner, '/search', { ...searchParams, search_type: 'groups' });
     }
 }
 

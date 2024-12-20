@@ -1,4 +1,4 @@
-import { sendDelete, sendPost, sendToastMessage } from './utils'
+import {sendDelete, sendPost, sendToastMessage, addDropdownListeners} from './utils'
 
 const togglePostLike = (likeButton, likeCount, postId) => {
 	likeButton.disabled = true;
@@ -108,6 +108,11 @@ const addLikeButtonListeners = () => {
     });
 };
 
-addLikeButtonListeners();
+const addPostListeners = () => {
+	addLikeButtonListeners();
+	addDropdownListeners();
+}
 
-export { addLikeButtonListeners };
+addPostListeners();
+
+export { addPostListeners };

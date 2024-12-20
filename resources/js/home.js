@@ -1,5 +1,5 @@
 import { addLazyLoading } from "./utils.js";
-import { addLikeButtonListeners } from "./post.js";
+import {addPostListeners} from "./post.js";
 
 const addHomeEventListeners = () => {
     const homePosts = document.getElementById('home-posts');
@@ -8,7 +8,7 @@ const addHomeEventListeners = () => {
         return;
     }
 
-    addLazyLoading(homePosts, homePostsLoading, '/', null, addLikeButtonListeners);
+    addLazyLoading(homePosts, homePostsLoading, '/', null, addPostListeners);
 }
 
 addHomeEventListeners();
