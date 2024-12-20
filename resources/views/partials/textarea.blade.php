@@ -7,7 +7,7 @@
               class="w-full px-5 py-3 rounded-lg bg-white dark:bg-slate-700 text-gray-600 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 border border-slate-300 dark:border-slate-600 focus:border-blue-600 outline-none resize-none">{{ old($name, $value) }}</textarea>
     <div>
         @isset($help)
-            @include('partials.help-icon', ['text' => $help])
+            @include('partials.help-icon', ['text' => $help, 'left' => false])
         @endisset
     </div>
     @if ($errors->has($name))
