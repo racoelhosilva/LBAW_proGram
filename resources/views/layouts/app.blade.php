@@ -43,9 +43,7 @@
 
 <body class="bg-white dark:bg-slate-800 text-black dark:text-white">
     @include('partials.header')
-    <main class="flex-grow">
-        @yield('content')
-    </main>
+    @yield('content')
     @include('partials.footer')
     @include('partials.toast-messages')
 </body>
