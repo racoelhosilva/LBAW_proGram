@@ -87,7 +87,7 @@
     </div>
 
     <div class="mt-4 col-span-3 flex flex-col gap-4">
-        <h1 class="font-bold text-xl break-words"><a href="{{ $postUrl }}">{{ $post->title }}</a></h1>
+        <h2 class="font-bold text-xl break-words"><a href="{{ $postUrl }}">{{ $post->title }}</a></h2>
         <div class="whitespace-pre-wrap text-pretty break-words post-content">{!! $post->text !!}</div>
     </div>
 

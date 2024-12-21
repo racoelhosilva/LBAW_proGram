@@ -10,7 +10,7 @@
             class="w-12 h-12 rounded-full object-cover">
     </a>
     <div class="{{ $responsive ? 'row-start-2 col-span-3 2xl:row-start-1 2xl:col-span-1 2xl:col-start-2' : '' }}">
-        <p class="text-base/4 font-medium"><a href="{{ $userUrl }}">{{ $user->name }}</a></p>
+        <h2 class="text-base/4 font-medium"><a href="{{ $userUrl }}">{{ $user->name }}</a></h2>
         <p class="text-xs/3 mt-1 font-medium text-gray-500 dark:text-gray-400 select-none"><a
                 href="{{ $userUrl }}">{{ '@' . $user->handle }}</a>{{ ' • ' . $user->num_followers . ' followers' }}
         </p>

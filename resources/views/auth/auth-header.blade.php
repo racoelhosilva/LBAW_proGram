@@ -9,7 +9,7 @@
         ])
     </div>
     @include('partials.theme-button')
-    <article class="dropdown">
+    <div class="dropdown">
         @include('partials.icon-button', [
             'iconName' => 'grip',
             'id' => 'more-button',
@@ -47,5 +47,5 @@
                 ])
             </div>
         </div>
-    </article>
+    </div>
 </header>

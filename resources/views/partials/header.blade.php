@@ -34,7 +34,7 @@
             </div>
         @endauth
         
-        <article class="dropdown">
+        <div class="dropdown">
             @include('partials.icon-button', [
                 'iconName' => 'grip',
                 'id' => 'more-button',
@@ -109,6 +109,6 @@
                     @endauth
                 </div>
             </div>
-        </article>
+        </div>
     </div>
 </header>

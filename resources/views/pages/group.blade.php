@@ -60,7 +60,7 @@
                     @endcan
                     @can('update', $group)
                         @include('partials.text-button', ['text' => 'Edit Group', 'anchorUrl' => route('group.edit', ['id' => $group->id])])
-                        <article class="dropdown">
+                        <div class="dropdown">
                             @include('partials.text-button', ['text' => 'Manage Group', 'id'=>'manage-group-button'])
                             <div class="hidden">
                                 <div>
@@ -71,7 +71,7 @@
                                     @include('partials.dropdown-item', ['icon' => 'invite', 'text' => 'Manage Invites', 'anchorUrl' => route('group.invites', ['id' => $group->id])])
                                 </div>
                             </div>
-                        </article>
+                        </div>
                         @include('partials.text-button', ['text' => 'Post to Group', 'anchorUrl' => route('group.post.create', ['group_id' => $group->id])])
                     @endcan
 
