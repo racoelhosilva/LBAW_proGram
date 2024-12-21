@@ -12,6 +12,11 @@
         font-optical-sizing: auto;
     }
 
+    body {
+        max-width: 150em;
+        margin-inline: auto;
+    }
+
     main {
         min-height: calc(100vh - 9rem);
     }

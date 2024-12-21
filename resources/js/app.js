@@ -1,38 +1,6 @@
 import "./bootstrap";
-import {fadeToastMessage, sendToastMessage} from "./utils";
+import {fadeToastMessage, hideDropdowns, sendToastMessage} from "./utils";
 import Quill from "quill";
-import "quill/dist/quill.core.css";
-
-const toggleDropdown = (dropdownContent, event) => {
-    dropdownContent.classList.toggle('hidden');
-
-    const dropdownContents = document.querySelectorAll('.dropdown > div');
-    dropdownContents.forEach(content => {
-        if (content !== dropdownContent)
-            content.classList.add('hidden');
-    });
-
-    event.stopPropagation();
-};
-
-const hideDropdowns = event => {
-    const dropdownContents = document.querySelectorAll('.dropdown > div');
-    dropdownContents.forEach(content => {
-        content.classList.add('hidden');
-    });
-};
-
-const addDropdownListeners = () => {
-	const dropdowns = document.querySelectorAll(".dropdown");
-
-	dropdowns.forEach((dropdown) => {
-		const dropdownButton = dropdown.querySelector(":scope > button");
-		const dropdownContent = dropdown.querySelector(":scope > div");
-
-        dropdownButton.addEventListener('click', event => toggleDropdown(dropdownContent, event));
-        document.addEventListener('click', hideDropdowns);
-    });
-};
 
 const openModal = (modal, event) => {
 	modal.classList.add("active");
@@ -245,7 +213,6 @@ const addCopyButtonListeners = () => {
     });
 };
 
-addDropdownListeners();
 addModalListeners();
 addToastMessageListeners();
 activateQuill();
