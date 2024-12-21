@@ -42,13 +42,6 @@
     </div>
 
     <div class="ms-4 -me-3 flex">
-        @if ($post->is_announcement)
-            @include('partials.icon-button', [
-                'iconName' => 'pin',
-                'label' => 'Announcement',
-                'type' => 'transparent',
-            ])
-        @endif
         <div class="dropdown">
             @include('partials.icon-button', [
                 'iconName' => 'ellipsis',

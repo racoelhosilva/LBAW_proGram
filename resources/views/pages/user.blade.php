@@ -1,8 +1,24 @@
+@props(['user', 'posts', 'recommendedUsers', 'numRequests'])
+
 @extends('layouts.app')
 
 @section('title')
     {{ $user->name . ' | ProGram' }}
 @endsection
+
+@php
+    $canFollow = auth()->check() && auth()->user()->can('follow', $user);
+
+    if ($canFollow) {
+        if (auth()->user()->follows($user)) {
+            $followClass = "following primary-btn";
+        } elseif (auth()->user()->getFollowRequestStatus($user)) {
+            $followClass = "pending secondary-btn";
+        } else {
+            $followClass = "unfollowing primary-btn";
+        }
+    }
+@endphp
 
 @section('content')
     <main id="profile-page" class="px-8 py-4 grid grid-cols-4 grid-rows-[auto_1fr] gap-x-6 gap-y-3 lg:gap-y-6">
@@ -14,13 +30,14 @@
             </div>
             <img src="{{ $user->getProfilePicture() }}" alt="{{ $user->name }} Profile Picture" class="w-36 sm:w-52 h-36 sm:h-52 rounded-full object-cover">
             <div class="profile-buttons flex justify-end items-end">
-                @if ($isOwnProfile)
+                @can('update', $user)
                     @include('partials.text-button', [
                         'text' => 'Edit Profile',
                         'anchorUrl' => route('user.edit', auth()->id()),
                     ])
-                @elseif (Auth::check()) 
-                    <button aria-label="FollowProfile" class="px-4 py-3 text-center font-medium follow-profile-button {{  Auth::user()->follows($user) ? "following primary-btn" : (Auth::user()->getFollowRequestStatus($user) ? "pending secondary-btn" : "unfollowing primary-btn") }}" data-user-id="{{ $user->id }}">
+                @endcan
+                @if ($canFollow)
+                    <button aria-label="Follow Profile" class="px-4 py-3 text-center font-medium follow-profile-button {{ $followClass }}" data-user-id="{{ $user->id }}">
                         <span class="follow">Follow</span>
                         <span class="pending">Pending</span>
                         <span class="unfollow">Unfollow</span>
@@ -99,20 +116,20 @@
                     <h1 class="mb-2 text-xl font-bold">User Connections</h1>
                     <a href="{{ route('user.followers', ['id' => $user->id]) }}" class="text-lg font-semibold block">Followers: {{ $user->num_followers }}</a>
                     <a href="{{ route('user.following', ['id' => $user->id]) }}" class="text-lg font-semibold block">Following: {{ $user->num_following }}</a>
-                    @if($isOwnProfile)
-                        <a href="{{ route('user.requests', ['id' => $user->id]) }}" class="text-lg font-semibold block">Requests: {{ $num_requests }}</a>
-                    @endif
+                    @can('viewRequests', $user)
+                        <a href="{{ route('user.requests', ['id' => $user->id]) }}" class="text-lg font-semibold block">Requests: {{ $numRequests }}</a>
+                    @endcan
                 </section>
 
                 <section id="groups" class="card flex flex-col">
                     <h1 class="mb-2 text-xl font-bold">User Groups</h1>
                     <a href="{{ route('user.groups', $user->id) }}" class="text-lg font-semibold"><h2>Groups: {{ $user->groups->count() }}</h2></a>
-                    @if($user->id == Auth::id())
+                    @can('viewInvites', $user)
                         <a href="{{ route('user.invites', $user->id) }}" class="text-lg font-semibold"><h2>Invites: {{ $user->groupsInvitedTo()->count() }}</h2></a>
-                    @endif
+                    @endcan
                 </section>
 
-                @if ($recommendedUsers !== null && $recommendedUsers->count() > 0)
+                @if ($recommendedUsers->count() > 0)
                     <section id="users" class="card hidden lg:flex flex-col gap-3">
                         <h1 class="text-xl font-bold">Users you might know</h1>
                         @include('partials.user-list', ['users' => $recommendedUsers, 'responsive' => true])

@@ -145,9 +145,14 @@ class UserPolicy
         //
     }
 
-    public function follow(User $user, User $otherUser): bool
+    public function follow(User $user, User $other): bool
     {
-        return $user && ! $user->isBanned() && $user->id !== $otherUser->id;
+        return ! $user->isBanned() && $user->id !== $other->id;
+    }
+
+    public function viewInvites(User $user, User $other): bool
+    {
+        return ! $user->isBanned() && $user->id === $other->id;
     }
 
     /**

@@ -35,15 +35,15 @@ class UserController extends Controller
             ->get();
 
         $isOwnProfile = Auth::check() && Auth::id() === $user->id;
-        $recommendedUsers = Auth::check() ? $this->recommendedUsers(Auth::user(), $user) : null;
-        $num_requests = Auth::check() ? Auth::user()->followRequests()->where('status', 'pending')->count() : 0;
+        $recommendedUsers = Auth::check() ? $this->recommendedUsers(Auth::user(), $user) : [];
+        $numRequests = Auth::check() ? Auth::user()->followRequests()->where('status', 'pending')->count() : 0;
 
         return view('pages.user', [
             'user' => $user,
             'posts' => $posts,
             'isOwnProfile' => $isOwnProfile,
             'recommendedUsers' => $recommendedUsers,
-            'num_requests' => $num_requests,
+            'numRequests' => $numRequests,
         ]);
     }
 
