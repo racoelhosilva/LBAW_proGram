@@ -1,8 +1,6 @@
 @extends('layouts.app')
 
-@section('title')
-    User Token | ProGram
-@endsection
+@section('title', 'User Token | ProGram')
 
 @section('content')
     <main class="px-8 grid grid-cols-4 grid-rows-[auto_1fr] gap-4">

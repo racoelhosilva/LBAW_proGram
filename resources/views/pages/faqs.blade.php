@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title') {{'FAQs | ProGram'}} @endsection
+@section('title', 'FAQs | ProGram')
 @section('content')
     @php
         $faqs = [

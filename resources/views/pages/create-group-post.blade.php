@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title') {{'Create Post on '. $group->name . ' | ProGram'}} @endsection
+@section('title', 'Create Post on ' . $group->name . ' | ProGram')
 
 @section('content')
     <main id="create-post-page" class="px-8">

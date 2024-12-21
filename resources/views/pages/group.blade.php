@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title') {{$group->name . ' | ProGram'}} @endsection
+@section('title', 'Group - ' . $group->name . ' | ProGram')
 
 @section('content')
     <main id="group-page" class="px-8 py-4 grid grid-rows-[auto_1fr] gap-6">

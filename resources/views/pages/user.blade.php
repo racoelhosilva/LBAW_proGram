@@ -2,9 +2,7 @@
 
 @extends('layouts.app')
 
-@section('title')
-    {{ $user->name . ' | ProGram' }}
-@endsection
+@section('title', $user->name . ' | ProGram')
 
 @php
     $canFollow = auth()->check() && auth()->user()->can('follow', $user);

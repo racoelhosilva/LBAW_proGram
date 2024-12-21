@@ -1,19 +1,21 @@
 @extends('layouts.app')
-@section('about') {{'About | ProGram'}} @endsection
+
+@section('title', 'About Us | ProGram')
+
 @section('content')
-    <main id="about-page" class="px-8 ">
-        <article class="flex flex-col items-center ">
-            <h1 class="text-4xl font-bold mb-4 ">ProGram</h1>
-            <h3 class="text-2xl  mb-4">Where Programmers Build More Than Code</h3>
-            <p class="text-xl text-justify ">
+    <main id="about-page" class="px-8">
+        <article class="flex flex-col items-center">
+            <h1 class="text-4xl font-bold mb-4">ProGram</h1>
+            <h3 class="text-2xl mb-4">Where Programmers Build More Than Code</h3>
+            <p class="text-xl text-justify">
                 Welcome to our platform, a dynamic social network tailored specifically for programmers!
             </p>
-            <p   class="text-xl text-justify ">
+            <p   class="text-xl text-justify">
                 Here, users can explore, connect, and showcase their skills in an environment designed to inspire collaboration and growth.
             </p>
         </article>
         <article class="flex flex-col items-center mt-16">
-            <h1 class="text-4xl font-bold mb-4 ">Main Features</h1>
+            <h1 class="text-4xl font-bold mb-4">Main Features</h1>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <!-- Card 1 -->
                 <div class="card rounded-lg p-6  col-span-1">
@@ -60,7 +62,7 @@
             </div>
         </article>
         <article class="flex flex-col items-center mt-16">
-            <h1 class="text-4xl font-bold mb-4 ">Our Team</h1>
+            <h1 class="text-4xl font-bold mb-4">Our Team</h1>
             <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-16 m-8">
                 <div class="flex flex-col items-center gap-4">
                     <img src="{{ asset('devs/bruno.jpg') }}" class="rounded-full border-2 border-gray-300 w-32 h-32 object-cover">

@@ -2,7 +2,7 @@
 
 @extends('layouts.app')
 
-@section('title') {{'Followers of ' . $user->name . ' | ProGram'}} @endsection
+@section('title', 'Followers of ' . $user->name . ' | ProGram')
 
 @section('content')
 <main class="px-8">

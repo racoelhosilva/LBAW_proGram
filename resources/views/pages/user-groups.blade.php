@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title') {{'Groups of ' . $user->name . ' | ProGram'}} @endsection
+@section('title', 'Groups of ' . $user->name . ' | ProGram')
 
 @section('content')
 <main class="px-8 flex flex-col">

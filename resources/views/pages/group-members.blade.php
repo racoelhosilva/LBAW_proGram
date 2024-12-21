@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title') {{$group->name . 'members | ProGram'}} @endsection
+@section('title', 'Members of ' . $group->name . ' | ProGram')
 
 @section('content')
     <main id="members-page" class="px-8 py-4 flex flex-col gap-6" data-group-id={{$group->id}}>

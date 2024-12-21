@@ -1,5 +1,7 @@
 @extends('layouts.app')
-@section('title') {{'Edit ' . $group->name . ' | ProGram'}} @endsection
+
+@section('title', 'Edit Group - ' . $group->name . ' | ProGram')
+
 @section('content')
     <main id="edit-group-page" class="px-8">
         <article class="card h-min p-10 pt-16 flex flex-col gap-12">

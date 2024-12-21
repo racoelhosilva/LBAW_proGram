@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title') {{'Followed by ' . $user->name . ' | ProGram'}} @endsection
+@section('title', 'Followed by ' . $user->name . ' | ProGram')
 
 @section('content')
 <main class="px-8">

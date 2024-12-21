@@ -1,7 +1,9 @@
 @props(['post'])
 
 @extends('layouts.app')
-@section('title') {{'Post ' . $post->title . ' | ProGram'}} @endsection
+
+@section('title', 'Post ' . $post->title . ' | ProGram')
+
 @section('content')
 <main id="post-page" class="px-8 py-4 grid grid-cols-3 grid-rows-[auto_1fr] gap-6">
     <div class="col-span-3 lg:col-span-2">

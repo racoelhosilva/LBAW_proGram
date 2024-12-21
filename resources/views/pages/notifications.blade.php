@@ -1,5 +1,7 @@
 @extends('layouts.app')
-@section('title') {{$user->name . ' Notifications | ProGram'}} @endsection
+
+@section('title', 'Notifications of ' . $user->name . ' | ProGram')
+
 @section('content')
 <main class="px-8">
     <section id="notifications" class="card space-y-3">

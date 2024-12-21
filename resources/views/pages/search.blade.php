@@ -1,9 +1,9 @@
 @props(['results', 'numResults', 'tags'])
 
 @extends('layouts.app')
-@section('title')
-    {{'Search | Program'}}
-@endsection
+
+@section('title', 'Search | ProGram')
+
 @section('content')
     <main id="search-page" class="px-8 grid grid-cols-4 grid-rows-[auto_1fr] gap-6">
         @include('partials.search-menu', ['tags' => $tags])
