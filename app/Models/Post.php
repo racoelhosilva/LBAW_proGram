@@ -90,7 +90,7 @@ class Post extends Model
                             ->whereNotExists(function ($groupCheck) {
                                 $groupCheck->selectRaw(1)
                                     ->from('group_post')
-                                    ->whereColumn('group_post.post_id', 'id');
+                                    ->whereColumn('group_post.post_id', 'post.id');
                             });
                     });
                 }
@@ -100,11 +100,10 @@ class Post extends Model
                     $groupQuery->selectRaw(1)
                         ->from('group_post')
                         ->join('group_member', 'group_member.group_id', '=', 'group_post.group_id')
-                        ->whereColumn('group_post.post_id', 'id')
+                        ->whereColumn('group_post.post_id', 'post.id')
                         ->where('group_member.user_id', $user->id);
                 });
             }
-
         });
     }
 }
