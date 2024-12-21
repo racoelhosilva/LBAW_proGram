@@ -6,7 +6,7 @@
 
 <article class="card px-6 grid grid-cols-[auto_1fr_auto] items-center gap-2">
     <a href="{{ $userUrl }}">
-        <img src="{{ $user->getProfilePicture() }}" alt="{{ $user->name }}"
+        <img src="{{ $user->getProfilePicture() }}" alt="{{ $user->name }} Profile Picture"
             class="w-12 h-12 rounded-full object-cover">
     </a>
     <div class="{{ $responsive ? 'row-start-2 col-span-3 2xl:row-start-1 2xl:col-span-1 2xl:col-start-2' : '' }}">

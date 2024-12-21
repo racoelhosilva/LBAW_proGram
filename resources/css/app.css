@@ -146,7 +146,7 @@
         @apply flex items-center justify-center;
     }
 
-    .modal > div > section {
+    .modal > div > article {
         @apply card w-[30rem];
         max-width: calc(100vw - 4rem);
     }
