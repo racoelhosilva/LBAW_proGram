@@ -219,4 +219,4 @@ activateQuill();
 addSelectListeners();
 addResponsiveDropdownListeners();
 addCopyButtonListeners();
-export { addDropdownListeners, addModalListeners, addToastMessageListeners, addSelectListeners };
+export { addModalListeners, addToastMessageListeners, addSelectListeners };

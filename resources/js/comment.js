@@ -1,23 +1,24 @@
-import { sendPostView, sendPutView, sendToastMessage ,sendDelete} from './utils';
-import { addDropdownListeners, addModalListeners } from './app';
-import { addLikeButtonListeners } from './post';
+import { sendPostView, sendPutView, sendToastMessage ,sendDelete, addDropdownListeners } from './utils';
+import { addModalListeners } from './app';
+import { addPostListeners } from './post';
+
 const addSubmitCommentListener = () => {
     const form = document.getElementById('comment-submit-form');
     if (!form) return;
-    const commentSection = document.querySelector('.comment-list'); // Container for comments
+    const commentSection = document.querySelector('#comment-list'); // Container for comments
     if(!commentSection) return;
     form.addEventListener('submit', async (event) => {
         event.preventDefault();
         const formData = new FormData(form);
         const params = Object.fromEntries(formData.entries());
-        const comment = await sendPostView(form.action, params, 'POST');
+        const comment = await sendPostView(form.action, params);
         commentSection.insertAdjacentHTML('afterbegin', comment);
         form.reset();
         addDropdownListeners();
         addEditCommentListener();
         addDeleteCommentListener();
         addSaveCommentListener();
-        addLikeButtonListeners();
+        addPostListeners();
         addModalListeners();
     });
 };
@@ -84,7 +85,7 @@ const addSaveCommentListener = () => {
             addEditCommentListener();
             addDeleteCommentListener();
             addSaveCommentListener();
-            addLikeButtonListeners();
+            addPostListeners();
             addModalListeners();
             };
         }
