@@ -291,6 +291,8 @@ class ApiUserController extends Controller
         $targetUser = User::findOrFail($id);
         $currentUser = Auth()->user();
 
+        $this->authorize('acceptFollowRequests', [User::class]);
+
         $followRequest = FollowRequest::where('follower_id', $targetUser->id)
             ->where('followed_id', $currentUser->id)
             ->first();
@@ -309,6 +311,8 @@ class ApiUserController extends Controller
     {
         $targetUser = User::findOrFail($id);
         $currentUser = Auth()->user();
+
+        $this->authorize('acceptFollowRequests', [User::class]);
 
         $followRequest = FollowRequest::where('follower_id', $targetUser->id)
             ->where('followed_id', $currentUser->id)

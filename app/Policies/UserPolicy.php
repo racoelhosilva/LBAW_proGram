@@ -138,6 +138,14 @@ class UserPolicy
     }
 
     /**
+     * Determine whether the user can update the follow requests.
+     */
+    public function updateRequest(?User $user, User $model): bool
+    {
+        return $user && ! $user->isBanned() && $user->id === $model->id;
+    }
+
+    /**
      * Determine whether the user can restore the model.
      */
     public function restore(User $user, User $model): bool
@@ -155,11 +163,8 @@ class UserPolicy
         return ! $user->isBanned() && $user->id === $other->id;
     }
 
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
-    public function forceDelete(?User $user, User $model): bool
+    public function acceptFollowRequests(User $user): bool
     {
-        //
+        return ! $user->isBanned();
     }
 }
