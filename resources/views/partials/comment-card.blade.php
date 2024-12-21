@@ -10,23 +10,25 @@
         <p class="text-xs/3 pt-1 font-medium text-gray-500 dark:text-gray-400"><a href="{{ $authorUrl }}">{{ '@' . $comment->author->handle }}</a>{{ ' • ' . $comment->timestamp->diffForHumans() }}</p>
     </div>
     <div class="flex">
-        @if(Auth::check() && Auth::id() === $comment->author->id)
+        @can('update', $comment)
             <div class="dropdown">
                 @include('partials.icon-button', ['iconName' => 'ellipsis', 'label' => 'Options', 'type' => 'transparent'])
                 <div class="hidden">
                     <div class= "comment-actions">
                         @include('partials.dropdown-item', ['icon' => 'pencil', 'text' => 'Edit Comment', 'class' => 'edit-comment'])
-                        @include('partials.confirmation-modal', [
-                            'icon' => 'trash',
-                            'label' => 'Delete Comment',
-                            'type' => 'dropdown',
-                            'message' => 'Are you sure you want to delete this comment?',
-                            'class' => 'delete-comment',
-                        ])
+                        @can('delete', $comment)
+                            @include('partials.confirmation-modal', [
+                                'icon' => 'trash',
+                                'label' => 'Delete Comment',
+                                'type' => 'dropdown',
+                                'message' => 'Are you sure you want to delete this comment?',
+                                'class' => 'delete-comment',
+                            ])
+                        @endcan
                     </div>
                 </div>
             </div>
-        @endif
+        @endcan
     </div>
     <div class="mt-4 content-container max-w-full overflow-hidden">
         <p class="whitespace-pre-wrap text-pretty break-words text-ellipsis">{{str_replace("\\n", "\n", $comment->content) }}</p>
