@@ -4,66 +4,66 @@
 
 @section('content')
     <main id="about-page" class="px-8">
-        <article class="flex flex-col items-center">
+        <section class="flex flex-col items-center">
             <h1 class="text-4xl font-bold mb-4">ProGram</h1>
-            <h3 class="text-2xl mb-4">Where Programmers Build More Than Code</h3>
+            <h2 class="text-2xl mb-4">Where Programmers Build More Than Code</h2>
             <p class="text-xl text-justify">
                 Welcome to our platform, a dynamic social network tailored specifically for programmers!
             </p>
-            <p   class="text-xl text-justify">
+            <p class="text-xl text-justify">
                 Here, users can explore, connect, and showcase their skills in an environment designed to inspire collaboration and growth.
             </p>
-        </article>
-        <article class="flex flex-col items-center mt-16">
+        </section>
+        <section class="flex flex-col items-center mt-16">
             <h1 class="text-4xl font-bold mb-4">Main Features</h1>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <!-- Card 1 -->
-                <div class="card rounded-lg p-6  col-span-1">
-                    <h3 class="text-2xl font-bold mb-4">Discover Public Profiles</h3>
+                <article class="card rounded-lg p-6  col-span-1">
+                    <h2 class="text-2xl font-bold mb-4">Discover Public Profiles</h2>
                     <p class="text-xl text-justify">
                         Users can browse through public profiles, gaining insights into the skills and interests of fellow programmers, making it easier to connect and collaborate.
                     </p>
-                </div>
+                </article>
                 <!-- Card 2 -->
-                <div class="card rounded-lg p-6 col-span-1">
-                    <h3 class="text-2xl font-bold mb-4">Engage with a Public Timeline</h3>
+                <article class="card rounded-lg p-6 col-span-1">
+                    <h2 class="text-2xl font-bold mb-4">Engage with a Public Timeline</h2>
                     <p class="text-xl text-justify">
                         Dive into the community’s public timeline to explore posts, updates, and discussions that foster a culture of sharing and engagement.
                     </p>
-                </div>
+                </article>
                 <!-- Card 3 -->
-                <div class="card rounded-lg p-6 col-span-1">
-                    <h3 class="text-2xl font-bold mb-4">Advanced Search Capabilities</h3>
+                <article class="card rounded-lg p-6 col-span-1">
+                    <h2 class="text-2xl font-bold mb-4">Advanced Search Capabilities</h2>
                     <p class="text-xl text-justify">
                         Utilize robust search functionalities, including full-text and exact match search, combined with filters and multi-attribute capabilities, to find posts, users, or groups that align with your interests.
                     </p>
-                </div>
+                </article>
                 <!-- Card 4 -->
-                <div class="card rounded-lg p-6 col-span-1">
-                    <h3 class="text-2xl font-bold mb-4">Personalized User Experience</h3>
+                <article class="card rounded-lg p-6 col-span-1">
+                    <h2 class="text-2xl font-bold mb-4">Personalized User Experience</h2>
                     <p class="text-xl text-justify">
                         Authenticated users enjoy personalized timelines, the ability to follow others, comment on posts, and manage their profiles, making every interaction meaningful and tailored to their preferences.
                     </p>
-                </div>
+                </article>
                 <!-- Card 5 -->
-                <div class="card rounded-lg p-6 col-span-1">
-                    <h3 class="text-2xl font-bold mb-4">Build and Join Groups</h3>
+                <article class="card rounded-lg p-6 col-span-1">
+                    <h2 class="text-2xl font-bold mb-4">Build and Join Groups</h2>
                     <p class="text-xl text-justify">
                         Create or join groups that resonate with your interests, connect with like-minded individuals, and participate in group discussions, projects, and activities.
                     </p>
-                </div>
+                </article>
                 <!-- Card 6 -->
-                <div class="card rounded-lg p-6 col-span-1">
-                    <h3 class="text-2xl font-bold mb-4">Developer-Focused Features</h3>
+                <article class="card rounded-lg p-6 col-span-1">
+                    <h2 class="text-2xl font-bold mb-4">Developer-Focused Features</h2>
                     <p class="text-xl text-justify">
                         Highlight your programming prowess with developer stats, showcase your contributions, and link to external accounts like GitHub to amplify your professional profile.
                     </p>
-                </div>
+                </article>
             </div>
-        </article>
-        <article class="flex flex-col items-center mt-16">
+        </section>
+        <section class="flex flex-col items-center mt-16">
             <h1 class="text-4xl font-bold mb-4">Our Team</h1>
-            <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-16 m-8">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-16 m-8">
                 <div class="flex flex-col items-center gap-4">
                     <img src="{{ asset('devs/bruno.jpg') }}" class="rounded-full border-2 border-gray-300 w-32 h-32 object-cover">
                     <p class="text-wrap font-bold">Bruno Oliveira</p>
@@ -96,9 +96,7 @@
                         @include('partials.icon-button', ['iconName' => 'linkedin', 'label' => 'LinkedIn', 'type' => 'transparent', 'anchorUrl' => 'https://linkedin.com/in/racoelhosilva'])
                     </div>
                 </div>
-            </section>
-        </article>
+            </div>
+        </section>
     </main>
-
-
 @endsection

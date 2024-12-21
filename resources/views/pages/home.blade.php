@@ -8,14 +8,14 @@
             <h1 class="text-xl font-bold">Users On This Platform</h1>
             @include('partials.user-list', ['users' => $users, 'responsive' => true])
 
-            @if (!auth()->check())
+            @guest
                 <div class="flex justify-center pt-2">
                     @include('partials.text-button', [
                         'text' => 'Login/Register',
                         'anchorUrl' => route('login'),
                     ])
                 </div>
-            @endif
+            @endguest
         </section>
 
         <section class="card h-min space-y-3 col-span-4 lg:col-span-2">
