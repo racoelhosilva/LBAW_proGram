@@ -80,7 +80,7 @@ class GroupController extends Controller
         }
 
         $this->authorize('update', $group);
-        $usersWhoWantToJoin = $group->joinRequests()->where('status', 'pending');
+        $usersWhoWantToJoin = $group->joinRequests()->where('status', 'pending')->get();
 
         return view('pages.group-requests', ['group' => $group, 'usersWhoWantToJoin' => $usersWhoWantToJoin]);
     }

@@ -1,4 +1,4 @@
-import { addLazyLoading, sendDelete, sendPost, sendToastMessage } from './utils'
+import { addLazyLoading,sendDelete, sendPost, sendToastMessage, addDropdownListeners} from './utils'
 
 const togglePostLike = (likeButton, likeCount, postId) => {
 	likeButton.disabled = true;
@@ -121,7 +121,12 @@ const addCommentSectionListeners = () => {
 	addLazyLoading(commentList, commentListLoading, '/post/' + id, null ,addLikeButtonListeners);
 }
 
-addLikeButtonListeners();
+const addPostListeners = () => {
+	addLikeButtonListeners();
+	addDropdownListeners();
+}
+
+addPostListeners();
 addCommentSectionListeners();
 
-export { addLikeButtonListeners };
+export { addPostListeners };

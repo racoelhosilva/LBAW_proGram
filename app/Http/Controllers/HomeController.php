@@ -60,7 +60,7 @@ class HomeController extends Controller
                 $query->orderByRaw('CASE WHEN author_id IN ('.implode(',', array_fill(0, count($followedUserIds), '?')).') THEN 1 ELSE 2 END', $followedUserIds);
             })
             ->orderByRaw('(likes / POW((EXTRACT(EPOCH FROM (NOW() - creation_timestamp)) / 3600) + 2, 1.5)) DESC')
-            ->simplePaginate(10);
+            ->simplePaginate(15);
     }
 
     private function getTrendingTags()

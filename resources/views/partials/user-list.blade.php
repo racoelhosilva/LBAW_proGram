@@ -1,4 +1,4 @@
-@props(['users', 'showEmpty', 'responsive' => false, 'remove' => false])
+@props(['users', 'showEmpty' => true, 'responsive' => false, 'remove' => false])
 
 @forelse ($users as $user)
     @include('partials.user-card', ['user' => $user, 'responsive' => $responsive, 'remove' => $remove])

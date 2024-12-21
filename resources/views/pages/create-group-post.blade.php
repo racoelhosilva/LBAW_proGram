@@ -26,7 +26,12 @@
                 ])
                     
                 <section class="flex flex-col">
-                    <label for="tags" class="font-medium">Associated Tags</label>
+                    <label for="tags" class="mb-2 font-medium flex gap-2">
+                        Associated Tags
+                        @include('partials.help-icon', [
+                            'text' => 'Tags help categorize your post and make it easier for others to find.',
+                        ])
+                    </label>
                     @include('partials.tag-select', [
                         'tags' => $tags,
                         'label' => 'Tags',
@@ -35,20 +40,15 @@
                     ])
                 </section>
 
+                <input type="checkbox" name="is_public" value="1" {{ $group->is_public ? 'checked' : '' }} hidden>
+
                 <section class="flex flex-col">
-                    <label class="mb-2">
-                        @if($group->is_public)
-                            <input type="checkbox" name="is_public" value="1" checked hidden>
-                        @else
-                            <input type="checkbox" name="is_public" value="1" hidden>
-                        @endif
-                    </label>
-                </section>
-                            
-                <section class="flex flex-col">
-                    <label class="mb-2">
+                    <label class="flex gap-2">
                         <input type="checkbox" name="is_announcement" value="1" {{ old('is_announcement', false) ? 'checked' : '' }}> 
                         <span class="font-medium">Make this post an announcement</span>
+                        @include('partials.help-icon', [
+                            'text' => 'Announcements are highlighted and placed in the announcements board.',
+                        ])
                     </label>
                 </section>
                 @include('partials.text-button', ['text' => 'Create Post', 'label' => 'create', 'type' => 'primary', 'submit' => true])

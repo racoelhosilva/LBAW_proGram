@@ -15,10 +15,9 @@ class SearchController extends Controller
 {
     public function searchUsers(?string $queryStr, ?string $orderBy, bool $includeTotal = false)
     {
-        $users = User::where('is_public', true)
-            ->when($queryStr, function ($query, $queryStr) {
-                $query->whereRaw("tsvectors @@ plainto_tsquery('english', ?)", [$queryStr]);
-            });
+        $users = User::when($queryStr, function ($query, $queryStr) {
+            $query->whereRaw("tsvectors @@ plainto_tsquery('english', ?)", [$queryStr]);
+        });
 
         return $this->orderUsers($users, $queryStr, $orderBy, $includeTotal);
     }
@@ -85,11 +84,10 @@ class SearchController extends Controller
 
     public function searchGroup(?string $queryStr, ?string $orderBy, bool $includeTotal = false)
     {
-        $groups = Group::where('is_public', true)
-            ->when($queryStr, function ($query, $queryStr) {
-                $query->whereRaw("tsvectors @@ plainto_tsquery('english', ?)", [$queryStr])
-                    ->orderByRaw("ts_rank(tsvectors, plainto_tsquery('english', ?)) DESC", [$queryStr]);
-            });
+        $groups = Group::when($queryStr, function ($query, $queryStr) {
+            $query->whereRaw("tsvectors @@ plainto_tsquery('english', ?)", [$queryStr])
+                ->orderByRaw("ts_rank(tsvectors, plainto_tsquery('english', ?)) DESC", [$queryStr]);
+        });
 
         return $this->orderGroups($groups, $queryStr, $orderBy, $includeTotal);
     }
@@ -111,7 +109,7 @@ class SearchController extends Controller
                 break;
         }
 
-        return $includeTotal ? [$users->simplePaginate(10), $users->count()] : $users->simplePaginate(10);
+        return $includeTotal ? [$users->simplePaginate(25), $users->count()] : $users->simplePaginate(25);
     }
 
     public function orderPosts(Builder $posts, ?string $queryStr, ?string $orderBy, bool $includeTotal)
@@ -140,7 +138,7 @@ class SearchController extends Controller
                 break;
         }
 
-        return $includeTotal ? [$posts->simplePaginate(10), $posts->count()] : $posts->simplePaginate(10);
+        return $includeTotal ? [$posts->simplePaginate(15), $posts->count()] : $posts->simplePaginate(15);
     }
 
     public function orderGroups(Builder $posts, ?string $queryStr, ?string $orderBy, bool $includeTotal)
@@ -160,7 +158,7 @@ class SearchController extends Controller
                 break;
         }
 
-        return $includeTotal ? [$posts->simplePaginate(10), $posts->count()] : $posts->simplePaginate(10);
+        return $includeTotal ? [$posts->simplePaginate(15), $posts->count()] : $posts->simplePaginate(15);
     }
 
     public function index(Request $request)

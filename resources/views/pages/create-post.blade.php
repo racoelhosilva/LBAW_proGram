@@ -3,10 +3,11 @@
 @extends('layouts.app')
 @section('title') {{'Create Post | ProGram'}} @endsection
 @section('content')
+
     <main id="create-post-page" class="px-8">
         <article class="card h-min p-10 pt-16 flex flex-col gap-12">
             <h1 class="text-2xl font-bold text-center">Create a New Post</h1>
-            <form id="create-post-form" action="{{ route('post.store') }}" method="POST" class="w-full flex flex-col gap-4">
+            <form id="create-post-form" action="{{ route('post.store') }}" method="POST" class="w-full flex flex-col gap-4 quill-form" data-quill-field="text">
                 @csrf
                 
                 @include('partials.input-field', [
@@ -15,16 +16,20 @@
                     'placeholder' => 'Enter title',
                     'required' => true
                 ])
-                
-                @include('partials.textarea', [
+
+                @include('partials.quill-editor', [
                     'name' => 'text',
                     'label' => 'Post Content',
-                    'placeholder' => 'Write your post here...',
-                    'required' => false
+                    'required' => false,
                 ])
                     
                 <section class="flex flex-col">
-                    <label for="tags" class="font-medium">Associated Tags</label>
+                    <label for="tags" class="mb-2 font-medium flex gap-2">
+                        Associated Tags
+                        @include('partials.help-icon', [
+                            'text' => 'Tags help categorize your post and make it easier for others to find.',
+                        ])
+                    </label>
                     @include('partials.tag-select', [
                         'tags' => $tags,
                         'label' => 'Tags',
@@ -33,16 +38,20 @@
                     ])
                 </section>
 
-                <section class="flex flex-col">
-                    <label class="mb-2">
+                <section class="flex flex-col gap-2">
+                    <label class="flex gap-2">
                         <input type="checkbox" name="is_public" value="1" {{ old('is_public', true) ? 'checked' : '' }}>
                         <span class="font-medium">Make this post public</span>
+                        @include('partials.help-icon', [
+                            'text' => 'Public posts can be viewed by anyone on the platform. Private posts can only be viewed by your followers.',
+                        ])
                     </label>
-                </section>
-                <section class="flex flex-col">
-                    <label class="mb-2">
-                        <input type="checkbox" name="is_announcement" value="1" {{ old('is_announcement', true) ? 'checked' : '' }}> 
+                    <label class="flex gap-2">
+                        <input type="checkbox" name="is_announcement" value="1" {{ old('is_announcement', false) ? 'checked' : '' }}>
                         <span class="font-medium">Make this post an announcement</span>
+                        @include('partials.help-icon', [
+                            'text' => 'Announcements are highlighted and pinned to your profile.',
+                        ])
                     </label>
                 </section>
                 @include('partials.text-button', ['text' => 'Create Post', 'label' => 'create', 'type' => 'primary', 'submit' => true])

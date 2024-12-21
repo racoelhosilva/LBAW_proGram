@@ -5,10 +5,9 @@
     $postUrl = route('post.show', $post->id);
 @endphp
 
-<article class="post-card card px-6 w-full grid grid-cols-[auto_1fr_auto] items-center content-start
-    @if($post->is_announcement)
-        shadow-[inset_0_0_4px_rgba(38,102,214,0.8)] dark:shadow-[inset_0_0_4px_rgba(38,102,214,0.8)]
-    @endif
+<article
+    class="post-card card px-6 w-full grid grid-cols-[auto_1fr_auto] items-center content-start
+    @if ($post->is_announcement) shadow-[inset_0_0_4px_rgba(38,102,214,0.8)] dark:shadow-[inset_0_0_4px_rgba(38,102,214,0.8)] @endif
     "
     data-post-id="{{ $post->id }}">
     @if (!$post->author->is_deleted)
@@ -46,7 +45,11 @@
 
     <div class="ms-4 -me-3 flex">
         @if ($post->is_announcement)
-            @include('partials.icon-button', ['iconName' => 'pin', 'label' => 'Announcement', 'type' => 'transparent'])
+            @include('partials.icon-button', [
+                'iconName' => 'pin',
+                'label' => 'Announcement',
+                'type' => 'transparent',
+            ])
         @endif
         <div class="dropdown">
             @include('partials.icon-button', [
@@ -83,11 +86,11 @@
         </div>
     </div>
 
-    <div class="mt-4 col-span-3">
+    <div class="mt-4 col-span-3 flex flex-col gap-4">
         <h1 class="font-bold text-xl break-words"><a href="{{ $postUrl }}">{{ $post->title }}</a></h1>
-        <p class="whitespace-pre-wrap text-pretty break-words">{{ str_replace("\\n", "\n", $post->text) }}</p>
+        <div class="whitespace-pre-wrap text-pretty break-words post-content">{!! $post->text !!}</div>
     </div>
-    
+
     <div class="-ms-3 col-span-3 grid grid-cols-[auto_auto_1fr_50%] items-end">
         <div class="flex items-center">
             @include('partials.like-button', ['model' => $post])

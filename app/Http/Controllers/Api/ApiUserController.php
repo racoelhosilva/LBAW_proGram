@@ -131,7 +131,7 @@ class ApiUserController extends Controller
     {
         $user = User::findOrFail($id);
 
-        $this->authorize('updateNotifications', $user);
+        $this->authorize('updateNotification', $user);
 
         $user->notifications()->update(['is_read' => true]);
 
@@ -148,7 +148,7 @@ class ApiUserController extends Controller
             return response()->json(['message' => 'Notification not found'], 404);
         }
 
-        $this->authorize('updateNotifications', $user);
+        $this->authorize('updateNotification', $user);
 
         $notification->is_read = true;
         $notification->save();

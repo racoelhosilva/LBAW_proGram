@@ -3,15 +3,29 @@
 @section('title') {{$group->name . ' | ProGram'}} @endsection
 
 @section('content')
-    <main id="group-page" class="px-8 py-4 flex flex-col gap-6">
-        <section id="banner-section" class="card h-min  grid grid-cols-[auto_1fr_1fr] gap-y-8 p-8 ">
+    <main id="group-page" class="px-8 py-4 grid grid-rows-[auto_1fr] gap-6">
+        <section id="banner-section" class="card h-min w-full grid grid-cols-[auto_1fr_1fr] gap-y-8 p-8">
             <div class="col-span-full flex justify-between">
                 <h1 class="text-4xl font-bold">{{ $group->name }}</h1>
                 <div class="min-w-[24px]">
                     @if($group->is_public)
-                        @include('partials.icon', ['name' => 'earth','type' => 'secondary'])
+                        <article class="help-icon group relative">
+                            <div class="rounded-md">
+                                @include('partials.icon', ['name' => 'earth'])
+                            </div>
+                            <div class="px-4 py-2 rounded-md bg-gray-900 shadow-lg absolute top-8 left-full -translate-x-full z-30 mt-3 text-white opacity-0 group-hover:opacity-100 group-hover:top-6 transition-all pointer-events-none">
+                                Public
+                            </div>
+                        </article>
                     @else
-                        @include('partials.icon', ['name' => 'lock', 'type' => 'secondary'])
+                        <article class="help-icon group relative">
+                            <div class="rounded-md">
+                                @include('partials.icon', ['name' => 'lock'])
+                            </div>
+                            <div class="px-4 py-2 rounded-md bg-gray-900 shadow-lg absolute top-8 left-full -translate-x-full z-30 mt-3 text-white opacity-0 group-hover:opacity-100 group-hover:top-6 transition-all pointer-events-none">
+                                Private
+                            </div>
+                        </article>
                     @endif
                 </div>
             </div>
@@ -66,8 +80,8 @@
 
         </section>
         @can('viewContent', $group)
-            <section class="grid gap-4">
-                <div class="flex  gap-10">
+            <section class="grid grid-rows-[auto_1fr] gap-4">
+                <div class="flex gap-10">
                     <button id="group-chat-tab" class="tab-button text-2xl font-bold py-2 border-b-2" data-tab="group-chat">
                         Recent Activity
                     </button>
@@ -88,8 +102,7 @@
                     </article>  
                 </div>
             
-                <div id="board-content" class="tab-content hidden grid gap-4">
-
+                <div id="board-content" class="tab-content hidden">
                     <article class="grid gap-4">
                         @if ($announcements->count() === 0)
                             <p>No posts to show</p>
@@ -102,7 +115,7 @@
                 </div>
             </section>
         @else
-        <section id="private-profile" class="col-span-4 flex justify-center items-center h-64">
+        <section id="private-profile" class="min-h-32 col-span-4 flex flex-col justify-center items-center">
             <h1 class="text-4xl font-bold text-gray-500">This group is private</h1>
         </section>
        @endcan

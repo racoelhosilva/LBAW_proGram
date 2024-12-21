@@ -14,9 +14,9 @@ const encodeParams = (params) => {
 	}
 	return '?' + Object.keys(params).map(key => {
 		return !Array.isArray(params[key])
-			? encodeURIComponent(key) + '=' + encodeURIComponent(params[key])
-			: params[key].map(value => encodeURIComponent(key) + '[]=' + encodeURIComponent(value)).join('&');
-	}).join('&');
+			? encodeURIComponent(key) + '=' + encodeURIComponent(params[key] ?? '')
+			: params[key].map(value => encodeURIComponent(key) + '[]=' + encodeURIComponent(value ?? '')).join('&');
+	}).filter(str => str !== '').join('&');
 }
 
 const getView = (url, params) => {
@@ -119,7 +119,7 @@ const fadeToastMessage = (toastMessage) => {
 
 	toastMessage.dataset.timeoutId = setTimeout(() => {
 		toastMessage.classList.add('opacity-0');
-		setTimeout(() => {
+		toastMessage.dataset.timeoutId = setTimeout(() => {
 			toastMessage.classList.add('hidden');
 			toastMessage.classList.remove('opacity-0');
 		}, 500);
@@ -167,7 +167,7 @@ const addLazyLoading = (container, containerLoading, endpoint, params, callback)
 	let atEnd = false;
 	let page = 1;
 
-	document.addEventListener('scroll', async () => {
+	document.addEventListener('scrollend', async () => {
 		if (!atEnd && !loading && window.innerHeight + window.scrollY >= document.body.offsetHeight - 100) {
 			loading = true;
 			containerLoading.classList.remove('hidden');
@@ -184,4 +184,36 @@ const addLazyLoading = (container, containerLoading, endpoint, params, callback)
 	});
 }
 
-export { sendGet, encodeParams, getView,sendPostView, sendPutView, sendDelete, sendPost, sendPatch, fadeToastMessage, sendToastMessage, addLazyLoading };
+const toggleDropdown = (dropdownContent, event) => {
+	dropdownContent.classList.toggle('hidden');
+
+	const dropdownContents = document.querySelectorAll('.dropdown > div');
+	dropdownContents.forEach(content => {
+		if (content !== dropdownContent)
+			content.classList.add('hidden');
+	});
+
+	event.stopPropagation();
+};
+
+const hideDropdowns = event => {
+	const dropdownContents = document.querySelectorAll('.dropdown > div');
+	dropdownContents.forEach(content => {
+		content.classList.add('hidden');
+	});
+};
+
+const addDropdownListeners = () => {
+	const dropdowns = document.querySelectorAll(".dropdown");
+
+	dropdowns.forEach((dropdown) => {
+		const dropdownButton = dropdown.querySelector(":scope > button");
+		const dropdownContent = dropdown.querySelector(":scope > div");
+
+		dropdownButton.onclick = event => toggleDropdown(dropdownContent, event);
+	});
+
+	document.addEventListener('click', hideDropdowns);
+};
+
+export { sendGet, encodeParams, getView,sendPostView, sendPutView, sendDelete, sendPost, sendPatch, fadeToastMessage, sendToastMessage, addLazyLoading, hideDropdowns, addDropdownListeners };

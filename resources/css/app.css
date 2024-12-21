@@ -1,3 +1,7 @@
+@import "quill/dist/quill.core.css";
+@import "quill/dist/quill.snow.css";
+@import "quill/dist/quill.bubble.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -6,6 +10,11 @@
     :root {
         font-family: "Inter", sans-serif;
         font-optical-sizing: auto;
+    }
+
+    body {
+        max-width: 150em;
+        margin-inline: auto;
     }
 
     main {
@@ -79,7 +88,6 @@
     #tags option:checked, #languages option:checked, #technologies option:checked {
         @apply bg-slate-300 dark:bg-slate-600;
     }
-
 
     table {
         @apply w-full border border-separate border-spacing-0 rounded-xl bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 shadow;
@@ -205,6 +213,25 @@
         @apply hidden;
     }
 
+    .ql-container a, .post-content a {
+        @apply text-blue-500 hover:underline;
+    }
+
+    .ql-container code, .post-content code, .ql-code-block-container {
+        @apply font-mono !bg-slate-300 dark:!bg-slate-600 !text-black dark:!text-white rounded px-1;
+    }
+
+    .post-content li {
+        @apply ms-6;
+    }
+
+    .post-content li[data-list="ordered"] {
+        @apply list-decimal;
+    }
+
+    .post-content li[data-list="bullet"] {
+        @apply list-disc;
+	  }
     .responsive-dropdown > div {
         @apply opacity-100 transition-opacity;
     }
@@ -220,4 +247,32 @@
     .responsive-dropdown:not(.closed) > button > .lucide-chevron-down {
         @apply hidden;
     }
+}
+
+.ql-toolbar {
+    @apply rounded-t-lg border !border-slate-300 dark:!border-slate-600;
+}
+
+.ql-container {
+    @apply rounded-b-lg !text-base text-black dark:text-white border !border-slate-300 dark:!border-slate-600;
+}
+
+.ql-editor.ql-blank::before {
+    @apply !text-gray-500 dark:!text-gray-400
+}
+
+.ql-stroke {
+    stroke: currentColor !important;
+}
+
+.ql-fill {
+    fill: currentColor !important;
+}
+
+.ql-container code {
+    @apply !bg-slate-300 dark:!bg-slate-600;
+}
+
+.ql-code-block-container {
+    @apply bg-gray-800 text-gray-200 dark:bg-gray-900 dark:text-gray-300 p-2;
 }
