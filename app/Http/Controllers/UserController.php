@@ -258,7 +258,7 @@ class UserController extends Controller
 
         $this->authorize('viewContent', $user);
 
-        return view('pages.followers', ['user' => $user, 'isOwnFollowers' => Auth::check() && Auth::id() == $user->id]);
+        return view('pages.followers', ['user' => $user, 'isOwnFollowers' => Auth::check() && Auth::id() == $user->id, 'followers' => $user->followers()->paginate(30)]);
     }
 
     public function following(int $id)
