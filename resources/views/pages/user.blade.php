@@ -7,10 +7,33 @@
 @section('content')
     <main id="profile-page" class="px-8 py-4 grid grid-cols-4 grid-rows-[auto_1fr] gap-x-6 gap-y-3 lg:gap-y-6">
         <section id="banner-section" style="background-image: url('{{ $user->getBannerImage() }}');"
-            class="card h-min col-span-4 grid grid-cols-[auto_1fr_auto] gap-y-16 p-4 bg-cover">
-            <div class="col-span-full">
-                <h1 class="text-4xl font-bold">{{ $user->name }}</h1>
-                <h2 class="text-2xl">{{ '@' . $user->handle }}</h2>
+            class="card h-min col-span-4 grid grid-cols-[auto_1fr_auto] gap-y-16 p-8 bg-cover">
+            <div class="col-span-full flex justify-between">
+                <div class="flex flex-col gap-2">
+                    <h1 class="text-4xl font-bold">{{ $user->name }}</h1>
+                    <h2 class="text-2xl">{{ '@' . $user->handle }}</h2>
+                </div>
+                <div class="min-w-[24px]">
+                    @if($user->is_public)
+                        <article class="help-icon group relative">
+                            <div class="rounded-md">
+                                @include('partials.icon', ['name' => 'earth'])
+                            </div>
+                            <div class="px-4 py-2 rounded-md bg-gray-900 shadow-lg absolute top-8 left-full -translate-x-full z-30 mt-3 text-white opacity-0 group-hover:opacity-100 group-hover:top-6 transition-all pointer-events-none">
+                                Public
+                            </div>
+                        </article>
+                    @else
+                        <article class="help-icon group relative">
+                            <div class="rounded-md">
+                                @include('partials.icon', ['name' => 'lock'])
+                            </div>
+                            <div class="px-4 py-2 rounded-md bg-gray-900 shadow-lg absolute top-8 left-full -translate-x-full z-30 mt-3 text-white opacity-0 group-hover:opacity-100 group-hover:top-6 transition-all pointer-events-none">
+                                Private
+                            </div>
+                        </article>
+                    @endif
+                </div>
             </div>
             <img src="{{ $user->getProfilePicture() }}" class="w-36 sm:w-52 h-36 sm:h-52 rounded-full object-cover">
             <div class="profile-buttons flex justify-end items-end">
