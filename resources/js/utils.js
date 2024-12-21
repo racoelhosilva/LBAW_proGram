@@ -184,6 +184,41 @@ const addLazyLoading = (container, containerLoading, endpoint, params, callback)
 	});
 }
 
+const addLazyLoadingContainer = (container, containerLoading, endpoint, params, callback) => {
+    let loading = false;
+    let atEnd = false;
+    let page = 1;
+
+    const scrollableElement = container.querySelector('.flex-1.overflow-y-auto');
+
+    if (!scrollableElement) {
+        console.error('Scrollable element not found inside the container.');
+        return;
+    }
+
+    const onScroll = async () => {
+        const scrollTop = scrollableElement.scrollTop;
+        const scrollHeight = scrollableElement.scrollHeight;
+        const clientHeight = scrollableElement.clientHeight;
+
+        if (!atEnd && !loading && scrollTop + clientHeight >= scrollHeight - 100) {
+            loading = true;
+            containerLoading.classList.remove('hidden');
+
+            page++;
+            atEnd = await loadMoreElements(scrollableElement, endpoint, params, page);
+            if (callback) {
+                callback();
+            }
+
+            loading = false;
+            containerLoading.classList.add('hidden');
+        }
+    };
+
+    scrollableElement.addEventListener('scroll', onScroll);
+};
+
 const toggleDropdown = (dropdownContent, event) => {
 	dropdownContent.classList.toggle('hidden');
 
@@ -216,4 +251,4 @@ const addDropdownListeners = () => {
 	document.addEventListener('click', hideDropdowns);
 };
 
-export { sendGet, encodeParams, getView,sendPostView, sendPutView, sendDelete, sendPost, sendPatch, fadeToastMessage, sendToastMessage, addLazyLoading, hideDropdowns, addDropdownListeners };
+export { sendGet, encodeParams, getView,sendPostView, sendPutView, sendDelete, sendPost, sendPatch, fadeToastMessage, sendToastMessage, addLazyLoading, addLazyLoadingContainer, hideDropdowns, addDropdownListeners };
