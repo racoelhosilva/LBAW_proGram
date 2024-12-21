@@ -1,4 +1,4 @@
-@props(['user', 'class' => '', 'buttons' => null])
+@props(['user', 'class' => ''])
 
 @php($userUrl = route('user.show', $user->id))
 
@@ -20,23 +20,23 @@
             @include('partials.text-button', [
                 'text' => 'Send',
                 'type' => 'secondary',
-                'class' => 'w-40    invite-button hidden',
+                'class' => 'invite-button hidden',
             ])
             @include('partials.text-button', [
                 'text' => 'Unsend',
                 'type' => 'secondary',
-                'class' => 'w-40  uninvite-button ',
+                'class' => 'uninvite-button ',
             ])\
         @else
             @include('partials.text-button', [
                 'text' => 'Send',
                 'type' => 'secondary',
-                'class' => 'w-40    invite-button',
+                'class' => 'invite-button',
             ])
             @include('partials.text-button', [
                 'text' => 'Unsend',
                 'type' => 'secondary',
-                'class' => 'w-40  uninvite-button hidden',
+                'class' => 'uninvite-button hidden',
             ])
         @endif
     </div>

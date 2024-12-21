@@ -15,7 +15,7 @@
         @auth
             <a href="{{ route('user.notifications', auth()->id()) }}" id="notification-button" aria-label="Notification" class="p-3 secondary-btn relative hidden sm:flex">
                 @include('partials.icon', ['name' => 'notification'])
-                <span class="{{auth()->user()->notifications->count() == 0 ? "hidden" : ""}} absolute bottom-0 right-0 block text-xs font-bold text-white bg-red-500 rounded-full flex items-center justify-center p-0.5" id="notification-count">
+                <span class="{{auth()->user()->notifications->count() == 0 ? 'hidden' : ''}} absolute bottom-0 right-0 text-xs font-bold text-white bg-red-500 rounded-full flex items-center justify-center p-0.5" id="notification-count">
                     {{ auth()->user()->notifications->count() }}
                 </span>
             </a>
