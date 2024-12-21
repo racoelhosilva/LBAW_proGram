@@ -17,16 +17,16 @@
     </div>
     <div class="flex gap-x-4 justify-end">
         @if($group->isUserInvited($user))
-                @include('partials.text-button', [
-                                    'text' => 'Send',
-                                    'type' => 'secondary',
-                                    'class' => 'w-40    invite-button hidden',
-                                ])
-                @include('partials.text-button', [
-                                    'text' => 'Unsend',
-                                    'type' => 'secondary',
-                                    'class' => 'w-40  uninvite-button ',
-                                ])
+            @include('partials.text-button', [
+                'text' => 'Send',
+                'type' => 'secondary',
+                'class' => 'w-40    invite-button hidden',
+            ])
+            @include('partials.text-button', [
+                'text' => 'Unsend',
+                'type' => 'secondary',
+                'class' => 'w-40  uninvite-button ',
+            ])\
         @else
             @include('partials.text-button', [
                 'text' => 'Send',
@@ -39,8 +39,6 @@
                 'class' => 'w-40  uninvite-button hidden',
             ])
         @endif
-        
-
     </div>
 </article>
 

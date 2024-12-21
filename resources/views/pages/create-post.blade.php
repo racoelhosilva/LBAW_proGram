@@ -7,7 +7,7 @@
     <main id="create-post-page" class="px-8">
         <article class="card h-min p-10 pt-16 flex flex-col gap-12">
             <h1 class="text-2xl font-bold text-center">Create a New Post</h1>
-            <form id="create-post-form" action="{{ route('post.store') }}" method="POST" class="w-full flex flex-col gap-4 quill-form" data-quill-field="text">
+            <form id="create-post-form" action="{{ route('post.store') }}" method="post" class="flex flex-col gap-4 quill-form" data-quill-field="text">
                 @csrf
                 
                 @include('partials.input-field', [

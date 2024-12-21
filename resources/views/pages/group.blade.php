@@ -35,23 +35,23 @@
             <div class="col-span-full flex justify-between ">
                 <div class="flex flex-col justify-end">
                     @can('viewContent', $group)
-                         <a href="{{ route('group.members', ['id' => $group->id]) }}" class="text-xl font-bold">{{$group->member_count}} members</a>
+                         <a href="{{ route('group.members', $group->id) }}" class="text-xl font-bold">{{$group->member_count}} members</a>
                     @endcan
                 </div>
                 <div id="group-buttons-container" class="flex flex-col sm:flex-row gap-2" data-group-id={{$group->id}}>
                     @can('leave', $group)
-                        <form action="{{ route('group.leave', ['id' => $group->id]) }}" method="POST">
+                        <form action="{{ route('group.leave', $group->id) }}" method="POST">
                             @csrf
                             @method('POST') 
                             @include('partials.text-button', ['text' => 'Leave Group','submit'=>true,'id'=>'leave-group-button'])
                         </form>
-                        @include('partials.text-button', ['text' => 'Post to Group', 'anchorUrl' => route('group.post.create', ['group_id' => $group->id])])
+                        @include('partials.text-button', ['text' => 'Post to Group', 'anchorUrl' => route('group.post.create', $group->id)])
                     @endcan
                     @can('join', $group)
                         @if( $group->pendingJoinRequests->where('id', Auth::id())->count() > 0)
                             @include('partials.text-button', ['text' => 'Request Pending'])
                         @else
-                            <form action="{{ route('group.join', ['id' => $group->id]) }}" method="POST">
+                            <form action="{{ route('group.join', $group->id) }}" method="POST">
                                 @csrf
                                 @method('POST') 
                                 @include('partials.text-button', ['text' => 'Join Group','submit'=>true, 'id'=>'join-group-button'])
@@ -59,7 +59,7 @@
                         @endif      
                     @endcan
                     @can('update', $group)
-                        @include('partials.text-button', ['text' => 'Edit Group', 'anchorUrl' => route('group.edit', ['id' => $group->id])])
+                        @include('partials.text-button', ['text' => 'Edit Group', 'anchorUrl' => route('group.edit', $group->id)])
                         <div class="dropdown">
                             @include('partials.text-button', ['text' => 'Manage Group', 'id'=>'manage-group-button'])
                             <div class="hidden">
@@ -72,9 +72,8 @@
                                 </div>
                             </div>
                         </div>
-                        @include('partials.text-button', ['text' => 'Post to Group', 'anchorUrl' => route('group.post.create', ['group_id' => $group->id])])
+                        @include('partials.text-button', ['text' => 'Post to Group', 'anchorUrl' => route('group.post.create', $group->id)])
                     @endcan
-
                 </div>
             </div>  
 

@@ -6,10 +6,8 @@
     <main id="create-post-page" class="px-8">
         <article class="card h-min p-10 pt-16 flex flex-col gap-12">
             <h1 class="text-2xl font-bold text-center">Create Post on {{$group->name}}</h1>
-            <form id="create-group-post-form" class="grid gap-4" action="{{ route('group.post.store', $group->id) }}" method="POST">
-                
+            <form id="create-group-post-form" class="flex flex-col gap-4 quill-form" action="{{ route('group.post.store', $group->id) }}" method="post" data-quill-field="text">
                 @csrf
-                <input type="hidden" id="group_id" name="group_id" value="{{ $group->id }}">
 
                 @include('partials.input-field', [
                     'name' => 'title',
@@ -17,12 +15,11 @@
                     'placeholder' => 'Enter title',
                     'required' => true
                 ])
-                
-                @include('partials.textarea', [
+
+                @include('partials.quill-editor', [
                     'name' => 'text',
                     'label' => 'Post Content',
-                    'placeholder' => 'Write your post here...',
-                    'required' => false
+                    'required' => false,
                 ])
                     
                 <section class="flex flex-col">
@@ -36,7 +33,7 @@
                         'tags' => $tags,
                         'label' => 'Tags',
                         'selected' => [],
-                        'form' => 'create-post-form',
+                        'form' => 'create-group-post-form',
                     ])
                 </section>
 
