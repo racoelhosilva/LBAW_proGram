@@ -10,7 +10,7 @@
             @forelse ($user->groups as $group)
                 @include('partials.group-card', ['group' => $group])
             @empty
-                <p>This user is not a member of any group1</p>
+                <p>This user is not a member of any group.</p>
             @endforelse
         </div>
     </section>

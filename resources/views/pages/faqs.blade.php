@@ -27,7 +27,7 @@
                             @include('partials.icon', ['name' => 'x', 'class' => 'max-w-10'])
                         </div>
                     </div>
-                    <p class="max-h-0 overflow-hidden transition-all duration-300 ease-in-out answer  px-4">
+                    <p class="max-h-0 overflow-hidden transition-all duration-300 ease-in-out answer px-4">
                         {{ $faq['answer'] }}
                     </p>
                 </article>
