@@ -1,3 +1,5 @@
+@props(['post'])
+
 @extends('layouts.app')
 @section('title') {{'Post ' . $post->title . ' | ProGram'}} @endsection
 @section('content')
@@ -12,9 +14,7 @@
             <form id="comment-submit-form" action="{{ route('api.comment.store') }}">
                 @include('partials.textarea', ['name' => 'content', 'placeholder' => 'Write a comment...', 'label' => 'Comment Content', 'required' => true])
                 <input type="hidden" name="post_id" value="{{ $post->id }}">
-                @if (Auth::check())
-                    <input type="hidden" name="author_id" value="{{ auth()->id() }}">
-                @endif
+                <input type="hidden" name="author_id" value="{{ auth()->id() }}">
                 @include('partials.text-button', ['text' => 'Post Comment', 'class' => 'w-full mt-2 mb-2', 'submit' => true])
             </form>
         @endauth

@@ -145,6 +145,11 @@ class UserPolicy
         //
     }
 
+    public function follow(User $user, User $otherUser): bool
+    {
+        return $user && ! $user->isBanned() && $user->id !== $otherUser->id;
+    }
+
     /**
      * Determine whether the user can permanently delete the model.
      */

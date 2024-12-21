@@ -6,7 +6,7 @@
             <h1 class="text-xl font-bold">Users On This Platform</h1>
             @include('partials.user-list', ['users' => $users, 'responsive' => true])
 
-            @if (!Auth::check())
+            @if (!auth()->check())
                 <div class="flex justify-center pt-2">
                     @include('partials.text-button', [
                         'text' => 'Login/Register',
