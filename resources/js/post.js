@@ -110,6 +110,7 @@ const addLikeButtonListeners = () => {
 const addCommentSectionListeners = () => {
 	const commentList = document.getElementById('comment-list');
 	const commentListLoading = document.querySelector('#comment-list + div .loading-spinner');
+	const commentSection = document.getElementById('comment-section');
 
 	if (!commentList || !commentListLoading) {
 		return;
@@ -118,13 +119,10 @@ const addCommentSectionListeners = () => {
 	const url = window.location.href;
 	const id = url.split('/post/')[1];
 
-	const commentSection = document.getElementById('comment-section');
-	console.log("added listeners!");
 	addLazyLoadingContainer(commentSection, commentListLoading, '/post/' + id, null ,addPostListeners);
 }
 
 const addPostListeners = () => {
-	console.log("added post listeners!");
 	addLikeButtonListeners();
 	addDropdownListeners();
 }

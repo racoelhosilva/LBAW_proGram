@@ -44,7 +44,6 @@ const inviteUnSendListener = () => {
                     })
                     .catch((error) => {
                         sendToastMessage('An error occurred while uninviting the user.', 'error');
-                        console.error('Error uninviting user:', error);
                     });
             });
         });

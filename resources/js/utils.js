@@ -192,7 +192,6 @@ const addLazyLoadingContainer = (container, containerLoading, endpoint, params, 
     const scrollableElement = container.querySelector('.flex-1.overflow-y-auto');
 
     if (!scrollableElement) {
-        console.error('Scrollable element not found inside the container.');
         return;
     }
 

@@ -57,7 +57,6 @@ const addDeleteCommentListener = () => {
                         comment.remove();
                     })
                     .catch((error) => {
-                        console.error('Error deleting comment:', error);
                         sendToastMessage('An error occurred while deleting comment.', 'error');
                     });
             };
