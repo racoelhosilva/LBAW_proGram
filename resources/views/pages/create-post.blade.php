@@ -23,37 +23,41 @@
                     'required' => false,
                 ])
                     
-                <section class="flex flex-col">
-                    <label for="tags" class="mb-2 font-medium flex gap-2">
-                        Associated Tags
+                <div class="flex flex-col">
+                    <div class="flex gap-2">
+                        <span class="mb-2 font-medium flex gap-2">Associated Tags</span>
                         @include('partials.help-icon', [
                             'text' => 'Tags help categorize your post and make it easier for others to find.',
                         ])
-                    </label>
+                    </div>
                     @include('partials.tag-select', [
                         'tags' => $tags,
                         'label' => 'Tags',
                         'selected' => [],
                         'form' => 'create-post-form',
                     ])
-                </section>
+                </div>
 
-                <section class="flex flex-col gap-2">
-                    <label class="flex gap-2">
-                        <input type="checkbox" name="is_public" value="1" {{ old('is_public', true) ? 'checked' : '' }}>
-                        <span class="font-medium">Make this post public</span>
+                <div class="flex flex-col gap-2">
+                    <div class="flex gap-2">
+                        <label class="flex gap-2">
+                            <input type="checkbox" name="is_public" value="1" {{ old('is_public', true) ? 'checked' : '' }}>
+                            <span class="font-medium">Make this post public</span>
+                        </label>
                         @include('partials.help-icon', [
                             'text' => 'Public posts can be viewed by anyone on the platform. Private posts can only be viewed by your followers.',
                         ])
-                    </label>
-                    <label class="flex gap-2">
-                        <input type="checkbox" name="is_announcement" value="1" {{ old('is_announcement', false) ? 'checked' : '' }}>
-                        <span class="font-medium">Make this post an announcement</span>
+                    </div>
+                    <div class="flex gap-2">
+                        <label class="flex gap-2">
+                            <input type="checkbox" name="is_announcement" value="1" {{ old('is_announcement', false) ? 'checked' : '' }}>
+                            <span class="font-medium">Make this post an announcement</span>
+                        </label>
                         @include('partials.help-icon', [
                             'text' => 'Announcements are highlighted and pinned to your profile.',
                         ])
-                    </label>
-                </section>
+                    </div>
+                </div>
                 @include('partials.text-button', ['text' => 'Create Post', 'label' => 'create', 'type' => 'primary', 'submit' => true])
             </form>
         </article>

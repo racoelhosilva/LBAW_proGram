@@ -156,10 +156,10 @@
     }
 
     .select > button {
-        @apply w-full px-4 py-3 secondary-btn rounded-lg grid grid-cols-[1fr_auto];
+        @apply w-full px-4 py-3 secondary-btn rounded-lg grid grid-cols-[auto_1fr_auto] gap-1;
     }
 
-    .select > button > div:first-of-type {
+    .select > button > span {
         @apply inline text-start overflow-hidden overflow-ellipsis text-nowrap;
     }
 
@@ -167,7 +167,7 @@
         @apply text-gray-700 dark:text-gray-300
     }
 
-    .select:not(.closed) > button > div:nth-of-type(2) {
+    .select:not(.closed) > button > span:nth-of-type(3) {
         @apply hidden;
     }
 
@@ -179,7 +179,7 @@
         @apply invisible top-16 opacity-0;
     }
 
-    .select.closed > button > div:nth-of-type(3) {
+    .select.closed > button > span:nth-of-type(4) {
         @apply hidden;
     }
 
