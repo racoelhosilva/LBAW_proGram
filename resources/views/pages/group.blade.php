@@ -13,7 +13,7 @@
                             <div class="rounded-md">
                                 @include('partials.icon', ['name' => 'earth'])
                             </div>
-                            <div class="w-80 px-4 py-2 rounded-md bg-gray-900 shadow-lg absolute top-8 {{ $left ? 'right-full translate-x-full' : 'left-full -translate-x-full' }} z-30 mt-3 text-white opacity-0 group-hover:opacity-100 group-hover:top-6 transition-all pointer-events-none">
+                            <div class="px-4 py-2 rounded-md bg-gray-900 shadow-lg absolute top-8 left-full -translate-x-full z-30 mt-3 text-white opacity-0 group-hover:opacity-100 group-hover:top-6 transition-all pointer-events-none">
                                 Public
                             </div>
                         </article>
@@ -22,7 +22,7 @@
                             <div class="rounded-md">
                                 @include('partials.icon', ['name' => 'lock'])
                             </div>
-                            <div class="w-80 px-4 py-2 rounded-md bg-gray-900 shadow-lg absolute top-8 {{ $left ? 'right-full translate-x-full' : 'left-full -translate-x-full' }} z-30 mt-3 text-white opacity-0 group-hover:opacity-100 group-hover:top-6 transition-all pointer-events-none">
+                            <div class="px-4 py-2 rounded-md bg-gray-900 shadow-lg absolute top-8 left-full -translate-x-full z-30 mt-3 text-white opacity-0 group-hover:opacity-100 group-hover:top-6 transition-all pointer-events-none">
                                 Private
                             </div>
                         </article>
