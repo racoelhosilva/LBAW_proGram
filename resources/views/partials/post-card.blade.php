@@ -7,8 +7,7 @@
 
 <article
     class="post-card card px-6 w-full grid grid-cols-[auto_1fr_auto] items-center content-start
-    @if ($post->is_announcement) shadow-[inset_0_0_4px_rgba(38,102,214,0.8)] dark:shadow-[inset_0_0_4px_rgba(38,102,214,0.8)] @endif
-    "
+    {{ $post->is_announcement ? 'shadow-[inset_0_0_4px_rgba(38,102,214,0.8)] dark:shadow-[inset_0_0_4px_rgba(38,102,214,0.8)]' : '' }}"
     data-post-id="{{ $post->id }}">
     @if (!$post->author->is_deleted)
         <a href="{{ $authorUrl }}">
@@ -16,7 +15,7 @@
                 class="w-12 h-12 rounded-full object-cover">
         </a>
     @else
-        <img src="{{ $post->author->getProfilePicture() }}" alt="deleted account"
+        <img src="{{ $post->author->getProfilePicture() }}" alt="Deleted Account"
             class="w-12 h-12 rounded-full object-cover">
     @endif
 
@@ -29,7 +28,6 @@
             @else
                 <p>[deleted]</p>
             @endif
-
         </p>
         <p class="text-xs/3 pt-1 font-medium text-gray-500 dark:text-gray-400 select-none">
             @if (!$post->author->is_deleted)
