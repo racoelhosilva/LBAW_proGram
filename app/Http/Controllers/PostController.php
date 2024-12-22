@@ -129,14 +129,20 @@ class PostController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(int $id): View
+    public function show(Request $request, int $id): View
     {
         $post = Post::with('author')->findOrFail($id);
 
         $this->authorize('view', $post);
         $this->authorize('viewAny', Comment::class);
 
-        return view('pages.post', ['post' => $post]);
+        $comments = $this->getComments($post);
+
+        if ($request->ajax()) {
+            return view('partials.comment-list', ['comments' => $comments, 'showEmpty' => false]);
+        }
+
+        return view('pages.post', ['post' => $post, 'comments' => $comments]);
     }
 
     /**
@@ -200,6 +206,14 @@ class PostController extends Controller
         });
 
         return redirect()->route('post.show', $post->id)->withSuccess('Post updated successfully.');
+    }
+
+    private function getComments(Post $post)
+    {
+        return Comment::with('author')
+            ->where('post_id', $post->id)
+            ->orderBy('timestamp', 'DESC')
+            ->simplePaginate(10);
     }
 
     /**

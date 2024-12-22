@@ -67,6 +67,7 @@ class CommentPolicy
 
     public function like(?User $user, Comment $comment): bool
     {
-        return $user && ! $user->isBanned() && $user->id !== $comment->author_id;
+
+        return $user && ! $user->isBanned() && $user->id != $comment->author_id;
     }
 }

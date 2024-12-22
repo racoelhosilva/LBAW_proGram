@@ -14,7 +14,7 @@
             <div class="dropdown">
                 @include('partials.icon-button', ['iconName' => 'ellipsis', 'label' => 'Options', 'type' => 'transparent'])
                 <div class="hidden">
-                    <div>
+                    <div class= "comment-actions">
                         @include('partials.dropdown-item', ['icon' => 'pencil', 'text' => 'Edit Comment', 'class' => 'edit-comment'])
                         @include('partials.confirmation-modal', [
                             'icon' => 'trash',
@@ -28,9 +28,15 @@
             </div>
         @endif
     </div>
-
-    <div class="mt-4 content-container">
-        <p class="whitespace-pre-wrap">{{ str_replace("\\n", "\n", $comment->content) }}</p>
+    <div class="mt-4 content-container max-w-full overflow-hidden">
+        <p class="whitespace-pre-wrap text-pretty break-words text-ellipsis">{{str_replace("\\n", "\n", $comment->content) }}</p>
+    </div>
+      <div class="edit-content-container hidden">
+        <form class="edit-comment-form" action="{{ route('api.comment.update', ['id' => $comment->id]) }}">
+            @csrf
+            <textarea name="content" class="edit-textarea">{{ str_replace("\\n", "\n", $comment->content) }}</textarea>
+            @include('partials.text-button', ['text' => 'Save', 'class' => 'w-full mt-2 mb-2', 'submit' => true])
+        </form>
     </div>
     <div class="flex flex-col items-center">
         @include('partials.like-button', ['model' => $comment])
