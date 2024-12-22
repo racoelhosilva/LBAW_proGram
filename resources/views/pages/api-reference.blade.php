@@ -2,6 +2,16 @@
 
 @section('title', 'API Reference | ProGram')
 
+@php
+    $endpoints = [
+        ['method' => 'GET', 'endpoint' => '/api/posts', 'access' => 'Public', 'description' => 'Get all posts'],
+        ['method' => 'GET', 'endpoint' => '/api/posts/{id}', 'access' => 'Public', 'description' => 'Get a specific post by ID'],
+        ['method' => 'POST', 'endpoint' => '/api/posts', 'access' => 'Private', 'description' => 'Create a new post'],
+        ['method' => 'PUT', 'endpoint' => '/api/posts/{id}', 'access' => 'Private', 'description' => 'Update a post by ID'],
+        ['method' => 'DELETE', 'endpoint' => '/api/posts/{id}', 'access' => 'Private', 'description' => 'Delete a post by ID'],
+    ];
+@endphp
+
 @section('content')
     <main id="api-reference-page" class="px-8 py-4 grid grid-cols-4 gap-6">
         <section class="card h-min col-span-4 flex flex-col gap-2">
@@ -31,36 +41,14 @@
                             <th>Access</th>
                             <th>Description</th>
                         </tr>
-                        <tr>
-                            <td>GET</td>
-                            <td>/api/posts</td>
-                            <td>Public</td>
-                            <td>Get all posts</td>
-                        </tr>
-                        <tr>
-                            <td>GET</td>
-                            <td>/api/posts/{id}</td>
-                            <td>Public</td>
-                            <td>Get a specific post by ID</td>
-                        </tr>
-                        <tr>
-                            <td>POST</td>
-                            <td>/api/posts</td>
-                            <td>Private</td>
-                            <td>Create a new post</td>
-                        </tr>
-                        <tr>
-                            <td>PUT</td>
-                            <td>/api/posts/{id}</td>
-                            <td>Private</td>
-                            <td>Update a post by ID</td>
-                        </tr>
-                        <tr>
-                            <td>DELETE</td>
-                            <td>/api/posts/{id}</td>
-                            <td>Private</td>
-                            <td>Delete a post by ID</td>
-                        </tr>
+                        @foreach($endpoints as $endpoint)
+                            <tr>
+                                <td>{{ $endpoint['method'] }}</td>
+                                <td ><code>{{ $endpoint['endpoint'] }}</code></td>
+                                <td>{{ $endpoint['access'] }}</td>
+                                <td>{{ $endpoint['description'] }}</td>
+                            </tr>
+                        @endforeach
                     </table>
                 </article>
             </article>
