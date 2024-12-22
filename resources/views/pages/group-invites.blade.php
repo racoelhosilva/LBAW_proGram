@@ -4,9 +4,14 @@
 
 @section('content')
     <main id="group-invites-page" class="px-8 py-4 flex flex-col gap-6" data-group-id={{ $group->id }}>
-        <section id="invites" class="flex flex-col">
-            <h1 class="text-4xl text-center font-medium m-4">Invites</h1>
-            @include('partials.search-invites', ['group' => $group])
+        <section id="invites" class="card flex flex-col">
+            <h1 class="text-2xl font-medium mb-4">Invites</h1>
+            <div class="grid grid-cols-[1fr_auto] gap-3">
+                @include('partials.search-invites', ['group' => $group])
+                @if($searched)
+                    <a href="{{ route('group.invites', ['id' => $group->id]) }}" class="primary-btn px-4 py-3 text-center font-medium">See Current Invites</a>
+                @endif
+            </div>
             <div id="invite-results" class="flex flex-col gap-4 mt-4">
                 @if($searched)
                     @forelse ($usersSearched as $user)
