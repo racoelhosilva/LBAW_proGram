@@ -12,24 +12,15 @@ use Illuminate\Support\Facades\DB;
 
 class ApiPostController extends Controller
 {
+    const ALLOWED_TAGS = '<p><br><strong><em><u><code><ol><ul><li><span><div><a><img><iframe>';
+
     // Retrieve all posts
     public function index()
     {
-
         $user = auth()->user();
 
         $posts = Post::visibleTo($user)
-            ->select([
-                'id',
-                'author_id',
-                'title',
-                'text',
-                'creation_timestamp',
-                'is_announcement',
-                'is_public',
-                'likes',
-                'comments',
-            ])
+            ->select(['id', 'author_id', 'title', 'text', 'creation_timestamp', 'is_announcement', 'is_public', 'likes', 'comments'])
             ->get();
 
         return response()->json($posts);
@@ -38,21 +29,10 @@ class ApiPostController extends Controller
     // Retrieve a single post by ID
     public function show($id)
     {
-        $user = auth()->user();
         $post = Post::findOrFail($id);
         $this->authorize('view', $post);
 
-        $postData = $post->only([
-            'id',
-            'author_id',
-            'title',
-            'text',
-            'creation_timestamp',
-            'is_announcement',
-            'is_public',
-            'likes',
-            'comments',
-        ]);
+        $postData = $post->only(['id', 'author_id', 'title', 'text', 'creation_timestamp', 'is_announcement', 'is_public', 'likes', 'comments']);
 
         return response()->json($postData);
     }
@@ -62,33 +42,30 @@ class ApiPostController extends Controller
         $this->authorize('create', Post::class);
         $request->validate([
             'title' => 'required|string',
-            'text' => 'required|string',
+            'text' => 'nullable|string',
             'tags' => 'nullable|array',
             'tags.*' => 'exists:tag,id',
             'is_public' => 'nullable|boolean',
             'is_announcement' => 'nullable|boolean',
         ]);
-        try {
-            $post = new Post;
 
-            DB::transaction(function () use ($post, $request) {
-                $post->title = $request->input('title');
-                $post->text = $request->input('text');
-                $post->author_id = Auth::id();
-                $post->is_public = $request->input('is_public', false);
-                $post->is_announcement = $request->input('is_announcement', false);
+        $text = strip_tags($request->input('text'), self::ALLOWED_TAGS);
 
-                $post->save();
+        $post = new Post;
 
-                $post->tags()->sync($request->input('tags'));
-            });
+        DB::transaction(function () use ($post, $text, $request) {
+            $post->title = $request->input('title');
+            $post->text = $text;
+            $post->author_id = Auth::id();
+            $post->is_public = $request->input('is_public', false);
+            $post->is_announcement = $request->input('is_announcement', false);
 
-            return response()->json($post, 201);
-        } catch (\Exception $e) {
-            return response()->json([
-                'error' => 'Failed to create post.',
-            ], 500);
-        }
+            $post->save();
+
+            $post->tags()->sync($request->input('tags'));
+        });
+
+        return response()->json($post, 201);
     }
 
     public function update(Request $request, $id)
@@ -98,7 +75,7 @@ class ApiPostController extends Controller
         $this->authorize('update', $post);
 
         $request->validate([
-            'title' => 'nullable|string',
+            'title' => 'required|string',
             'text' => 'nullable|string',
             'tags' => 'nullable|array',
             'tags.*' => 'exists:tag,id',
@@ -106,21 +83,19 @@ class ApiPostController extends Controller
             'is_announcement' => 'nullable|boolean',
         ]);
 
-        $post->update($request->all());
+        DB::transaction(function () use ($post, $text, $request) {
+            $post->title = $request->input('title');
+            $post->text = $text;
+            $post->author_id = Auth::id();
+            $post->is_public = $request->input('is_public', false);
+            $post->is_announcement = $request->input('is_announcement', false);
 
-        $post->tags()->sync($request->input('tags'));
+            $post->save();
 
-        $postData = $post->only([
-            'id',
-            'author_id',
-            'title',
-            'text',
-            'creation_timestamp',
-            'is_announcement',
-            'is_public',
-            'likes',
-            'comments',
-        ]);
+            $post->tags()->sync($request->input('tags'));
+        });
+
+        $postData = $post->only(['id', 'author_id', 'title', 'text', 'creation_timestamp', 'is_announcement', 'is_public', 'likes', 'comments']);
 
         return response()->json($postData);
     }
@@ -132,7 +107,7 @@ class ApiPostController extends Controller
         $this->authorize('like', $post);
 
         if (PostLike::where('post_id', $id)->where('liker_id', Auth::id())->exists()) {
-            return response()->json(['error' => 'You have already liked this post.'], 400);
+            return response()->json(['error' => 'You have already liked this post.'], 409);
         }
 
         $like = new PostLike;
@@ -140,9 +115,8 @@ class ApiPostController extends Controller
         $like->liker_id = Auth::id();
         $like->post_id = $post->id;
 
-        if ($like->save()) {
-            event(new PostLikeEvent($id, $post->author_id));
-        }
+        $like->save();
+        event(new PostLikeEvent($id, $post->author_id));
 
         return response()->json($like, 201);
     }
@@ -158,12 +132,12 @@ class ApiPostController extends Controller
             ->first();
 
         if (! $like) {
-            return response()->json(['error' => 'You have not liked this post.'], 400);
+            return response()->json(['error' => 'You have not liked this post.'], 409);
         }
 
         $like->delete();
 
-        return response()->json(['message' => 'Post unliked successfully'], 200);
+        return response()->json(['message' => 'Post unliked successfully']);
     }
 
     public function indexComments($id)
@@ -199,30 +173,14 @@ class ApiPostController extends Controller
         return response()->json($tags);
     }
 
-    public function indexAttachments($id)
-    {
-        $post = Post::findOrFail($id);
-
-        $this->authorize('view', $post);
-
-        $attachments = $post->attachments;
-
-        return response()->json($attachments);
-    }
-
     public function destroy(Request $request, $postId)
     {
-
         $post = Post::findOrFail($postId);
 
         $this->authorize('forceDelete', $post);
 
-        try {
-            $post->delete();
+        $post->delete();
 
-            return response()->json(['message' => 'Post deleted successfully.'], 200);
-        } catch (\Exception $e) {
-            return response()->json(['error' => 'An error occurred while deleting the post.'], 500);
-        }
+        return response()->json(['message' => 'Post deleted successfully.']);
     }
 }
