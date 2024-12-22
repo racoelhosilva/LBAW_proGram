@@ -1,13 +1,6 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminAuthController;
-use App\Http\Controllers\Admin\AdminBanController;
-use App\Http\Controllers\Admin\AdminLanguageController;
-use App\Http\Controllers\Admin\AdminPostController;
-use App\Http\Controllers\Admin\AdminTagController;
-use App\Http\Controllers\Admin\AdminTechnologyController;
-use App\Http\Controllers\Admin\AdminUserController;
-use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Api\ApiCommentController;
 use App\Http\Controllers\Api\ApiFileController;
 use App\Http\Controllers\Api\ApiGroupController;
@@ -20,11 +13,9 @@ use App\Http\Controllers\GitHubController;
 use App\Http\Controllers\GitLabController;
 use App\Http\Controllers\GoogleController;
 use App\Http\Controllers\GroupController;
-use App\Http\Controllers\GroupPostController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MailController;
 use App\Http\Controllers\PostController;
-use App\Http\Controllers\SearchController;
 use App\Http\Controllers\TokenController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -121,19 +112,18 @@ Route::middleware(['deny.banned', 'deny.deleted'])->group(function () {
         Route::delete('/group/{id}', 'destroy')->where('id', '[0-9]+')->name('group.destroy');
         Route::get('/group/{id}/edit', 'edit')->where('id', '[0-9]+')->name('group.edit');
         Route::get('/group/{id}/manage', 'manage')->where('id', '[0-9]+')->name('group.manage');
-        Route::get('/group/{id}/members', [GroupController::class, 'showMembers'])->name('group.members');
-        Route::get('/group/{id}/requests', [GroupController::class, 'showRequests'])->name('group.requests');
-        Route::get('/group/{id}/invites', [GroupController::class, 'showInvites'])->name('group.invites');
-        Route::post('/group/{id}/join', [GroupController::class, 'join'])->name('group.join');
-        Route::post('/group/{id}/leave', [GroupController::class, 'leave'])->name('group.leave');
-
+        Route::get('/group/{id}/members', 'showMembers')->where('id', '[0-9]+')->name('group.members');
+        Route::get('/group/{id}/requests', 'showRequests')->where('id', '[0-9]+')->name('group.requests');
+        Route::get('/group/{id}/invites', 'showInvites')->where('id', '[0-9]+')->name('group.invites');
+        Route::post('/group/{id}/join', 'join')->where('id', '[0-9]+')->name('group.join');
+        Route::post('/group/{id}/leave', 'leave')->where('id', '[0-9]+')->name('group.leave');
     });
 
     //Group Post
-    Route::get('/group/{groupId}/post/create', [GroupPostController::class, 'showCreatePostForm'])->where('groupId', '[0-9]+')->name('group.post.create');
+    Route::get('/group/{groupId}/post/create', 'GroupPostController@showCreatePostForm')->where('groupId', '[0-9]+')->name('group.post.create');
 
     // Search
-    Route::get('/search', [SearchController::class, 'index'])->name('search');
+    Route::get('/search', 'SearchController@index')->name('search');
 
     // Token
     Route::controller(TokenController::class)->group(function () {
@@ -153,35 +143,35 @@ Route::prefix('admin')->group(function () {
 
     Route::middleware('auth.admin')->group(function () {
         // Admin dashboard
-        Route::get('/', [DashboardController::class, 'show'])->name('admin.dashboard');
+        Route::get('/', 'DashboardController@show')->name('admin.dashboard');
 
         // Admin users
-        Route::get('/user', [AdminUserController::class, 'index'])->name('admin.user.index');
-        Route::post('/user/{id}/ban', [AdminUserController::class, 'banUser'])->where('id', '[0-9]+')->name('admin.user.ban');
-        Route::delete('/user/{id}', [AdminUserController::class, 'deleteUser'])->where('id', '[0-9]+')->name('admin.user.destroy');
+        Route::get('/user', 'AdminUserController@index')->name('admin.user.index');
+        Route::post('/user/{id}/ban', 'AdminUserController@banUser')->where('id', '[0-9]+')->name('admin.user.ban');
+        Route::delete('/user/{id}', 'AdminUserController@deleteUser')->where('id', '[0-9]+')->name('admin.user.destroy');
 
         // Admin bans
-        Route::get('/ban', [AdminBanController::class, 'index'])->name('admin.ban.index');
-        Route::post('/ban/{id}/revoke', [AdminBanController::class, 'revoke'])->where('id', '[0-9]+')->name('admin.ban.revoke');
+        Route::get('/ban', 'AdminBanController@index')->name('admin.ban.index');
+        Route::post('/ban/{id}/revoke', 'AdminBanController@irevoke')->where('id', '[0-9]+')->name('admin.ban.revoke');
 
         // Admin posts
-        Route::get('/post', [AdminPostController::class, 'index'])->name('admin.post.index');
-        Route::delete('/post/{id}', [AdminPostController::class, 'destroy'])->where('id', '[0-9]+')->name('admin.post.destroy');
+        Route::get('/post', 'AdminPostController@index')->name('admin.post.index');
+        Route::delete('/post/{id}', 'AdminPostController@destroy')->where('id', '[0-9]+')->name('admin.post.destroy');
 
         // Tags
-        Route::get('/tags', [AdminTagController::class, 'index'])->name('admin.tag.index');
-        Route::post('/tags', [AdminTagController::class, 'store'])->name('admin.tag.store');
-        Route::delete('/tags/{id}', [AdminTagController::class, 'destroy'])->where('id', '[0-9]+')->name('admin.tag.destroy');
+        Route::get('/tags', 'AdminTagController@index')->name('admin.tag.index');
+        Route::post('/tags', 'AdminTagController@store')->name('admin.tag.store');
+        Route::delete('/tags/{id}', 'AdminTagController@destroy')->where('id', '[0-9]+')->name('admin.tag.destroy');
 
         // Languages
-        Route::get('/technologies', [AdminTechnologyController::class, 'index'])->name('admin.technology.index');
-        Route::post('/technologies', [AdminTechnologyController::class, 'store'])->name('admin.technology.store');
-        Route::delete('/technologies/{id}', [AdminTechnologyController::class, 'destroy'])->where('id', '[0-9]+')->name('admin.technology.destroy');
+        Route::get('/technologies', 'AdminTechnologyController@index')->name('admin.technology.index');
+        Route::post('/technologies', 'AdminTechnologyController@store')->name('admin.technology.store');
+        Route::delete('/technologies/{id}', 'AdminTechnologyController@destroy')->where('id', '[0-9]+')->name('admin.technology.destroy');
 
         // Technologies
-        Route::get('/languages', [AdminLanguageController::class, 'index'])->name('admin.language.index');
-        Route::post('/languages', [AdminLanguageController::class, 'store'])->name('admin.language.store');
-        Route::delete('/languages/{id}', [AdminLanguageController::class, 'destroy'])->where('id', '[0-9]+')->name('admin.language.destroy');
+        Route::get('/languages', 'AdminLanguageController@index')->name('admin.language.index');
+        Route::post('/languages', 'AdminLanguageController@store')->name('admin.language.store');
+        Route::delete('/languages/{id}', 'AdminLanguageController@destroy')->where('id', '[0-9]+')->name('admin.language.destroy');
     });
 });
 
@@ -221,13 +211,13 @@ Route::prefix('api')->middleware('api.token')->group(function () {
         Route::get('/group/{id}', 'show')->where('id', '[0-9]+')->name('api.group.show');
         Route::post('/group/{id}/join', 'join')->where('id', '[0-9]+')->name('api.group.join');
         Route::delete('/group/{id}/leave', 'leave')->where('id', '[0-9]+')->name('api.group.leave');
-        Route::delete('/group/{id}/remove/{user_id}', 'remove')->where('id', '[0-9]+')->where('user_id', '[0-9]+')->name('api.group.remove');
-        Route::post('/group/{id}/request/{user_id}/accept', 'acceptRequest')->where('id', '[0-9]+')->where('user_id', '[0-9]+')->name('api.group.request.accept');
-        Route::delete('/group/{id}/request/{user_id}/reject', 'rejectRequest')->where('id', '[0-9]+')->where('user_id', '[0-9]+')->name('api.group.request.reject');
-        Route::post('/group/{id}/invite/{user_id}', 'invite')->where('id', '[0-9]+')->where('user_id', '[0-9]+')->name('api.group.invite');
-        Route::delete('/group/{id}/uninvite/{user_id}', 'uninvite')->where('id', '[0-9]+')->where('user_id', '[0-9]+')->name('api.group.uninvite');
-        Route::post('/group/{id}/acceptInvite', 'acceptInvite')->where('id', '[0-9]+')->name('api.group.invite.accept');
-        Route::delete('/group/{id}/rejectInvite', 'rejectInvite')->where('id', '[0-9]+')->name('api.group.invite.reject');
+        Route::delete('/group/{id}/remove/{user_id}', 'remove')->where(['id' => '[0-9]+', 'user_id' => '[0-9]+'])->name('api.group.remove');
+        Route::post('/group/{id}/request/{user_id}/accept', 'acceptRequest')->where(['id' => '[0-9]+', 'user_id' => '[0-9]+'])->name('api.group.request.accept');
+        Route::delete('/group/{id}/request/{user_id}/reject', 'rejectRequest')->where(['id' => '[0-9]+', 'user_id' => '[0-9]+'])->name('api.group.request.reject');
+        Route::post('/group/{id}/invite/{user_id}', 'invite')->where(['id' => '[0-9]+', 'user_id' => '[0-9]+'])->name('api.group.invite');
+        Route::delete('/group/{id}/uninvite/{user_id}', 'uninvite')->where(['id' => '[0-9]+', 'user_id' => '[0-9]+'])->name('api.group.uninvite');
+        Route::post('/group/{id}/acceptinvite', 'acceptInvite')->where('id', '[0-9]+')->name('api.group.invite.accept');
+        Route::delete('/group/{id}/rejectinvite', 'rejectInvite')->where('id', '[0-9]+')->name('api.group.invite.reject');
     });
 
     //User
@@ -241,7 +231,7 @@ Route::prefix('api')->middleware('api.token')->group(function () {
         Route::get('/user/{id}/following', 'listFollowing');
         Route::get('/user/{id}/post', 'listPosts');
         Route::post('/user/{id}/notifications/read', 'readAllNotifications')->where('id', '[0-9]+')->name('api.user.notifications.read');
-        Route::post('/user/{userId}/notification/{notificationId}/read', 'readNotification')->where('userId', '[0-9]+')->where('notificationId', '[0-9]+')->name('api.user.notification.read');
+        Route::post('/user/{userId}/notification/{notificationId}/read', 'readNotification')->where(['userId' => '[0-9]+', 'notificationId' => '[0-9]+'])->name('api.user.notification.read');
         Route::post('/user/{id}/follow', 'follow')->where('id', '[0-9]+')->name('api.user.follow');
         Route::delete('/user/{id}/follow', 'unfollow')->where('id', '[0-9]+')->name('api.user.unfollow');
         Route::delete('/follower/{id}', 'removeFollower')->where('id', '[0-9]+')->name('api.follower.remove');

@@ -7,7 +7,7 @@ const addInviteAcceptListeners =  () =>{
         acceptButton.addEventListener('click', async (event) => {
             event.preventDefault();
             const groupId = inviteContainer.getAttribute('data-group-id');
-            sendPost(`/api/group/${groupId}/acceptInvite`)
+            sendPost(`/api/group/${groupId}/acceptinvite`)
                 .then(() => {
                     inviteContainer.remove();
                     sendToastMessage('Accepted invite with success', 'success');
@@ -26,7 +26,7 @@ const addInviteRejectListeners = () =>{
         rejectButton.addEventListener('click', async (event) => {
             event.preventDefault();
             const groupId = inviteContainer.getAttribute('data-group-id');
-            sendDelete(`/api/group/${groupId}/rejectInvite`)
+            sendDelete(`/api/group/${groupId}/rejectinvite`)
                 .then(() => {
                     inviteContainer.remove();
                     sendToastMessage('Rejected invite with success', 'success');
