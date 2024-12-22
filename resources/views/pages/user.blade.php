@@ -29,14 +29,14 @@
                 </div>
                 <div class="min-w-[24px]">
                     @if($user->is_public)
-                        <article class="help-icon group relative">
+                        <div class="help-icon group relative">
                             <div class="rounded-md">
                                 @include('partials.icon', ['name' => 'earth'])
                             </div>
                             <div class="px-4 py-2 rounded-md bg-gray-900 shadow-lg absolute top-8 left-full -translate-x-full z-30 mt-3 text-white opacity-0 group-hover:opacity-100 group-hover:top-6 transition-all pointer-events-none">
                                 Public
                             </div>
-                        </article>
+                        </div>
                     @else
                         <article class="help-icon group relative">
                             <div class="rounded-md">

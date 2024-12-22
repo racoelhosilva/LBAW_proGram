@@ -11,9 +11,9 @@
                     'type' => 'primary',
                 ])
                 <div>
-                    <section>
+                    <article>
                         <div class="mb-4 flex justify-between items-center">
-                            <h1 class="text-2xl font-bold">Add Technology</h1>
+                            <h2 class="text-2xl font-bold">Add Technology</h2>
                             @include('partials.icon-button', [
                                 'iconName' => 'x',
                                 'class' => 'close-button',
@@ -37,7 +37,7 @@
                                 'submit' => true,
                             ])
                         </form>
-                    </section>
+                    </article>
                 </div>
             </div>
         </div>
