@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\UserStats;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\View\View;
@@ -50,7 +49,7 @@ class RegisterController extends Controller
         });
 
         $credentials = $request->only('email', 'password');
-        Auth::attempt($credentials);
+        auth()->attempt($credentials);
         $request->session()->regenerate();
 
         return redirect()->route('home')
