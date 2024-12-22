@@ -110,6 +110,8 @@ Route::middleware(['deny.banned', 'deny.deleted'])->group(function () {
         Route::get('/user/{id}/groups', 'showGroups')->where('id', '[0-9]+')->name('user.groups');
         Route::get('/user/{id}/invites', 'showInvites')->where('id', '[0-9]+')->name('user.invites');
         Route::get('/user/{id}/token', 'showTokenSettings')->where('id', '[0-9]+')->name('user.token');
+        Route::get('/user/change-password', 'showChangePassword')->name('user.password.edit');
+        Route::post('/user/change-password', 'changePassword')->name('user.password.update');
     });
 
     // Group

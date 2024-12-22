@@ -9,12 +9,12 @@
             'text' => 'Edit Profile',
             'selected' => request()->routeIs('user.edit'),
         ])
-{{--        @include('partials.menu-anchor', [--}}
-{{--            'anchorUrl' => route('user.password.edit'),--}}
-{{--            'icon' => 'lock',--}}
-{{--            'text' => 'Change Password',--}}
-{{--            'selected' => request()->routeIs('user.password.edit'),--}}
-{{--        ])--}}
+        @include('partials.menu-anchor', [
+            'anchorUrl' => route('user.password.edit'),
+            'icon' => 'lock',
+            'text' => 'Change Password',
+            'selected' => request()->routeIs('user.password.edit'),
+        ])
         @include('partials.menu-anchor', [
             'anchorUrl' => route('user.token', ['id' => auth()->id()]),
             'icon' => 'key-round',

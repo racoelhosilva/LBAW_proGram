@@ -13,14 +13,18 @@ use App\Models\Technology;
 use App\Models\Token;
 use App\Models\TopProject;
 use App\Models\User;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
-    public function show(Request $request, int $id)
+    public function show(Request $request, int $id): View|Factory
     {
         $user = User::findOrFail($id);
 
@@ -49,7 +53,7 @@ class UserController extends Controller
         ]);
     }
 
-    public function showGroups(int $id)
+    public function showGroups(int $id): View|Factory
     {
         $user = User::findOrFail($id);
 
@@ -65,7 +69,7 @@ class UserController extends Controller
         ]);
     }
 
-    public function showInvites(int $id)
+    public function showInvites(int $id): View|Factory
     {
         $user = User::findOrFail($id);
 
@@ -79,7 +83,7 @@ class UserController extends Controller
         ]);
     }
 
-    public function edit(int $id)
+    public function edit(int $id): RedirectResponse|View|Factory
     {
         $user = User::findOrFail($id);
 
@@ -213,7 +217,7 @@ class UserController extends Controller
         }
     }
 
-    public function notifications(int $id)
+    public function notifications(int $id): View|Factory
     {
         $user = User::findOrFail($id);
 
@@ -254,7 +258,7 @@ class UserController extends Controller
         ]);
     }
 
-    public function followers(int $id)
+    public function followers(int $id): View|Factory
     {
         $user = User::findOrFail($id);
 
@@ -263,7 +267,7 @@ class UserController extends Controller
         return view('pages.followers', ['user' => $user, 'followers' => $user->followers()->paginate(30)]);
     }
 
-    public function following(int $id)
+    public function following(int $id): View|Factory
     {
         $user = User::findOrFail($id);
 
@@ -272,7 +276,7 @@ class UserController extends Controller
         return view('pages.following', ['user' => $user, 'following' => $user->following()->paginate(30)]);
     }
 
-    public function requests(int $id)
+    public function requests(int $id): View|Factory
     {
         $user = User::findOrFail($id);
 
@@ -344,7 +348,7 @@ class UserController extends Controller
         return redirect()->route('home')->withSuccess('User deleted successfully.');
     }
 
-    public function showTokenSettings()
+    public function showTokenSettings(): RedirectResponse|View|Factory
     {
         if (! auth()->check()) {
             return redirect()->route('login');
@@ -352,5 +356,40 @@ class UserController extends Controller
         $this->authorize('view', [Token::class, auth()->user()->token]);
 
         return view('pages.user-token', ['user' => auth()->user()]);
+    }
+
+    public function showChangePassword(): RedirectResponse|View|Factory
+    {
+        if (! auth()->check()) {
+            return redirect()->route('login');
+        }
+
+        return view('pages.user-change-password', ['user' => auth()->user()]);
+    }
+
+    public function changePassword(Request $request)
+    {
+
+        if (! Auth::check()) {
+            return redirect()->route('login');
+        }
+
+        $request->validate([
+            'current_password' => 'required',
+            'new_password' => 'required|min:8|confirmed',
+        ]);
+
+        $user = Auth::user();
+
+        if (! password_verify($request->input('current_password'), $user->password)) {
+            return redirect()->back()->withErrors(['error' => 'Current password is incorrect.']);
+        }
+
+        $user->password = Hash::make($request->input('new_password'));
+
+        $user->save();
+
+        return redirect()->back()->withSuccess('Password changed successfully.');
+
     }
 }
