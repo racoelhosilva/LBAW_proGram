@@ -145,7 +145,7 @@ class GroupController extends Controller
         $request->validate([
             'name' => 'required|string|unique:groups,name,'.$id,
             'description' => 'required|string',
-            'is_public' => 'nullable|boolean',
+            'is_public' => 'nullable',
         ]);
 
         if ($group->is_public != $request->filled('is_public')) {

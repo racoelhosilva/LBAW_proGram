@@ -75,10 +75,9 @@ class ApiGroupController extends Controller
         $this->authorize('create', Group::class);
 
         $request->validate([
-            'name' => 'required|string',
+            'name' => 'required|string|unique:groups,name',
             'description' => 'required|string',
             'is_public' => 'boolean',
-            'owner_id' => 'required|integer',
         ]);
 
         $group = new Group;
@@ -86,7 +85,7 @@ class ApiGroupController extends Controller
         $group->name = $request->input('name');
         $group->description = $request->input('description');
         $group->is_public = $request->input('is_public') ?? true;
-        $group->owner_id = $request->input('owner_id');
+        $group->owner_id = Auth::id();
         $group->save();
 
         return response()->json($group, 201);
@@ -102,11 +101,11 @@ class ApiGroupController extends Controller
         }
 
         $this->authorize('update', $group);
+
         $request->validate([
-            'name' => 'required|string',
+            'name' => 'required|string|unique:groups,name,'.$id,
             'description' => 'required|string',
             'is_public' => 'boolean',
-            'owner_id' => 'required|integer',
         ]);
 
         if ($group->is_public != $request->filled('is_public')) {
@@ -122,7 +121,7 @@ class ApiGroupController extends Controller
         $group->name = $request->input('name');
         $group->description = $request->input('description');
         $group->is_public = $request->filled('is_public');
-        $group->owner_id = $request->input('owner_id');
+        $group->owner_id = Auth::id();
         $group->save();
 
         return response()->json($group);
