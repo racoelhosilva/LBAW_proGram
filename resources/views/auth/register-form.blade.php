@@ -30,6 +30,7 @@
                 'label' => 'User Handle',
                 'type' => 'text',
                 'value' => old('handle'),
+                'pattern' => '^[a-zA-Z0-9_]*$',
                 'placeholder' => 'johndoe2024',
                 'required' => true,
             ])
@@ -38,7 +39,6 @@
             @include('partials.password-input-field', [
                 'name' => 'password',
                 'label' => 'Password',
-                'type' => 'password',
                 'placeholder' => 'password123',
                 'required' => true,
             ])
@@ -47,7 +47,6 @@
             @include('partials.password-input-field', [
                 'name' => 'password_confirmation',
                 'label' => 'Confirm Password',
-                'type' => 'password',
                 'placeholder' => 'password123',
                 'required' => true,
             ])
