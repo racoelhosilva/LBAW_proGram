@@ -23,12 +23,12 @@
                 <div class="card">
                     <h2 class="text-lg font-bold">Authentication</h2>
                     <p>
-                        Public endpoints can be access by any third party. However, to get access to privileged resources, you need to pass an access token on each request
+                        Public endpoints can be access by any third party. However, to get access to privileged resources, you need to pass an access token on each request.
                         @auth You can generate a token in the <a href="{{ route('user.token', auth()->id()) }}" class="text-blue-600 dark:text-blue-400">user settings</a>. @endauth
                     </p>
                     <p>After receiving a token, you can use it to perform <span class="font-semibold">Bearer Authentication</span>, passing the token on the <code>Authorization</code> header.</p>
                     <div class="ql-code-block-container my-2">
-                        curl -X GET "https://localhost:8001/api/post/1/like" \<br>
+                        curl -X GET "http://localhost:8001/api/post/1/like" \<br>
                         &ensp;&ensp;&ensp;&ensp;-H "Authorization: Bearer {{ '<' }}ACCESS_TOKEN{{ '>' }}"
                     </div>
                 </div>
