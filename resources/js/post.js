@@ -147,6 +147,11 @@ const addSubmitCommentListener = () => {
         const params = Object.fromEntries(formData.entries());
 
         const comment = await sendPostView(form.action, params);
+
+        const emptyMessage = commentSection.querySelector(':scope > p')
+        if (emptyMessage) {
+            emptyMessage.remove();
+        }
         commentSection.insertAdjacentHTML('afterbegin', comment);
         form.reset();
 
