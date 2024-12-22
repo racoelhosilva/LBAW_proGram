@@ -90,9 +90,9 @@ const sendPost = (url, data) => {
 	});
 }
 
-const sendPatch = (url, data) => {
+const sendPut = (url, data) => {
 	return fetch(url, {
-		method: 'PATCH',
+		method: 'PUT',
 		headers: {
 			'Content-Type': 'application/json',
 			'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
@@ -233,64 +233,4 @@ const addLazyLoadingContainer = (container, containerLoading, endpoint, params, 
     scrollableElement.addEventListener('scroll', onScroll);
 };
 
-const toggleDropdown = (dropdownContent, event) => {
-	dropdownContent.classList.toggle('hidden');
-
-	const dropdownContents = document.querySelectorAll('.dropdown > div');
-	dropdownContents.forEach(content => {
-		if (content !== dropdownContent)
-			content.classList.add('hidden');
-	});
-
-	event.stopPropagation();
-};
-
-const hideDropdowns = event => {
-	const dropdownContents = document.querySelectorAll('.dropdown > div');
-	dropdownContents.forEach(content => {
-		content.classList.add('hidden');
-	});
-};
-
-const addDropdownListeners = () => {
-	const dropdowns = document.querySelectorAll(".dropdown");
-
-	dropdowns.forEach((dropdown) => {
-		const dropdownButton = dropdown.querySelector(":scope > button");
-		const dropdownContent = dropdown.querySelector(":scope > div");
-
-		dropdownButton.onclick = event => toggleDropdown(dropdownContent, event);
-	});
-
-	document.addEventListener('click', hideDropdowns);
-};
-
-
-const openModal = (modal, event) => {
-	modal.classList.add("active");
-	event.stopPropagation();
-};
-
-const closeModal = (modal, event) => {
-	modal.classList.remove("active");
-	hideDropdowns(event);
-	event.stopPropagation();
-};
-
-const addModalListeners = () => {
-	const modals = document.querySelectorAll(".modal");
-
-	modals.forEach(modal => {
-		const modalOpenButton = modal.querySelector(`:scope .open-button`);
-		const modalContent = modal.querySelector(':scope > div');
-		const modalCloseButtons = modal.querySelectorAll(':scope .close-button');
-
-		modalContent.addEventListener('click', event => event.stopPropagation());
-		modalOpenButton.addEventListener('click', event => openModal(modal, event));
-		modalCloseButtons.forEach(closeButton => {
-			closeButton.addEventListener('click', event => closeModal(modal, event));
-		});
-	});
-}
-
-export { sendGet, encodeParams, getView,sendPostView, sendPutView, sendDelete, sendPost, sendPatch, fadeToastMessage, sendToastMessage, addLazyLoading, addLazyLoadingContainer, hideDropdowns, addDropdownListeners, addModalListeners };
+export { sendGet, encodeParams, getView,sendPostView, sendPutView, sendDelete, sendPost, sendPut, fadeToastMessage, sendToastMessage, addLazyLoading, addLazyLoadingContainer };

@@ -1,11 +1,10 @@
 import {
-    addDropdownListeners,
-    addModalListeners,
     sendDelete,
     sendPutView,
     sendToastMessage
 } from "./utils.js";
 import {addPostListeners} from "./post.js";
+import {addDropdownListeners, addModalListeners} from "./component.js";
 
 
 const addEditCommentListener = () => {

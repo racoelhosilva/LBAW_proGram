@@ -1,12 +1,11 @@
 import {
-    addDropdownListeners,
     addLazyLoadingContainer,
-    addModalListeners,
     sendDelete,
     sendPost, sendPostView,
     sendToastMessage
 } from "./utils.js";
 import {addCommentListeners} from "./comment.js";
+import {addDropdownListeners, addModalListeners} from "./component.js";
 
 const togglePostLike = (likeButton, likeCount, postId) => {
     likeButton.disabled = true;
