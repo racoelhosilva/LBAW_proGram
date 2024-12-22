@@ -9,15 +9,17 @@
         <div class="grid gap-x-4 gap-y-2 sm:grid-cols-2 md:grid-cols-3">
             @forelse ($invites as $group)
                 <div class = "group-invite-container " data-group-id={{$group->id}}>
-                @include('partials.group-invitation-card', ['group' => $group])
+                    @include('partials.group-invitation-card', ['group' => $group, 'class' => ''])
                 </div>
             @empty
                 <p>No invites sent yet</p>
             @endforelse
-            @if(!$invites->isEmpty())
-                {{ $invites->onEachSide(0)->links() }}
-            @endif
         </div>
+        @if(!$invites->isEmpty())
+        <div>
+            {{ $invites->onEachSide(0)->links() }}
+        </div>
+        @endif
     </section>
 </main>
 @endsection
