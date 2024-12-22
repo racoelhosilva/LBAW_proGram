@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Comment;
+use App\Models\Group;
 use App\Models\Post;
 use App\Models\Tag;
 use Barryvdh\Debugbar\Facades\Debugbar;
@@ -74,8 +75,10 @@ class PostController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request): RedirectResponse|Redirector
+    public function store(Request $request, ?int $groupId): RedirectResponse|Redirector
     {
+        $group = $groupId ? Group::findOrFail($groupId) : null;
+
         if (! Auth::check()) {
             return redirect()->route('login');
         }
@@ -92,11 +95,11 @@ class PostController extends Controller
         ]);
 
         $post = new Post;
-        DB::transaction(function () use ($post, $request) {
+        DB::transaction(function () use ($post, $group, $request) {
             // Save every field except for the text
             $post->author_id = Auth::id();
             $post->title = $request->input('title');
-            $post->is_public = $request->input('is_public', false);
+            $post->is_public = $group ? $group->is_public : $request->input('is_public', false);
             $post->is_announcement = $request->input('is_announcement', false);
             $post->save();
             $post->tags()->sync($request->input('tags'));
@@ -121,6 +124,7 @@ class PostController extends Controller
             $post->text = $text;
             $post->save();
 
+            $group->posts()->attach($post->id);
         });
 
         return redirect()->route('post.show', $post->id)->withSuccess('Post created successfully.');

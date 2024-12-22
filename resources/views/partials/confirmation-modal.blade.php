@@ -18,9 +18,9 @@
     @endswitch
 
     <div>
-        <section class="space-y-4">
+        <article class="space-y-4">
             <div class="flex justify-between items-center">
-                <h1 class="text-2xl font-bold">{{ $label }}?</h1>
+                <h2 class="text-2xl font-bold">{{ $label }}?</h2>
                 @include('partials.icon-button', [
                     'iconName' => 'x',
                     'class' => 'close-button',
@@ -56,6 +56,6 @@
                     ])
                 @endisset
             </div>
-        </section>
+        </article>
     </div>
 </div>

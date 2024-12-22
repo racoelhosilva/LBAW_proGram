@@ -1,19 +1,21 @@
 @extends('layouts.app')
-@section('title') {{'Home | ProGram'}} @endsection
+
+@section('title', 'Home | ProGram')
+
 @section('content')
     <main id="home-page" class="px-8 grid grid-cols-4 gap-6">
         <section class="card h-min hidden lg:flex flex-col gap-3 ">
             <h1 class="text-xl font-bold">Users On This Platform</h1>
             @include('partials.user-list', ['users' => $users, 'responsive' => true])
 
-            @if (!Auth::check())
+            @guest
                 <div class="flex justify-center pt-2">
                     @include('partials.text-button', [
                         'text' => 'Login/Register',
                         'anchorUrl' => route('login'),
                     ])
                 </div>
-            @endif
+            @endguest
         </section>
 
         <section class="card h-min space-y-3 col-span-4 lg:col-span-2">

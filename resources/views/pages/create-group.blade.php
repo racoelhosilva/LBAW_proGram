@@ -1,5 +1,7 @@
 @extends('layouts.app')
-@section('title') {{'Create Group | ProGram'}} @endsection
+
+@section('title', 'Create Group | ProGram')
+
 @section('content')
     <main id="create-group-page" class="px-8">
         <article class="card h-min p-10 pt-16 flex flex-col gap-12">

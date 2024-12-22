@@ -97,13 +97,4 @@ class GroupPolicy
 
         return $user && ! $user->isBanned() && $group->invitedUsers()->where('users.id', $user->id)->exists();
     }
-
-    /*
-     * Determine whether the user can dreject a group invite.
-     */
-    public function rejectInvite(?User $user, Group $group): bool
-    {
-
-        return $user && ! $user->isBanned() && $group->invitedUsers()->where('users.id', $user->id)->exists();
-    }
 }

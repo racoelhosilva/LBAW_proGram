@@ -1,4 +1,4 @@
-@props(['user', 'reverse' => false])
+@props(['user'])
 
 @php($userUrl = route('user.show', $user->id))
 
@@ -14,15 +14,12 @@
         </p>
     </div>
 
-    @if(auth()->check() && auth()->id() !== $user->id)
-        <div class="flex gap-x-4 items-center col-start-3">
-            <button aria-label="Accept" class="p-3 secondary-btn accept-request-button" data-user-id="{{ $user->id }}">
-                @include('partials.icon', ['name' => 'accept'])
-            </button>
-            <button aria-label="Reject" class="p-3 secondary-btn reject-request-button" data-user-id="{{ $user->id }}">
-                @include('partials.icon', ['name' => 'remove'])
-            </button>
-        </div>      
-    @endif
-
+    <div class="flex gap-x-4 items-center col-start-3">
+        <button aria-label="Accept" class="p-3 secondary-btn accept-request-button" data-user-id="{{ $user->id }}">
+            @include('partials.icon', ['name' => 'accept'])
+        </button>
+        <button aria-label="Reject" class="p-3 secondary-btn reject-request-button" data-user-id="{{ $user->id }}">
+            @include('partials.icon', ['name' => 'remove'])
+        </button>
+    </div>
 </article>

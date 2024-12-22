@@ -1,5 +1,5 @@
 import "./bootstrap";
-import {fadeToastMessage, hideDropdowns, sendToastMessage, addLazyLoading,addLazyLoadingContainer, sendDelete, sendPost, addDropdownListeners,sendPostView, sendPutView} from "./utils";
+import {addDropdownListeners, fadeToastMessage, hideDropdowns, sendToastMessage, addLazyLoading,addLazyLoadingContainer, sendDelete, sendPost, addDropdownListeners,sendPostView, sendPutView} from "./utils";
 import Quill from "quill";
 
 const openModal = (modal, event) => {
@@ -259,7 +259,7 @@ const addDeleteCommentListener = () => {
     const comments = commentSection.querySelectorAll('.comment-card');
     comments.forEach(comment => {
         const deleteButton = comment.querySelector(' .comment-actions .delete-comment');
-        
+
         if (deleteButton) {
             deleteButton.onclick = () => {
                 const commentId = comment.dataset.commentId;
@@ -469,6 +469,7 @@ const addPostListeners = () => {
 	addDropdownListeners();
 }
 
+addDropdownListeners();
 addModalListeners();
 addToastMessageListeners();
 activateQuill();

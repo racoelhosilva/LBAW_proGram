@@ -14,7 +14,6 @@
         ])
 
         <div class="flex flex-col">
-
             @include('partials.text-button', [
                 'text' => 'Reset Password',
                 'label' => 'Reset',
@@ -23,5 +22,4 @@
             ])
         </div>
     </form>
-
 </article>

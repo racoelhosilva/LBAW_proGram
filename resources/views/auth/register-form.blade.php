@@ -2,7 +2,7 @@
     @include('partials.logo', ['size' => 'large'])
 
     <form method="post" action="{{ route('register') }}" class="grid grid-cols-2 gap-4 justify-self-stretch">
-        {{ csrf_field() }}
+        @csrf
 
         <div class="col-span-2">
             @include('partials.input-field', [
