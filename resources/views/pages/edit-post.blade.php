@@ -1,9 +1,9 @@
 @props(['post', 'tags'])
 
 @extends('layouts.app')
-@section('title')
-    {{ 'Edit ' . $post->title . ' | ProGram' }}
-@endsection
+
+@section('title', 'Edit Post - ' . $post->title . ' | ProGram')
+
 @section('content')
     <main id="edit-post-page" class="px-8">
         <article class="card h-min p-10 pt-16 flex flex-col gap-2">

@@ -1,5 +1,5 @@
 import "./bootstrap";
-import {fadeToastMessage, hideDropdowns, sendToastMessage} from "./utils";
+import {addDropdownListeners, fadeToastMessage, hideDropdowns, sendToastMessage, addLazyLoading,addLazyLoadingContainer, sendDelete, sendPost, sendPostView, sendPutView} from "./utils";
 import Quill from "quill";
 
 const openModal = (modal, event) => {
@@ -213,9 +213,277 @@ const addCopyButtonListeners = () => {
     });
 };
 
+const addSubmitCommentListener = () => {
+    const form = document.getElementById('comment-submit-form');
+    if (!form) return;
+    const commentSection = document.querySelector('#comment-list'); // Container for comments
+    if(!commentSection) return;
+    form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const formData = new FormData(form);
+        const params = Object.fromEntries(formData.entries());
+        const comment = await sendPostView(form.action, params);
+        commentSection.insertAdjacentHTML('afterbegin', comment);
+        form.reset();
+        addDropdownListeners();
+        addEditCommentListener();
+        addDeleteCommentListener();
+        addSaveCommentListener();
+        addPostListeners();
+        addModalListeners();
+    });
+};
+
+const addEditCommentListener = () => {
+    const commentSection = document.getElementById('comment-section');
+    if (!commentSection) return;
+
+    const comments = commentSection.querySelectorAll('.comment-card');
+    comments.forEach((comment) => {
+        const editButton = comment.querySelector('.comment-actions .edit-comment');
+        const contentContainer = comment.querySelector('.content-container');
+        const contentEditContainer = comment.querySelector('.edit-content-container');
+        if(editButton) {
+            editButton.onclick = () => {
+                contentContainer.classList.toggle('hidden');
+                contentEditContainer.classList.toggle('hidden');
+            };
+        }
+    });
+};
+
+const addDeleteCommentListener = () => {
+    const commentSection = document.getElementById('comment-section');
+    if (!commentSection) return;
+
+    const comments = commentSection.querySelectorAll('.comment-card');
+    comments.forEach(comment => {
+        const deleteButton = comment.querySelector(' .comment-actions .delete-comment');
+
+        if (deleteButton) {
+            deleteButton.onclick = () => {
+                const commentId = comment.dataset.commentId;
+                sendDelete(`/api/comment/${commentId}`)
+                    .then((_) => {
+                        comment.remove();
+                    })
+                    .catch((error) => {
+                        sendToastMessage('An error occurred while deleting comment.', 'error');
+                    });
+            };
+        }
+    });
+}
+
+const addSaveCommentListener = () => {
+    const commentSection = document.getElementById('comment-section');
+    if (!commentSection) return;
+
+    const comments = commentSection.querySelectorAll('.comment-card');
+
+    comments.forEach(comment => {
+        const saveButton = comment.querySelector('.edit-comment-form button');
+        const contentEditForm = comment.querySelector('.edit-comment-form');
+        if (saveButton) {
+            saveButton.onclick = async (event) => {
+            event.preventDefault();
+            const formData = new FormData(contentEditForm);
+            const params = Object.fromEntries(formData.entries());
+            const updatedComment = await sendPutView(contentEditForm.action, params, 'PATCH');
+            comment.outerHTML = updatedComment;
+            addDropdownListeners();
+            addEditCommentListener();
+            addDeleteCommentListener();
+            addSaveCommentListener();
+            addPostListeners();
+            addModalListeners();
+            };
+        }
+    });
+}
+
+const addHomeEventListeners = () => {
+    const homePosts = document.getElementById('home-posts');
+    const homePostsLoading = document.querySelector('#home-posts + div .loading-spinner');
+    if (!homePosts || !homePostsLoading) {
+        return;
+    }
+
+    addLazyLoading(homePosts, homePostsLoading, '/', null, addPostListeners);
+}
+
+const togglePostLike = (likeButton, likeCount, postId) => {
+	likeButton.disabled = true;
+	if (likeButton.classList.contains("liked")) {
+		sendDelete(`/api/post/${postId}/like`)
+			.then(_ => {
+				likeButton.classList.remove("liked");
+				likeCount.innerHTML = parseInt(likeCount.innerHTML) - 1;
+				likeButton.disabled = false;
+			})
+			.catch(_ => {
+				likeButton.disable = false;
+				sendToastMessage('An error occurred while unliking.', 'error');
+			});
+	} else {
+		sendPost(`/api/post/${postId}/like`)
+			.then(_ => {
+				likeButton.classList.add("liked");
+				likeCount.innerHTML = parseInt(likeCount.innerHTML) + 1;
+				likeButton.disabled = false;
+			})
+			.catch(_ => {
+				likeButton.disabled = false;
+				sendToastMessage('An error occurred while liking.', 'error');
+			});
+	}
+};
+
+const toggleCommentLike = (likeButton, likeCount, commentId) => {
+	likeButton.disabled = true;
+	if (likeButton.classList.contains("liked")) {
+		sendDelete(`/api/comment/${commentId}/like`)
+			.then(_ => {
+				likeButton.classList.remove("liked");
+				likeCount.innerHTML = parseInt(likeCount.innerHTML) - 1;
+				likeButton.disabled = false;
+			})
+			.catch(_ => {
+				likeButton.disabled = false;
+				sendToastMessage('An error occurred while unliking.', 'error');
+			});
+	} else {
+		sendPost(`/api/comment/${commentId}/like`)
+			.then(_ => {
+				likeButton.classList.add("liked");
+				likeCount.innerHTML = parseInt(likeCount.innerHTML) + 1;
+				likeButton.disabled = false;
+			})
+			.catch(_ => {
+				likeButton.disabled = false;
+				sendToastMessage('An error occurred while liking.', 'error');
+			});
+	}
+};
+
+const addLikeButtonListeners = () => {
+	const postCards = document.querySelectorAll(".post-card");
+
+	postCards.forEach((postCard) => {
+		const postId = postCard.dataset.postId;
+		const likeButton = postCard.querySelector(".like-button");
+		const likeCount = postCard.querySelector(".like-button + p");
+		likeButton.onclick = () =>	{
+			if (likeButton.classList.contains('enabled')) {
+				togglePostLike(likeButton, likeCount, postId);
+			} else {
+				switch (likeButton.dataset.disabledReason) {
+					case 'not-logged-in':
+						sendToastMessage('You must be logged in to like a post.', 'info');
+						break;
+					case 'is-owner':
+						sendToastMessage('You cannot like your own post.', 'info');
+						break;
+					default:
+						sendToastMessage('You are not authorized to like this post.', 'info');
+						break;
+				}
+			}
+		}
+	});
+
+	const commentCards = document.querySelectorAll(".comment-card");
+
+	commentCards.forEach((commentCard) => {
+		const commentId = commentCard.dataset.commentId;
+		const likeButton = commentCard.querySelector(".like-button");
+		const likeCount = commentCard.querySelector(".like-button + p");
+
+		likeButton.onclick = () =>	{
+			if (likeButton.classList.contains('enabled')) {
+				toggleCommentLike(likeButton, likeCount, commentId);
+			} else {
+				switch (likeButton.dataset.disabledReason) {
+					case 'not-logged-in':
+						sendToastMessage('You must be logged in to like a comment.', 'info');
+						break;
+					case 'is-owner':
+						sendToastMessage('You cannot like your own comment.', 'info');
+						break;
+					default:
+						sendToastMessage('You are not authorized to like this comment.', 'info');
+						break;
+				}
+			}
+		}
+    });
+};
+
+const addCommentSectionListeners = () => {
+	const commentList = document.getElementById('comment-list');
+	const commentListLoading = document.querySelector('#comment-list + div .loading-spinner');
+	const commentSection = document.getElementById('comment-section');
+
+	if (!commentList || !commentListLoading) {
+		return;
+	}
+
+	const url = window.location.href;
+	const id = url.split('/post/')[1];
+
+	addLazyLoadingContainer(commentSection, commentListLoading, '/post/' + id, null ,addPostListeners);
+}
+
+const addSearchListeners = () => {
+    const searchPosts = document.getElementById('search-posts');
+    const searchUsers = document.getElementById('search-users');
+    const searchGroups = document.getElementById('search-groups');
+    const searchLoadingSpinner = document.querySelector('#search-results > div:last-child > .loading-spinner');
+    const searchFilters = document.querySelectorAll('#search-filters .select');
+    const searchField = document.getElementById('search-field');
+
+    if (!searchLoadingSpinner || !searchField || !searchFilters) {
+        return;
+    }
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const searchParams = {
+        query: urlParams.get('query'),
+        tags: urlParams.getAll('tags[]'),
+        search_attr: urlParams.get('search_attr'),
+        order_by: urlParams.get('order_by'),
+    };
+    if (searchPosts) {
+        addLazyLoading(searchPosts, searchLoadingSpinner, '/search', { ...searchParams, search_type: 'posts' }, addPostListeners);
+    }
+    if (searchUsers) {
+        addLazyLoading(searchUsers, searchLoadingSpinner, '/search', { ...searchParams, search_type: 'users' });
+    }
+    if (searchGroups) {
+        addLazyLoading(searchGroups, searchLoadingSpinner, '/search', { ...searchParams, search_type: 'groups' });
+    }
+}
+
+const addPostListeners = () => {
+	addLikeButtonListeners();
+	addDropdownListeners();
+}
+
+addDropdownListeners();
 addModalListeners();
 addToastMessageListeners();
 activateQuill();
 addSelectListeners();
 addResponsiveDropdownListeners();
 addCopyButtonListeners();
+
+addHomeEventListeners();
+addSaveCommentListener();
+addEditCommentListener();
+addDeleteCommentListener();
+addSubmitCommentListener();
+addPostListeners();
+addCommentSectionListeners();
+addSearchListeners();
+
+export { addModalListeners, addToastMessageListeners, addSelectListeners };

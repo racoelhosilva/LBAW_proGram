@@ -1,4 +1,4 @@
-@props(['user', 'class' => '', 'buttons' => null])
+@props(['user', 'class' => ''])
 
 @php($userUrl = route('user.show', $user->id))
 

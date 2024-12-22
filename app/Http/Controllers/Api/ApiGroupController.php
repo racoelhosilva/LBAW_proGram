@@ -83,16 +83,12 @@ class ApiGroupController extends Controller
         $invitee = User::findOrFail($invitee_id);
         $this->authorize('invite', [$group, $invitee]);
 
-        $invitation = GroupInvitation::create(
-            [
-                'group_id' => $group_id,
-                'invitee_id' => $invitee_id,
-            ],
-            [
-                'status' => 'pending',
-                'creation_timestamp' => now(),
-            ]
-        );
+        $invitation = new GroupInvitation;
+
+        $invitation->group_id = $group_id;
+        $invitation->invitee_id = $invitee_id;
+
+        $invitation->save();
 
         return response()->json(['message' => 'User invited to group.']);
     }
@@ -139,7 +135,7 @@ class ApiGroupController extends Controller
     public function rejectInvite(Request $request, int $group_id)
     {
         $group = Group::findOrFail($group_id);
-        $this->authorize('rejectInvite', $group);
+        $this->authorize('acceptInvite', $group);
 
         $user = Auth::user();
 

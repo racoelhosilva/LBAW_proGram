@@ -12,8 +12,7 @@
             </article>
             <article class="phone card p-4 border rounded-lg shadow w-full">
                 <h2 class="text-2xl font-semibold mb-2">Phone</h2>
-                <p>+351 22 508 1400
-                </p>
+                <p>+351 22 508 1400</p>
             </article>
             <article class="email card p-4 border rounded-lg shadow w-full">
                 <h2 class="text-2xl font-semibold mb-2">Email</h2>

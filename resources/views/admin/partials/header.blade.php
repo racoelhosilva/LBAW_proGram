@@ -9,7 +9,7 @@
             @include('partials.icon-button', ['iconName' => 'layout-dashboard', 'id' => 'dashboard-button', 'label' => 'Home', 'type' => 'secondary', 'anchorUrl' => route('admin.dashboard')])
         </div>
         @include('partials.theme-button')
-        <article class="dropdown">
+        <div class="dropdown">
             @include('partials.icon-button', ['iconName' => 'grip', 'id' => 'more-button', 'label' => 'More', 'type' => 'transparent'])
             <div class="hidden">
                 <div>
@@ -30,6 +30,6 @@
                     </form>
                 </div>
             </div>
-        </article>
+        </div>
     </div>
 </header>

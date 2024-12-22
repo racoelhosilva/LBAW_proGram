@@ -8,6 +8,11 @@
         <!-- CSRF Token -->
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
+        <meta property="og:url" content="{{ url()->current() }}">
+        <meta property="og:type" content="website">
+        <meta property="og:title" content="@yield('title')">
+        <meta property="og:image" content="@yield('image', asset('images/logo.png'))">
+
         <title>@yield('title')</title>
 
         <!-- Fonts -->
@@ -27,7 +32,7 @@
         </script>
 
         <!-- Styles & Scripts -->
-        @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/header.js', 'resources/js/search.js', 'resources/js/admin.js'])
+        @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/header.js', 'resources/js/admin.js'])
     </head>
     <body class="bg-white dark:bg-slate-800 text-black dark:text-white">
         @include('admin.partials.header')

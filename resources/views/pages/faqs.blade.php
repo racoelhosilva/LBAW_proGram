@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title') {{'FAQs | ProGram'}} @endsection
+@section('title', 'FAQs | ProGram')
 @section('content')
     @php
         $faqs = [
@@ -14,10 +14,8 @@
     @endphp
 
     <main id="faqs-page" class="px-8">
-        <header class="flex justify-center">
-            <h1 class="text-3xl font-bold mb-4">Frequently Asked Questions</h1>
-        </header>
         <section>
+            <h1 class="text-3xl text-center font-bold mb-4">Frequently Asked Questions</h1>
             @foreach ($faqs as $faq)
                 <article class="card faq-container h-min mt-4 mb-4 p-4 cursor-pointer ">
                     <div class="flex items-center justify-between px-4">
@@ -29,10 +27,9 @@
                             @include('partials.icon', ['name' => 'x', 'class' => 'max-w-10'])
                         </div>
                     </div>
-                    <p class="max-h-0 overflow-hidden transition-all duration-300 ease-in-out answer  px-4">
+                    <p class="max-h-0 overflow-hidden transition-all duration-300 ease-in-out answer px-4">
                         {{ $faq['answer'] }}
                     </p>
-                    
                 </article>
             @endforeach
         </section>

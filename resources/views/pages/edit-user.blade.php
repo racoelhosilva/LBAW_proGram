@@ -1,7 +1,7 @@
 @extends('layouts.app')
-@section('title')
-    {{ 'Edit ' . $user->name . ' | ProGram' }}
-@endsection
+
+@section('title', 'Edit Profile | ProGram')
+
 @section('content')
     <main class="px-8 grid grid-cols-4 grid-rows-[auto_1fr] gap-6">
         @include('partials.user-settings-menu')

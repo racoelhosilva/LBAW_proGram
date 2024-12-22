@@ -8,12 +8,12 @@
     };  
 @endphp
 
-@if (!isset($anchorUrl))
-    <button {{ isset($id) ? "id=$id" : "" }} {{ isset($form) ? "form=$form" : "" }} class="px-4 py-3 {{ $buttonClass }} text-center font-medium {{ $class }}">
-        {{ $text }}
-    </button>
-@else
+@isset($anchorUrl)
     <a href="{{ $anchorUrl }}" {{ isset($id) ? "id=$id" : "" }}  {{ isset($form) ? "form=$form" : "" }} class="px-4 py-3 {{ $buttonClass }} text-center font-medium {{ $class }}">
         {{ $text }}
     </a>
+@else
+    <button type="{{ $submit ? 'submit' : 'button'}}" {{ isset($id) ? "id=$id" : "" }} {{ isset($form) ? "form=$form" : "" }} class="px-4 py-3 {{ $buttonClass }} text-center font-medium {{ $class }}">
+        {{ $text }}
+    </button>
 @endif

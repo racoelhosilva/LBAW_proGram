@@ -10,12 +10,11 @@
 
 <div class="select closed" tabindex="0" data-form="{{ $form }}">
     <button type="button">
-        <div>
-            <span class="select-label">{{ $label }}:</span>
-            <span class="selected-options">{{ implode(", ", $selectedNames) }}</span>
-        </div>
-        <div>@include('partials.icon', ['name' => 'chevron-down'])</div>
-        <div>@include('partials.icon', ['name' => 'chevron-up'])</div>
+        <span class="select-label">{{ $label }}:</span>
+        <span class="selected-options">{{ implode(", ", $selectedNames) }}</span>
+
+        <span>@include('partials.icon', ['name' => 'chevron-down'])</span>
+        <span>@include('partials.icon', ['name' => 'chevron-up'])</span>
     </button>
     <div>
         @foreach ($options as $option)

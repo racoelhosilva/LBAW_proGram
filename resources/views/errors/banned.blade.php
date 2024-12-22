@@ -9,7 +9,7 @@
             'error' => 'You are currently banned.',
             'message' => "You do not have permission to access the site.\nReason: $reason\nExpires: $expires",
             'button' => 'logout',
-            ])
+        ])
     </main> 
 @endsection
 

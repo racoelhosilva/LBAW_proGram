@@ -96,10 +96,10 @@ class SearchController extends Controller
     {
         switch ($orderBy) {
             case 'name':
-                $users = $users->orderBy('name');
+                $users = $users->orderBy('users.name');
                 break;
             case 'followers':
-                $users = $users->orderByDesc('num_followers');
+                $users = $users->orderByDesc('users.num_followers');
                 break;
             case 'relevance':
             default:
@@ -116,19 +116,19 @@ class SearchController extends Controller
     {
         switch ($orderBy) {
             case 'newest':
-                $posts = $posts->orderByDesc('creation_timestamp');
+                $posts = $posts->orderByDesc('post.creation_timestamp');
                 break;
             case 'oldest':
-                $posts = $posts->orderBy('creation_timestamp');
+                $posts = $posts->orderBy('post.creation_timestamp');
                 break;
             case 'likes':
-                $posts = $posts->orderByDesc('likes');
+                $posts = $posts->orderByDesc('post.likes');
                 break;
             case 'comments':
-                $posts = $posts->orderByDesc('comments');
+                $posts = $posts->orderByDesc('post.comments');
                 break;
             case 'title':
-                $posts = $posts->orderBy('title');
+                $posts = $posts->orderBy('post.title');
                 break;
             case 'relevance':
             default:
@@ -145,10 +145,10 @@ class SearchController extends Controller
     {
         switch ($orderBy) {
             case 'name':
-                $posts = $posts->orderBy('name');
+                $posts = $posts->orderBy('groups.name');
                 break;
             case 'members':
-                $posts = $posts->orderByDesc('member_count');
+                $posts = $posts->orderByDesc('groups.member_count');
                 break;
             case 'relevance':
             default:

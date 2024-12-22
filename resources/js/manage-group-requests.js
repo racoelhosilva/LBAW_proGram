@@ -14,7 +14,6 @@ const acceptRequestListener = () => {
                     .then(() => {
                         btn.closest('.manage-request-container').remove();
                         sendToastMessage('Request accepted with success', 'success');
-                        
                     })
                     .catch((error) => {
                         sendToastMessage('An error occurred while accepting the request.', 'error');

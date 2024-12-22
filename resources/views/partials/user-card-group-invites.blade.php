@@ -1,4 +1,4 @@
-@props(['user', 'class' => '', 'buttons' => null])
+@props(['user', 'class' => ''])
 
 @php($userUrl = route('user.show', $user->id))
 
@@ -17,30 +17,28 @@
     </div>
     <div class="flex gap-x-4 justify-end">
         @if($group->isUserInvited($user))
-                @include('partials.text-button', [
-                                    'text' => 'Send',
-                                    'type' => 'secondary',
-                                    'class' => 'w-40    invite-button hidden',
-                                ])
-                @include('partials.text-button', [
-                                    'text' => 'Unsend',
-                                    'type' => 'secondary',
-                                    'class' => 'w-40  uninvite-button ',
-                                ])
-        @else
             @include('partials.text-button', [
                 'text' => 'Send',
                 'type' => 'secondary',
-                'class' => 'w-40    invite-button',
+                'class' => 'invite-button hidden',
             ])
             @include('partials.text-button', [
                 'text' => 'Unsend',
                 'type' => 'secondary',
-                'class' => 'w-40  uninvite-button hidden',
+                'class' => 'uninvite-button',
+            ])
+        @else
+            @include('partials.text-button', [
+                'text' => 'Send',
+                'type' => 'secondary',
+                'class' => 'invite-button',
+            ])
+            @include('partials.text-button', [
+                'text' => 'Unsend',
+                'type' => 'secondary',
+                'class' => 'uninvite-button hidden',
             ])
         @endif
-        
-
     </div>
 </article>
 

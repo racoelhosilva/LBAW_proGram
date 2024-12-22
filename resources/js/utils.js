@@ -32,6 +32,35 @@ const getView = (url, params) => {
 		return response.text();
 	});
 }
+const sendPostView = (url, params) => {
+    return fetch(url + encodeParams(params), {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+            'X-Requested-With': 'XMLHttpRequest',
+        },
+    }).then(response => {
+        if (!response.ok) {
+            throw new Error('Unexpected error occurred');
+        }
+        return response.text();
+    });
+};
+
+const sendPutView = (url, params) => {
+	return fetch(url + encodeParams(params), {
+		method: 'PUT',
+		headers: {
+			'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+			'X-Requested-With': 'XMLHttpRequest',
+		},
+	}).then(response => {
+		if (!response.ok) {
+			throw new Error('Unexpected error occurred');
+		}
+		return response.text();
+	});
+};
 
 const sendPost = (url, data) => {
 	return fetch(url, {
@@ -155,6 +184,40 @@ const addLazyLoading = (container, containerLoading, endpoint, params, callback)
 	});
 }
 
+const addLazyLoadingContainer = (container, containerLoading, endpoint, params, callback) => {
+    let loading = false;
+    let atEnd = false;
+    let page = 1;
+
+    const scrollableElement = container.querySelector('.flex-1.overflow-y-auto');
+
+    if (!scrollableElement) {
+        return;
+    }
+
+    const onScroll = async () => {
+        const scrollTop = scrollableElement.scrollTop;
+        const scrollHeight = scrollableElement.scrollHeight;
+        const clientHeight = scrollableElement.clientHeight;
+
+        if (!atEnd && !loading && scrollTop + clientHeight >= scrollHeight - 100) {
+            loading = true;
+            containerLoading.classList.remove('hidden');
+
+            page++;
+            atEnd = await loadMoreElements(scrollableElement, endpoint, params, page);
+            if (callback) {
+                callback();
+            }
+
+            loading = false;
+            containerLoading.classList.add('hidden');
+        }
+    };
+
+    scrollableElement.addEventListener('scroll', onScroll);
+};
+
 const toggleDropdown = (dropdownContent, event) => {
 	dropdownContent.classList.toggle('hidden');
 
@@ -187,4 +250,4 @@ const addDropdownListeners = () => {
 	document.addEventListener('click', hideDropdowns);
 };
 
-export { sendGet, encodeParams, getView, sendDelete, sendPost, sendPatch, fadeToastMessage, sendToastMessage, addLazyLoading, hideDropdowns, addDropdownListeners };
+export { sendGet, encodeParams, getView,sendPostView, sendPutView, sendDelete, sendPost, sendPatch, fadeToastMessage, sendToastMessage, addLazyLoading, addLazyLoadingContainer, hideDropdowns, addDropdownListeners };

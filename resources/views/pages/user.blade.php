@@ -1,26 +1,72 @@
+@props(['user', 'posts', 'recommendedUsers', 'numRequests'])
+
 @extends('layouts.app')
 
-@section('title')
-    {{ $user->name . ' | ProGram' }}
+@section('title', $user->name . ' | ProGram')
+
+@section('openGraph')
+    <meta property="og:title" content="{{ $user->name }} | ProGram">
+    <meta property="og:image" content="{{ asset('images/logo.png') }}">
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:type" content="profile">
+    <meta property="profile:username" content="{{ $user->name }}">
 @endsection
+
+@php
+    $canFollow = auth()->check() && auth()->user()->can('follow', $user);
+
+    if ($canFollow) {
+        if (auth()->user()->follows($user)) {
+            $followClass = "following primary-btn";
+        } elseif (auth()->user()->getFollowRequestStatus($user)) {
+            $followClass = "pending secondary-btn";
+        } else {
+            $followClass = "unfollowing primary-btn";
+        }
+    }
+@endphp
 
 @section('content')
     <main id="profile-page" class="px-8 py-4 grid grid-cols-4 grid-rows-[auto_1fr] gap-x-6 gap-y-3 lg:gap-y-6">
         <section id="banner-section" style="background-image: url('{{ $user->getBannerImage() }}');"
-            class="card h-min col-span-4 grid grid-cols-[auto_1fr_auto] gap-y-16 p-4 bg-cover">
-            <div class="col-span-full">
-                <h1 class="text-4xl font-bold">{{ $user->name }}</h1>
-                <h2 class="text-2xl">{{ '@' . $user->handle }}</h2>
+            class="card h-min col-span-4 grid grid-cols-[auto_1fr_auto] gap-y-16 p-8 bg-cover">
+            <div class="col-span-full flex justify-between">
+                <div class="flex flex-col gap-2">
+                    <h1 class="text-4xl font-bold">{{ $user->name }}</h1>
+                    <h2 class="text-2xl">{{ '@' . $user->handle }}</h2>
+                </div>
+                <div class="min-w-[24px]">
+                    @if($user->is_public)
+                        <article class="help-icon group relative">
+                            <div class="rounded-md">
+                                @include('partials.icon', ['name' => 'earth'])
+                            </div>
+                            <div class="px-4 py-2 rounded-md bg-gray-900 shadow-lg absolute top-8 left-full -translate-x-full z-30 mt-3 text-white opacity-0 group-hover:opacity-100 group-hover:top-6 transition-all pointer-events-none">
+                                Public
+                            </div>
+                        </article>
+                    @else
+                        <article class="help-icon group relative">
+                            <div class="rounded-md">
+                                @include('partials.icon', ['name' => 'lock'])
+                            </div>
+                            <div class="px-4 py-2 rounded-md bg-gray-900 shadow-lg absolute top-8 left-full -translate-x-full z-30 mt-3 text-white opacity-0 group-hover:opacity-100 group-hover:top-6 transition-all pointer-events-none">
+                                Private
+                            </div>
+                        </article>
+                    @endif
+                </div>
             </div>
-            <img src="{{ $user->getProfilePicture() }}" class="w-36 sm:w-52 h-36 sm:h-52 rounded-full object-cover">
+            <img src="{{ $user->getProfilePicture() }}" alt="{{ $user->name }} Profile Picture" class="w-36 sm:w-52 h-36 sm:h-52 rounded-full object-cover">
             <div class="profile-buttons flex justify-end items-end">
-                @if ($isOwnProfile)
+                @can('update', $user)
                     @include('partials.text-button', [
                         'text' => 'Edit Profile',
                         'anchorUrl' => route('user.edit', auth()->id()),
                     ])
-                @elseif (Auth::check()) 
-                    <button aria-label="FollowProfile" class="px-4 py-3 text-center font-medium follow-profile-button {{  Auth::user()->follows($user) ? "following primary-btn" : (Auth::user()->getFollowRequestStatus($user) ? "pending secondary-btn" : "unfollowing primary-btn") }}" data-user-id="{{ $user->id }}">
+                @endcan
+                @if ($canFollow)
+                    <button aria-label="Follow Profile" class="px-4 py-3 text-center font-medium follow-profile-button {{ $followClass }}" data-user-id="{{ $user->id }}">
                         <span class="follow">Follow</span>
                         <span class="pending">Pending</span>
                         <span class="unfollow">Unfollow</span>
@@ -30,8 +76,8 @@
         </section>
 
         @can('viewContent', $user)
-            <section id="profile-left" class="h-min col-span-4 lg:col-span-1 flex flex-col gap-3">
-                <article id="user-info" class="card flex flex-col gap-3">
+            <div id="profile-left" class="h-min col-span-4 lg:col-span-1 flex flex-col gap-3">
+                <section id="user-info" class="card flex flex-col gap-3">
                     <div class="grid grid-cols-[auto_1fr_auto] items-start">
                         <h1 class="text-xl font-bold">User Info</h1>
                         <div class="col-start-3 flex">
@@ -62,9 +108,9 @@
                             @endforeach
                         </p>
                     @endif
-                </article>
+                </section>
 
-                <article id="top-projects" class="card flex flex-col gap-3">
+                <section id="top-projects" class="card flex flex-col gap-3">
                     <h1 class="text-xl font-bold">Top Projects</h1>
                     @if ($user->stats->topProjects()->count() > 0)
                         <ul class="ms-4 list-disc">
@@ -78,11 +124,11 @@
                     @else
                         <p>No projects to show</p>
                     @endif
-                </article>
-            </section>
+                </section>
+            </div>
 
-            <section id="profile-middle" class="h-min col-span-4 lg:col-span-2 row-start-4 lg:row-start-2 col-start-1 lg:col-start-2 flex flex-col gap-3">
-                <article class="card space-y-3">
+            <div id="profile-middle" class="h-min col-span-4 lg:col-span-2 row-start-4 lg:row-start-2 col-start-1 lg:col-start-2 flex flex-col gap-3">
+                <section class="card space-y-3">
                     <h1 class="text-xl font-bold">Posts</h1>
                     @if ($posts->count() === 0)
                         <p>No posts to show</p>
@@ -91,32 +137,34 @@
                             @include('partials.post-card', ['post' => $post])
                         @endforeach
                     @endif
-                </article>
-            </section>
+                </section>
+            </div>
 
-            <section id="profile-right" class="h-min col-span-4 lg:col-span-1 row-start-3 lg:row-start-2 col-start-1 lg:col-start-4 flex flex-col gap-3">
-                <article id="follows" class="card flex flex-col gap-3">
-                    <a href="{{ route('user.followers', ['id' => $user->id]) }}" class="text-xl font-bold block">Followers: {{ $user->num_followers }}</a>
-                    <a href="{{ route('user.following', ['id' => $user->id]) }}" class="text-xl font-bold block">Following: {{ $user->num_following }}</a>
-                    @if($isOwnProfile)
-                        <a href="{{ route('user.requests', ['id' => $user->id]) }}" class="text-xl font-bold block">Requests: {{ $num_requests }}</a>
-                    @endif
-                </article>
+            <div id="profile-right" class="h-min col-span-4 lg:col-span-1 row-start-3 lg:row-start-2 col-start-1 lg:col-start-4 flex flex-col gap-3">
+                <section id="follows" class="card flex flex-col">
+                    <h1 class="mb-2 text-xl font-bold">User Connections</h1>
+                    <a href="{{ route('user.followers', ['id' => $user->id]) }}" class="text-lg font-semibold block">Followers: {{ $user->num_followers }}</a>
+                    <a href="{{ route('user.following', ['id' => $user->id]) }}" class="text-lg font-semibold block">Following: {{ $user->num_following }}</a>
+                    @can('viewRequests', $user)
+                        <a href="{{ route('user.requests', ['id' => $user->id]) }}" class="text-lg font-semibold block">Requests: {{ $numRequests }}</a>
+                    @endcan
+                </section>
 
-                <article id="groups" class="card col-span-4 space-y-3 flex flex-col">
-                    <a href={{'/user/' . $user->id . '/groups'}} class="text-xl font-bold">Groups: {{ $user->groups->count() }}</a>
-                    @if($user->id == Auth::id())
-                        <a href={{'/user/' . $user->id . '/invites'}} class="text-xl font-bold">Invites: {{ $user->groupsInvitedTo()->count() }}</a>
-                    @endif
-                </article>
+                <section id="groups" class="card flex flex-col">
+                    <h1 class="mb-2 text-xl font-bold">User Groups</h1>
+                    <a href="{{ route('user.groups', $user->id) }}" class="text-lg font-semibold"><h2>Groups: {{ $user->groups->count() }}</h2></a>
+                    @can('viewInvites', $user)
+                        <a href="{{ route('user.invites', $user->id) }}" class="text-lg font-semibold"><h2>Invites: {{ $user->groupsInvitedTo()->count() }}</h2></a>
+                    @endcan
+                </section>
 
-                @if ($recommendedUsers !== null && $recommendedUsers->count() > 0)
-                    <article id="users" class="card hidden lg:flex flex-col gap-3">
-                        <h3 class="text-xl font-bold">Users you might know</h3>
+                @if ($recommendedUsers->count() > 0)
+                    <section id="users" class="card hidden lg:flex flex-col gap-3">
+                        <h1 class="text-xl font-bold">Users you might know</h1>
                         @include('partials.user-list', ['users' => $recommendedUsers, 'responsive' => true])
-                    </article>     
+                    </section>
                 @endif
-            </section>
+            </div>
         @else
             <section id="private-profile" class="min-h-32 col-span-4 flex flex-col justify-center items-center">
                 <h1 class="text-4xl/[3rem] font-bold">This profile is private</h1>

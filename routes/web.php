@@ -93,6 +93,7 @@ Route::middleware(['deny.banned', 'deny.deleted'])->group(function () {
         Route::put('/post/{id}', 'update')->where('id', '[0-9]+')->name('post.update');
         Route::delete('/post/{id}', 'destroy')->where('id', '[0-9]+')->name('post.destroy');
         Route::get('/post/{id}/edit', 'edit')->where('id', '[0-9]+')->name('post.edit');
+        Route::post('/group/{groupId}/post', 'store')->where('groupId', '[0-9]+')->name('group.post.store');
     });
 
     // User
@@ -129,10 +130,7 @@ Route::middleware(['deny.banned', 'deny.deleted'])->group(function () {
     });
 
     //Group Post
-    Route::controller(GroupPostController::class)->group(function () {
-        Route::post('/group/{id}/post', 'store')->where('id', '[0-9]+')->name('group.post.store');
-        Route::get('/group/{group_id}/post/create', [GroupPostController::class, 'showCreatePostForm'])->where('group_id', '[0-9]+')->name('group.post.create');
-    });
+    Route::get('/group/{groupId}/post/create', [GroupPostController::class, 'showCreatePostForm'])->where('groupId', '[0-9]+')->name('group.post.create');
 
     // Search
     Route::get('/search', [SearchController::class, 'index'])->name('search');
@@ -209,7 +207,7 @@ Route::prefix('api')->middleware('api.token')->group(function () {
         // Route::get('/comment', 'index')->name('api.comment.index');
         Route::post('/comment', 'store')->name('api.comment.store');
         // Route::get('/comment/{id}', 'show')->where('id', '[0-9]+')->name('api.comment.show');
-        Route::patch('/comment/{id}', 'update')->where('id', '[0-9]+')->name('api.comment.update');
+        Route::put('/comment/{id}', 'update')->where('id', '[0-9]+')->name('api.comment.update');
         Route::delete('/comment/{id}', 'destroy')->where('id', '[0-9]+')->name('api.comment.destroy');
         Route::post('/comment/{id}/like', 'like')->where('id', '[0-9]+')->name('api.comment.like');
         Route::delete('/comment/{id}/like', 'unlike')->where('id', '[0-9]+')->name('api.comment.unlike');
