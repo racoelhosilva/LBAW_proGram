@@ -4,6 +4,15 @@
 
 @section('title', 'Post ' . $post->title . ' | ProGram')
 
+@section('openGraph')
+    <meta property="og:title" content="Post {{ $post->title }} | ProGram' }}">
+    <meta property="og:image" content="{{ asset('images/logo.png') }}">
+    <meta property="og:url" content="{{ route('post.show', $post->id) }}">
+    <meta property="og:type" content="article">
+    <meta property="article:published_time" content="{{ $post->creation_timestamp }}">
+    <meta property="article:author" content="{{ $post->author->name }}">
+@endsection
+
 @section('content')
 <main id="post-page" class="px-8 py-4 grid grid-cols-3 grid-rows-[auto_1fr] gap-6">
     <div class="col-span-3 lg:col-span-2">
