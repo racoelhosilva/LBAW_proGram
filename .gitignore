@@ -16,9 +16,5 @@ yarn-error.log
 /.fleet
 /.idea
 /.vscode
-/public/profile/*
-!/public/profile/default.jpg
-/public/banner/*
-!/public/banner/default.jpg
 /public/postAttachments/
 /public/temporary/
