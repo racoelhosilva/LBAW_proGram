@@ -26,7 +26,7 @@
                 'text' => 'Unsend',
                 'type' => 'secondary',
                 'class' => 'uninvite-button ',
-            ])\
+            ])
         @else
             @include('partials.text-button', [
                 'text' => 'Send',

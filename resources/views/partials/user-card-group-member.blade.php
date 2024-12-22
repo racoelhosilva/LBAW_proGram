@@ -16,7 +16,7 @@
         </div>
     </div>
     <div class="flex gap-x-4 justify-end">
-        @can('remove',[$group, $user])
+        @can('remove', [$group, $user])
             @include('partials.confirmation-modal', [
                 'label' => 'Remove Member',
                 'type' => 'button',

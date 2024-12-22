@@ -26,7 +26,7 @@
                     {{ $post->author->name }}
                 </a>
             @else
-                <p>[deleted]</p>
+                [deleted]
             @endif
         </p>
         <p class="text-xs/3 pt-1 font-medium text-gray-500 dark:text-gray-400 select-none">
