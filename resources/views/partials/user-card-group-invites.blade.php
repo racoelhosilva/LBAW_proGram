@@ -25,7 +25,7 @@
             @include('partials.text-button', [
                 'text' => 'Unsend',
                 'type' => 'secondary',
-                'class' => 'uninvite-button ',
+                'class' => 'uninvite-button',
             ])
         @else
             @include('partials.text-button', [

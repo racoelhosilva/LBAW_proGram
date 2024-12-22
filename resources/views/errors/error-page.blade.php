@@ -1,7 +1,7 @@
 @props(['number', 'error', 'message', 'button' => 'home'])
 
-<article class="h-min w-full py-12 max-w-96 col-start-2 flex flex-col items-center gap-12">
-    <section id="error-info" class="grid gap-6 justify-items-center">
+<section class="h-min w-full py-12 max-w-96 col-start-2 flex flex-col items-center gap-12">
+    <div id="error-info" class="grid gap-6 justify-items-center">
         <h1 class="text-9xl font-bold text-center">
             {{ $number }}
         </h1>
@@ -9,7 +9,7 @@
             {{ $error }}
         </h2>
         <h3 class="text-xl text-center whitespace-pre-wrap">{{ $message }}</h3>
-    </section>
+    </div>
     @switch ($button)
         @case('home')
             @include('partials.text-button', ['anchorUrl' => route('home'), 'text' => 'Return to Home Page'])
@@ -21,4 +21,4 @@
             </form>
             @break
     @endswitch
-</article>
+</section>
