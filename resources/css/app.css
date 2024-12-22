@@ -246,6 +246,11 @@
     .responsive-dropdown:not(.closed) > button > .lucide-chevron-down {
         @apply hidden;
     }
+
+    #comment-section {
+        @apply min-h-[64rem] lg:min-h-[32rem];
+        height: calc(100vh - 6rem - 4rem - 3rem);
+    }
 }
 
 .ql-toolbar {

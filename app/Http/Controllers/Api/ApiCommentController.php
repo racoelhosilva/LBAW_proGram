@@ -39,7 +39,7 @@ class ApiCommentController extends Controller
         $request->validate([
             'content' => 'required|string',
             'post_id' => 'required|integer|exists:post,id',
-            'author_id' => 'nullable|exists:users,id',
+            'author_id' => 'required|exists:users,id',
         ]);
 
         try {

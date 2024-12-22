@@ -217,7 +217,7 @@ class PostController extends Controller
         return Comment::with('author')
             ->where('post_id', $post->id)
             ->orderBy('timestamp', 'DESC')
-            ->simplePaginate(10);
+            ->simplePaginate(15);
     }
 
     /**
