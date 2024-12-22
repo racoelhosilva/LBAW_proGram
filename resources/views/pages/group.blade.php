@@ -1,3 +1,5 @@
+@props(['group', 'posts', 'announcements'])
+
 @extends('layouts.app')
 
 @section('title', 'Group - ' . $group->name . ' | ProGram')
@@ -90,27 +92,21 @@
                 </div>
 
                 <div id="group-chat-content" class="tab-content grid gap-4">
-                    <article class="grid gap-4">
-                        @if ($posts->count() === 0)
-                            <p>No posts to show</p>
-                        @else
-                            @foreach ($posts as $post)
-                                @include('partials.post-card', ['post' => $post])
-                            @endforeach
-                        @endif
-                    </article>  
+                    <div id="group-posts" class="grid gap-4">
+                        @include('partials.post-list', ['posts' => $posts])
+                    </div>
+                    <div class="flex flex-col items-center">
+                        @include('partials.loading-spinner')
+                    </div>
                 </div>
             
                 <div id="board-content" class="tab-content hidden">
-                    <article class="grid gap-4">
-                        @if ($announcements->count() === 0)
-                            <p>No posts to show</p>
-                        @else
-                            @foreach ($announcements as $announcement)
-                                @include('partials.post-card', ['post' => $announcement])
-                            @endforeach
-                        @endif
-                    </article>
+                    <div id="group-announcements" class="grid gap-4">
+                        @include('partials.post-list', ['posts' => $announcements])
+                    </div>
+                    <div class="flex flex-col items-center">
+                        @include('partials.loading-spinner')
+                    </div>
                 </div>
             </section>
         @else
