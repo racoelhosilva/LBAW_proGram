@@ -39,7 +39,7 @@ class ApiUserController extends Controller
 
         $this->authorize('view', $user);
 
-        if ($user->can('viewContent', $user)) {
+        if (auth()->user()->can('viewContent', $user)) {
             $userObject = $user->only(['id', 'name', 'register_timestamp', 'handle', 'is_public', 'description', 'num_followers', 'num_following']);
 
             return response()->json($userObject);

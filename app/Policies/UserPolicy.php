@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Auth;
 class UserPolicy
 {
     /**
-     * Determine whether the user can view any models.
+     * Determine whether the user can view any users.
      */
     public function viewAny(?User $user): bool
     {
@@ -18,7 +18,7 @@ class UserPolicy
     }
 
     /**
-     * Determine whether the user can view the model.
+     * Determine whether the user can view the user.
      */
     public function view(?User $user, User $model): bool
     {
@@ -68,7 +68,7 @@ class UserPolicy
     }
 
     /**
-     * Determine whether the user can create models.
+     * Determine whether the user can create another user.
      */
     public function create(?User $user): bool
     {
@@ -150,23 +150,24 @@ class UserPolicy
     }
 
     /**
-     * Determine whether the user can restore the model.
+     * Determine whether the user can view the user's followers.
      */
-    public function restore(User $user, User $model): bool
-    {
-        //
-    }
-
     public function follow(User $user, User $other): bool
     {
         return ! $user->isBanned() && $user->id !== $other->id && ! $other->is_deleted;
     }
 
+    /**
+     * Determine whether the user can view the user's invites.
+     */
     public function viewInvites(User $user, User $other): bool
     {
         return ! $user->isBanned() && $user->id === $other->id;
     }
 
+    /**
+     * Determine whether the user can view the user's followers.
+     */
     public function acceptFollowRequests(User $user): bool
     {
         return ! $user->isBanned();

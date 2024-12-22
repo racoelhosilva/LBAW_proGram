@@ -8,7 +8,7 @@ use App\Models\User;
 class TokenPolicy
 {
     /**
-     * Determine whether the user can view any models.
+     * Determine whether the user can view any tokens.
      */
     public function viewAny(?User $user): bool
     {
@@ -16,7 +16,7 @@ class TokenPolicy
     }
 
     /**
-     * Determine whether the user can view the model.
+     * Determine whether the user can view the token.
      */
     public function view(?User $user, ?Token $token): bool
     {
@@ -31,7 +31,7 @@ class TokenPolicy
     }
 
     /**
-     * Determine whether the user can create models.
+     * Determine whether the user can create a token.
      */
     public function create(?User $user): bool
     {
@@ -39,7 +39,7 @@ class TokenPolicy
     }
 
     /**
-     * Determine whether the user can permanently delete the model.
+     * Determine whether the user can permanently delete the token.
      */
     public function forceDelete(?User $user, Token $token): bool
     {

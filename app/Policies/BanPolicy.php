@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 class BanPolicy
 {
     /**
-     * Determine whether the user can view any models.
+     * Determine whether the user can view any bans.
      */
     public function viewAny(?User $user): bool
     {
@@ -17,7 +17,7 @@ class BanPolicy
     }
 
     /**
-     * Determine whether the user can view the model.
+     * Determine whether the user can view the ban.
      */
     public function view(?User $user, Ban $ban): bool
     {
@@ -25,7 +25,7 @@ class BanPolicy
     }
 
     /**
-     * Determine whether the user can create models.
+     * Determine whether the user can create bans.
      */
     public function create(?User $user): bool
     {
@@ -33,7 +33,7 @@ class BanPolicy
     }
 
     /**
-     * Determine whether the user can update the model.
+     * Determine whether the user can update the ban.
      */
     public function update(?User $user, Ban $ban): bool
     {

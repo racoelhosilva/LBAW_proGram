@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 class PostPolicy
 {
     /**
-     * Determine whether the user can view any models.
+     * Determine whether the user can view any posts.
      */
     public function viewAny(?User $user): bool
     {
@@ -19,7 +19,7 @@ class PostPolicy
     }
 
     /**
-     * Determine whether the user can view the model.
+     * Determine whether the user can view the post.
      */
     public function view(?User $user, Post $post): bool
     {
@@ -56,7 +56,7 @@ class PostPolicy
     }
 
     /**
-     * Determine whether the user can create models.
+     * Determine whether the user can create posts.
      */
     public function create(?User $user): bool
     {
@@ -64,7 +64,7 @@ class PostPolicy
     }
 
     /**
-     * Determine whether the user can update the model.
+     * Determine whether the user can update the post.
      */
     public function update(?User $user, Post $post): bool
     {
@@ -72,7 +72,7 @@ class PostPolicy
     }
 
     /**
-     * Determine whether the user can permanently delete the model.
+     * Determine whether the user can delete the post.
      */
     public function forceDelete(?User $user, Post $post): bool
     {
@@ -82,6 +82,9 @@ class PostPolicy
         return $isAdmin || ($user && ! $user->isBanned() && ($user->id === $post->author->id || ($group && $group->owner->id === $user->id)));
     }
 
+    /**
+     * Determine whether the user can like the post.
+     */
     public function like(?User $user, Post $post): bool
     {
         return $user && ! $user->isBanned() && $user->id !== $post->author->id;
