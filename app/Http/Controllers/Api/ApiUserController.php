@@ -24,7 +24,7 @@ class ApiUserController extends Controller
             ->select(['id', 'name', 'register_timestamp', 'handle', 'is_public', 'description', 'num_followers', 'num_following'])
             ->get();
         $nonvisibleUsers = User::whereNotIn('id', $users->pluck('id'))
-            ->select(['id', 'name', 'register_timestamp', 'handle', 'is_public'])
+            ->select(['id', 'name', 'handle', 'is_public'])
             ->get();
         $response = $users->merge($nonvisibleUsers);
 
@@ -33,17 +33,18 @@ class ApiUserController extends Controller
 
     public function show($id)
     {
-        $authenticatedUser = auth()->user();
+        $user = auth()->user();
+        $this->authorize('viewAny', User::class);
         $user = User::findOrFail($id);
         if (! $user) {
             return response()->json(['message' => 'User not found'], 404);
         }
-        if ($authenticatedUser->can('viewContent', $user)) {
+        if ($user->can('viewContent', $user)) {
             $userObject = $user->only(['id', 'name', 'register_timestamp', 'handle', 'is_public', 'description', 'num_followers', 'num_following']);
 
             return response()->json($userObject);
-        } elseif ($authenticatedUser->can('view', $user)) {
-            $userObject = $user->only(['id', 'name', 'register_timestamp', 'handle', 'is_public']);
+        } elseif ($user->can('view', $user)) {
+            $userObject = $user->only(['id', 'name', 'handle', 'is_public']);
 
             return response()->json($userObject);
 
