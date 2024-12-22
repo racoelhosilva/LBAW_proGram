@@ -53,7 +53,6 @@ class PostController extends Controller
         }
 
         return $usedFiles;
-
     }
 
     /**

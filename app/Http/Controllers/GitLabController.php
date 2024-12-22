@@ -12,7 +12,6 @@ class GitLabController extends Controller
 {
     private function randomizeHandle($handle)
     {
-
         $newHandle = $handle;
 
         while (User::where('handle', $newHandle)->exists()) {
@@ -40,7 +39,6 @@ class GitLabController extends Controller
 
     public function callbackGitLab()
     {
-
         try {
             $gitlab_user = Socialite::driver('gitlab')->stateless()->user();
         } catch (\Exception $e) {
