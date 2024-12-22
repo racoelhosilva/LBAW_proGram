@@ -320,22 +320,25 @@ const addCommentSectionListeners = () => {
 	addLazyLoadingContainer(commentSection, commentListLoading, '/post/' + id, null, addCommentListeners);
 }
 
+const addAllListeners = () => {
+	addDropdownListeners();
+	addModalListeners();
+	addToastMessageListeners();
+	activateQuill();
+	addSelectListeners();
+	addResponsiveDropdownListeners();
+	addCopyButtonListeners();
 
-addDropdownListeners();
-addModalListeners();
-addToastMessageListeners();
-activateQuill();
-addSelectListeners();
-addResponsiveDropdownListeners();
-addCopyButtonListeners();
+	addHomeEventListeners();
+	addSaveCommentListener();
+	addEditCommentListener();
+	addDeleteCommentListener();
+	addSubmitCommentListener();
+	addPostListeners();
+	addCommentSectionListeners();
+	addSearchListeners();
+}
 
-addHomeEventListeners();
-addSaveCommentListener();
-addEditCommentListener();
-addDeleteCommentListener();
-addSubmitCommentListener();
-addPostListeners();
-addCommentSectionListeners();
-addSearchListeners();
+addAllListeners();
 
 export { addToastMessageListeners, addSelectListeners };
