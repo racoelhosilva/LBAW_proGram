@@ -57,7 +57,7 @@ class ApiUserController extends Controller
             'handle' => 'required|alpha_dash:ascii|max:20|unique:users',
             'name' => 'required|string|max:64',
             'email' => 'required|email|unique:users',
-            'password' => 'required|min:8|confirmed',
+            'password' => 'required|min:8',
         ]);
         $user = new User;
 
