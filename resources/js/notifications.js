@@ -30,32 +30,22 @@ const subscribeNotifications = (userId, counter) => {
 
     pusherChannel.bind('notification-postlike', function(data) {
         increaseCounter(counter);
-        sendToastMessage(data.message, 'success');
+        sendToastMessage(data.message, 'info');
     });
 
     pusherChannel.bind('notification-commentlike', function(data) {
         increaseCounter(counter);
-        sendToastMessage(data.message, 'success');
-    });
-
-    pusherChannel.bind('notification-postunlike', function(data) {
-        decreaseCounter(counter);
-        sendToastMessage(data.message, 'success');
-    });
-
-    pusherChannel.bind('notification-commentunlike', function(data) {
-        decreaseCounter(counter);
-        sendToastMessage(data.message, 'success');
+        sendToastMessage(data.message, 'info');
     });
 
     pusherChannel.bind('notification-comment', function(data) {
         increaseCounter(counter);
-        sendToastMessage(data.message, 'success');
+        sendToastMessage(data.message, 'info');
     });
 
     pusherChannel.bind('notification-follow', function(data) {
         increaseCounter(counter);
-        sendToastMessage(data.message, 'success');
+        sendToastMessage(data.message, 'info');
     });
 }
 
