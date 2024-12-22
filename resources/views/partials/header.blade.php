@@ -83,6 +83,11 @@
                         'text' => 'Contact Us',
                         'anchorUrl' => route('contact-us'),
                     ])
+                    @include('partials.dropdown-item', [
+                        'icon' => 'book-open-text',
+                        'text' => 'API Reference',
+                        'anchorUrl' => route('api-reference'),
+                    ])
                 </div>
                 <div>
                     @auth
