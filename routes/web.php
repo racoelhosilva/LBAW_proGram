@@ -222,14 +222,14 @@ Route::prefix('api')->middleware('api.token')->group(function () {
 
     //User
     Route::controller(ApiUserController::class)->group(function () {
-        Route::get('/user', 'list');
-        Route::get('/user/{id}', 'show');
-        Route::post('/user', 'create');
-        Route::delete('/user/{id}', 'delete');
-        Route::put('/user/{id}', 'update');
-        Route::get('/user/{id}/followers', 'listFollowers');
-        Route::get('/user/{id}/following', 'listFollowing');
-        Route::get('/user/{id}/post', 'listPosts');
+        Route::get('/user', 'list')->name('api.user.list');
+        Route::get('/user/{id}', 'show')->where('id', '[0-9]+')->name('api.user.show');
+        Route::post('/user', 'create')->where('id', '[0-9]+')->name('api.user.create');
+        Route::delete('/user/{id}', 'delete')->where('id', '[0-9]+')->name('api.user.delete');
+        Route::put('/user/{id}', 'update')->where('id', '[0-9]+')->name('api.user.update');
+        Route::get('/user/{id}/followers', 'listFollowers')->where('id', '[0-9]+')->name('api.user.followers');
+        Route::get('/user/{id}/following', 'listFollowing')->where('id', '[0-9]+')->name('api.user.following');
+        Route::get('/user/{id}/post', 'listPosts')->where('id', '[0-9]+')->name('api.user.post');
         Route::post('/user/{id}/notifications/read', 'readAllNotifications')->where('id', '[0-9]+')->name('api.user.notifications.read');
         Route::post('/user/{userId}/notification/{notificationId}/read', 'readNotification')->where(['userId' => '[0-9]+', 'notificationId' => '[0-9]+'])->name('api.user.notification.read');
         Route::post('/user/{id}/follow', 'follow')->where('id', '[0-9]+')->name('api.user.follow');
