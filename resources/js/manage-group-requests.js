@@ -46,5 +46,4 @@ const rejectRequestListener = () => {
     });
 }
 
-acceptRequestListener();
-rejectRequestListener();
+export { acceptRequestListener, rejectRequestListener };

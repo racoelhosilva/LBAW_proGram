@@ -31,8 +31,11 @@
             // See: http://stackoverflow.com/questions/18943276/html-5-autofocus-messes-up-css-loading/18945951#18945951
         </script>
 
+        <!-- Pusher script (Notifications) -->
+        <script src="https://js.pusher.com/7.0/pusher.min.js" defer></script>
+
         <!-- Styles & Scripts -->
-        @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/header.js', 'resources/js/admin.js'])
+        @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="bg-white dark:bg-slate-800 text-black dark:text-white">
         @include('admin.partials.header')

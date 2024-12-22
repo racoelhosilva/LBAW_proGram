@@ -49,5 +49,4 @@ const addOAuthButtonListeners = () => {
 	});
 };
 
-addToggleViewPasswordVisibilityListener();
-addOAuthButtonListeners();
+export { addToggleViewPasswordVisibilityListener, addOAuthButtonListeners };

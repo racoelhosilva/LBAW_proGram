@@ -94,11 +94,15 @@ const addMarkReadButtonListeners = (userId, counter) => {
     }
 };
 
-const userIdElement = document.querySelector('meta[name="user-id"]')
-const counter = document.querySelector('#notification-count');
+const addNotificationListeners = () => {
+    const userIdElement = document.querySelector('meta[name="user-id"]');
+    const counter = document.querySelector('#notification-count');
 
-if (userIdElement && counter) {
-    const userId = userIdElement.getAttribute('content');
-    subscribeNotifications(userId, counter);
-    addMarkReadButtonListeners(userId, counter);
+    if (userIdElement && counter) {
+        const userId = userIdElement.getAttribute('content');
+        subscribeNotifications(userId, counter);
+        addMarkReadButtonListeners(userId, counter);
+    }
 }
+
+export { addNotificationListeners };

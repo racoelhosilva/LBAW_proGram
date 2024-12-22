@@ -1,4 +1,4 @@
-const toggleFAQ = () => {
+const addFaqListeners = () => {
     const faqArticles = document.querySelectorAll(".faq-container");
 
     faqArticles.forEach((article) => {
@@ -17,4 +17,4 @@ const toggleFAQ = () => {
     });
 };
 
-toggleFAQ();
+export { addFaqListeners };

@@ -16,4 +16,4 @@ const addHeaderListeners = () => {
     }
 }
 
-addHeaderListeners();
+export { addHeaderListeners };

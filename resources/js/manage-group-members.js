@@ -2,7 +2,7 @@ import { sendDelete, sendToastMessage } from './utils.js';
 
 const removeMemberListener = () => {
     const manageGroupPage = document.querySelector('#members-page');
-    if(manageGroupPage){
+    if (manageGroupPage) {
         const groupId = manageGroupPage.getAttribute('data-group-id');
         const removeMemberBtns = document.querySelectorAll('.remove-member-button');
         removeMemberBtns.forEach(btn => {
@@ -20,9 +20,7 @@ const removeMemberListener = () => {
                     });
             });
         });
-
     }
-
 }
 
-removeMemberListener();
+export { removeMemberListener };

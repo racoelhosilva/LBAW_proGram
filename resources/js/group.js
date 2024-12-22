@@ -33,5 +33,4 @@ const addGroupPostsListeners = () => {
     addLazyLoading(groupAnnouncements, groupAnnouncementsLoading, window.location.href, { 'announcements': 1 }, addPostListeners);
 }
 
-toggleGroupChatAndAnnouncements();
-addGroupPostsListeners();
+export { toggleGroupChatAndAnnouncements, addGroupPostsListeners };

@@ -16,12 +16,12 @@
 
         <div class="row-start-2 col-span-3 sm:row-start-1 sm:col-span-1 sm:col-start-2">
             @if (!$user->is_deleted)
-                <p class="text-base/4 font-medium"><a href="{{ $userUrl }}">{{ $user->name }}</a></p>
+                <h2 class="text-base/4 font-medium"><a href="{{ $userUrl }}">{{ $user->name }}</a></h2>
                 <p class="text-xs/3 mt-1 font-medium text-gray-500 dark:text-gray-400 select-none"><a
                             href="{{ $userUrl }}">{{ '@' . $user->handle }}</a>{{ ' • ' . $user->num_followers . ' followers' }}
                 </p>
             @else
-                <p class="text-base/4 font-medium">[deleted]</p>
+                <h2 class="text-base/4 font-medium">[deleted]</h2>
                 <p class="text-xs/3 mt-1 font-medium text-gray-500 dark:text-gray-400 select-none">[deleted]</p>
             @endif
         </div>

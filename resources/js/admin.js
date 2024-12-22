@@ -12,4 +12,4 @@ const addBanModalListeners = () => {
     });
 };
 
-addBanModalListeners();
+export { addBanModalListeners };
