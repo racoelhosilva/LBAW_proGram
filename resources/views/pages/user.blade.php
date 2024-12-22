@@ -157,7 +157,7 @@
                     @endcan
                 </section>
 
-                @if ($recommendedUsers->count() > 0)
+                @if ($recommendedUsers && $recommendedUsers->count() > 0)
                     <section id="users" class="card hidden lg:flex flex-col gap-3">
                         <h1 class="text-xl font-bold">Users you might know</h1>
                         @include('partials.user-list', ['users' => $recommendedUsers, 'responsive' => true])

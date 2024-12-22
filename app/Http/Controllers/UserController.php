@@ -34,7 +34,7 @@ class UserController extends Controller
             ->orderBy('likes', 'DESC')
             ->paginate(15);
 
-        $recommendedUsers = Auth::check() ? $this->recommendedUsers(Auth::user(), $user) : [];
+        $recommendedUsers = Auth::check() ? $this->recommendedUsers(Auth::user(), $user) : null;
         $numRequests = Auth::check() ? Auth::user()->followRequests()->where('status', 'pending')->count() : 0;
 
         if ($request->ajax()) {
