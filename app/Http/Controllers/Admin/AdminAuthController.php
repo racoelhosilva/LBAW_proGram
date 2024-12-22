@@ -7,7 +7,6 @@ use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class AdminAuthController extends Controller
 {
@@ -16,7 +15,7 @@ class AdminAuthController extends Controller
      */
     public function show(): RedirectResponse|View|Factory
     {
-        if (Auth::guard('admin')->check()) {
+        if (auth()->guard('admin')->check()) {
             return redirect()->route('admin.dashboard');
         }
 
@@ -29,11 +28,11 @@ class AdminAuthController extends Controller
     public function authenticate(Request $request): RedirectResponse
     {
         $credentials = $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required'],
+            'email' => 'required|email',
+            'password' => 'required|string',
         ]);
 
-        if (Auth::guard('admin')->attempt($credentials, $request->filled('remember'))) {
+        if (auth()->guard('admin')->attempt($credentials, $request->filled('remember'))) {
             $request->session()->regenerate();
 
             return redirect()->route('admin.dashboard')->withSuccess('You have logged in successfully!');
@@ -49,7 +48,7 @@ class AdminAuthController extends Controller
      */
     public function logout(Request $request)
     {
-        Auth::guard('admin')->logout();
+        auth()->guard('admin')->logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
