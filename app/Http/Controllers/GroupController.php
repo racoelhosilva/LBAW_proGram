@@ -107,11 +107,11 @@ class GroupController extends Controller
                 })
                 ->whereRaw("tsvectors @@ plainto_tsquery('english', ?)", [$searchQuery])
                 ->orderByRaw("ts_rank(tsvectors, plainto_tsquery('english', ?)) DESC", [$searchQuery])
-                ->get();
+                ->paginate(15);
             $usersInvited = [];
         } else {
             $usersSearched = [];
-            $usersInvited = $group->invitedUsers;
+            $usersInvited = $group->invitedUsers()->paginate(15);
         }
 
         return view('pages.group-invites', [
