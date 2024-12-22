@@ -241,6 +241,5 @@ Route::prefix('api')->middleware('api.token')->group(function () {
 
     Route::controller(ApiFileController::class)->group(function () {
         Route::post('/upload-file', 'uploadFile')->name('api.upload.file');
-        Route::delete('/delete-file', 'deleteFile')->name('api.delete.file');
     });
 });

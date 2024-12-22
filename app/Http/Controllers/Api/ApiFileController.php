@@ -58,17 +58,6 @@ class ApiFileController extends Controller
         return $fileName;
     }
 
-    private static function deleteFile(Request $request)
-    {
-        $url = explode('/', $request->url);
-        $fileName = end($url);
-        $folder = $url[count($url) - 2];
-        Storage::disk(self::$diskName)->delete($folder.'/'.$fileName);
-
-        return response()->json([
-            'message' => 'File deleted successfully',
-        ]);
-    }
 
     public static function get(string $type, int $userId)
     {
