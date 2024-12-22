@@ -34,22 +34,24 @@
                 </div>
                 <article class="card">
                     <h2 class="text-lg font-bold mb-2">Endpoints</h2>
-                    <table>
-                        <tr>
-                            <th>Method</th>
-                            <th>Endpoint</th>
-                            <th>Access</th>
-                            <th>Description</th>
-                        </tr>
-                        @foreach($endpoints as $endpoint)
+                    <div class="overflow-x-auto">
+                        <table>
                             <tr>
-                                <td>{{ $endpoint['method'] }}</td>
-                                <td ><code>{{ $endpoint['endpoint'] }}</code></td>
-                                <td>{{ $endpoint['access'] }}</td>
-                                <td>{{ $endpoint['description'] }}</td>
+                                <th>Method</th>
+                                <th>Endpoint</th>
+                                <th>Access</th>
+                                <th>Description</th>
                             </tr>
-                        @endforeach
-                    </table>
+                            @foreach($endpoints as $endpoint)
+                                <tr>
+                                    <td>{{ $endpoint['method'] }}</td>
+                                    <td ><code>{{ $endpoint['endpoint'] }}</code></td>
+                                    <td>{{ $endpoint['access'] }}</td>
+                                    <td>{{ $endpoint['description'] }}</td>
+                                </tr>
+                            @endforeach
+                        </table>
+                    </div>
                 </article>
             </article>
         </section>
