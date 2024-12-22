@@ -14,5 +14,5 @@
                 <p>No requests at the moment</p>
             @endforelse
         </section>
-      </main>
+    </main>
 @endsection

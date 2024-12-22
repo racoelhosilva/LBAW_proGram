@@ -31,22 +31,22 @@
                     <p class="text-gray-700 dark:text-gray-400">You do not have an API token yet.</p>
                     @csrf
                     <div>
-                    <p class="font-medium">Token Duration</p>
-                    @include('partials.select', [
-                        'name' => 'duration',
-                        'label' => 'Token Duration',
-                        'options' => [
-                            ['value' => '', 'name' => '1 Day'],
-                            ['value' => 'week', 'name' => '1 Week'],
-                            ['value' => 'month', 'name' => '1 Month'],
-                            ['value' => 'year', 'name' => '1 Year'],
-                        ],
-                        'required' => true,
-                        'form' => 'create-token-form',
-                    ])
-                    @if ($errors->has('duration'))
-                        <p class="text-red-600 dark:text-red-400 text-sm font-medium">{{ $errors->first('duration') }}</p>
-                    @endif
+                        <p class="font-medium">Token Duration</p>
+                        @include('partials.select', [
+                            'name' => 'duration',
+                            'label' => 'Token Duration',
+                            'options' => [
+                                ['value' => '', 'name' => '1 Day'],
+                                ['value' => 'week', 'name' => '1 Week'],
+                                ['value' => 'month', 'name' => '1 Month'],
+                                ['value' => 'year', 'name' => '1 Year'],
+                            ],
+                            'required' => true,
+                            'form' => 'create-token-form',
+                        ])
+                        @if ($errors->has('duration'))
+                            <p class="text-red-600 dark:text-red-400 text-sm font-medium">{{ $errors->first('duration') }}</p>
+                        @endif
                     </div>
                     @include('partials.text-button', ['text' => 'Generate Token', 'type' => 'primary', 'submit' => true])
                 </form>
