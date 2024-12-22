@@ -28,7 +28,7 @@ class RegisterController extends Controller
     {
         $request->validate([
             'handle' => 'required|alpha_dash:ascii|max:20|unique:users',
-            'name' => 'required|string|max:250',
+            'name' => 'required|string|max:30',
             'email' => 'required|email|max:250|unique:users',
             'password' => 'required|min:8|confirmed',
         ]);

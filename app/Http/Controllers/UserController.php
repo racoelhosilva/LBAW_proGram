@@ -14,7 +14,6 @@ use App\Models\Token;
 use App\Models\TopProject;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 
@@ -28,14 +27,14 @@ class UserController extends Controller
         $this->authorize('viewAny', Post::class);
 
         $posts = $user->posts()
-            ->visibleTo(Auth::user())
+            ->visibleTo(auth()->user())
             ->orderBy('is_announcement', 'DESC')
             ->orderBy('creation_timestamp', 'DESC')
             ->orderBy('likes', 'DESC')
             ->paginate(15);
 
-        $recommendedUsers = Auth::check() ? $this->recommendedUsers(Auth::user(), $user) : null;
-        $numRequests = Auth::check() ? Auth::user()->followRequests()->where('status', 'pending')->count() : 0;
+        $recommendedUsers = auth()->check() ? $this->recommendedUsers(auth()->user(), $user) : null;
+        $numRequests = auth()->check() ? auth()->user()->followRequests()->where('status', 'pending')->count() : 0;
 
         if ($request->ajax()) {
             return view('partials.post-list', ['posts' => $posts, 'showEmpty' => false]);
@@ -83,7 +82,7 @@ class UserController extends Controller
     {
         $user = User::findOrFail($id);
 
-        if (! Auth::check()) {
+        if (! auth()->check()) {
             return redirect()->route('login');
         }
 
@@ -100,7 +99,7 @@ class UserController extends Controller
     {
         $user = User::findOrFail($id);
 
-        if (! Auth::check()) {
+        if (! auth()->check()) {
             return redirect()->route('login');
         }
 
@@ -108,9 +107,9 @@ class UserController extends Controller
 
         $request->validate([
             'name' => 'required|string|max:30',
-            'description' => 'nullable|string|max:200',
+            'description' => 'nullable|string',
             'is_public' => 'nullable',
-            'handle' => ['required', 'string', 'max:20', Rule::unique('users')->ignore($user->id)],
+            'handle' => ['required', 'alpha_dash:ascii', 'max:20', Rule::unique('users')->ignore($user->id)],
             'github_url' => 'nullable|url',
             'gitlab_url' => 'nullable|url',
             'linkedin_url' => 'nullable|url',
@@ -180,7 +179,6 @@ class UserController extends Controller
             if ($res !== 'success') {
                 return redirect()->back()->withErrors(['error' => 'Failed to update user.']);
             }
-
         }
         $user->save();
 
@@ -337,8 +335,8 @@ class UserController extends Controller
         });
 
         // If the user deleted is own account, log out.
-        if (Auth::check() && Auth::id() === $id) {
-            Auth::logout();
+        if (auth()->check() && auth()->id() === $id) {
+            auth()->logout();
         }
 
         return redirect()->route('home')->withSuccess('User deleted successfully.');
