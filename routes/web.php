@@ -209,14 +209,16 @@ Route::prefix('api')->middleware('api.token')->group(function () {
         Route::get('/comment/{id}', 'show')->where('id', '[0-9]+')->name('api.comment.show'); //works
         Route::put('/comment/{id}', 'update')->where('id', '[0-9]+')->name('api.comment.update');   //works
         Route::delete('/comment/{id}', 'destroy')->where('id', '[0-9]+')->name('api.comment.destroy'); //works
-        Route::post('/comment/{id}/like', 'like')->where('id', '[0-9]+')->name('api.comment.like');
-        Route::delete('/comment/{id}/like', 'unlike')->where('id', '[0-9]+')->name('api.comment.unlike');
+        Route::post('/comment/{id}/like', 'like')->where('id', '[0-9]+')->name('api.comment.like'); //works
+        Route::delete('/comment/{id}/like', 'unlike')->where('id', '[0-9]+')->name('api.comment.unlike'); //works
     });
 
     // Group
 
     Route::controller(ApiGroupController::class)->group(function () {
         Route::get('/group', 'index')->name('api.group.index');
+        Route::post('/group', 'store')->name('api.group.store');
+        Route::put('/group/{id}', 'update')->where('id', '[0-9]+')->name('api.group.update');
         Route::get('/group/{id}', 'show')->where('id', '[0-9]+')->name('api.group.show');
         Route::post('/group/{id}/join', 'join')->where('id', '[0-9]+')->name('api.group.join');
         Route::delete('/group/{id}/leave', 'leave')->where('id', '[0-9]+')->name('api.group.leave');
@@ -235,10 +237,10 @@ Route::prefix('api')->middleware('api.token')->group(function () {
         Route::get('/user/{id}', 'show'); //works
         Route::post('/user', 'create'); //works
         Route::delete('/user/{id}', 'delete'); //works
-        Route::put('/user/{id}', 'update');
+        Route::put('/user/{id}', 'update'); //works
         Route::get('/user/{id}/followers', 'listFollowers'); //works
         Route::get('/user/{id}/following', 'listFollowing'); //works
-        Route::get('/user/{id}/post', 'listPosts');
+        Route::get('/user/{id}/post', 'listPosts'); //works
         Route::post('/user/{id}/notifications/read', 'readAllNotifications')->where('id', '[0-9]+')->name('api.user.notifications.read');
         Route::post('/user/{userId}/notification/{notificationId}/read', 'readNotification')->where('userId', '[0-9]+')->where('notificationId', '[0-9]+')->name('api.user.notification.read');
         Route::post('/user/{id}/follow', 'follow')->where('id', '[0-9]+')->name('api.user.follow');

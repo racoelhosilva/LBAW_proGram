@@ -66,6 +66,68 @@ class ApiGroupController extends Controller
         return response()->json($groupData);
     }
 
+    public function store(Request $request)
+    {
+        if (! Auth::check()) {
+            return response()->json(['message' => 'You must be logged in to create a group.'], 403);
+        }
+
+        $this->authorize('create', Group::class);
+
+        $request->validate([
+            'name' => 'required|string',
+            'description' => 'required|string',
+            'is_public' => 'boolean',
+            'owner_id' => 'required|integer',
+        ]);
+
+        $group = new Group;
+
+        $group->name = $request->input('name');
+        $group->description = $request->input('description');
+        $group->is_public = $request->input('is_public') ?? true;
+        $group->owner_id = $request->input('owner_id');
+        $group->save();
+
+        return response()->json($group, 201);
+    }
+
+    public function update(Request $request, int $id)
+    {
+
+        $group = Group::findOrFail($id);
+
+        if (! Auth::check()) {
+            return response()->json(['message' => 'You must be logged in to update a group.'], 403);
+        }
+
+        $this->authorize('update', $group);
+        $request->validate([
+            'name' => 'required|string',
+            'description' => 'required|string',
+            'is_public' => 'boolean',
+            'owner_id' => 'required|integer',
+        ]);
+
+        if ($group->is_public != $request->filled('is_public')) {
+            foreach ($group->posts as $post) {
+                $post->is_public = $request->filled('is_public');
+                $post->save();
+            }
+        }
+        if ($request->filled('is_public')) {
+            GroupJoinRequest::where('group_id', $id)->where('status', 'pending')->update(['status' => 'accepted']);
+        }
+
+        $group->name = $request->input('name');
+        $group->description = $request->input('description');
+        $group->is_public = $request->filled('is_public');
+        $group->owner_id = $request->input('owner_id');
+        $group->save();
+
+        return response()->json($group);
+    }
+
     public function join(Request $request, int $group_id)
     {
         $group = Group::findOrFail($group_id);
