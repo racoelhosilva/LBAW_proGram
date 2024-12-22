@@ -64,13 +64,13 @@ class GroupController extends Controller
             $this->authorize('viewContent', $group);
 
             if ($request->input('announcements')) {
-                return view('partials.post-list', ['posts' => $announcements->paginate(2), 'showEmpty' => false]);
+                return view('partials.post-list', ['posts' => $announcements->paginate(15), 'showEmpty' => false]);
             } else {
-                return view('partials.post-list', ['posts' => $posts->paginate(2), 'showEmpty' => false]);
+                return view('partials.post-list', ['posts' => $posts->paginate(15), 'showEmpty' => false]);
             }
         }
 
-        return view('pages.group', ['group' => $group, 'posts' => $posts->paginate(2), 'announcements' => $announcements->paginate(2)]);
+        return view('pages.group', ['group' => $group, 'posts' => $posts->paginate(15), 'announcements' => $announcements->paginate(15)]);
     }
 
     public function showMembers(int $groupId)
