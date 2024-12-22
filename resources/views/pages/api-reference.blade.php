@@ -2,6 +2,7 @@
 
 @section('title', 'API Reference | ProGram')
 
+
 @php
     $endpoints = [
         ['method' => 'GET', 'endpoint' => '/api/posts', 'access' => 'Public', 'description' => 'Get all posts'],
@@ -9,8 +10,53 @@
         ['method' => 'POST', 'endpoint' => '/api/posts', 'access' => 'Private', 'description' => 'Create a new post'],
         ['method' => 'PUT', 'endpoint' => '/api/posts/{id}', 'access' => 'Private', 'description' => 'Update a post by ID'],
         ['method' => 'DELETE', 'endpoint' => '/api/posts/{id}', 'access' => 'Private', 'description' => 'Delete a post by ID'],
+        ['method' => 'GET', 'endpoint' => '/api/posts/{id}/like', 'access' => 'Private', 'description' => 'Get likes for a post'],
+        ['method' => 'POST', 'endpoint' => '/api/posts/{id}/like', 'access' => 'Private', 'description' => 'Like a post'],
+        ['method' => 'DELETE', 'endpoint' => '/api/posts/{id}/like', 'access' => 'Private', 'description' => 'Unlike a post'],
+        ['method' => 'GET', 'endpoint' => '/api/posts/{id}/comment', 'access' => 'Public', 'description' => 'Get comments for a post'],
+        ['method' => 'GET', 'endpoint' => '/api/posts/{id}/tags', 'access' => 'Public', 'description' => 'Get tags for a post'],
+        ['method' => 'GET', 'endpoint' => '/api/posts/{id}/attachments', 'access' => 'Public', 'description' => 'Get attachments for a post'],
+        ['method' => 'GET', 'endpoint' => '/api/comments', 'access' => 'Public', 'description' => 'Get all comments'],
+        ['method' => 'POST', 'endpoint' => '/api/comments', 'access' => 'Private', 'description' => 'Create a new comment'],
+        ['method' => 'GET', 'endpoint' => '/api/comments/{id}', 'access' => 'Public', 'description' => 'Get a specific comment by ID'],
+        ['method' => 'PUT', 'endpoint' => '/api/comments/{id}', 'access' => 'Private', 'description' => 'Update a comment by ID'],
+        ['method' => 'DELETE', 'endpoint' => '/api/comments/{id}', 'access' => 'Private', 'description' => 'Delete a comment by ID'],
+        ['method' => 'POST', 'endpoint' => '/api/comments/{id}/like', 'access' => 'Private', 'description' => 'Like a comment'],
+        ['method' => 'DELETE', 'endpoint' => '/api/comments/{id}/like', 'access' => 'Private', 'description' => 'Unlike a comment'],
+        ['method' => 'GET', 'endpoint' => '/api/groups', 'access' => 'Public', 'description' => 'Get all groups'],
+        ['method' => 'POST', 'endpoint' => '/api/groups', 'access' => 'Private', 'description' => 'Create a new group'],
+        ['method' => 'PUT', 'endpoint' => '/api/groups/{id}', 'access' => 'Private', 'description' => 'Update a group by ID'],
+        ['method' => 'GET', 'endpoint' => '/api/groups/{id}', 'access' => 'Public', 'description' => 'Get a specific group by ID'],
+        ['method' => 'POST', 'endpoint' => '/api/groups/{id}/join', 'access' => 'Private', 'description' => 'Join a group'],
+        ['method' => 'DELETE', 'endpoint' => '/api/groups/{id}/leave', 'access' => 'Private', 'description' => 'Leave a group'],
+        ['method' => 'DELETE', 'endpoint' => '/api/groups/{id}/remove/{user_id}', 'access' => 'Private', 'description' => 'Remove a user from a group'],
+        ['method' => 'POST', 'endpoint' => '/api/groups/{id}/request/{user_id}/accept', 'access' => 'Private', 'description' => 'Accept a group join request'],
+        ['method' => 'DELETE', 'endpoint' => '/api/groups/{id}/request/{user_id}/reject', 'access' => 'Private', 'description' => 'Reject a group join request'],
+        ['method' => 'POST', 'endpoint' => '/api/groups/{id}/invite/{user_id}', 'access' => 'Private', 'description' => 'Invite a user to a group'],
+        ['method' => 'DELETE', 'endpoint' => '/api/groups/{id}/uninvite/{user_id}', 'access' => 'Private', 'description' => 'Uninvite a user from a group'],
+        ['method' => 'POST', 'endpoint' => '/api/groups/{id}/acceptInvite', 'access' => 'Private', 'description' => 'Accept a group invite'],
+        ['method' => 'DELETE', 'endpoint' => '/api/groups/{id}/rejectInvite', 'access' => 'Private', 'description' => 'Reject a group invite'],
+        ['method' => 'GET', 'endpoint' => '/api/search/users', 'access' => 'Public', 'description' => 'Search users'],
+        ['method' => 'GET', 'endpoint' => '/api/users', 'access' => 'Private', 'description' => 'Get all users'],
+        ['method' => 'GET', 'endpoint' => '/api/users/{id}', 'access' => 'Private', 'description' => 'Get a specific user by ID'],
+        ['method' => 'POST', 'endpoint' => '/api/users', 'access' => 'Private', 'description' => 'Create a new user'],
+        ['method' => 'DELETE', 'endpoint' => '/api/users/{id}', 'access' => 'Private', 'description' => 'Delete a user'],
+        ['method' => 'PUT', 'endpoint' => '/api/users/{id}', 'access' => 'Private', 'description' => 'Update a user by ID'],
+        ['method' => 'GET', 'endpoint' => '/api/users/{id}/followers', 'access' => 'Public', 'description' => 'Get followers of a user'],
+        ['method' => 'GET', 'endpoint' => '/api/users/{id}/following', 'access' => 'Public', 'description' => 'Get users following a user'],
+        ['method' => 'GET', 'endpoint' => '/api/users/{id}/posts', 'access' => 'Public', 'description' => 'Get posts of a user'],
+        ['method' => 'POST', 'endpoint' => '/api/users/{id}/notifications/read', 'access' => 'Private', 'description' => 'Mark all notifications as read'],
+        ['method' => 'POST', 'endpoint' => '/api/users/{userId}/notification/{notificationId}/read', 'access' => 'Private', 'description' => 'Mark a specific notification as read'],
+        ['method' => 'POST', 'endpoint' => '/api/users/{id}/follow', 'access' => 'Private', 'description' => 'Follow a user'],
+        ['method' => 'DELETE', 'endpoint' => '/api/users/{id}/follow', 'access' => 'Private', 'description' => 'Unfollow a user'],
+        ['method' => 'DELETE', 'endpoint' => '/api/follower/{id}', 'access' => 'Private', 'description' => 'Remove a follower'],
+        ['method' => 'POST', 'endpoint' => '/api/follow-request/{id}/accept', 'access' => 'Private', 'description' => 'Accept a follow request'],
+        ['method' => 'POST', 'endpoint' => '/api/follow-request/{id}/reject', 'access' => 'Private', 'description' => 'Reject a follow request'],
+        ['method' => 'POST', 'endpoint' => '/api/upload-file', 'access' => 'Private', 'description' => 'Upload a file'],
+        ['method' => 'DELETE', 'endpoint' => '/api/delete-file', 'access' => 'Private', 'description' => 'Delete a file'],
     ];
 @endphp
+
 
 @section('content')
     <main id="api-reference-page" class="px-8 py-4 grid grid-cols-4 gap-6">
