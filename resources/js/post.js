@@ -155,6 +155,8 @@ const addSubmitCommentListener = () => {
         addCommentListeners();
         addPostListeners();
         addModalListeners();
+
+        sendToastMessage('Comment submitted successfully.', 'success');
     });
 };
 

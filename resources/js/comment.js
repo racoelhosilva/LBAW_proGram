@@ -40,6 +40,7 @@ const addDeleteCommentListener = () => {
                 sendDelete(`/api/comment/${commentId}`)
                     .then((_) => {
                         comment.remove();
+                        sendToastMessage('Comment deleted successfully.', 'success');
                     })
                     .catch((error) => {
                         sendToastMessage('An error occurred while deleting comment.', 'error');
@@ -63,14 +64,18 @@ const addSaveCommentListener = () => {
                 event.preventDefault();
                 const formData = new FormData(contentEditForm);
                 const params = Object.fromEntries(formData.entries());
+
                 const updatedComment = await sendPutView(contentEditForm.action, params);
                 comment.outerHTML = updatedComment;
+
                 addDropdownListeners();
                 addEditCommentListener();
                 addDeleteCommentListener();
                 addSaveCommentListener();
                 addPostListeners();
                 addModalListeners();
+
+                sendToastMessage('Comment updated successfully.', 'success');
             };
         }
     });
