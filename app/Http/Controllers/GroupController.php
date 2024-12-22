@@ -48,17 +48,29 @@ class GroupController extends Controller
         return view('pages.create-group');
     }
 
-    public function show(int $id)
+    public function show(Request $request, int $id)
     {
         $group = Group::findOrFail($id);
         $this->authorize('viewAny', $group);
-        $posts = $group->posts()->visibleTo(Auth::user())->where('is_announcement', false)->get();
-        $announcements = $group->posts()->visibleTo(Auth::user())->where('is_announcement', true)->get();
-        $isOwner = Auth::check() && Auth::id() === $group->owner_id;
-        $isMember = Auth::check() && $group->members()->where('user_id', Auth::id())->exists();
-        $user = Auth::user();
 
-        return view('pages.group', ['group' => $group, 'posts' => $posts, 'announcements' => $announcements, 'isOwner' => $isOwner, 'isMember' => $isMember, 'user' => $user]);
+        $request->validate([
+            'announcements' => 'nullable|boolean',
+        ]);
+
+        $posts = $group->posts()->visibleTo(Auth::user())->where('is_announcement', false);
+        $announcements = $group->posts()->visibleTo(Auth::user())->where('is_announcement', true);
+
+        if ($request->ajax()) {
+            $this->authorize('viewContent', $group);
+
+            if ($request->input('announcements')) {
+                return view('partials.post-list', ['posts' => $announcements->paginate(15), 'showEmpty' => false]);
+            } else {
+                return view('partials.post-list', ['posts' => $posts->paginate(15), 'showEmpty' => false]);
+            }
+        }
+
+        return view('pages.group', ['group' => $group, 'posts' => $posts->paginate(15), 'announcements' => $announcements->paginate(15)]);
     }
 
     public function showMembers(int $groupId)

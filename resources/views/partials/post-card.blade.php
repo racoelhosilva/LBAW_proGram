@@ -19,7 +19,7 @@
             class="w-12 h-12 rounded-full object-cover">
     @endif
 
-    <div class="ms-4 flex flex-col">
+    <div class="ms-2 flex flex-col">
         <p class="text-base/4 font-medium select-none">
             @if (!$post->author->is_deleted)
                 <a href="{{ $authorUrl }}">

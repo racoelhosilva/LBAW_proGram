@@ -23,7 +23,7 @@ class UserPolicy
     public function view(?User $user, User $model): bool
     {
         if ($model->is_deleted) {
-            return abort(404);
+            return false;
         }
         $isBanned = $user && $user->isBanned();
 
@@ -58,6 +58,10 @@ class UserPolicy
         // Grant access if the user is public
         if ($model->is_public) {
             return true;
+        }
+
+        if ($model->is_deleted) {
+            return false;
         }
 
         return false;
@@ -155,7 +159,7 @@ class UserPolicy
 
     public function follow(User $user, User $other): bool
     {
-        return ! $user->isBanned() && $user->id !== $other->id;
+        return ! $user->isBanned() && $user->id !== $other->id && ! $other->is_deleted;
     }
 
     public function viewInvites(User $user, User $other): bool

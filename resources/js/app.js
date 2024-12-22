@@ -1,33 +1,18 @@
 import "./bootstrap";
-import {addDropdownListeners, fadeToastMessage, hideDropdowns, sendToastMessage, addLazyLoading,addLazyLoadingContainer, sendDelete, sendPost, sendPostView, sendPutView} from "./utils";
+import {
+	addDropdownListeners,
+	fadeToastMessage,
+	sendToastMessage,
+	addLazyLoading,
+	addLazyLoadingContainer,
+	sendDelete,
+	sendPostView,
+	sendPutView,
+	addModalListeners
+} from "./utils";
 import Quill from "quill";
-
-const openModal = (modal, event) => {
-	modal.classList.add("active");
-	event.stopPropagation();
-};
-
-const closeModal = (modal, event) => {
-	modal.classList.remove("active");
-    hideDropdowns(event);
-	event.stopPropagation();
-};
-
-const addModalListeners = () => {
-	const modals = document.querySelectorAll(".modal");
-
-    modals.forEach(modal => {
-        const modalOpenButton = modal.querySelector(`:scope .open-button`);
-        const modalContent = modal.querySelector(':scope > div');
-        const modalCloseButtons = modal.querySelectorAll(':scope .close-button');
-
-        modalContent.addEventListener('click', event => event.stopPropagation());
-        modalOpenButton.addEventListener('click', event => openModal(modal, event));
-        modalCloseButtons.forEach(closeButton => {
-            closeButton.addEventListener('click', event => closeModal(modal, event));
-        });
-    });
-}
+import {addPostListeners} from "./post.js";
+import {addSearchListeners} from "./search.js";
 
 const addToastMessageListeners = () => {
 	document.addEventListener("DOMContentLoaded", () => {
@@ -289,7 +274,7 @@ const addSaveCommentListener = () => {
             event.preventDefault();
             const formData = new FormData(contentEditForm);
             const params = Object.fromEntries(formData.entries());
-            const updatedComment = await sendPutView(contentEditForm.action, params, 'PATCH');
+            const updatedComment = await sendPutView(contentEditForm.action, params);
             comment.outerHTML = updatedComment;
             addDropdownListeners();
             addEditCommentListener();
@@ -312,112 +297,13 @@ const addHomeEventListeners = () => {
     addLazyLoading(homePosts, homePostsLoading, '/', null, addPostListeners);
 }
 
-const togglePostLike = (likeButton, likeCount, postId) => {
-	likeButton.disabled = true;
-	if (likeButton.classList.contains("liked")) {
-		sendDelete(`/api/post/${postId}/like`)
-			.then(_ => {
-				likeButton.classList.remove("liked");
-				likeCount.innerHTML = parseInt(likeCount.innerHTML) - 1;
-				likeButton.disabled = false;
-			})
-			.catch(_ => {
-				likeButton.disable = false;
-				sendToastMessage('An error occurred while unliking.', 'error');
-			});
-	} else {
-		sendPost(`/api/post/${postId}/like`)
-			.then(_ => {
-				likeButton.classList.add("liked");
-				likeCount.innerHTML = parseInt(likeCount.innerHTML) + 1;
-				likeButton.disabled = false;
-			})
-			.catch(_ => {
-				likeButton.disabled = false;
-				sendToastMessage('An error occurred while liking.', 'error');
-			});
-	}
-};
-
-const toggleCommentLike = (likeButton, likeCount, commentId) => {
-	likeButton.disabled = true;
-	if (likeButton.classList.contains("liked")) {
-		sendDelete(`/api/comment/${commentId}/like`)
-			.then(_ => {
-				likeButton.classList.remove("liked");
-				likeCount.innerHTML = parseInt(likeCount.innerHTML) - 1;
-				likeButton.disabled = false;
-			})
-			.catch(_ => {
-				likeButton.disabled = false;
-				sendToastMessage('An error occurred while unliking.', 'error');
-			});
-	} else {
-		sendPost(`/api/comment/${commentId}/like`)
-			.then(_ => {
-				likeButton.classList.add("liked");
-				likeCount.innerHTML = parseInt(likeCount.innerHTML) + 1;
-				likeButton.disabled = false;
-			})
-			.catch(_ => {
-				likeButton.disabled = false;
-				sendToastMessage('An error occurred while liking.', 'error');
-			});
-	}
-};
-
-const addLikeButtonListeners = () => {
-	const postCards = document.querySelectorAll(".post-card");
-
-	postCards.forEach((postCard) => {
-		const postId = postCard.dataset.postId;
-		const likeButton = postCard.querySelector(".like-button");
-		const likeCount = postCard.querySelector(".like-button + p");
-		likeButton.onclick = () =>	{
-			if (likeButton.classList.contains('enabled')) {
-				togglePostLike(likeButton, likeCount, postId);
-			} else {
-				switch (likeButton.dataset.disabledReason) {
-					case 'not-logged-in':
-						sendToastMessage('You must be logged in to like a post.', 'info');
-						break;
-					case 'is-owner':
-						sendToastMessage('You cannot like your own post.', 'info');
-						break;
-					default:
-						sendToastMessage('You are not authorized to like this post.', 'info');
-						break;
-				}
-			}
-		}
-	});
-
-	const commentCards = document.querySelectorAll(".comment-card");
-
-	commentCards.forEach((commentCard) => {
-		const commentId = commentCard.dataset.commentId;
-		const likeButton = commentCard.querySelector(".like-button");
-		const likeCount = commentCard.querySelector(".like-button + p");
-
-		likeButton.onclick = () =>	{
-			if (likeButton.classList.contains('enabled')) {
-				toggleCommentLike(likeButton, likeCount, commentId);
-			} else {
-				switch (likeButton.dataset.disabledReason) {
-					case 'not-logged-in':
-						sendToastMessage('You must be logged in to like a comment.', 'info');
-						break;
-					case 'is-owner':
-						sendToastMessage('You cannot like your own comment.', 'info');
-						break;
-					default:
-						sendToastMessage('You are not authorized to like this comment.', 'info');
-						break;
-				}
-			}
-		}
-    });
-};
+const addCommentListeners = () => {
+	addDropdownListeners();
+	addEditCommentListener();
+	addDeleteCommentListener();
+	addSaveCommentListener();
+	addModalListeners();
+}
 
 const addCommentSectionListeners = () => {
 	const commentList = document.getElementById('comment-list');
@@ -431,43 +317,9 @@ const addCommentSectionListeners = () => {
 	const url = window.location.href;
 	const id = url.split('/post/')[1];
 
-	addLazyLoadingContainer(commentSection, commentListLoading, '/post/' + id, null ,addPostListeners);
+	addLazyLoadingContainer(commentSection, commentListLoading, '/post/' + id, null, addCommentListeners);
 }
 
-const addSearchListeners = () => {
-    const searchPosts = document.getElementById('search-posts');
-    const searchUsers = document.getElementById('search-users');
-    const searchGroups = document.getElementById('search-groups');
-    const searchLoadingSpinner = document.querySelector('#search-results > div:last-child > .loading-spinner');
-    const searchFilters = document.querySelectorAll('#search-filters .select');
-    const searchField = document.getElementById('search-field');
-
-    if (!searchLoadingSpinner || !searchField || !searchFilters) {
-        return;
-    }
-
-    const urlParams = new URLSearchParams(window.location.search);
-    const searchParams = {
-        query: urlParams.get('query'),
-        tags: urlParams.getAll('tags[]'),
-        search_attr: urlParams.get('search_attr'),
-        order_by: urlParams.get('order_by'),
-    };
-    if (searchPosts) {
-        addLazyLoading(searchPosts, searchLoadingSpinner, '/search', { ...searchParams, search_type: 'posts' }, addPostListeners);
-    }
-    if (searchUsers) {
-        addLazyLoading(searchUsers, searchLoadingSpinner, '/search', { ...searchParams, search_type: 'users' });
-    }
-    if (searchGroups) {
-        addLazyLoading(searchGroups, searchLoadingSpinner, '/search', { ...searchParams, search_type: 'groups' });
-    }
-}
-
-const addPostListeners = () => {
-	addLikeButtonListeners();
-	addDropdownListeners();
-}
 
 addDropdownListeners();
 addModalListeners();
@@ -486,4 +338,4 @@ addPostListeners();
 addCommentSectionListeners();
 addSearchListeners();
 
-export { addModalListeners, addToastMessageListeners, addSelectListeners };
+export { addToastMessageListeners, addSelectListeners };

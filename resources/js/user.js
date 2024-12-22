@@ -1,4 +1,5 @@
-import { sendDelete, sendPost, sendToastMessage } from "./utils";
+import {addLazyLoading, sendDelete, sendPost, sendToastMessage} from "./utils";
+import {addPostListeners} from "./post.js";
 
 let projectCounter = 1;
 
@@ -263,8 +264,6 @@ const addRemoveFollowerListeners = () => {
     });
 };
 
-addRemoveFollowerListeners();
-
 /** Handle Request Button **/
 
 const acceptRequest = (button, userId) => {
@@ -319,4 +318,17 @@ const addHandleRequestListeners = () => {
     });
 };
 
+const addUserPostsListeners = () => {
+    const userPosts = document.querySelector('#user-posts');
+    const userPostsLoading = document.querySelector('#user-posts + div .loading-spinner');
+    if (!userPosts || !userPostsLoading) {
+        return;
+    }
+
+    const url = window.location.href;
+    addLazyLoading(userPosts, userPostsLoading, url, {}, addPostListeners);
+}
+
+addRemoveFollowerListeners();
 addHandleRequestListeners();
+addUserPostsListeners();

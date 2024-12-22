@@ -23,6 +23,7 @@ const getView = (url, params) => {
 	return fetch(url + encodeParams(params), {
 		method: 'GET',
 		headers: {
+			'Accept': 'text/html',
 			'X-Requested-With': 'XMLHttpRequest',
 		},
 	}).then(response => {
@@ -32,28 +33,36 @@ const getView = (url, params) => {
 		return response.text();
 	});
 }
-const sendPostView = (url, params) => {
-    return fetch(url + encodeParams(params), {
+
+const sendPostView = (url, data) => {
+	console.log(JSON.stringify(data));
+    return fetch(url, {
         method: 'POST',
         headers: {
+			'Accept': 'text/html',
+			'Content-Type': 'application/json',
             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
             'X-Requested-With': 'XMLHttpRequest',
         },
+		body: JSON.stringify(data),
     }).then(response => {
-        if (!response.ok) {
-            throw new Error('Unexpected error occurred');
-        }
-        return response.text();
-    });
+		if (!response.ok) {
+			throw new Error('Unexpected error occurred');
+		}
+		return response.text();
+	});
 };
 
-const sendPutView = (url, params) => {
-	return fetch(url + encodeParams(params), {
+const sendPutView = (url, data) => {
+	return fetch(url, {
 		method: 'PUT',
 		headers: {
+			'Accept': 'text/html',
+			'Content-Type': 'application/json',
 			'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
 			'X-Requested-With': 'XMLHttpRequest',
 		},
+		body: JSON.stringify(data),
 	}).then(response => {
 		if (!response.ok) {
 			throw new Error('Unexpected error occurred');
@@ -72,10 +81,12 @@ const sendPost = (url, data) => {
 		},
 		body: JSON.stringify(data),
 	}).then(response => {
-		if (!response.ok) {
-			throw new Error(response.json.error);
-		}
-		return response.json();
+		return response.json().then(json => {
+			if (!response.ok) {
+				throw new Error(json.error);
+			}
+			return json;
+		})
 	});
 }
 
@@ -89,10 +100,12 @@ const sendPatch = (url, data) => {
 		},
 		body: JSON.stringify(data)
 	}).then(response => {
-		if (!response.ok) {
-			throw new Error(response.json.error);
-		}
-		return response.json();
+		return response.json().then(json => {
+			if (!response.ok) {
+				throw new Error(json.error);
+			}
+			return json;
+		})
 	});
 }
 
@@ -105,10 +118,12 @@ const sendDelete = (url) => {
 			'X-Requested-With': 'XMLHttpRequest',
 		}
 	}).then(response => {
-		if (!response.ok) {
-			throw new Error(response.json.error);
-		}
-		return response.json();
+		return response.json().then(json => {
+			if (!response.ok) {
+				throw new Error(json.error);
+			}
+			return json;
+		})
 	});
 }
 
@@ -250,4 +265,32 @@ const addDropdownListeners = () => {
 	document.addEventListener('click', hideDropdowns);
 };
 
-export { sendGet, encodeParams, getView,sendPostView, sendPutView, sendDelete, sendPost, sendPatch, fadeToastMessage, sendToastMessage, addLazyLoading, addLazyLoadingContainer, hideDropdowns, addDropdownListeners };
+
+const openModal = (modal, event) => {
+	modal.classList.add("active");
+	event.stopPropagation();
+};
+
+const closeModal = (modal, event) => {
+	modal.classList.remove("active");
+	hideDropdowns(event);
+	event.stopPropagation();
+};
+
+const addModalListeners = () => {
+	const modals = document.querySelectorAll(".modal");
+
+	modals.forEach(modal => {
+		const modalOpenButton = modal.querySelector(`:scope .open-button`);
+		const modalContent = modal.querySelector(':scope > div');
+		const modalCloseButtons = modal.querySelectorAll(':scope .close-button');
+
+		modalContent.addEventListener('click', event => event.stopPropagation());
+		modalOpenButton.addEventListener('click', event => openModal(modal, event));
+		modalCloseButtons.forEach(closeButton => {
+			closeButton.addEventListener('click', event => closeModal(modal, event));
+		});
+	});
+}
+
+export { sendGet, encodeParams, getView,sendPostView, sendPutView, sendDelete, sendPost, sendPatch, fadeToastMessage, sendToastMessage, addLazyLoading, addLazyLoadingContainer, hideDropdowns, addDropdownListeners, addModalListeners };
