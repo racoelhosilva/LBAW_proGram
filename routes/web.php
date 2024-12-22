@@ -224,7 +224,7 @@ Route::prefix('api')->middleware('api.token')->group(function () {
     Route::controller(ApiUserController::class)->group(function () {
         Route::get('/user', 'index')->name('api.user.index');
         Route::get('/user/{id}', 'show')->where('id', '[0-9]+')->name('api.user.show');
-        Route::post('/user', 'create')->where('id', '[0-9]+')->name('api.user.create');
+        Route::post('/user', 'create')->name('api.user.create');
         Route::delete('/user/{id}', 'delete')->where('id', '[0-9]+')->name('api.user.delete');
         Route::put('/user/{id}', 'update')->where('id', '[0-9]+')->name('api.user.update');
         Route::get('/user/{id}/followers', 'listFollowers')->where('id', '[0-9]+')->name('api.user.followers');

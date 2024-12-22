@@ -53,9 +53,6 @@ class ApiFileController extends Controller
             case 'banner':
                 $fileName = User::find($id)->banner_image_url;
                 break;
-            case 'post':
-                // TODO: post image get name
-                break;
         }
 
         return $fileName;
