@@ -1,4 +1,12 @@
-import {addDropdownListeners, addModalListeners, sendDelete, sendPost, sendToastMessage} from "./utils.js";
+import {
+    addDropdownListeners,
+    addLazyLoadingContainer,
+    addModalListeners,
+    sendDelete,
+    sendPost, sendPostView,
+    sendToastMessage
+} from "./utils.js";
+import {addCommentListeners} from "./comment.js";
 
 const togglePostLike = (likeButton, likeCount, postId) => {
     likeButton.disabled = true;
@@ -113,4 +121,41 @@ const addPostListeners = () => {
     addModalListeners();
 }
 
-export { addLikeButtonListeners, addPostListeners };
+const addCommentSectionListeners = () => {
+    const commentList = document.getElementById('comment-list');
+    const commentListLoading = document.querySelector('#comment-list + div .loading-spinner');
+    const commentSection = document.getElementById('comment-section');
+
+    if (!commentList || !commentListLoading) {
+        return;
+    }
+
+    const url = window.location.href;
+    const id = url.split('/post/')[1];
+
+    addLazyLoadingContainer(commentSection, commentListLoading, '/post/' + id, null, addCommentListeners);
+}
+
+const addSubmitCommentListener = () => {
+    const form = document.getElementById('comment-submit-form');
+    const commentSection = document.querySelector('#comment-list'); // Container for comments
+    if (!form || !commentSection)
+        return;
+
+    form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const formData = new FormData(form);
+        const params = Object.fromEntries(formData.entries());
+
+        const comment = await sendPostView(form.action, params);
+        commentSection.insertAdjacentHTML('afterbegin', comment);
+        form.reset();
+
+        addDropdownListeners();
+        addCommentListeners();
+        addPostListeners();
+        addModalListeners();
+    });
+};
+
+export { addLikeButtonListeners, addPostListeners, addSubmitCommentListener, addCommentSectionListeners };

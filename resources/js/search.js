@@ -31,4 +31,4 @@ const addSearchListeners = () => {
     }
 }
 
-export {addSearchListeners};
+export { addSearchListeners };

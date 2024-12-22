@@ -18,4 +18,4 @@ const addLeaveGroupListeners = () => {
     });
 }
 
-addLeaveGroupListeners();
+export { addLeaveGroupListeners };

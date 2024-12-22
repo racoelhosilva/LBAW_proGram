@@ -329,6 +329,4 @@ const addUserPostsListeners = () => {
     addLazyLoading(userPosts, userPostsLoading, url, {}, addPostListeners);
 }
 
-addRemoveFollowerListeners();
-addHandleRequestListeners();
-addUserPostsListeners();
+export { addUserPostsListeners, addHandleRequestListeners, addRemoveFollowerListeners };

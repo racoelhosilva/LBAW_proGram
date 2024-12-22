@@ -3,16 +3,25 @@ import {
 	addDropdownListeners,
 	fadeToastMessage,
 	sendToastMessage,
-	addLazyLoading,
-	addLazyLoadingContainer,
-	sendDelete,
-	sendPostView,
-	sendPutView,
 	addModalListeners
 } from "./utils";
 import Quill from "quill";
-import {addPostListeners} from "./post.js";
+import {addCommentSectionListeners, addPostListeners, addSubmitCommentListener} from "./post.js";
 import {addSearchListeners} from "./search.js";
+import {addHomeEventListeners} from "./home.js";
+import {addCommentListeners} from "./comment.js";
+import {addOAuthButtonListeners, addToggleViewPasswordVisibilityListener} from "./auth.js";
+import {addBanModalListeners} from "./admin.js";
+import {addFaqListeners} from "./faq.js";
+import {addGroupPostsListeners, toggleGroupChatAndAnnouncements} from "./group.js";
+import {addHeaderListeners} from "./header.js";
+import {addSendInviteListeners, addUnsendInviteListeners} from "./manage-group-invites.js";
+import {removeMemberListener} from "./manage-group-members.js";
+import {acceptRequestListener, rejectRequestListener} from "./manage-group-requests.js";
+import {addNotificationListeners} from "./notifications.js";
+import {addHandleRequestListeners, addRemoveFollowerListeners, addUserPostsListeners} from "./user.js";
+import {addLeaveGroupListeners} from "./user-groups.js";
+import {addInviteAcceptListeners, addInviteRejectListeners} from "./user-invites.js";
 
 const addToastMessageListeners = () => {
 	document.addEventListener("DOMContentLoaded", () => {
@@ -198,128 +207,6 @@ const addCopyButtonListeners = () => {
     });
 };
 
-const addSubmitCommentListener = () => {
-    const form = document.getElementById('comment-submit-form');
-    if (!form) return;
-    const commentSection = document.querySelector('#comment-list'); // Container for comments
-    if(!commentSection) return;
-    form.addEventListener('submit', async (event) => {
-        event.preventDefault();
-        const formData = new FormData(form);
-        const params = Object.fromEntries(formData.entries());
-        const comment = await sendPostView(form.action, params);
-        commentSection.insertAdjacentHTML('afterbegin', comment);
-        form.reset();
-        addDropdownListeners();
-        addEditCommentListener();
-        addDeleteCommentListener();
-        addSaveCommentListener();
-        addPostListeners();
-        addModalListeners();
-    });
-};
-
-const addEditCommentListener = () => {
-    const commentSection = document.getElementById('comment-section');
-    if (!commentSection) return;
-
-    const comments = commentSection.querySelectorAll('.comment-card');
-    comments.forEach((comment) => {
-        const editButton = comment.querySelector('.comment-actions .edit-comment');
-        const contentContainer = comment.querySelector('.content-container');
-        const contentEditContainer = comment.querySelector('.edit-content-container');
-        if(editButton) {
-            editButton.onclick = () => {
-                contentContainer.classList.toggle('hidden');
-                contentEditContainer.classList.toggle('hidden');
-            };
-        }
-    });
-};
-
-const addDeleteCommentListener = () => {
-    const commentSection = document.getElementById('comment-section');
-    if (!commentSection) return;
-
-    const comments = commentSection.querySelectorAll('.comment-card');
-    comments.forEach(comment => {
-        const deleteButton = comment.querySelector(' .comment-actions .delete-comment');
-
-        if (deleteButton) {
-            deleteButton.onclick = () => {
-                const commentId = comment.dataset.commentId;
-                sendDelete(`/api/comment/${commentId}`)
-                    .then((_) => {
-                        comment.remove();
-                    })
-                    .catch((error) => {
-                        sendToastMessage('An error occurred while deleting comment.', 'error');
-                    });
-            };
-        }
-    });
-}
-
-const addSaveCommentListener = () => {
-    const commentSection = document.getElementById('comment-section');
-    if (!commentSection) return;
-
-    const comments = commentSection.querySelectorAll('.comment-card');
-
-    comments.forEach(comment => {
-        const saveButton = comment.querySelector('.edit-comment-form button');
-        const contentEditForm = comment.querySelector('.edit-comment-form');
-        if (saveButton) {
-            saveButton.onclick = async (event) => {
-            event.preventDefault();
-            const formData = new FormData(contentEditForm);
-            const params = Object.fromEntries(formData.entries());
-            const updatedComment = await sendPutView(contentEditForm.action, params);
-            comment.outerHTML = updatedComment;
-            addDropdownListeners();
-            addEditCommentListener();
-            addDeleteCommentListener();
-            addSaveCommentListener();
-            addPostListeners();
-            addModalListeners();
-            };
-        }
-    });
-}
-
-const addHomeEventListeners = () => {
-    const homePosts = document.getElementById('home-posts');
-    const homePostsLoading = document.querySelector('#home-posts + div .loading-spinner');
-    if (!homePosts || !homePostsLoading) {
-        return;
-    }
-
-    addLazyLoading(homePosts, homePostsLoading, '/', null, addPostListeners);
-}
-
-const addCommentListeners = () => {
-	addDropdownListeners();
-	addEditCommentListener();
-	addDeleteCommentListener();
-	addSaveCommentListener();
-	addModalListeners();
-}
-
-const addCommentSectionListeners = () => {
-	const commentList = document.getElementById('comment-list');
-	const commentListLoading = document.querySelector('#comment-list + div .loading-spinner');
-	const commentSection = document.getElementById('comment-section');
-
-	if (!commentList || !commentListLoading) {
-		return;
-	}
-
-	const url = window.location.href;
-	const id = url.split('/post/')[1];
-
-	addLazyLoadingContainer(commentSection, commentListLoading, '/post/' + id, null, addCommentListeners);
-}
-
 const addAllListeners = () => {
 	addDropdownListeners();
 	addModalListeners();
@@ -330,13 +217,31 @@ const addAllListeners = () => {
 	addCopyButtonListeners();
 
 	addHomeEventListeners();
-	addSaveCommentListener();
-	addEditCommentListener();
-	addDeleteCommentListener();
 	addSubmitCommentListener();
 	addPostListeners();
+	addCommentListeners();
 	addCommentSectionListeners();
 	addSearchListeners();
+
+	addBanModalListeners();
+	addToggleViewPasswordVisibilityListener();
+	addOAuthButtonListeners();
+	addFaqListeners();
+	toggleGroupChatAndAnnouncements();
+	addGroupPostsListeners();
+	addHeaderListeners();
+	addSendInviteListeners();
+	addUnsendInviteListeners();
+	removeMemberListener();
+	acceptRequestListener();
+	rejectRequestListener();
+	addNotificationListeners();
+	addRemoveFollowerListeners();
+	addHandleRequestListeners();
+	addUserPostsListeners();
+	addLeaveGroupListeners();
+	addInviteRejectListeners();
+	addInviteAcceptListeners();
 }
 
 addAllListeners();

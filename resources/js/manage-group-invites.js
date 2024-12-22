@@ -1,6 +1,6 @@
-import { sendDelete, sendGet , sendPost, sendToastMessage} from './utils.js';
+import { sendDelete , sendPost, sendToastMessage} from './utils.js';
 
-const inviteSendListener = () => {
+const addSendInviteListeners = () => {
     const invitesPage = document.querySelector('#group-invites-page');
     if (invitesPage) {
         const inviteBtns = invitesPage.querySelectorAll('.invite-button');
@@ -25,7 +25,7 @@ const inviteSendListener = () => {
     }
 };
 
-const inviteUnSendListener = () => {
+const addUnsendInviteListeners = () => {
     const invitesPage = document.querySelector('#group-invites-page');
     if (invitesPage) {
         const unInviteBtns = invitesPage.querySelectorAll('.uninvite-button');
@@ -50,6 +50,4 @@ const inviteUnSendListener = () => {
     }
 };
 
-inviteSendListener();
-inviteUnSendListener();
-
+export { addSendInviteListeners, addUnsendInviteListeners };

@@ -36,6 +36,6 @@ const addInviteRejectListeners = () =>{
                 });
         });
     });
-}   
-addInviteRejectListeners();
-addInviteAcceptListeners();
+}
+
+export { addInviteAcceptListeners, addInviteRejectListeners };
