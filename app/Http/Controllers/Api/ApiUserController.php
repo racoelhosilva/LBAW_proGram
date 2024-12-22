@@ -367,23 +367,11 @@ class ApiUserController extends Controller
         $currentUser = auth()->user();
 
         if ($follower->follows($currentUser)) {
-            DB::transaction(function () use ($currentUser, $follower) {
-                $follow = Follow::where('follower_id', $follower->id)
-                    ->where('followed_id', $currentUser->id)
-                    ->first();
+            $follow = Follow::where('follower_id', $follower->id)
+                ->where('followed_id', $currentUser->id)
+                ->first();
 
-                $notification = $currentUser->notifications()
-                    ->where('type', 'follow')
-                    ->where('follow_id', $follow->id)->latest('timestamp')->first();
-
-                $notification->delete();
-
-                $follow = Follow::where('follower_id', $follower->id)
-                    ->where('followed_id', $currentUser->id)
-                    ->first();
-
-                $follow->delete();
-            });
+            $follow->delete();
         }
 
         $request = FollowRequest::where('follower_id', $follower->id)
