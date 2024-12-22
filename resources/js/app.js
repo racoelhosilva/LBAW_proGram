@@ -419,6 +419,14 @@ const addLikeButtonListeners = () => {
     });
 };
 
+const addCommentListeners = () => {
+	addDropdownListeners();
+	addEditCommentListener();
+	addDeleteCommentListener();
+	addSaveCommentListener();
+	addModalListeners();
+}
+
 const addCommentSectionListeners = () => {
 	const commentList = document.getElementById('comment-list');
 	const commentListLoading = document.querySelector('#comment-list + div .loading-spinner');
@@ -431,7 +439,7 @@ const addCommentSectionListeners = () => {
 	const url = window.location.href;
 	const id = url.split('/post/')[1];
 
-	addLazyLoadingContainer(commentSection, commentListLoading, '/post/' + id, null ,addPostListeners);
+	addLazyLoadingContainer(commentSection, commentListLoading, '/post/' + id, null, addCommentListeners);
 }
 
 const addSearchListeners = () => {
