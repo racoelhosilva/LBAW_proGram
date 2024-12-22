@@ -1,6 +1,23 @@
+@props(['user', 'languages', 'technologies'])
+
 @extends('layouts.app')
 
 @section('title', 'Edit Profile | ProGram')
+
+@php
+    $languagesOptions = array_map(function ($language) {
+        return [
+            'value' => $language->id,
+            'name' => $language->name,
+        ];
+    }, $languages->all());
+    $technologiesOptions = array_map(function ($technology) {
+        return [
+            'value' => $technology->id,
+            'name' => $technology->name,
+        ];
+    }, $technologies->all());
+@endphp
 
 @section('content')
     <main class="px-8 grid grid-cols-4 grid-rows-[auto_1fr] gap-6">
@@ -80,11 +97,13 @@
 
                 <section id="languages-section" class="grid grid-cols-[1fr_auto] items-center gap-x-2">
                     <label for="languages" class="font-medium col-span-2">Languages</label>
-                    @include('partials.tag-select', [
-                        'tags' => $languages,
+                    @include('partials.select', [
+                        'name' => 'languages[]',
+                        'options' => $languagesOptions,
                         'label' => 'Languages',
                         'selected' => $user->stats->languages->pluck('id')->all(),
                         'form' => 'profile-form',
+                        'multi' => true,
                     ])
                     @include('partials.help-icon', [
                         'text' => 'The languages you are most comfortable with. These will be displayed in your profile.',
@@ -94,11 +113,13 @@
 
                 <section id="technologies-section" class="grid grid-cols-[1fr_auto] items-center gap-x-2">
                     <label for="technologies" class="font-medium col-span-2">Technologies</label>
-                    @include('partials.tag-select', [
-                        'tags' => $technologies,
+                    @include('partials.select', [
+                        'name' => 'technologies[]',
+                        'options' => $technologiesOptions,
                         'label' => 'Technologies',
                         'selected' => $user->stats->technologies->pluck('id')->all(),
                         'form' => 'profile-form',
+                        'multi' => true,
                     ])
                     @include('partials.help-icon', [
                         'text' => 'The technologies you are most comfortable with. These will be displayed in your profile.',
