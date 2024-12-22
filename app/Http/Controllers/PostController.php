@@ -75,7 +75,7 @@ class PostController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request, ?int $groupId): RedirectResponse|Redirector
+    public function store(Request $request, ?int $groupId = null): RedirectResponse|Redirector
     {
         $group = $groupId ? Group::findOrFail($groupId) : null;
 
@@ -124,7 +124,7 @@ class PostController extends Controller
             $post->text = $text;
             $post->save();
 
-            $group->posts()->attach($post->id);
+            $group?->posts()->attach($post->id);
         });
 
         return redirect()->route('post.show', $post->id)->withSuccess('Post created successfully.');
