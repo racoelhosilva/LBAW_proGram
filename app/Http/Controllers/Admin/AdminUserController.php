@@ -23,8 +23,7 @@ class AdminUserController extends Controller
 
         $this->authorize('viewAny', User::class);
 
-        $users = User::query()
-            ->where('is_deleted', false);
+        $users = User::where('is_deleted', false);
 
         if (! empty($request->input('query'))) {
             $pattern = '%'.str_replace(['\\', '%', '_'], ['\\\\', '\\%', '\\_'], $request->input('query')).'%';
@@ -52,7 +51,7 @@ class AdminUserController extends Controller
 
         $request->validate([
             'reason' => 'required|string|max:255',
-            'duration' => 'integer|min:1',
+            'duration' => 'integer|min:1|max:1825',  // Allow bans up to 5 years.
         ]);
 
         $duration = $request->filled('permanent')
@@ -107,18 +106,17 @@ class AdminUserController extends Controller
             $userStats->delete();
 
             // Delete user info.
-            $user->update([
-                'name' => $id,
-                'email' => $id,
-                'password' => $id,
-                'handle' => $id,
-                'is_public' => false,
-                'description' => null,
-                'profile_picture_url' => null,
-                'banner_image_url' => null,
-                'is_deleted' => true,
-            ]);
+            $user->name = $id;
+            $user->email = $id;
+            $user->password = $id;
+            $user->handle = $id;
+            $user->is_public = false;
+            $user->description = null;
+            $user->profile_picture_url = null;
+            $user->banner_image_url = null;
+            $user->is_deleted = true;
 
+            $user->save();
         });
 
         return redirect()->route('admin.user.index')->withSuccess('User deleted successfully.');

@@ -319,19 +319,17 @@ class UserController extends Controller
                 ->delete();
             $userStats->delete();
 
-            // Delete user info.
-            $user->update([
-                'name' => $id,
-                'email' => $id,
-                'password' => $id,
-                'handle' => $id,
-                'is_public' => false,
-                'description' => null,
-                'profile_picture_url' => null,
-                'banner_image_url' => null,
-                'is_deleted' => true,
-            ]);
+            $user->name = $id;
+            $user->email = $id;
+            $user->password = $id;
+            $user->handle = $id;
+            $user->is_public = false;
+            $user->description = null;
+            $user->profile_picture_url = null;
+            $user->banner_image_url = null;
+            $user->is_deleted = true;
 
+            $user->save();
         });
 
         // If the user deleted is own account, log out.
