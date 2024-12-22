@@ -4,7 +4,7 @@
     <main class="px-8 flex flex-col gap-4">
         @include('admin.partials.search-field', ['route' => 'admin.user.index'])
 
-        <div class="overflow-x-auto flex flex-col gap-4 pb-20">
+        <div class="overflow-x-auto flex flex-col gap-4 pb-24">
             <table>
                 <thead class="text-center">
                     <tr>
