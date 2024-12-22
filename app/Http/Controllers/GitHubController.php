@@ -12,7 +12,6 @@ class GitHubController extends Controller
 {
     private function randomizeHandle($handle)
     {
-
         $newHandle = $handle;
 
         while (User::where('handle', $newHandle)->exists()) {

@@ -23,7 +23,6 @@ class GroupController extends Controller
             'name' => 'required|string',
             'description' => 'required|string',
             'is_public' => 'boolean',
-            'owner_id' => 'required|integer',
         ]);
 
         $group = new Group;
@@ -31,7 +30,7 @@ class GroupController extends Controller
         $group->name = $request->input('name');
         $group->description = $request->input('description');
         $group->is_public = $request->input('is_public') ?? true;
-        $group->owner_id = $request->input('owner_id');
+        $group->owner_id = auth()->id();
         $group->save();
 
         return redirect()->route('group.show', $group->id)->withSuccess('Group created successfully.');
@@ -39,7 +38,7 @@ class GroupController extends Controller
 
     public function create()
     {
-        if (! Auth::check()) {
+        if (! auth()->check()) {
             return redirect()->route('login');
         }
 
@@ -87,11 +86,11 @@ class GroupController extends Controller
     public function showRequests($groupId)
     {
         $group = Group::findOrFail($groupId);
-        if (! Auth::check()) {
+        if (! auth()->check()) {
             return redirect()->route('login');
         }
 
-        $this->authorize('update', $group);
+        $this->authorize('manageRequests', $group);
         $usersWhoWantToJoin = $group->joinRequests()->where('status', 'pending')->paginate(15);
 
         return view('pages.group-requests', ['group' => $group, 'usersWhoWantToJoin' => $usersWhoWantToJoin]);
@@ -100,15 +99,15 @@ class GroupController extends Controller
     public function showInvites($groupId)
     {
         $group = Group::findOrFail($groupId);
-        if (! Auth::check()) {
+        if (! auth()->check()) {
             return redirect()->route('login');
         }
-        $this->authorize('update', $group);
+
+        $this->authorize('invite', $group);
         $searchQuery = request()->query('invite_query');
         $ownerId = $group->owner->id;
-        $usersSearched = [];
-        $usersInvited = [];
         $searched = false;
+
         if ($searchQuery) {
             $searched = true;
             $usersSearched = User::where('id', '!=', $ownerId)
@@ -136,10 +135,9 @@ class GroupController extends Controller
 
     public function update(Request $request, int $id)
     {
-
         $group = Group::findOrFail($id);
 
-        if (! Auth::check()) {
+        if (! auth()->check()) {
             return redirect()->route('login');
         }
 
@@ -147,8 +145,7 @@ class GroupController extends Controller
         $request->validate([
             'name' => 'required|string',
             'description' => 'required|string',
-            'is_public' => 'boolean',
-            'owner_id' => 'required|integer',
+            'is_public' => 'nullable|boolean',
         ]);
 
         if ($group->is_public != $request->filled('is_public')) {
@@ -164,7 +161,7 @@ class GroupController extends Controller
         $group->name = $request->input('name');
         $group->description = $request->input('description');
         $group->is_public = $request->filled('is_public');
-        $group->owner_id = $request->input('owner_id');
+        $group->owner_id = auth()->id();
         $group->save();
 
         return redirect()->route('group.show', $group->id);
@@ -172,38 +169,15 @@ class GroupController extends Controller
 
     public function edit($id)
     {
-
         $group = Group::findOrFail($id);
 
-        if (! Auth::check()) {
+        if (! auth()->check()) {
             return redirect()->route('login');
         }
 
         $this->authorize('update', $group);
 
         return view('pages.edit-group', ['group' => $group]);
-    }
-
-    public function manage($id)
-    {
-        $group = Group::findOrFail($id);
-
-        if (! Auth::check()) {
-            return redirect()->route('login');
-        }
-
-        $this->authorize('update', $group);
-        $usersWhoWantToJoin = $group->joinRequests()->where('status', 'pending');
-
-        $userIds = request()->query('users');
-        if ($userIds) {
-            $userIdsArray = explode(',', $userIds);
-            $usersSearched = $group->invitedUsers()->whereIn('id', $userIdsArray)->get();
-        } else {
-            $usersSearched = $group->invitedUsers;
-        }
-
-        return view('pages.manage-group', ['group' => $group, 'usersWhoWantToJoin' => $usersWhoWantToJoin, 'usersSearched' => $usersSearched]);
     }
 
     public function join(Request $request, int $group_id)
@@ -227,7 +201,7 @@ class GroupController extends Controller
         }
 
         return redirect()->route('group.show', ['id' => $group_id])
-            ->with('status', 'You have joined the group.');
+            ->withSuccess('You have joined the group.');
     }
 
     public function leave(Request $request, int $group_id)
@@ -235,11 +209,10 @@ class GroupController extends Controller
         $group = Group::findOrFail($group_id);
 
         $this->authorize('leave', $group);
-        $user = Auth::user();
 
-        GroupMember::where('group_id', $group_id)->where('user_id', $user->id)->delete();
+        GroupMember::where('group_id', $group_id)->where('user_id', auth()->id())->delete();
 
         return redirect()->route('group.show', ['id' => $group_id])
-            ->with('status', 'You have left the group.');
+            ->withSuccess('You have left the group.');
     }
 }

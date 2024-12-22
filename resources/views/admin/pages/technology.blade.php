@@ -42,7 +42,7 @@
             </div>
         </div>
 
-        <div class="overflow-x-auto flex flex-col gap-4">
+        <div class="overflow-x-auto flex flex-col gap-4 pb-2">
             <table>
                 <thead class="text-center">
                     <tr>

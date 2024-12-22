@@ -6,7 +6,6 @@ use App\Models\Post;
 use App\Models\Tag;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
 class HomeController extends Controller
@@ -31,11 +30,11 @@ class HomeController extends Controller
 
     private function getTopUsers()
     {
-        $users = User::where('id', '<>', Auth::id())
+        $users = User::where('id', '<>', auth()->id())
             ->where('is_public', true);
 
-        if (Auth::check()) {
-            $followedUserIds = Auth::user()->following->pluck('id');
+        if (auth()->check()) {
+            $followedUserIds = auth()->user()->following->pluck('id');
 
             $users = $users->whereNotIn('id', $followedUserIds);
         }
@@ -53,9 +52,9 @@ class HomeController extends Controller
         // as a decay formula to order posts on the homepage so that posts that are more recent
         // and have a higher number of likes are considered more popular and are shown first
         return Post::with(['author', 'tags'])
-            ->visibleTo(Auth::user())
-            ->when(Auth::check() && Auth::user()->following->isNotEmpty(), function ($query) {
-                $followedUserIds = Auth::user()->following->pluck('id');
+            ->visibleTo(auth()->user())
+            ->when(auth()->check() && auth()->user()->following->isNotEmpty(), function ($query) {
+                $followedUserIds = auth()->user()->following->pluck('id');
 
                 $query->orderByRaw('CASE WHEN author_id IN ('.implode(',', array_fill(0, count($followedUserIds), '?')).') THEN 1 ELSE 2 END', $followedUserIds);
             })

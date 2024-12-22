@@ -35,7 +35,6 @@ const getView = (url, params) => {
 }
 
 const sendPostView = (url, data) => {
-	console.log(JSON.stringify(data));
     return fetch(url, {
         method: 'POST',
         headers: {

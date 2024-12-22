@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\UserStats;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\View\View;
@@ -28,8 +27,8 @@ class RegisterController extends Controller
     {
         $request->validate([
             'handle' => 'required|alpha_dash:ascii|max:20|unique:users',
-            'name' => 'required|string|max:250',
-            'email' => 'required|email|max:250|unique:users',
+            'name' => 'required|string|max:30',
+            'email' => 'required|email|unique:users',
             'password' => 'required|min:8|confirmed',
         ]);
 
@@ -50,7 +49,7 @@ class RegisterController extends Controller
         });
 
         $credentials = $request->only('email', 'password');
-        Auth::attempt($credentials);
+        auth()->attempt($credentials);
         $request->session()->regenerate();
 
         return redirect()->route('home')

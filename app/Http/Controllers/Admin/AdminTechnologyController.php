@@ -35,14 +35,6 @@ class AdminTechnologyController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
@@ -55,30 +47,6 @@ class AdminTechnologyController extends Controller
         $technology->save();
 
         return redirect()->route('admin.technology.index')->withSuccess('Technology created successfully.');
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Technology $technology)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Technology $technology)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Technology $technology)
-    {
-        //
     }
 
     /**
