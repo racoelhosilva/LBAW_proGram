@@ -20,7 +20,7 @@ use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
-    public function show(int $id)
+    public function show(Request $request, int $id)
     {
         $user = User::findOrFail($id);
 
@@ -32,16 +32,18 @@ class UserController extends Controller
             ->orderBy('is_announcement', 'DESC')
             ->orderBy('creation_timestamp', 'DESC')
             ->orderBy('likes', 'DESC')
-            ->get();
+            ->paginate(15);
 
-        $isOwnProfile = Auth::check() && Auth::id() === $user->id;
         $recommendedUsers = Auth::check() ? $this->recommendedUsers(Auth::user(), $user) : [];
         $numRequests = Auth::check() ? Auth::user()->followRequests()->where('status', 'pending')->count() : 0;
+
+        if ($request->ajax()) {
+            return view('partials.post-list', ['posts' => $posts, 'showEmpty' => false]);
+        }
 
         return view('pages.user', [
             'user' => $user,
             'posts' => $posts,
-            'isOwnProfile' => $isOwnProfile,
             'recommendedUsers' => $recommendedUsers,
             'numRequests' => $numRequests,
         ]);

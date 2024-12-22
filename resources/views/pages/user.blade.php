@@ -122,13 +122,12 @@
             <div id="profile-middle" class="h-min col-span-4 lg:col-span-2 row-start-4 lg:row-start-2 col-start-1 lg:col-start-2 flex flex-col gap-3">
                 <section class="card space-y-3">
                     <h1 class="text-xl font-bold">Posts</h1>
-                    @if ($posts->count() === 0)
-                        <p>No posts to show</p>
-                    @else
-                        @foreach ($posts as $post)
-                            @include('partials.post-card', ['post' => $post])
-                        @endforeach
-                    @endif
+                    <div id="user-posts" class="flex flex-col gap-3">
+                        @include('partials.post-list', ['posts' => $posts])
+                    </div>
+                    <div class="flex flex-col items-center">
+                        @include('partials.loading-spinner')
+                    </div>
                 </section>
             </div>
 

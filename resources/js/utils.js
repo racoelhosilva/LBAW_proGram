@@ -265,4 +265,32 @@ const addDropdownListeners = () => {
 	document.addEventListener('click', hideDropdowns);
 };
 
-export { sendGet, encodeParams, getView,sendPostView, sendPutView, sendDelete, sendPost, sendPatch, fadeToastMessage, sendToastMessage, addLazyLoading, addLazyLoadingContainer, hideDropdowns, addDropdownListeners };
+
+const openModal = (modal, event) => {
+	modal.classList.add("active");
+	event.stopPropagation();
+};
+
+const closeModal = (modal, event) => {
+	modal.classList.remove("active");
+	hideDropdowns(event);
+	event.stopPropagation();
+};
+
+const addModalListeners = () => {
+	const modals = document.querySelectorAll(".modal");
+
+	modals.forEach(modal => {
+		const modalOpenButton = modal.querySelector(`:scope .open-button`);
+		const modalContent = modal.querySelector(':scope > div');
+		const modalCloseButtons = modal.querySelectorAll(':scope .close-button');
+
+		modalContent.addEventListener('click', event => event.stopPropagation());
+		modalOpenButton.addEventListener('click', event => openModal(modal, event));
+		modalCloseButtons.forEach(closeButton => {
+			closeButton.addEventListener('click', event => closeModal(modal, event));
+		});
+	});
+}
+
+export { sendGet, encodeParams, getView,sendPostView, sendPutView, sendDelete, sendPost, sendPatch, fadeToastMessage, sendToastMessage, addLazyLoading, addLazyLoadingContainer, hideDropdowns, addDropdownListeners, addModalListeners };
