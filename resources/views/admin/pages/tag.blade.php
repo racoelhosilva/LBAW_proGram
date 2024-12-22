@@ -1,7 +1,5 @@
 @extends('layouts.admin')
-@section('title')
-    {{ 'Admin Tag Search | ProGram' }}
-@endsection
+@section('title', 'Admin Tag Search | ProGram')
 @section('content')
     <main class="px-8 flex flex-col gap-4">
         <div class="grid grid-cols-[1fr_auto] gap-4 items-center">
