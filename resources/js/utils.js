@@ -27,10 +27,12 @@ const getView = (url, params) => {
 			'X-Requested-With': 'XMLHttpRequest',
 		},
 	}).then(response => {
-		if (!response.ok) {
-			throw new Error('Unexpected error occurred');
-		}
-		return response.text();
+		return response.json().then(json => {
+			if (!response.ok) {
+				throw new Error(json.error);
+			}
+			return json;
+		})
 	});
 }
 
@@ -46,11 +48,13 @@ const sendPostView = (url, data) => {
         },
 		body: JSON.stringify(data),
     }).then(response => {
-        if (!response.ok) {
-            throw new Error('Unexpected error occurred');
-        }
-        return response.text();
-    });
+		return response.json().then(json => {
+			if (!response.ok) {
+				throw new Error(json.error);
+			}
+			return json;
+		})
+	});
 };
 
 const sendPutView = (url, data) => {
@@ -64,10 +68,12 @@ const sendPutView = (url, data) => {
 		},
 		body: JSON.stringify(data),
 	}).then(response => {
-		if (!response.ok) {
-			throw new Error('Unexpected error occurred');
-		}
-		return response.text();
+		return response.json().then(json => {
+			if (!response.ok) {
+				throw new Error(json.error);
+			}
+			return json;
+		})
 	});
 };
 
@@ -81,10 +87,12 @@ const sendPost = (url, data) => {
 		},
 		body: JSON.stringify(data),
 	}).then(response => {
-		if (!response.ok) {
-			throw new Error(response.json.error);
-		}
-		return response.json();
+		return response.json().then(json => {
+			if (!response.ok) {
+				throw new Error(json.error);
+			}
+			return json;
+		})
 	});
 }
 
@@ -98,10 +106,12 @@ const sendPatch = (url, data) => {
 		},
 		body: JSON.stringify(data)
 	}).then(response => {
-		if (!response.ok) {
-			throw new Error(response.json.error);
-		}
-		return response.json();
+		return response.json().then(json => {
+			if (!response.ok) {
+				throw new Error(json.error);
+			}
+			return json;
+		})
 	});
 }
 
@@ -114,10 +124,12 @@ const sendDelete = (url) => {
 			'X-Requested-With': 'XMLHttpRequest',
 		}
 	}).then(response => {
-		if (!response.ok) {
-			throw new Error(response.json.error);
-		}
-		return response.json();
+		return response.json().then(json => {
+			if (!response.ok) {
+				throw new Error(json.error);
+			}
+			return json;
+		})
 	});
 }
 
