@@ -35,7 +35,7 @@ const addUnsendInviteListeners = () => {
                 const userId = btn.closest('.manage-invite-container').getAttribute('data-user-id');
                 const groupId = invitesPage.getAttribute('data-group-id');
                 if (!userId || !groupId) return;
-                sendDelete(`/api/group/${groupId}/uninvite/${userId}`)
+                sendDelete(`/api/group/${groupId}/invite/${userId}`)
                     .then(() => {
                         btn.classList.add('hidden');
                         const invitebtn = btn.closest('.manage-invite-container').querySelector('.invite-button');

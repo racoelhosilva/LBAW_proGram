@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 class CommentPolicy
 {
     /**
-     * Determine whether the user can view any models.
+     * Determine whether the user can view any comments.
      */
     public function viewAny(?User $user): bool
     {
@@ -19,7 +19,7 @@ class CommentPolicy
     }
 
     /**
-     * Determine whether the user can view the model.
+     * Determine whether the user can view the comment.
      */
     public function view(?User $user, Comment $comment): bool
     {
@@ -32,7 +32,7 @@ class CommentPolicy
     }
 
     /**
-     * Determine whether the user can create models.
+     * Determine whether the user can create comments.
      */
     public function create(?User $user): bool
     {
@@ -40,7 +40,7 @@ class CommentPolicy
     }
 
     /**
-     * Determine whether the user can update the model.
+     * Determine whether the user can update the comment..
      */
     public function update(?User $user, Comment $comment): bool
     {
@@ -48,7 +48,7 @@ class CommentPolicy
     }
 
     /**
-     * Determine whether the user can delete the model.
+     * Determine whether the user can delete the comment.
      */
     public function delete(?User $user, Comment $comment): bool
     {
@@ -56,7 +56,7 @@ class CommentPolicy
     }
 
     /**
-     * Determine whether the user can permanently delete the model.
+     * Determine whether the user can permanently delete the comment.
      */
     public function forceDelete(?User $user, Comment $comment): bool
     {
@@ -65,6 +65,9 @@ class CommentPolicy
         return $isAdmin || ($user && ! $user->isBanned() && $user->id === $comment->author_id);
     }
 
+    /**
+     * Determine whether the user can like the comment.
+     */
     public function like(?User $user, Comment $comment): bool
     {
         return $user && ! $user->isBanned() && $user->id != $comment->author_id;

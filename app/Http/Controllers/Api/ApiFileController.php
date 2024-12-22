@@ -53,24 +53,9 @@ class ApiFileController extends Controller
             case 'banner':
                 $fileName = User::find($id)->banner_image_url;
                 break;
-            case 'post':
-                // TODO: post image get name
-                break;
         }
 
         return $fileName;
-    }
-
-    private static function deleteFile(Request $request)
-    {
-        $url = explode('/', $request->url);
-        $fileName = end($url);
-        $folder = $url[count($url) - 2];
-        Storage::disk(self::$diskName)->delete($folder.'/'.$fileName);
-
-        return response()->json([
-            'message' => 'File deleted successfully',
-        ]);
     }
 
     public static function get(string $type, int $userId)
@@ -94,10 +79,17 @@ class ApiFileController extends Controller
 
     public function uploadFile(Request $request)
     {
+        $request->validate([
+            'type' => 'required|string',
+            'user_id' => 'required|integer',
+            'file' => 'required|file',
+        ]);
 
         // Validation: has file
         if (! $request->hasFile('file')) {
-            return redirect()->back()->withError('File not found');
+            return response()->json([
+                'error' => 'File not found',
+            ], 409);
         }
 
         // Validation: upload extension
@@ -107,7 +99,9 @@ class ApiFileController extends Controller
         $extension = $file->extension();
 
         if (! $this->isValidExtension($type, $extension)) {
-            return redirect()->back()->withError('Unsupported upload extension');
+            return response()->json([
+                'error' => 'Extension not found',
+            ], 422);
         }
 
         $fileName = $file->hashName();
@@ -117,12 +111,10 @@ class ApiFileController extends Controller
         return response()->json([
             'url' => asset($type.'/'.$user_id.'/'.$fileName),
         ]);
-
     }
 
     public static function updateImage(string $type, int $id, UploadedFile $file)
     {
-
         if (! $file) {
             return 'File not found';
         }

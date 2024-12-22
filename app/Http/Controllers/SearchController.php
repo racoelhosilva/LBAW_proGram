@@ -69,7 +69,6 @@ class SearchController extends Controller
                 });
             })
             ->joinSub($groups, 'groups', function (JoinClause $join) {
-                // TODO: Refactor this
                 $join->whereExists(function ($query) {
                     $query->select('group_post.post_id')
                         ->from('group_post')

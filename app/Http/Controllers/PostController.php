@@ -12,7 +12,6 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Redirector;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
@@ -96,7 +95,7 @@ class PostController extends Controller
         $post = new Post;
         DB::transaction(function () use ($post, $group, $request) {
             // Save every field except for the text
-            $post->author_id = Auth::id();
+            $post->author_id = auth()->id();
             $post->title = $request->input('title');
             $post->is_public = $group ? $group->is_public : $request->input('is_public', false);
             $post->is_announcement = $request->input('is_announcement', false);

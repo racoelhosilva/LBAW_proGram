@@ -19,6 +19,7 @@
                 'name' => 'email',
                 'label' => 'Email',
                 'type' => 'email',
+                'pattern' => '.{,64}$',
                 'value' => old('email'),
                 'placeholder' => 'johndoe@example.com',
                 'required' => true,

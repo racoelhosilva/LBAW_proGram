@@ -7,6 +7,7 @@ use App\Events\CommentLikeEvent;
 use App\Http\Controllers\Controller;
 use App\Models\Comment;
 use App\Models\CommentLike;
+use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -14,20 +15,23 @@ class ApiCommentController extends Controller
 {
     public function index(Request $request)
     {
-        $this->authorize('viewAny', Comment::class);
-
-        $comments = Comment::whereHas('post', function ($query) {
-            $query->where('is_public', true);
-        })->get();
+        $user = auth()->user();
+        $visiblePosts = Post::visibleTo($user)->get();
+        $comments = Comment::whereIn('post_id', $visiblePosts->pluck('id'))
+            ->select(['id', 'content', 'post_id', 'author_id', 'timestamp', 'likes'])
+            ->get();
 
         return response()->json($comments);
     }
 
     public function show(Request $request, $id)
     {
-        $comment = Comment::findOrFail($id);
-
-        $this->authorize('view', $comment);
+        $user = auth()->user();
+        $visiblePosts = Post::visibleTo($user)->get();
+        $comments = Comment::whereIn('post_id', $visiblePosts->pluck('id'))
+            ->select(['id', 'content', 'post_id', 'author_id', 'timestamp', 'likes'])
+            ->get();
+        $comment = $comments->find($id);
 
         return response()->json($comment);
     }
@@ -39,24 +43,18 @@ class ApiCommentController extends Controller
         $request->validate([
             'content' => 'required|string',
             'post_id' => 'required|integer|exists:post,id',
-            'author_id' => 'required|exists:users,id',
         ]);
 
-        try {
-            $comment = new Comment;
+        $comment = new Comment;
+        $comment->content = $request->input('content');
+        $comment->post_id = $request->input('post_id');
+        $comment->author_id = auth()->id();
 
-            $comment->content = $request->input('content');
-            $comment->post_id = $request->input('post_id');
-            $comment->author_id = $request->input('author_id');
-            $comment->timestamp = now();
-            $comment->likes = 0;
+        $comment->timestamp = now();
+        $comment->likes = 0;
+        $comment->save();
 
-            $comment->save();
-
-            event(new CommentEvent($comment->post_id, $comment->post->author_id));
-        } catch (\Exception $e) {
-            return response('Failed to create comment.', 500);
-        }
+        event(new CommentEvent($comment->post_id, $comment->post->author_id));
 
         if ($request->accepts('text/html')) {
             return view('partials.comment-card', ['comment' => $comment]);
@@ -75,7 +73,9 @@ class ApiCommentController extends Controller
             'content' => 'required|string',
         ]);
 
-        $comment->update($request->all());
+        $comment->content = $request->input('content');
+        $comment->save();
+
         if ($request->accepts('text/html')) {
             return view('partials.comment-card', ['comment' => $comment]);
         } else {
@@ -89,8 +89,8 @@ class ApiCommentController extends Controller
 
         $this->authorize('like', $comment);
 
-        if (CommentLike::where('comment_id', $id)->where('liker_id', Auth::id())->exists()) {
-            return response()->json(['error' => 'You have already liked this comment'], 400);
+        if (CommentLike::where('comment_id', $id)->where('liker_id', auth()->id())->exists()) {
+            return response()->json(['error' => 'You have already liked this comment'], 409);
         }
 
         $like = new CommentLike;
@@ -98,9 +98,8 @@ class ApiCommentController extends Controller
         $like->liker_id = Auth::id();
         $like->comment_id = $id;
 
-        if ($like->save()) {
-            event(new CommentLikeEvent($comment->post_id, $comment->author_id));
-        }
+        $like->save();
+        event(new CommentLikeEvent($comment->post_id, $comment->author_id));
 
         return response()->json($like, 201);
     }
@@ -116,12 +115,12 @@ class ApiCommentController extends Controller
             ->first();
 
         if (! $like) {
-            return response()->json(['error' => 'You have not liked this comment'], 400);
+            return response()->json(['error' => 'You have not liked this comment'], 409);
         }
 
         $like->delete();
 
-        return response()->json(['message' => 'Comment unliked successfully'], 200);
+        return response()->json(['message' => 'Comment unliked successfully']);
     }
 
     public function destroy(Request $request, $id)
@@ -132,6 +131,6 @@ class ApiCommentController extends Controller
 
         $comment->delete();
 
-        return response()->json(['message' => 'Comment deleted successfully.'], 200);
+        return response()->json(['message' => 'Comment deleted successfully.']);
     }
 }

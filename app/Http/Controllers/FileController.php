@@ -53,9 +53,6 @@ class FileController extends Controller
             case 'banner':
                 $fileName = User::find($id)->banner_image_url;
                 break;
-            case 'post':
-                // TODO: post image get name
-                break;
         }
 
         return $fileName;
@@ -73,9 +70,6 @@ class FileController extends Controller
                     break;
                 case 'banner':
                     User::find($id)->banner_image_url = null;
-                    break;
-                case 'post':
-                    // TODO: post image delete
                     break;
             }
         }
@@ -179,11 +173,6 @@ class FileController extends Controller
                 } else {
                     redirect()->back()->withError('Unknown user');
                 }
-
-                break;
-
-            case 'post':
-                // TODO: post image upload
                 break;
 
             default:

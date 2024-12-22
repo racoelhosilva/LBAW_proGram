@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -64,5 +65,17 @@ class Group extends Model
     public function isUserInvited(User $user): bool
     {
         return $this->invitedUsers()->where('invitee_id', $user->id)->exists();
+    }
+
+    public function scopeVisibleTo(Builder $query, ?User $user): Builder
+    {
+        if ($user === null) {
+            return $query->where('is_public', true);
+        }
+
+        return $query->where('is_public', true)
+            ->orWhereHas('members', function (Builder $query) use ($user) {
+                $query->where('user_id', $user->id);
+            });
     }
 }
