@@ -14,9 +14,7 @@
                 <p>No requests at the moment</p>
             @endforelse
             @if(!$usersWhoWantToJoin->isEmpty())
-                <div class="flex justify-center">
-                    {{$usersWhoWantToJoin->onEachSide(0)->links()}}
-                </div>
+                {{$usersWhoWantToJoin->onEachSide(0)->links()}}
             @endif
         </section>
       </main>

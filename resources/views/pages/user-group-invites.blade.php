@@ -20,8 +20,11 @@
                 @include('partials.group-card', ['group' => $group, 'buttons' => $buttons])
                 </div>
             @empty
-                <p>This user does not follow any other user</p>
+                <p>This user has no invites to groups</p>
             @endforelse
+            @if(!$invites->isEmpty())
+                {{ $invites->onEachSide(0)->links() }}
+            @endif
         </div>
     </article>
 </main>

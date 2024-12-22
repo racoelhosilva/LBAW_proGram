@@ -22,9 +22,7 @@
                         <p>No users found.</p>
                     @endforelse
                     @if(!$usersSearched->isEmpty())
-                        <div class="flex justify-center">
-                            {{ $usersSearched->onEachSide(0)->links() }}
-                        </div>
+                        {{ $usersSearched->onEachSide(0)->links() }}
                     @endif
                 @else
                     @forelse ($usersInvited as $user)

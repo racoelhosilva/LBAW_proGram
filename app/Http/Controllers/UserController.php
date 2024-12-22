@@ -55,7 +55,7 @@ class UserController extends Controller
 
         $groups = $user->groups()
             ->orderBy('name', 'ASC')
-            ->get();
+            ->paginate(10);
 
         return view('pages.user-groups', [
             'user' => $user,
@@ -69,7 +69,7 @@ class UserController extends Controller
 
         $this->authorize('view', $user);
 
-        $invites = $user->groupsInvitedTo()->orderBy('name', 'ASC')->get();
+        $invites = $user->groupsInvitedTo()->orderBy('name', 'ASC')->paginate(10);
 
         return view('pages.user-group-invites', [
             'user' => $user,

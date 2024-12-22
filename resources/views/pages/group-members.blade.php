@@ -14,9 +14,7 @@
                 <p>No members at the moment</p>
             @endforelse
             @if(!$members->isEmpty())
-                <div class="flex justify-center">
-                    {{$members->onEachSide(0)->links()}}
-                </div>
+                {{$members->onEachSide(0)->links()}}
             @endif
         </section>  
       </main>
