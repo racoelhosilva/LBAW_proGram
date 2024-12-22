@@ -366,7 +366,7 @@ class UserController extends Controller
     public function changePassword(Request $request)
     {
 
-        if (! Auth::check()) {
+        if (! auth()->check()) {
             return redirect()->route('login');
         }
 
@@ -375,7 +375,7 @@ class UserController extends Controller
             'new_password' => 'required|min:8|confirmed',
         ]);
 
-        $user = Auth::user();
+        $user = auth()->user();
 
         if (! password_verify($request->input('current_password'), $user->password)) {
             return redirect()->back()->withErrors(['error' => 'Current password is incorrect.']);
@@ -386,6 +386,5 @@ class UserController extends Controller
         $user->save();
 
         return redirect()->back()->withSuccess('Password changed successfully.');
-
     }
 }
