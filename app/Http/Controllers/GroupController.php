@@ -67,7 +67,7 @@ class GroupController extends Controller
         $group = Group::findOrFail($groupId);
         $this->authorize('viewContent', $group);
 
-        $members = $group->members->where('id', '!=', $group->owner->id); // Exclude the owner
+        $members = $group->members()->where('id', '!=', $group->owner->id)->paginate(15); // Exclude the owner
 
         return view('pages.group-members', ['group' => $group, 'members' => $members]);
     }

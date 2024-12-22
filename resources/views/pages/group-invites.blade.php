@@ -23,7 +23,7 @@
                     @endforelse
                     @if(!$usersSearched->isEmpty())
                         <div class="flex justify-center">
-                            {{ $usersSearched->links() }}
+                            {{ $usersSearched->onEachSide(0)->links() }}
                         </div>
                     @endif
                 @else
@@ -39,7 +39,7 @@
                     @endforelse
                     @if(!$usersInvited->isEmpty())
                         <div class="flex justify-center">
-                            {{ $usersInvited->links() }}
+                            {{ $usersInvited->onEachSide(0)->links() }}
                         </div>
                     @endif
                 @endif
