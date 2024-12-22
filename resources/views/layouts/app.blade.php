@@ -8,6 +8,15 @@
         <!-- CSRF Token -->
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
+        @hasSection('openGraph')
+            @yield('openGraph')
+        @else
+            <meta property="og:url" content="{{ url()->current() }}">
+            <meta property="og:type" content="website">
+            <meta property="og:title" content="@yield('title')">
+            <meta property="og:image" content="@yield('image', asset('images/logo.png'))">
+        @endif
+
         <!-- ID of current user if set -->
         @isset(auth()->user()->id)
             <meta name="user-id" content="{{ auth()->user()->id }}">

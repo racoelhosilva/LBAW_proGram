@@ -4,6 +4,14 @@
 
 @section('title', $user->name . ' | ProGram')
 
+@section('openGraph')
+    <meta property="og:title" content="{{ $user->name }} | ProGram">
+    <meta property="og:image" content="{{ asset('images/logo.png') }}">
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:type" content="profile">
+    <meta property="profile:username" content="{{ $user->name }}">
+@endsection
+
 @php
     $canFollow = auth()->check() && auth()->user()->can('follow', $user);
 
