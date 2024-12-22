@@ -17,20 +17,27 @@ class ApiGroupController extends Controller
     {
         $user = auth()->user();
 
-        if (! $user->can('viewAny', Group::class)) {
-            return response()->json(['message' => 'You are not authorized to view groups.'], 403);
-        }
-
-        $groups = Group::select('id', 'name', 'owner_id', 'description', 'creation_timestamp', 'is_public', 'member_count')->get();
-
-        $groups = $groups->map(function ($group) use ($user) {
-            if ($user->can('view', $group)) {
-                return $group;
-            }
-            $group->makeHidden('member_count');
-
-            return $group;
-        });
+        $visibleGroups = Group::visibleTo($user)
+            ->select([
+                'id',
+                'name',
+                'owner_id',
+                'description',
+                'creation_timestamp',
+                'is_public',
+                'member_count',
+            ])
+            ->get();
+        $nonVisibleGroups = Group::whereNotIn('id', $visibleGroups->pluck('id'))
+            ->select([
+                'id',
+                'name',
+                'owner_id',
+                'description',
+                'is_public',
+            ])
+            ->get();
+        $groups = $visibleGroups->merge($nonVisibleGroups);
 
         return response()->json($groups);
     }

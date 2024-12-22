@@ -159,6 +159,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Group newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Group newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Group query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Group visibleTo(?\App\Models\User $user)
  * @method static \Illuminate\Database\Eloquent\Builder|Group whereCreationTimestamp($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Group whereDescription($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Group whereId($value)
