@@ -17,7 +17,7 @@ use Illuminate\Validation\Rule;
 
 class ApiUserController extends Controller
 {
-    public function list()
+    public function index()
     {
         $user = auth()->user();
         $this->authorize('viewAny', User::class);
