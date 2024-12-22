@@ -267,7 +267,7 @@ class UserController extends Controller
 
         $this->authorize('viewContent', $user);
 
-        return view('pages.following', ['user' => $user]);
+        return view('pages.following', ['user' => $user, 'following' => $user->following()->paginate(30)]);
     }
 
     public function requests(int $id)
@@ -278,7 +278,7 @@ class UserController extends Controller
 
         $followRequests = $user->followRequests()
             ->where('status', 'pending')
-            ->get();
+            ->paginate(16);
 
         return view('pages.requests', ['user' => $user, 'requests' => $followRequests]);
     }

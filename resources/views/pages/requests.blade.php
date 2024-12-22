@@ -1,3 +1,5 @@
+@props(['user', 'requests'])
+
 @extends('layouts.app')
 
 @section('title') {{'Follow Requests for ' . $user->name . ' | ProGram'}} @endsection
@@ -13,6 +15,11 @@
                 <p>This user has no follow requests</p>
             @endforelse
         </div>
+        @if (!$requests->isEmpty())
+            <div>
+                {{ $requests->onEachSide(0)->links() }}
+            </div>
+        @endif
     </article>
 </main>
 @endsection
