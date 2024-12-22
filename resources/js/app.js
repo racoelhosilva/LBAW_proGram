@@ -1,5 +1,5 @@
 import "./bootstrap";
-import {addDropdownListeners, fadeToastMessage, hideDropdowns, sendToastMessage, addLazyLoading,addLazyLoadingContainer, sendDelete, sendPost, addDropdownListeners,sendPostView, sendPutView} from "./utils";
+import {addDropdownListeners, fadeToastMessage, hideDropdowns, sendToastMessage, addLazyLoading,addLazyLoadingContainer, sendDelete, sendPost, sendPostView, sendPutView} from "./utils";
 import Quill from "quill";
 
 const openModal = (modal, event) => {
