@@ -253,6 +253,8 @@
     }
 }
 
+/* Quill Editor */
+
 .ql-toolbar {
     @apply rounded-t-lg border !border-slate-300 dark:!border-slate-600;
 }

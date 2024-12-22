@@ -9,7 +9,6 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Query\JoinClause;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class SearchController extends Controller
 {
@@ -24,7 +23,7 @@ class SearchController extends Controller
 
     public function searchPosts(?string $queryStr, ?array $tags, ?string $orderBy, bool $includeTotal = false)
     {
-        $posts = Post::visibleTo(Auth::user())
+        $posts = Post::visibleTo(auth()->user())
             ->when($tags, function ($query, $tags) {
                 $query->whereHas('tags', function ($query) use ($tags) {
                     $query->whereIn('id', $tags);
@@ -43,7 +42,7 @@ class SearchController extends Controller
             $query->whereRaw("tsvectors @@ plainto_tsquery('english', ?)", [$queryStr]);
         });
 
-        $posts = Post::visibleTo(Auth::user())
+        $posts = Post::visibleTo(auth()->user())
             ->when($tags, function ($query, $tags) {
                 $query->whereHas('tags', function ($query) use ($tags) {
                     $query->whereIn('id', $tags);
@@ -63,7 +62,7 @@ class SearchController extends Controller
                 $query->whereRaw("tsvectors @@ plainto_tsquery('english', ?)", [$queryStr]);
             });
 
-        $posts = Post::visibleTo(Auth::user())
+        $posts = Post::visibleTo(auth()->user())
             ->when($tags, function ($query, $tags) {
                 $query->whereHas('tags', function ($query) use ($tags) {
                     $query->whereIn('id', $tags);
@@ -175,7 +174,6 @@ class SearchController extends Controller
         if ($request->ajax()) {
             switch ($request->input('search_type')) {
                 case 'posts':
-                default:
                     $this->authorize('viewAny', Post::class);
                     switch ($request->input('search_attr')) {
                         case 'author':
@@ -216,7 +214,6 @@ class SearchController extends Controller
         } else {
             switch ($request->input('search_type')) {
                 case 'posts':
-                default:
                     $this->authorize('viewAny', Post::class);
                     switch ($request->input('search_attr')) {
                         case 'author':

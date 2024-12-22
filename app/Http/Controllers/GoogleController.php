@@ -12,7 +12,6 @@ class GoogleController extends Controller
 {
     private function randomizeHandle($handle)
     {
-
         $newHandle = $handle;
 
         while (User::where('handle', $newHandle)->exists()) {
@@ -40,7 +39,6 @@ class GoogleController extends Controller
 
     public function callbackGoogle()
     {
-
         try {
             $google_user = Socialite::driver('google')->stateless()->user();
         } catch (\Exception $e) {
@@ -63,7 +61,6 @@ class GoogleController extends Controller
 
         // If the user does not exist, create one
         if (! $user) {
-
             $data = [
                 'name' => $google_user->getName(),
                 'email' => $google_user->getEmail(),

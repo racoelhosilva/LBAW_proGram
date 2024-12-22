@@ -10,7 +10,6 @@ class MailController extends Controller
 {
     public function send(Request $request)
     {
-
         $mailData = [
             'name' => $request->name,
             'email' => $request->email,

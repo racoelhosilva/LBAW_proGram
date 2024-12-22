@@ -16,7 +16,6 @@ class ForgotPasswordController extends Controller
 {
     public function show(): View
     {
-
         return view('auth.forgot-password');
     }
 
@@ -64,7 +63,7 @@ class ForgotPasswordController extends Controller
         );
 
         return $status === Password::PASSWORD_RESET
-                    ? redirect()->route('login')->with('status', __($status))
-                    : back()->withErrors(['email' => [__($status)]]);
+            ? redirect()->route('login')->withSuccess('Password reset successfully!')
+            : back()->withErrors(['email' => [__($status)]]);
     }
 }

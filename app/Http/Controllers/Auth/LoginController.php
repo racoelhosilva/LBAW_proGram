@@ -8,7 +8,6 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Redirector;
-use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
@@ -17,7 +16,7 @@ class LoginController extends Controller
      */
     public function show(): Redirector|RedirectResponse|View|Factory
     {
-        if (Auth::check()) {
+        if (auth()->check()) {
             return redirect()->route('home');
         } else {
             return view('auth.login');
@@ -34,10 +33,10 @@ class LoginController extends Controller
             'password' => 'required|string',
         ]);
 
-        if (Auth::attempt($credentials, $request->filled('remember'))) {
+        if (auth()->attempt($credentials, $request->filled('remember'))) {
             $request->session()->regenerate();
-            if (Auth::user()->is_deleted) {
-                Auth::logout();
+            if (auth()->user()->is_deleted) {
+                auth()->logout();
 
                 return back()->withErrors([
                     'email' => 'That account has been deleted.',
@@ -57,7 +56,7 @@ class LoginController extends Controller
      */
     public function logout(Request $request)
     {
-        Auth::logout();
+        auth()->logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
