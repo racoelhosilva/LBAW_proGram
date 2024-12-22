@@ -171,7 +171,7 @@ class ApiPostController extends Controller
         $post = Post::findOrFail($id);
 
         $this->authorize('view', $post);
-        dd('hdhd');
+
         $comments = $post->allComments;
 
         return response()->json($comments);
