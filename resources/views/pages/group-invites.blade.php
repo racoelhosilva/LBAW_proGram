@@ -24,6 +24,9 @@
                     @empty
                         <p>No users found.</p>
                     @endforelse
+                    @if(!$usersSearched->isEmpty())
+                        {{ $usersSearched->onEachSide(0)->links() }}
+                    @endif
                 @else
                     @forelse ($usersInvited as $user)
                         <div class="manage-invite-container flex flex-row w-full " data-user-id={{ $user->id }}>    
@@ -35,6 +38,11 @@
                     @empty
                         <p>No invites sent yet.</p>
                     @endforelse
+                    @if(!$usersInvited->isEmpty())
+                        <div class="flex justify-center">
+                            {{ $usersInvited->onEachSide(0)->links() }}
+                        </div>
+                    @endif
                 @endif
             </div>
         </section>

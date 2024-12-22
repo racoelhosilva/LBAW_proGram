@@ -15,6 +15,11 @@
                     <p>This user has no follow requests</p>
                 @endforelse
             </div>
-        </section>
+            @if (!$requests->isEmpty())
+            <div>
+                {{ $requests->onEachSide(0)->links() }}
+            </div>
+        @endif
+    </section>
     </main>
 @endsection

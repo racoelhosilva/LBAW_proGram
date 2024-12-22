@@ -55,7 +55,7 @@ class UserController extends Controller
 
         $groups = $user->groups()
             ->orderBy('name', 'ASC')
-            ->get();
+            ->paginate(10);
 
         return view('pages.user-groups', [
             'user' => $user,
@@ -69,7 +69,7 @@ class UserController extends Controller
 
         $this->authorize('view', $user);
 
-        $invites = $user->groupsInvitedTo()->orderBy('name', 'ASC')->get();
+        $invites = $user->groupsInvitedTo()->orderBy('name', 'ASC')->paginate(10);
 
         return view('pages.user-group-invites', [
             'user' => $user,
@@ -258,7 +258,7 @@ class UserController extends Controller
 
         $this->authorize('viewContent', $user);
 
-        return view('pages.followers', ['user' => $user]);
+        return view('pages.followers', ['user' => $user, 'followers' => $user->followers()->paginate(30)]);
     }
 
     public function following(int $id)
@@ -267,7 +267,7 @@ class UserController extends Controller
 
         $this->authorize('viewContent', $user);
 
-        return view('pages.following', ['user' => $user]);
+        return view('pages.following', ['user' => $user, 'following' => $user->following()->paginate(30)]);
     }
 
     public function requests(int $id)
@@ -278,7 +278,7 @@ class UserController extends Controller
 
         $followRequests = $user->followRequests()
             ->where('status', 'pending')
-            ->get();
+            ->paginate(16);
 
         return view('pages.requests', ['user' => $user, 'requests' => $followRequests]);
     }

@@ -13,6 +13,9 @@
             @empty
                 <p>No requests at the moment</p>
             @endforelse
+            @if(!$usersWhoWantToJoin->isEmpty())
+                {{$usersWhoWantToJoin->onEachSide(0)->links()}}
+            @endif
         </section>
     </main>
 @endsection

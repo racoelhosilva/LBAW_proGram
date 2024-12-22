@@ -14,6 +14,9 @@
             @empty
                 <p>No invites sent yet</p>
             @endforelse
+            @if(!$invites->isEmpty())
+                {{ $invites->onEachSide(0)->links() }}
+            @endif
         </div>
     </section>
 </main>

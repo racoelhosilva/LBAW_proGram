@@ -67,7 +67,7 @@ class GroupController extends Controller
         $group = Group::findOrFail($groupId);
         $this->authorize('viewContent', $group);
 
-        $members = $group->members->where('id', '!=', $group->owner->id); // Exclude the owner
+        $members = $group->members()->where('id', '!=', $group->owner->id)->paginate(15); // Exclude the owner
 
         return view('pages.group-members', ['group' => $group, 'members' => $members]);
     }
@@ -80,7 +80,7 @@ class GroupController extends Controller
         }
 
         $this->authorize('update', $group);
-        $usersWhoWantToJoin = $group->joinRequests()->where('status', 'pending')->get();
+        $usersWhoWantToJoin = $group->joinRequests()->where('status', 'pending')->paginate(15);
 
         return view('pages.group-requests', ['group' => $group, 'usersWhoWantToJoin' => $usersWhoWantToJoin]);
     }
@@ -107,11 +107,11 @@ class GroupController extends Controller
                 })
                 ->whereRaw("tsvectors @@ plainto_tsquery('english', ?)", [$searchQuery])
                 ->orderByRaw("ts_rank(tsvectors, plainto_tsquery('english', ?)) DESC", [$searchQuery])
-                ->get();
+                ->paginate(15);
             $usersInvited = [];
         } else {
             $usersSearched = [];
-            $usersInvited = $group->invitedUsers;
+            $usersInvited = $group->invitedUsers()->paginate(15);
         }
 
         return view('pages.group-invites', [
