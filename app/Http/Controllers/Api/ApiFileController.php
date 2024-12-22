@@ -104,7 +104,7 @@ class ApiFileController extends Controller
         if (! $request->hasFile('file')) {
             return response()->json([
                 'error' => 'File not found',
-            ], 404);
+            ], 409);
         }
 
         // Validation: upload extension
