@@ -19,50 +19,16 @@ class ApiUserController extends Controller
     public function list()
     {
         $authenticatedUser = auth()->user();
-        $users = User::all();
         $this->authorize('viewAny', User::class);
-        if (! $authenticatedUser) {
-            $users = $users->filter(function ($user) {
-                return $user->is_public;
-            })->map(function ($user) {
-                return $user->only([
-                    'id',
-                    'name',
-                    'register_timestamp',
-                    'handle',
-                    'is_public',
-                ]);
-            });
+        $users = User::visibleTo($authenticatedUser)
+            ->select(['id', 'name', 'register_timestamp', 'handle', 'is_public', 'description', 'num_followers', 'num_following'])
+            ->get();
+        $nonvisibleUsers = User::whereNotIn('id', $users->pluck('id'))
+            ->select(['id', 'name', 'register_timestamp', 'handle', 'is_public'])
+            ->get();
+        $response = $users->merge($nonvisibleUsers);
 
-            return response()->json($users->values());
-        }
-        $response = $users->map(function ($user) use ($authenticatedUser) {
-            if ($authenticatedUser->can('viewContent', $user)) {
-                return $user->only([
-                    'id',
-                    'name',
-                    'register_timestamp',
-                    'handle',
-                    'is_public',
-                    'description',
-                    'num_followers',
-                    'num_following',
-                ]);
-            } elseif ($authenticatedUser->can('view', $user)) {
-                return $user->only([
-                    'id',
-                    'name',
-                    'register_timestamp',
-                    'handle',
-                    'is_public',
-                ]);
-            } else {
-
-                return null;
-            }
-        })->filter();
-
-        return response()->json($response->values());
+        return response()->json($response);
     }
 
     public function show($id)

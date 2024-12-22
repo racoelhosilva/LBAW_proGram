@@ -413,6 +413,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|User newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|User newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|User query()
+ * @method static \Illuminate\Database\Eloquent\Builder|User visibleTo(?\App\Models\User $user)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereBannerImageUrl($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereDescription($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereEmail($value)

@@ -187,4 +187,16 @@ class User extends Authenticatable
     {
         return $this->hasOne(Token::class);
     }
+
+    public function scopeVisibleTo($query, ?User $user)
+    {
+        if ($user === null) {
+            return $query->where('is_public', true);
+        }
+
+        return $query->where('is_public', true)
+            ->orWhere('id', $user->id)->orWhereHas('followers', function ($query) use ($user) {
+                $query->where('follower_id', $user->id);
+            });
+    }
 }
