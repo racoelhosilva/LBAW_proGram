@@ -229,15 +229,15 @@ Route::prefix('api')->middleware('api.token')->group(function () {
         Route::delete('/group/{id}/rejectInvite', 'rejectInvite')->where('id', '[0-9]+')->name('api.group.invite.reject');
     });
 
-    // User
+    //User
     Route::controller(ApiUserController::class)->group(function () {
-        Route::get('/user', 'list');
-        Route::get('/user/{id}', 'show');
-        Route::post('/user', 'create');
-        //     Route::delete('/user/{id}', 'delete');
+        Route::get('/user', 'list'); //works
+        Route::get('/user/{id}', 'show'); //works
+        Route::post('/user', 'create'); //works
+        Route::delete('/user/{id}', 'delete'); //works
         Route::put('/user/{id}', 'update');
-        Route::get('/user/{id}/followers', 'listFollowers');
-        Route::get('/user/{id}/following', 'listFollowing');
+        Route::get('/user/{id}/followers', 'listFollowers'); //works
+        Route::get('/user/{id}/following', 'listFollowing'); //works
         Route::get('/user/{id}/post', 'listPosts');
         Route::post('/user/{id}/notifications/read', 'readAllNotifications')->where('id', '[0-9]+')->name('api.user.notifications.read');
         Route::post('/user/{userId}/notification/{notificationId}/read', 'readNotification')->where('userId', '[0-9]+')->where('notificationId', '[0-9]+')->name('api.user.notification.read');
