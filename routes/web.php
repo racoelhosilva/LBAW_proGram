@@ -215,7 +215,7 @@ Route::prefix('api')->middleware('api.token')->group(function () {
         Route::post('/group/{id}/request/{user_id}/accept', 'acceptRequest')->where(['id' => '[0-9]+', 'user_id' => '[0-9]+'])->name('api.group.request.accept');
         Route::delete('/group/{id}/request/{user_id}/reject', 'rejectRequest')->where(['id' => '[0-9]+', 'user_id' => '[0-9]+'])->name('api.group.request.reject');
         Route::post('/group/{id}/invite/{user_id}', 'invite')->where(['id' => '[0-9]+', 'user_id' => '[0-9]+'])->name('api.group.invite');
-        Route::delete('/group/{id}/uninvite/{user_id}', 'uninvite')->where(['id' => '[0-9]+', 'user_id' => '[0-9]+'])->name('api.group.uninvite');
+        Route::delete('/group/{id}/invite/{user_id}', 'uninvite')->where(['id' => '[0-9]+', 'user_id' => '[0-9]+'])->name('api.group.uninvite');
         Route::post('/group/{id}/acceptinvite', 'acceptInvite')->where('id', '[0-9]+')->name('api.group.invite.accept');
         Route::delete('/group/{id}/rejectinvite', 'rejectInvite')->where('id', '[0-9]+')->name('api.group.invite.reject');
     });
