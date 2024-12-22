@@ -15,7 +15,6 @@
             ['method' => 'DELETE', 'endpoint' => '/api/post/{id}/like', 'access' => 'Private', 'description' => 'Unlike a post'],
             ['method' => 'GET', 'endpoint' => '/api/post/{id}/comment', 'access' => 'Public', 'description' => 'Get comments for a post'],
             ['method' => 'GET', 'endpoint' => '/api/post/{id}/tags', 'access' => 'Public', 'description' => 'Get tags for a post'],
-            ['method' => 'GET', 'endpoint' => '/api/post/{id}/attachments', 'access' => 'Public', 'description' => 'Get attachments for a post'],
         ],
         'Comments' => [
             ['method' => 'GET', 'endpoint' => '/api/comment', 'access' => 'Public', 'description' => 'Get all comments'],
@@ -37,7 +36,7 @@
             ['method' => 'POST', 'endpoint' => '/api/group/{id}/request/{user_id}/accept', 'access' => 'Private', 'description' => 'Accept a group join request from a user'],
             ['method' => 'DELETE', 'endpoint' => '/api/group/{id}/request/{user_id}/reject', 'access' => 'Private', 'description' => 'Reject a group join request from a user'],
             ['method' => 'POST', 'endpoint' => '/api/group/{id}/invite/{user_id}', 'access' => 'Private', 'description' => 'Invite a user to join a group'],
-            ['method' => 'DELETE', 'endpoint' => '/api/group/{id}/uninvite/{user_id}', 'access' => 'Private', 'description' => 'Cancel an invite sent to a user for a group'],
+            ['method' => 'DELETE', 'endpoint' => '/api/group/{id}/invite/{user_id}', 'access' => 'Private', 'description' => 'Cancel an invite sent to a user for a group'],
             ['method' => 'POST', 'endpoint' => '/api/group/{id}/acceptInvite', 'access' => 'Private', 'description' => 'Accept an invite to join a group'],
             ['method' => 'DELETE', 'endpoint' => '/api/group/{id}/rejectInvite', 'access' => 'Private', 'description' => 'Reject an invite to join a group'],
         ],
