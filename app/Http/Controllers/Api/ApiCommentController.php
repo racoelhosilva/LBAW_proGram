@@ -43,24 +43,25 @@ class ApiCommentController extends Controller
         ]);
 
         try {
-            $comment = Comment::create([
-                'content' => $request->input('content'),
-                'post_id' => $request->input('post_id'),
-                'author_id' => $request->input('author_id'),
-            ]);
+            $comment = new Comment;
 
+            $comment->content = $request->input('content');
+            $comment->post_id = $request->input('post_id');
+            $comment->author_id = $request->input('author_id');
             $comment->timestamp = now();
             $comment->likes = 0;
 
-            event(new CommentEvent($comment->post_id, $comment->post->author_id));
+            $comment->save();
 
-            if ($request->accepts('text/html')) {
-                return view('partials.comment-card', ['comment' => $comment]);
-            } else {
-                return response()->json($comment, 201);
-            }
+            event(new CommentEvent($comment->post_id, $comment->post->author_id));
         } catch (\Exception $e) {
             return response('Failed to create comment.', 500);
+        }
+
+        if ($request->accepts('text/html')) {
+            return view('partials.comment-card', ['comment' => $comment]);
+        } else {
+            return response()->json($comment, 201);
         }
     }
 

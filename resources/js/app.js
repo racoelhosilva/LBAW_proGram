@@ -289,7 +289,7 @@ const addSaveCommentListener = () => {
             event.preventDefault();
             const formData = new FormData(contentEditForm);
             const params = Object.fromEntries(formData.entries());
-            const updatedComment = await sendPutView(contentEditForm.action, params, 'PATCH');
+            const updatedComment = await sendPutView(contentEditForm.action, params);
             comment.outerHTML = updatedComment;
             addDropdownListeners();
             addEditCommentListener();

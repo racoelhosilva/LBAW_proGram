@@ -23,6 +23,7 @@ const getView = (url, params) => {
 	return fetch(url + encodeParams(params), {
 		method: 'GET',
 		headers: {
+			'Accept': 'text/html',
 			'X-Requested-With': 'XMLHttpRequest',
 		},
 	}).then(response => {
@@ -32,13 +33,18 @@ const getView = (url, params) => {
 		return response.text();
 	});
 }
-const sendPostView = (url, params) => {
-    return fetch(url + encodeParams(params), {
+
+const sendPostView = (url, data) => {
+	console.log(JSON.stringify(data));
+    return fetch(url, {
         method: 'POST',
         headers: {
+			'Accept': 'text/html',
+			'Content-Type': 'application/json',
             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
             'X-Requested-With': 'XMLHttpRequest',
         },
+		body: JSON.stringify(data),
     }).then(response => {
         if (!response.ok) {
             throw new Error('Unexpected error occurred');
@@ -47,13 +53,16 @@ const sendPostView = (url, params) => {
     });
 };
 
-const sendPutView = (url, params) => {
-	return fetch(url + encodeParams(params), {
+const sendPutView = (url, data) => {
+	return fetch(url, {
 		method: 'PUT',
 		headers: {
+			'Accept': 'text/html',
+			'Content-Type': 'application/json',
 			'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
 			'X-Requested-With': 'XMLHttpRequest',
 		},
+		body: JSON.stringify(data),
 	}).then(response => {
 		if (!response.ok) {
 			throw new Error('Unexpected error occurred');
