@@ -16,15 +16,26 @@
 @endphp
 
 <article class="card px-6 grid grid-cols-[auto_1fr_auto] items-center gap-2">
-    <a href="{{ $userUrl }}">
-        <img src="{{ $user->getProfilePicture() }}" alt="{{ $user->name }} Profile Picture"
-            class="w-12 h-12 rounded-full object-cover">
-    </a>
+    @if (!$user->is_deleted)
+        <a href="{{ $userUrl }}">
+            <img src="{{ $user->getProfilePicture() }}" alt="{{ $user->name }}"
+                 class="w-12 h-12 rounded-full object-cover">
+        </a>
+    @else
+        <img src="{{ $user->getProfilePicture() }}" alt="Deleted Account"
+             class="w-12 h-12 rounded-full object-cover">
+    @endif
+
     <div class="{{ $responsive ? 'row-start-2 col-span-3 2xl:row-start-1 2xl:col-span-1 2xl:col-start-2' : '' }}">
-        <h2 class="text-base/4 font-medium"><a href="{{ $userUrl }}">{{ $user->name }}</a></h2>
-        <p class="text-xs/3 mt-1 font-medium text-gray-500 dark:text-gray-400 select-none"><a
-                href="{{ $userUrl }}">{{ '@' . $user->handle }}</a>{{ ' • ' . $user->num_followers . ' followers' }}
-        </p>
+        @if (!$user->is_deleted)
+            <p class="text-base/4 font-medium"><a href="{{ $userUrl }}">{{ $user->name }}</a></p>
+            <p class="text-xs/3 mt-1 font-medium text-gray-500 dark:text-gray-400 select-none"><a
+                        href="{{ $userUrl }}">{{ '@' . $user->handle }}</a>{{ ' • ' . $user->num_followers . ' followers' }}
+            </p>
+        @else
+            <p class="text-base/4 font-medium">[deleted]</p>
+            <p class="text-xs/3 mt-1 font-medium text-gray-500 dark:text-gray-400 select-none">[deleted]</p>
+        @endif
     </div>
 
     @if($canFollow)
