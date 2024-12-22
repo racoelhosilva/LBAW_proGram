@@ -74,9 +74,9 @@ class GroupPolicy
     /**
      * Determine whether the user can invite a user to the group.
      */
-    public function invite(?User $user, Group $group, ?User $invitee): bool
+    public function invite(?User $user, Group $group): bool
     {
-        return $user && ! $user->isBanned() && $user->id === $group->owner_id && ! $group->members()->where('user_id', $invitee->id)->exists();
+        return $user && ! $user->isBanned() && $user->id === $group->owner_id;
     }
 
     /**
