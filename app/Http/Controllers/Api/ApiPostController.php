@@ -168,10 +168,10 @@ class ApiPostController extends Controller
 
     public function indexComments($id)
     {
-        $user = auth()->user();
         $post = Post::findOrFail($id);
-        $this->authorize('view', $post);
 
+        $this->authorize('view', $post);
+        dd('hdhd');
         $comments = $post->allComments;
 
         return response()->json($comments);
@@ -194,7 +194,7 @@ class ApiPostController extends Controller
 
         $this->authorize('view', $post);
 
-        $tags = $post->tags;
+        $tags = $post->tags->select(['id', 'name']);
 
         return response()->json($tags);
     }

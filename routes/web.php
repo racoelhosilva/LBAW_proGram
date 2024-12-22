@@ -194,12 +194,12 @@ Route::prefix('api')->middleware('api.token')->group(function () {
         Route::get('/post/{id}', 'show')->where('id', '[0-9]+')->name('api.post.show'); //works
         Route::put('/post/{id}', 'update')->where('id', '[0-9]+')->name('api.post.update'); //works
         Route::delete('/post/{id}', 'destroy')->where('id', '[0-9]+')->name('api.post.destroy'); //works
-        // Route::get('/post/{id}/like', 'indexLikes')->where('id', '[0-9]+')->name('api.post.like.index');
+        Route::get('/post/{id}/like', 'indexLikes')->where('id', '[0-9]+')->name('api.post.like.index');
         Route::post('/post/{id}/like', 'like')->where('id', '[0-9]+')->name('api.post.like'); //works
         Route::delete('/post/{id}/like', 'unlike')->where('id', '[0-9]+')->name('api.post.unlike'); //works
-        Route::get('/post/{id}/comment', 'indexComments')->where('id', '[0-9]+')->name('api.post.comment.index');
-        // Route::get('/post/{id}/tags', 'indexTags')->where('id', '[0-9]+')->name('api.post.tags.index');
-        // Route::get('/post/{id}/attachments', 'indexAttachments')->where('id', '[0-9]+')->name('api.post.attachments.index');
+        Route::get('/post/{id}/comment', 'indexComments')->where('id', '[0-9]+')->name('api.post.comment.index'); //works
+        Route::get('/post/{id}/tags', 'indexTags')->where('id', '[0-9]+')->name('api.post.tags.index'); //works
+        Route::get('/post/{id}/attachments', 'indexAttachments')->where('id', '[0-9]+')->name('api.post.attachments.index');
     });
 
     // Comment

@@ -57,7 +57,7 @@ class ApiGroupController extends Controller
         ]);
         if (! $user->can('viewAny', $group)) {
             return response()->json(['message' => 'You are not authorized to view this group.'], 403);
-        } elseif (! $user->can('view', $group)) {
+        } elseif (! $user->can('viewContent', $group)) {
             unset($groupData['owner_id']);
             unset($groupData['creation_timestamp']);
             unset($groupData['member_count']);
