@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api;
 
 use App\Events\PostLikeEvent;
 use App\Http\Controllers\Controller;
-use App\Models\Comment;
 use App\Models\Post;
 use App\Models\PostLike;
 use Illuminate\Http\Request;
@@ -169,10 +168,9 @@ class ApiPostController extends Controller
 
     public function indexComments($id)
     {
+        $user = auth()->user();
         $post = Post::findOrFail($id);
-
         $this->authorize('view', $post);
-        $this->authorize('viewAny', Comment::class);
 
         $comments = $post->allComments;
 

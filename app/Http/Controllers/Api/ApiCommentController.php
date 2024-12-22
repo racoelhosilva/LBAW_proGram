@@ -7,6 +7,7 @@ use App\Events\CommentLikeEvent;
 use App\Http\Controllers\Controller;
 use App\Models\Comment;
 use App\Models\CommentLike;
+use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -16,19 +17,36 @@ class ApiCommentController extends Controller
     {
 
         $user = auth()->user();
-        $comments = Comment::all();
-        $comments = $comments->filter(function ($comment) use ($user) {
-            return $user ? $this->authorize('view', $user, $comment) : false;
-        });
+        $visiblePosts = Post::visibleTo($user)->get();
+        $comments = Comment::whereIn('post_id', $visiblePosts->pluck('id'))
+            ->select([
+                'id',
+                'content',
+                'post_id',
+                'author_id',
+                'timestamp',
+                'likes',
+            ])
+            ->get();
 
         return response()->json($comments);
     }
 
     public function show(Request $request, $id)
     {
-        $comment = Comment::findOrFail($id);
-
-        $this->authorize('view', $comment);
+        $user = auth()->user();
+        $visiblePosts = Post::visibleTo($user)->get();
+        $comments = Comment::whereIn('post_id', $visiblePosts->pluck('id'))
+            ->select([
+                'id',
+                'content',
+                'post_id',
+                'author_id',
+                'timestamp',
+                'likes',
+            ])
+            ->get();
+        $comment = $comments->find($id);
 
         return response()->json($comment);
     }

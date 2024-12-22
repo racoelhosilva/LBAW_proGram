@@ -189,15 +189,15 @@ Route::prefix('admin')->group(function () {
 Route::prefix('api')->middleware('api.token')->group(function () {
     // Post
     Route::controller(ApiPostController::class)->group(function () {
-        Route::get('/post', 'index')->name('api.post.index');
-        Route::post('/post', 'store')->name('api.post.store');
-        Route::get('/post/{id}', 'show')->where('id', '[0-9]+')->name('api.post.show');
-        Route::put('/post/{id}', 'update')->where('id', '[0-9]+')->name('api.post.update');
-        Route::delete('/post/{id}', 'destroy')->where('id', '[0-9]+')->name('api.post.destroy');
+        Route::get('/post', 'index')->name('api.post.index'); //works
+        Route::post('/post', 'store')->name('api.post.store'); //works
+        Route::get('/post/{id}', 'show')->where('id', '[0-9]+')->name('api.post.show'); //works
+        Route::put('/post/{id}', 'update')->where('id', '[0-9]+')->name('api.post.update'); //works
+        Route::delete('/post/{id}', 'destroy')->where('id', '[0-9]+')->name('api.post.destroy'); //works
         // Route::get('/post/{id}/like', 'indexLikes')->where('id', '[0-9]+')->name('api.post.like.index');
-        Route::post('/post/{id}/like', 'like')->where('id', '[0-9]+')->name('api.post.like');
-        Route::delete('/post/{id}/like', 'unlike')->where('id', '[0-9]+')->name('api.post.unlike');
-        // Route::get('/post/{id}/comment', 'indexComments')->where('id', '[0-9]+')->name('api.post.comment.index');
+        Route::post('/post/{id}/like', 'like')->where('id', '[0-9]+')->name('api.post.like'); //works
+        Route::delete('/post/{id}/like', 'unlike')->where('id', '[0-9]+')->name('api.post.unlike'); //works
+        Route::get('/post/{id}/comment', 'indexComments')->where('id', '[0-9]+')->name('api.post.comment.index');
         // Route::get('/post/{id}/tags', 'indexTags')->where('id', '[0-9]+')->name('api.post.tags.index');
         // Route::get('/post/{id}/attachments', 'indexAttachments')->where('id', '[0-9]+')->name('api.post.attachments.index');
     });
@@ -206,7 +206,7 @@ Route::prefix('api')->middleware('api.token')->group(function () {
     Route::controller(ApiCommentController::class)->group(function () {
         Route::get('/comment', 'index')->name('api.comment.index');
         Route::post('/comment', 'store')->name('api.comment.store');
-        // Route::get('/comment/{id}', 'show')->where('id', '[0-9]+')->name('api.comment.show');
+        Route::get('/comment/{id}', 'show')->where('id', '[0-9]+')->name('api.comment.show');
         Route::put('/comment/{id}', 'update')->where('id', '[0-9]+')->name('api.comment.update');
         Route::delete('/comment/{id}', 'destroy')->where('id', '[0-9]+')->name('api.comment.destroy');
         Route::post('/comment/{id}/like', 'like')->where('id', '[0-9]+')->name('api.comment.like');

@@ -18,9 +18,9 @@ class ApiUserController extends Controller
 {
     public function list()
     {
-        $authenticatedUser = auth()->user();
+        $user = auth()->user();
         $this->authorize('viewAny', User::class);
-        $users = User::visibleTo($authenticatedUser)
+        $users = User::visibleTo($user)
             ->select(['id', 'name', 'register_timestamp', 'handle', 'is_public', 'description', 'num_followers', 'num_following'])
             ->get();
         $nonvisibleUsers = User::whereNotIn('id', $users->pluck('id'))
