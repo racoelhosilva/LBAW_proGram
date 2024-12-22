@@ -35,14 +35,6 @@ class AdminLanguageController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
@@ -55,30 +47,6 @@ class AdminLanguageController extends Controller
         $language->save();
 
         return redirect()->route('admin.language.index')->withSuccess('Language created successfully.');
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Language $language)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Language $language)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Language $language)
-    {
-        //
     }
 
     /**
