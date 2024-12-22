@@ -36,9 +36,9 @@
                                                     'class' => 'open-button',
                                                 ])
                                                 <div>
-                                                    <section>
+                                                    <article>
                                                         <div class="mb-4 flex justify-between items-center">
-                                                            <h1 class="text-2xl font-bold">Ban User</h1>
+                                                            <h2 class="text-2xl font-bold">Ban User</h2>
                                                             @include('partials.icon-button', [
                                                                 'iconName' => 'x',
                                                                 'class' => 'close-button',
@@ -69,7 +69,7 @@
                                                                 'submit' => true,
                                                             ])
                                                         </form>
-                                                    </section>
+                                                    </article>
                                                 </div>
                                             </div>
                                             @include('partials.dropdown-item', [
