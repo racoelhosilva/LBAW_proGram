@@ -60,7 +60,7 @@ class PostController extends Controller
      */
     public function create(): RedirectResponse|View|Factory
     {
-        if (! Auth::check()) {
+        if (! auth()->check()) {
             return redirect()->route('login');
         }
 
@@ -78,7 +78,7 @@ class PostController extends Controller
     {
         $group = $groupId ? Group::findOrFail($groupId) : null;
 
-        if (! Auth::check()) {
+        if (! auth()->check()) {
             return redirect()->route('login');
         }
 
@@ -153,10 +153,9 @@ class PostController extends Controller
      */
     public function edit(int $id): RedirectResponse|View|Factory
     {
-
         $post = Post::findOrFail($id);
 
-        if (! Auth::check()) {
+        if (! auth()->check()) {
             return redirect()->route('login');
         }
 
@@ -183,8 +182,8 @@ class PostController extends Controller
             'text' => 'nullable|string',
             'tags' => 'nullable|array',
             'tags.*' => 'exists:tag,id',
-            'is_public' => 'nullable|boolean',
-            'is_announcement' => 'nullable|boolean',
+            'is_public' => 'nullable',
+            'is_announcement' => 'nullable',
         ]);
         $post = Post::findOrFail($id);
 
@@ -198,7 +197,7 @@ class PostController extends Controller
         Storage::disk('storage')->deleteDirectory('temporary/'.$post->author_id);
 
         DB::transaction(function () use ($post, $request, $text) {
-            $post->title = $request->input('title', $post->title);
+            $post->title = $request->input('title');
             $post->text = $text;
             $post->is_public = $request->filled('is_public');
             $post->is_announcement = $request->filled('is_announcement');
@@ -227,7 +226,6 @@ class PostController extends Controller
         $post = Post::findOrFail($id);
 
         $this->authorize('forceDelete', $post);
-
         $post->delete();
 
         return redirect()->route('user.show', $post->author_id)->withSuccess('Post deleted successfully.');
