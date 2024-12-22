@@ -58,7 +58,6 @@ class ApiFileController extends Controller
         return $fileName;
     }
 
-
     public static function get(string $type, int $userId)
     {
         // Validation: upload type
