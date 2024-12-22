@@ -27,12 +27,10 @@ const getView = (url, params) => {
 			'X-Requested-With': 'XMLHttpRequest',
 		},
 	}).then(response => {
-		return response.json().then(json => {
-			if (!response.ok) {
-				throw new Error(json.error);
-			}
-			return json;
-		})
+		if (!response.ok) {
+			throw new Error('Unexpected error occurred');
+		}
+		return response.text();
 	});
 }
 
@@ -48,12 +46,10 @@ const sendPostView = (url, data) => {
         },
 		body: JSON.stringify(data),
     }).then(response => {
-		return response.json().then(json => {
-			if (!response.ok) {
-				throw new Error(json.error);
-			}
-			return json;
-		})
+		if (!response.ok) {
+			throw new Error('Unexpected error occurred');
+		}
+		return response.text();
 	});
 };
 
@@ -68,12 +64,10 @@ const sendPutView = (url, data) => {
 		},
 		body: JSON.stringify(data),
 	}).then(response => {
-		return response.json().then(json => {
-			if (!response.ok) {
-				throw new Error(json.error);
-			}
-			return json;
-		})
+		if (!response.ok) {
+			throw new Error('Unexpected error occurred');
+		}
+		return response.text();
 	});
 };
 
