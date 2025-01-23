@@ -95,4 +95,4 @@ GROUP2411, December 2024
 > Group: 11  
 > Final Grade: 19.2  
 > Professors: Sérgio Nunes   
-> Created in March 2024 for LBAW (Laboratório de Bases de Dados e Aplicações Web) [FEUP-L.EIC023]  
+> Created in September 2024 for LBAW (Laboratório de Bases de Dados e Aplicações Web) [FEUP-L.EIC023]  
